@@ -1,0 +1,5 @@
+dist
+*.swp
+/build/
+/node_modules/
+/tmp/
