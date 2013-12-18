@@ -18,7 +18,8 @@ To Get Started
       &lt;/div>  
     </pre>
 
-Examples:
+Examples
+--------
 
   * https://rawgithub.com/allenhwkim/ng-map/master/examples/hello_map.html
   * https://rawgithub.com/allenhwkim/ng-map/master/examples/marker.html
