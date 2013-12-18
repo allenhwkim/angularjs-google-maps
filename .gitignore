@@ -1,4 +1,4 @@
-dist
+/dist
 *.swp
 /build/
 /node_modules/
