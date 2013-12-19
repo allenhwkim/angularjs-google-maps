@@ -6,17 +6,14 @@ To Get Started
 
  1. include ng-map.js or ng-map.min.js
     `<script src="https://rawgithub.com/allenhwkim/ng-map/master/dist/ng-map.min.js"></script>`
- 
- 2. include 'ngMap' as dependency to your app.
 
-     `var app = angular.module('myApp', ['ngMap']); `
+ 2. use ng-map directives; map, control, marker, shape  
 
- 3. use ng-map directives; map, control, marker, shape  
-    <pre>
-      &lt;div ng-controller="MyCtrl" style="height:600px; height:400px">  
-        &lt;map zoom="11" center="[40.74, -74.18]">&lt;/map>  
-      &lt;/div>  
-    </pre>
+    &lt;map zoom="11" center="[40.74, -74.18]">
+      &lt;marker position="[40.74, -74.18]" />
+      &lt;shape name="circle" radius="400" center="[40.74,-74.18]" radius="4000" />
+      &lt;control name="overviewMap" opened="true" />
+    &lt;/map>`  
 
 Examples
 --------
