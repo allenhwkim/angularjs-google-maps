@@ -1,6 +1,15 @@
 GoogleMap AngularJS Directive
 =============================
 
+There is already one for this, https://github.com/nlaplante/angular-google-maps.
+However, I found myself doing totally different approach for this purpose than the existing one, such as;
+  
+  1. Everything in tag and attributes  
+     Therefore, basic users does not even have to what the controller is. Tag does it all.
+
+  2. Expose the original Google Maps V3 api  
+     By doing so, programmers don't need to learn this module.
+  
 To Get Started
 ---------------
 
