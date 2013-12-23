@@ -31,6 +31,8 @@ Examples
 
   * [Hello Map](https://rawgithub.com/allenhwkim/ng-map/master/examples/hello_map.html)
   * [Markers](https://rawgithub.com/allenhwkim/ng-map/master/examples/marker.html)
+  * [My Address](https://rawgithub.com/allenhwkim/ng-map/master/examples/marker_with_address.html)
+  * [Where am I?](https://rawgithub.com/allenhwkim/ng-map/master/examples/marker_with_current_position.html)
   * [Controls](https://rawgithub.com/allenhwkim/ng-map/master/examples/map_control.html)
   * [Map Options](https://rawgithub.com/allenhwkim/ng-map/master/examples/map_options.html)
   * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/ng-map/master/examples/shape.html)
@@ -100,7 +102,9 @@ These are attributes of marker tag
   * flat
   * icon
   * optimized
-  * position
+  * position  
+    'current', address, or latitude/longitude  
+    i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
   * raiseOnDrag
   * shadow
   * shape

@@ -1,4 +1,5 @@
 ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
+  var parser = new Attr2Options();
   
   var getPoints = function(array) { // return latitude && longitude points
     if (array[0] && array[0] instanceof Array) { // [[1,2],[3,4]] 
@@ -44,21 +45,21 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
     restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      var filtered = new Attr2Options(attrs);
+      var filtered = parser.filter(attrs);
       var shapeName = filtered.name;
       delete filtered.name;  //remove name bcoz it's not for options
       
-      var shapeOptions = mapController.getOptions(filtered);
+      var shapeOptions = parser.getOptions(filtered);
       console.log('shape', shapeName, 'options', shapeOptions);
       var shape = getShape(shapeName, shapeOptions);
       if (shape) {
-        mapController.addShape(shape);
+        mapController.shapes.push(shape);
       } else {
         console.error("shape", shapeName, "is not defined");
       }
       
       //shape events
-      var events = mapController.getEvents(scope, filtered);
+      var events = parser.getEvents(scope, filtered);
       console.log("shape", shapeName, "events", events);
       for (var eventName in events) {
         google.maps.event.addListener(shape, eventName, events[eventName]);

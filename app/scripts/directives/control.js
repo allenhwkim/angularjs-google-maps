@@ -1,4 +1,5 @@
 ngMap.directive('control', ['Attr2Options', function(Attr2Options) {
+  var parser = new Attr2Options();
   
   var optionBuilders = {
     "mapType": function(attrs) {
@@ -125,14 +126,14 @@ ngMap.directive('control', ['Attr2Options', function(Attr2Options) {
     restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      var filtered = new Attr2Options(attrs);
+      var filtered = new parser.filter(attrs);
       var controlName = filtered.name;
       delete filtered.name;  //remove name bcoz it's not for options
       
       optionBuilder = optionBuilders[controlName];
       if (optionBuilder) {
         var controlOptions = optionBuilder(filtered);
-        mapController.setControl(controlName, controlOptions);
+        mapController.controls[controlName] = controlOptions;
       } else {
         console.error(controlName, "does not have option builder");
       }

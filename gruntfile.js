@@ -1,11 +1,5 @@
 module.exports = function (grunt) {
   grunt.initConfig({
-    copy: {
-      example: {
-        src: 'dist/*.js',
-        dest: 'examples/'
-      } 
-    },
 
     clean : {
       dist: ['dist/*.js', 'examples/dist/*.js']
@@ -35,5 +29,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.registerTask('min', ['clean', 'concat', 'uglify', 'copy:example']);
+  grunt.registerTask('min', ['clean', 'concat', 'uglify']);
 };

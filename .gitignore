@@ -1,4 +1,5 @@
 *.swp
+/examples_dev
 /build/
 /node_modules/
 /tmp/

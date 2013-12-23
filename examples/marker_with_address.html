@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="ngMap">
+<html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <style>
@@ -20,23 +20,13 @@
 <!-- END : ng-map.js -->
 </head>
 
-<body>
-  All controls are messed up intentionally.
-  <br/><br/>
-  <div id="my-html">
+<body ng-app="ngMap">
+  <div id="my-html" style="height:100%">
     <map zoom="11" center="[40.74, -74.18]">
-      <control name="zoom" enabled="1" style="small" position="bottom_left"></control>
-      <control name="mapType" enabled="1"  position="TOP_RIGHT" 
-        style="DROPDOWN_MENU" map-type-ids="HYBRID,ROADMAP,SATELLITE,TERRAIN"></control>
-      <control name="overviewMap" opened="false"></control>
-      <control name="pan" position="left_center"></control>
-      <control name="rotate" position="right_center"></control>
-      <control name="scale" position="bottom_right" style="default"></control>
-      <control name="streetView" position="right_center"></control>
+      <marker position="Toronto Canada" title="You are here" animation="Animation.BOUNCE" centered="true"></marker>
     </map>
   </div>
 
   <pre><script>document.write(document.getElementById("my-html").innerHTML.replace(/</g, '&lt;'))</script></pre>
 </body>
 </html>
-
