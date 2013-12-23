@@ -29,14 +29,14 @@ To Get Started
 Examples
 --------
 
-  * [Hello Map](https://rawgithub.com/allenhwkim/ng-map/master/examples/hello_map.html)
-  * [Markers](https://rawgithub.com/allenhwkim/ng-map/master/examples/marker.html)
-  * [My Address](https://rawgithub.com/allenhwkim/ng-map/master/examples/marker_with_address.html)
-  * [Where am I?](https://rawgithub.com/allenhwkim/ng-map/master/examples/marker_with_current_position.html)
-  * [Controls](https://rawgithub.com/allenhwkim/ng-map/master/examples/map_control.html)
-  * [Map Options](https://rawgithub.com/allenhwkim/ng-map/master/examples/map_options.html)
-  * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/ng-map/master/examples/shape.html)
-  * [Events](https://rawgithub.com/allenhwkim/ng-map/master/examples/events.html)
+  * [Hello Map](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/hello_map.html)
+  * [Markers](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker.html)
+  * [My Address](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_address.html)
+  * [Where am I?](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_current_position.html)
+  * [Controls](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_control.html)
+  * [Map Options](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_options.html)
+  * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/shape.html)
+  * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
 
 To use it in your app, please include 'ngMap' as dependency to your app.
 
