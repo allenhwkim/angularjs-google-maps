@@ -16,6 +16,8 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         this.initializeMap = function(scope, element, attrs) {
           var filtered = parser.filter(attrs);
           var mapOptions = parser.getOptions(filtered);
+          var _this = this;
+
           if (!mapOptions.zoom) {
             mapOptions.zoom = 15 //default zoom
           }
@@ -34,18 +36,18 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           }
           
           console.log("mapOptions", mapOptions);
-          map = new google.maps.Map(element[0], mapOptions);
+          _this.map = new google.maps.Map(element[0], mapOptions);
 
           if (typeof savedCenter == 'string') { //address
             GeoCoder.geocode({address: savedCenter})
               .then(function(results) {
-                map.setCenter(results[0].geometry.location);
+                _this.map.setCenter(results[0].geometry.location);
               });
           } else if (!mapOptions.center) { //current location
             NavigatorGeolocation.getCurrentPosition()
               .then(function(position) {
                 var lat = position.coords.latitude, lng = position.coords.longitude;
-                map.setCenter(new google.maps.LatLng(lat, lng));
+                _this.map.setCenter(new google.maps.LatLng(lat, lng));
               })
           }
 
@@ -53,14 +55,13 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           var events = parser.getEvents(scope, filtered);
           console.log("mapEvents", events);
           for (var eventName in events) {
-            google.maps.event.addListener(map, eventName, events[eventName]);
+            google.maps.event.addListener(_this.map, eventName, events[eventName]);
           }
 
           //assign map to parent scope  
-          scope.map = map;
+          scope.map = _this.map;
 
-          this.map = map;
-          return this.map;
+          return _this.map;
         },
 
         /**

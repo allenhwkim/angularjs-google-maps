@@ -34,6 +34,7 @@ Examples
   * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/shape.html)
   * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
   * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_and_street_view.html)
+  * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/multiple_maps_on_a_page.html)
 
 To use it in your app, please include 'ngMap' as dependency to your app.
 
