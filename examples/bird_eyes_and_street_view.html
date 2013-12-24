@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style>
+  map, div[map] {display:block; width:600px; height:400px;}
+  pre {margin:0px} h3{margin-bottom:0px}
+</style>
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<!-- START : ng-map.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/control.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/providers/providers.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<!-- END : ng-map.js -->
+</head>
+
+<body>
+  <div id="my-html">
+    <map center="[40.6892,-74.0444]" zoom="18" map-type-id="MapTypeId.SATELLITE" tilt="45"
+      style="float:left"
+      street-view="StreetViewPanorama(document.querySelector('#sv'), {position:new google.maps.LatLng(40.688738,-74.043871)})">
+      <marker location="[40.6892,-74.0444]" />
+    </map>
+    <div id="sv" style="float:left;width:400px;height:400px" />
+  </div>
+  <br style="clear:both" />
+
+  <h3>Html</h3>
+  <pre><script>document.write(document.getElementById("my-html").innerHTML.replace(/</g, '&lt;'))</script></pre>
+</body>
+</html>

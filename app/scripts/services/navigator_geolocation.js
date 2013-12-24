@@ -1,4 +1,4 @@
-ngMap.service('NavigatorGeolocation', function($q) {
+ngMap.service('NavigatorGeolocation', ['$q', function($q) {
   return {
     getCurrentPosition: function() {
       var deferred = $q.defer();
@@ -25,4 +25,4 @@ ngMap.service('NavigatorGeolocation', function($q) {
       return "TODO";
     }
   }
-});
+}]);

@@ -1,4 +1,4 @@
-ngMap.service('GeoCoder', function($q) {
+ngMap.service('GeoCoder', ['$q', function($q) {
   return {
     geocode : function(options) {
       var deferred = $q.defer();
@@ -13,4 +13,4 @@ ngMap.service('GeoCoder', function($q) {
       return deferred.promise;
     }
   }
-});
+}]);

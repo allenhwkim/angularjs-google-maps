@@ -493,7 +493,7 @@ ngMap.provider('Attr2Options', function() {
   };
 });
 
-ngMap.service('GeoCoder', function($q) {
+ngMap.service('GeoCoder', ['$q', function($q) {
   return {
     geocode : function(options) {
       var deferred = $q.defer();
@@ -508,9 +508,9 @@ ngMap.service('GeoCoder', function($q) {
       return deferred.promise;
     }
   }
-});
+}]);
 
-ngMap.service('NavigatorGeolocation', function($q) {
+ngMap.service('NavigatorGeolocation', ['$q', function($q) {
   return {
     getCurrentPosition: function() {
       var deferred = $q.defer();
@@ -537,4 +537,4 @@ ngMap.service('NavigatorGeolocation', function($q) {
       return "TODO";
     }
   }
-});
+}]);
