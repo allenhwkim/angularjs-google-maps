@@ -61,7 +61,8 @@ These are attributes of map tag
 
   * backgroundColor
   * center  
-    i.e. center="[40.79,-54,18]"
+    address or latitude/langitude
+    i.e. center="[40.79,-54,18]", center="toronto, canada"
   * disableDefaultUI
   * disableDoubleClickZoom
   * draggable
