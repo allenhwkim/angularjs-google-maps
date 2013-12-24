@@ -19,11 +19,7 @@ To Get Started
  2. use `map` tag, and optionally, `control`, `marker`, and `shape` tags  
  
     <pre>
-    &lt;map zoom="11" center="[40.74, -74.18]">
-      &lt;marker position="[40.74, -74.18]" />
-      &lt;shape name="circle" radius="400" center="[40.74,-74.18]" radius="4000" />
-      &lt;control name="overviewMap" opened="true" />
-    &lt;/map>`  
+    &lt;map />  
     </pre>
 
 Examples
@@ -37,6 +33,7 @@ Examples
   * [Map Options](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_options.html)
   * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/shape.html)
   * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
+  * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_view_and_street_view.html)
 
 To use it in your app, please include 'ngMap' as dependency to your app.
 
