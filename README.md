@@ -1,7 +1,7 @@
 GoogleMap AngularJS Directive
 =============================
 
-There is already one for this, https://github.com/nlaplante/angular-google-maps.
+There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
   
   1. Everything in tag and attributes  
