@@ -19,7 +19,7 @@ To Get Started
  2. use `map` tag, and optionally, `control`, `marker`, and `shape` tags  
  
     <pre>
-    &lt;map />  
+    &lt;map style="display:block;height:300px" />  
     </pre>
 
 Examples
@@ -33,7 +33,7 @@ Examples
   * [Map Options](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_options.html)
   * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/shape.html)
   * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
-  * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_view_and_street_view.html)
+  * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_and_street_view.html)
 
 To use it in your app, please include 'ngMap' as dependency to your app.
 
