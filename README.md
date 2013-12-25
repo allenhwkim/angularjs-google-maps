@@ -13,8 +13,10 @@ However, I found myself doing totally different approach for this purpose than t
 To Get Started
 ---------------
 
- 1. include ng-map.js or ng-map.min.js
+ 1. include ng-map.js or ng-map.min.js and ngMap module to be active.
     `<script src="https://rawgithub.com/allenhwkim/ng-map/master/dist/ng-map.min.js"></script>`
+
+    `<html ng-app="ngMap">`
 
  2. use `map` tag, and optionally, `control`, `marker`, and `shape` tags  
  
@@ -57,32 +59,30 @@ except control-related ones. Those are seperately handled by control directives 
 
 These are attributes of map tag
 
-  * backgroundColor
-  * center  
-    address or latitude/langitude
-    i.e. center="[40.79,-54,18]", center="toronto, canada"
-  * disableDefaultUI
-  * disableDoubleClickZoom
-  * draggable
-  * draggableCursor
-  * draggingCursor
-  * heading
-  * keyboardShortcuts
-  * mapMaker
-  * mapTypeId  
-    i.e. mapTypeId="HYBRID"
-  * maxZoom
-  * minZoom
-  * noClear
-  * scrollwheel
-  * streetView  
-    i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
-  * styles  
-    i.e. styles='{featureType: "poi"}'
-  * zoom  
-  * EVENTS  
-    You can also specify any [map events](https://developers.google.com/maps/documentation/javascript/reference#Map) as an attribute.  
-    i.e. on-click="myfunc"
+<table>
+<tr><th>Attributes<th>Description                                     
+<tr><td>backgroundColor <td>
+<tr><td>center<td>address or latitude/langitude<br/>   
+                  i.e. center="[40.79,-54,18]", center="toronto, canada"
+<tr><td>disableDefaultUI <td>
+<tr><td>disableDoubleClickZoom <td>
+<tr><td>draggable           <td>
+<tr><td>draggableCursor     <td>
+<tr><td>draggingCursor      <td>
+<tr><td>heading             <td>
+<tr><td>keyboardShortcuts   <td>
+<tr><td>mapMaker            <td>
+<tr><td>mapTypeId  <td> i.e. mapTypeId="HYBRID"
+<tr><td>maxZoom             <td>
+<tr><td>minZoom             <td>
+<tr><td>noClear             <td>
+<tr><td>scrollwheel         <td>
+<tr><td>streetView <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
+<tr><td>styles     <td>i.e. styles='{featureType: "poi"}'
+<tr><td>zoom       <td>
+<tr><td>EVENTS     <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
+   <br/> i.e. on-click="myfunc"
+</table>
 
 
 #### **marker** Tag(Directive) ####
@@ -92,27 +92,30 @@ You can list any [maker options](https://developers.google.com/maps/documentatio
 
 These are attributes of marker tag
 
-  * anchorPoint
-  * animation
-  * clickable
-  * crossOnDrag
-  * cursor
-  * draggable
-  * flat
-  * icon
-  * optimized
-  * position  
-    'current', address, or latitude/longitude  
+<table>
+<tr><th>Attribute<th>Description
+  <tr><td> anchorPoint <td>
+  <tr><td> animation <td>
+  <tr><td> clickable <td>
+  <tr><td> crossOnDrag <td>
+  <tr><td> cursor <td>
+  <tr><td> draggable <td>
+  <tr><td> flat <td>
+  <tr><td> icon <td>
+  <tr><td> optimized <td>
+  <tr><td> position   <td>
+    'current', address, or latitude/longitude  <br/>
     i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
-  * raiseOnDrag
-  * shadow
-  * shape
-  * title
-  * visible
-  * zIndex
-  * EVENTS   
+  <tr><td> raiseOnDrag  <td>
+  <tr><td> shadow <td>
+  <tr><td> shape <td>
+  <tr><td> title <td>
+  <tr><td> visible <td>
+  <tr><td> zIndex <td>
+  <tr><td> EVENTS <td>
     You can also specify any [marker events](https://developers.google.com/maps/documentation/javascript/reference#Marker) as an attribute.  
     i.e. on-click="myfunc"
+</table>
 
 #### **shape** Tag(Directive) ####
 
