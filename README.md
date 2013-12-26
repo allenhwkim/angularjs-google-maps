@@ -5,7 +5,7 @@ There is already [one](https://github.com/nlaplante/angular-google-maps) for thi
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
   
   1. Everything in tag and attributes  
-     Therefore, basic users does not even have to what the controller is. Tag does it all.
+     Therefore, basic users does not even have to know what Javascript is. Tag does it all.
 
   2. Expose the original Google Maps V3 api  
      By doing so, programmers don't need to learn this module.
