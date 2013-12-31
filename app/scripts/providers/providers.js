@@ -89,7 +89,8 @@ ngMap.provider('Attr2Options', function() {
           if (func instanceof Function) {
             events[eventName] = func;
           } else {
-            console.error(eventName, 'does not have value of a function');
+            var safeJs = attrs[key].replace(/[\n\r\;]/g,'');
+            events[eventName] = function(event) { eval(safeJs) }
           }
         }
         return events;

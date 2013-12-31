@@ -2,7 +2,7 @@ module.exports = function (grunt) {
 
   // Load Grunt tasks declared in the package.json file
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
-
+  
   grunt.initConfig({
 
     clean : {
@@ -26,27 +26,19 @@ module.exports = function (grunt) {
       }
     },
     
-    bump: {
-      options: {
-        files: ['package.json'],
-        updateConfigs: [],
-        commit: true,
-        commitMessage: 'Release v%VERSION%',
-        commitFiles: ['package.json'], // '-a' for all files
-        createTag: true,
-        tagName: 'v%VERSION%',
-        tagMessage: 'Version %VERSION%',
-        push: true,
-        pushTo: '',
-        gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' // options to use with '$ git describe'
-      }
-    }, 
-
     connect: {
       all : {
         options: {
           port: 9000,
-          base: 'examples'
+          middleware: function(connect, options) {
+            return [
+              require('connect-livereload')({
+                src: "//rawgithub.com/allenhwkim/util/master/livereload.js"
+              }),
+              connect.static('examples'),
+              connect.directory('examples')
+            ];
+          }
         }
       }
     },
@@ -55,14 +47,27 @@ module.exports = function (grunt) {
       all: {
         files: ['app/**/*', 'examples/*'],
         options: {
-          // `livereload : true` starts livereload server at port 35729 to broadcast file changes
-          // Your browser needs to listen this broadcasting and update your page
-          // Thus, install browser extension and click to enable/disable 
-          //  . https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei
           livereload: true  // starts livereload server at port 35729
         }
       }
-    }
+    },
+
+   bump: {
+     options: {
+       //files: ['package.json'],
+       //updateConfigs: [],
+       //commit: true,
+       //commitMessage: 'Release v%VERSION%',
+       //commitFiles: ['package.json'], // '-a' for all files
+       //createTag: true,
+       //tagName: 'v%VERSION%',
+       //tagMessage: 'Version %VERSION%',
+       //push: true,
+       pushTo: '',
+       //gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' // options to use with '$ git describe'
+     }
+   }, 
+
 
   });
 

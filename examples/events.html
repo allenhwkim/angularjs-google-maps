@@ -21,14 +21,7 @@
 <script id="my-script">
   var app = angular.module('myApp', ['ngMap']); 
   app.controller('MyController', ['$scope', function($scope) {
-    $scope.mapClick = function(evt) {
-      alert('map clicked, and I will center the map to this location');
-      map.setCenter(evt.latLng);
-    }
-    $scope.markerClick = function(evt) {
-      alert('this is at ' + this.getPosition());
-    }
-    $scope.circleClick = function(evt) {
+    $scope.getRadius = function(event) {
       alert('this circle has radius ' + this.getRadius());
     }
   }]);
@@ -42,10 +35,13 @@
     All event-related attributes are preceded by 'on-', i.e. on-click, on-mouseover, etc
     <br/>
     <br/>
-    <map zoom="11" center="[40.74, -74.18]" on-click="mapClick()">
-      <marker position="[40.79, -74.20]" on-click="markerClick()"></marker>
+    <map zoom="11" center="[40.74, -74.18]" 
+        on-click="this.setCenter(event.latLng);">
+      <marker position="[40.79, -74.20]" 
+        on-click="alert('this is at ' + this.getPosition())"></marker>
       <shape name="circle" stroke-color='#FF0000' stroke-weight="2" 
-        center="[40.74, -74.18]" radius="4000" on-click="circleClick()" />
+        center="[40.74, -74.18]" radius="4000"
+        on-click="getRadius" />
     </map>
   </div>
 
