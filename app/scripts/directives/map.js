@@ -16,6 +16,11 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         this.initializeMap = function(scope, element, attrs) {
           var filtered = parser.filter(attrs);
           var mapOptions = parser.getOptions(filtered);
+          var controlOptions = parser.getControlOptions(filtered);
+          for (key in controlOptions) {
+            mapOptions[key] = controlOptions[key];
+          }
+
           var _this = this;
 
           if (!mapOptions.zoom) {

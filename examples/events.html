@@ -10,7 +10,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
 <!-- START : ng-map.js -->
 <script src="../app/scripts/app.js"></script>
-<script src="../app/scripts/directives/control.js"></script>
 <script src="../app/scripts/directives/map.js"></script>
 <script src="../app/scripts/directives/marker.js"></script>
 <script src="../app/scripts/directives/shape.js"></script>
@@ -21,6 +20,8 @@
 <script id="my-script">
   var app = angular.module('myApp', ['ngMap']); 
   app.controller('MyController', ['$scope', function($scope) {
+    $scope.latlng = [40.741, -74.181];
+    $scope.radius = 3500;
     $scope.getRadius = function(event) {
       alert('this circle has radius ' + this.getRadius());
     }
@@ -35,12 +36,12 @@
     All event-related attributes are preceded by 'on-', i.e. on-click, on-mouseover, etc
     <br/>
     <br/>
-    <map zoom="11" center="[40.74, -74.18]" 
+    <map zoom="11" center="{{latlng}}" 
         on-click="this.setCenter(event.latLng);">
       <marker position="[40.79, -74.20]" 
         on-click="alert('this is at ' + this.getPosition())"></marker>
       <shape name="circle" stroke-color='#FF0000' stroke-weight="2" 
-        center="[40.74, -74.18]" radius="4000"
+        center="{{latlng}}" radius="{{radius}}"
         on-click="getRadius" />
     </map>
   </div>

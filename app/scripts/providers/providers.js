@@ -10,13 +10,11 @@ ngMap.provider('Attr2Options', function() {
       /**
        * filtering attributes  
        *  1. skip all angularjs methods $.. $$..
-       *  2. all control related ones(this is handled by control directive)
        */
       this.filter = function(attrs) {
         var options = {};
         for(var key in attrs) {
           if (key.match(/^\$/));
-          else if (key.match(/Control(Options)?$/)) ;
           else
             options[key] = attrs[key];
         }
@@ -31,7 +29,10 @@ ngMap.provider('Attr2Options', function() {
         for(var key in attrs) {
           if (key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
             continue;
+          } else if (key.match(/ControlOptions$/)) { // skip controlOptions
+            continue
           }
+
           var val = attrs[key];
           try { // 1. Number?
             var num = Number(val);
@@ -95,7 +96,56 @@ ngMap.provider('Attr2Options', function() {
         }
         return events;
       }
-    
-    };
-  };
+
+      // control means map controls, i.e streetview, pan, etc, not a general control
+      this.getControlOptions = function(filtered) {
+        var controlOptions = {};
+
+        for (var attr in filtered) {
+          if (!attr.match(/(.*)ControlOptions$/)) { 
+            continue; // if not controlOptions, skip it
+          }
+
+          //change invalid json to valid one, i.e. {foo:1} to {"foo": 1}
+          var orgValue = filtered[attr];
+          var newValue = orgValue.replace(/'/g, '"');
+          newValue = newValue.replace(/([^"]+)|("[^"]+")/g, function($0, $1, $2) {
+            if ($1) {
+                return $1.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+            } else {
+                return $2; 
+            } 
+          });
+          try {
+            var options = JSON.parse(newValue);
+            for (var key in options) { //assign the right values
+              var value = options[key];
+              if (typeof value  == 'string') {
+                var value = value.toUpperCase();
+              } else if (key == "mapTypeIds") {
+                var value = value.map(function(str) {
+                  return google.maps.MapTypeId[str.toUpperCase()];
+                });
+              } 
+              
+              if (key == "style") {
+                var str = attr.charAt(0).toUpperCase() + attr.slice(1);
+                var objName = str.replace(/Options$/,'')+"Style";
+                options[key] = google.maps[objName][value];
+              } else if (key == "position") {
+                options[key] = google.maps.ControlPosition[value];
+              } else {
+                options[key] = value;
+              }
+            }
+            controlOptions[attr] = options;
+          } catch (e) {
+            console.error('invald option for', attr, newValue, e, e.stack);
+          }
+        } // for
+
+        return controlOptions;
+      } // function
+    }; // return
+  } // $.get
 });

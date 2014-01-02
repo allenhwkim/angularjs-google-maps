@@ -18,7 +18,7 @@ To Get Started
 
     `<html ng-app="ngMap">`
 
- 2. use `map` tag, and optionally, `control`, `marker`, and `shape` tags  
+ 2. use `map` tag, and optionally, `marker`, and `shape` tags  
  
     <pre>
     &lt;map style="display:block;height:300px" />  
@@ -50,18 +50,16 @@ You will also have these three scope variables after these directives are initia
 
 Directives
 -----------
-There are four directives defined with ng-map module.
+There are three directives defined with ng-map module.
   1. map
   2. marker
   3. shape
-  4. control
 
 #### **map** Tag(Directive) ####
 
 
 [As documented](https://developers.google.com/maps/documentation/javascript/reference#MapOptions),
-it requires minimum two options, center and zoom. You can specify all map options as attributes
-except control-related ones. Those are seperately handled by control directives and will be safely ignored.
+it requires minimum two options, center and zoom. You can specify all map options as attributes.
 
 These are attributes of map tag
 
@@ -89,6 +87,16 @@ These are attributes of map tag
 <tr><td>EVENTS     <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
    <br/> i.e. on-click="myfunc"
 </table>
+
+These are full list of controls that can be used as map attributes;
+
+  * [overviewMap](https://developers.google.com/maps/documentation/javascript/reference#OverviewMapControlOptions)
+  * [pan](https://developers.google.com/maps/documentation/javascript/reference#PanControlOptions)
+  * [rotate](https://developers.google.com/maps/documentation/javascript/reference#RotateControlOptions)
+  * [scale](https://developers.google.com/maps/documentation/javascript/reference#ScaleControlOptions)
+  * [streetView](https://developers.google.com/maps/documentation/javascript/reference#StreetViewControlOptions)
+  * [zoom](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
+  * [mapType](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
 
 
 #### **marker** Tag(Directive) ####
@@ -141,25 +149,4 @@ To see the full list of options of a shape for attributes, please visit the docu
   * [polyline](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
   * [image](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)
   * [circle](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)
-
-#### **control** Tag(Directive) ####
-
-  control tag always requires `name` attribute and optionally `enabled`.
-  All other attributes are based on the `name` you specified.
-
-  `<control name="maptype" attributes>`
-
-  * name (the name of the control)  
-    i.e. `mapType`, `overviewMap`, `pan`, `rotate`, `scale`, `streetView`, or `zoom`
-  * enabled (default true)
-
-To see the full list of options to be used as attributes, please visit;
-
-  * [overviewMap](https://developers.google.com/maps/documentation/javascript/reference#OverviewMapControlOptions)
-  * [pan](https://developers.google.com/maps/documentation/javascript/reference#PanControlOptions)
-  * [rotate](https://developers.google.com/maps/documentation/javascript/reference#RotateControlOptions)
-  * [scale](https://developers.google.com/maps/documentation/javascript/reference#ScaleControlOptions)
-  * [streetView](https://developers.google.com/maps/documentation/javascript/reference#StreetViewControlOptions)
-  * [zoom](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
-  * [mapType](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
 
