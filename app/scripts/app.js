@@ -1,1 +1,1 @@
-var ngMap = angular.module('ngMap', ['ngResource']);  //map directives
+var ngMap = angular.module('ngMap', []);  //map directives
