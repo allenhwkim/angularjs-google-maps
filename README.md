@@ -41,6 +41,12 @@ Examples
 To use it in your app, please include 'ngMap' as dependency to your app.
 
    `var myApp = angular.module('myApp', ['ngMap']); `
+   
+You will also have these three scope variables after these directives are initialized.
+
+    * $scope.map
+    * $scope.markers as a hash
+    * $scope.shapes as a hash
 
 Directives
 -----------
@@ -61,25 +67,25 @@ These are attributes of map tag
 
 <table>
 <tr><th>Attributes<th>Description                                     
-<tr><td>backgroundColor <td>
+<tr><td>backgroundColor <td> i.e. 'yellow', 'red'
 <tr><td>center<td>address or latitude/langitude<br/>   
                   i.e. center="[40.79,-54,18]", center="toronto, canada"
-<tr><td>disableDefaultUI <td>
-<tr><td>disableDoubleClickZoom <td>
-<tr><td>draggable           <td>
-<tr><td>draggableCursor     <td>
-<tr><td>draggingCursor      <td>
-<tr><td>heading             <td>
-<tr><td>keyboardShortcuts   <td>
-<tr><td>mapMaker            <td>
+<tr><td>disableDefaultUI <td> true or false
+<tr><td>disableDoubleClickZoom <td> true of false 
+<tr><td>draggable           <td> true of false
+<tr><td>draggableCursor     <td> i.e. pointer
+<tr><td>draggingCursor      <td> i.e. hand
+<tr><td>heading             <td> The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
+<tr><td>keyboardShortcuts   <td> true or false
+<tr><td>mapMaker            <td> true or false
 <tr><td>mapTypeId  <td> i.e. mapTypeId="HYBRID"
-<tr><td>maxZoom             <td>
-<tr><td>minZoom             <td>
-<tr><td>noClear             <td>
-<tr><td>scrollwheel         <td>
+<tr><td>maxZoom             <td> number, i.e. 12, 13
+<tr><td>minZoom             <td> numer, i.e. 4, 5
+<tr><td>noClear             <td> true or false
+<tr><td>scrollwheel         <td> true or false
 <tr><td>streetView <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
 <tr><td>styles     <td>i.e. styles='{featureType: "poi"}'
-<tr><td>zoom       <td>
+<tr><td>zoom       <td> initial map zoom level, required. i.e. 12
 <tr><td>EVENTS     <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
    <br/> i.e. on-click="myfunc"
 </table>
@@ -94,24 +100,25 @@ These are attributes of marker tag
 
 <table>
 <tr><th>Attribute<th>Description
-  <tr><td> anchorPoint <td>
-  <tr><td> animation <td>
-  <tr><td> clickable <td>
-  <tr><td> crossOnDrag <td>
-  <tr><td> cursor <td>
-  <tr><td> draggable <td>
-  <tr><td> flat <td>
-  <tr><td> icon <td>
-  <tr><td> optimized <td>
+  <tr><td> id <td> Used for programming purpose. i.e. $scope.markers.myId
+  <tr><td> anchorPoint <td> i.e. Point(x:number, y:number)
+  <tr><td> animation <td> i.e. Animation.Bounce, Animation.Drop
+  <tr><td> clickable <td> true or false
+  <tr><td> crossOnDrag <td> true or false
+  <tr><td> cursor <td> Mouse cursor to show on hover
+  <tr><td> draggable <td> true or false
+  <tr><td> flat <td> not to show shadow, true or false
+  <tr><td> icon <td> icon for the foreground
+  <tr><td> optimized <td> true or false, to show markers as canvas tag or not
   <tr><td> position   <td>
     'current', address, or latitude/longitude  <br/>
     i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
-  <tr><td> raiseOnDrag  <td>
-  <tr><td> shadow <td>
-  <tr><td> shape <td>
-  <tr><td> title <td>
-  <tr><td> visible <td>
-  <tr><td> zIndex <td>
+  <tr><td> raiseOnDrag  <td> true or false
+  <tr><td> shadow <td> shadow image
+  <tr><td> shape <td> Image map region definition used for drag/click.
+  <tr><td> title <td> hover text
+  <tr><td> visible <td> true or false
+  <tr><td> zIndex <td> number
   <tr><td> EVENTS <td>
     You can also specify any [marker events](https://developers.google.com/maps/documentation/javascript/reference#Marker) as an attribute.  
     i.e. on-click="myfunc"
@@ -123,6 +130,9 @@ These are attributes of marker tag
   
   * name (the name of shape)  
     i.e. `polygon`, `image`, `polyline`, or `circle`.
+
+  * optionally, you can provide `id` for programming purpose. i.e. $scope.shapes.myCircle
+
 
 All other attributes are based on the `name` you specified.  
 To see the full list of options of a shape for attributes, please visit the documentation.
