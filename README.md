@@ -98,6 +98,8 @@ These are full list of controls that can be used as map attributes;
   * [zoom](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
   * [mapType](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
 
+For usage of map controls, please refer to [this example](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_control.html).
+
 
 #### **marker** Tag(Directive) ####
 
