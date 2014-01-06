@@ -18,22 +18,24 @@
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 END : ng-map.js -->
+<script id="my-script">
+  function MyCtrl($scope) {
+    $scope.positions =[ [40.71, -74.21], [40.72, -74.20], [40.73, -74.19],
+      [40.74, -74.18], [40.75, -74.17], [40.76, -74.16], [40.77, -74.15]];
+  }
+</script>
 </head>
 
 <body>
-  <div id="my-html" style="height:100%">
+  <div id="my-html" style="height:100%" ng-controller="MyCtrl">
     <map zoom="11" center="[40.74, -74.18]">
-      <marker position="[40.71, -74.21]" title="hello"></marker>
-      <marker position="[40.72, -74.20]" title="marker" animation="Animation.DROP"></marker>
-      <marker position="[40.73, -74.19]" title="drag me" draggable="true"></marker>
-      <marker position="[40.74, -74.18]" title="how" animation="Animation.BOUNCE"></marker>
-      <marker position="[40.75, -74.17]" title="are"></marker>
-      <marker position="[40.76, -74.16]" title="you" icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"></marker>
-      <marker position="[40.77, -74.15]" title="from"></marker>
-      <marker position="[40.78, -74.14]" title="allen" centered="true"></marker>
+      <marker ng-repeat="p in positions" position="{{p}}" title="{{p.toString()}}"></marker>
     </map>
   </div>
 
+  Scripts
+  <pre><script>document.write(document.getElementById("my-script").innerHTML.replace(/</g, '&lt;'))</script></pre>
+  HTML
   <pre><script>document.write(document.getElementById("my-html").innerHTML.replace(/</g, '&lt;'))</script></pre>
 </body>
 </html>
