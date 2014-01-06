@@ -116,9 +116,6 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         ctrl.initializeMap(scope, element, attrs);
         ctrl.initializeMarkers();
         ctrl.initializeShapes();
-        scope.$watchCollection('markers', function(newVal, oldVal) {
-          console.log('markers are changed', oldVal, newVal);
-        });
       }
     }; // return
   } // function

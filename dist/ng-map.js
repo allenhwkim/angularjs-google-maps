@@ -118,9 +118,6 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         ctrl.initializeMap(scope, element, attrs);
         ctrl.initializeMarkers();
         ctrl.initializeShapes();
-        scope.$watchCollection('markers', function(newVal, oldVal) {
-          console.log('markers are changed', oldVal, newVal);
-        });
       }
     }; // return
   } // function
@@ -157,7 +154,16 @@ ngMap.directive('marker', [ 'Attr2Options', 'GeoCoder', 'NavigatorGeolocation',
 
           console.log("adding marker with options, ", markerOptions);
           var marker = getMarker();
-          mapController.markers.push(marker);
+
+          /**
+           * ng-repeat does not happen while map tag is parsed
+           * so treating it as asynchronous
+           */
+          if (markerOptions.ngRepeat) { 
+            mapController.addMarker(marker);
+          } else {
+            mapController.markers.push(marker);
+          }
         } else if (typeof markerOptions.position == 'string') { //need to get lat/lng
 
           var position = markerOptions.position;
