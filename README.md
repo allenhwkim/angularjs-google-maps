@@ -65,23 +65,23 @@ These are attributes of map tag
 
 <table>
 <tr><th>Attributes<th>Description                                     
-<tr><td>backgroundColor <td> i.e. 'yellow', 'red'
+<tr><td>background-color <td> i.e. 'yellow', 'red'
 <tr><td>center<td>address or latitude/langitude<br/>   
                   i.e. center="[40.79,-54,18]", center="toronto, canada"
-<tr><td>disableDefaultUI <td> true or false
-<tr><td>disableDoubleClickZoom <td> true of false 
+<tr><td>disable-default-u-i <td> true or false
+<tr><td>disable-double-click-zoom <td> true of false 
 <tr><td>draggable           <td> true of false
-<tr><td>draggableCursor     <td> i.e. pointer
-<tr><td>draggingCursor      <td> i.e. hand
+<tr><td>draggable-cursor     <td> i.e. pointer
+<tr><td>dragging-cursor      <td> i.e. hand
 <tr><td>heading             <td> The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
-<tr><td>keyboardShortcuts   <td> true or false
-<tr><td>mapMaker            <td> true or false
-<tr><td>mapTypeId  <td> i.e. mapTypeId="HYBRID"
-<tr><td>maxZoom             <td> number, i.e. 12, 13
-<tr><td>minZoom             <td> numer, i.e. 4, 5
-<tr><td>noClear             <td> true or false
+<tr><td>keyboard-shortcuts   <td> true or false
+<tr><td>map-maker            <td> true or false
+<tr><td>map-type-id  <td> i.e. mapTypeId="HYBRID"
+<tr><td>max-zoom             <td> number, i.e. 12, 13
+<tr><td>min-zoom             <td> numer, i.e. 4, 5
+<tr><td>no-clear             <td> true or false
 <tr><td>scrollwheel         <td> true or false
-<tr><td>streetView <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
+<tr><td>street-view <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
 <tr><td>styles     <td>i.e. styles='{featureType: "poi"}'
 <tr><td>zoom       <td> initial map zoom level, required. i.e. 12
 <tr><td>EVENTS     <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
@@ -111,10 +111,10 @@ These are attributes of marker tag
 <table>
 <tr><th>Attribute<th>Description
   <tr><td> id <td> Used for programming purpose. i.e. $scope.markers.myId
-  <tr><td> anchorPoint <td> i.e. Point(x:number, y:number)
+  <tr><td> anchor-point <td> i.e. Point(x:number, y:number)
   <tr><td> animation <td> i.e. Animation.Bounce, Animation.Drop
   <tr><td> clickable <td> true or false
-  <tr><td> crossOnDrag <td> true or false
+  <tr><td> cross-on-drag <td> true or false
   <tr><td> cursor <td> Mouse cursor to show on hover
   <tr><td> draggable <td> true or false
   <tr><td> flat <td> not to show shadow, true or false
@@ -123,7 +123,7 @@ These are attributes of marker tag
   <tr><td> position   <td>
     'current', address, or latitude/longitude  <br/>
     i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
-  <tr><td> raiseOnDrag  <td> true or false
+  <tr><td> raise-on-drag  <td> true or false
   <tr><td> shadow <td> shadow image
   <tr><td> shape <td> Image map region definition used for drag/click.
   <tr><td> title <td> hover text
