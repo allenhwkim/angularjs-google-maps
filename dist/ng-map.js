@@ -1,148 +1,5 @@
 var ngMap = angular.module('ngMap', []);  //map directives
 
-ngMap.directive('control', ['Attr2Options', function(Attr2Options) {
-  var parser = new Attr2Options();
-  
-  var optionBuilders = {
-    "mapType": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'mapTypeIds':
-              var ids = attrs[key].match(/\[?([A-Z,\ ]+)\]?/)[1].split(",");
-              ids = ids.map(function(id) {
-                var constant = id.replace(/\s+/g,'').toUpperCase();
-                return google.maps.MapTypeId[id.replace(/\s+/g, '')];
-              });
-              options[key] = ids;
-              break;
-            case 'position':
-              options[key] = google.maps.ControlPosition[attrs[key].toUpperCase()];
-              break;
-            case 'style':
-              options[key] = google.maps.MapTypeControlStyle[attrs[key].toUpperCase()];
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      },
-    "overviewMap": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'opened':
-              options[key] = (attrs[key] == "true" || attrs[key] == "1");
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      },
-    "pan": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'position':
-              options[key] = google.maps.ControlPosition[attrs[key].toUpperCase()];
-              break;
-            case 'style':
-              options[key] = google.maps.ScaleControlStyle[attrs[key].toUpperCase()];
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      },    
-    "streetView": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'position':
-              options[key] = google.maps.ControlPosition[attrs[key].toUpperCase()];
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      },
-    "zoom": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'position':
-              options[key] = google.maps.ControlPosition[attrs[key].toUpperCase()];
-              break;
-            case 'style':
-              options[key] = google.maps.ZoomControlStyle[attrs[key].toUpperCase()];
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      },
-    "rotate": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'position':
-              options[key] = google.maps.ControlPosition[attrs[key].toUpperCase()];
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      },
-    "scale": function(attrs) {
-        var options = {};
-        for (var key in attrs) {
-          switch(key) {
-            case 'position':
-              options[key] = google.maps.ControlPosition[attrs[key].toUpperCase()];
-              break;
-            case 'style':
-              options[key] = google.maps.ScaleControlStyle[attrs[key].toUpperCase()];
-              break;
-            default:
-              options[key] = attrs[key];
-              break;
-          }
-        }
-        return options;
-      }
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
-      var filtered = new parser.filter(attrs);
-      var controlName = filtered.name;
-      delete filtered.name;  //remove name bcoz it's not for options
-      
-      optionBuilder = optionBuilders[controlName];
-      if (optionBuilder) {
-        var controlOptions = optionBuilder(filtered);
-        mapController.controls[controlName] = controlOptions;
-      } else {
-        console.error(controlName, "does not have option builder");
-      }
-    }
-  };
-}]);
-
 ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder',
   function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder) {
     var parser = new Attr2Options();
@@ -161,6 +18,11 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         this.initializeMap = function(scope, element, attrs) {
           var filtered = parser.filter(attrs);
           var mapOptions = parser.getOptions(filtered);
+          var controlOptions = parser.getControlOptions(filtered);
+          for (key in controlOptions) {
+            mapOptions[key] = controlOptions[key];
+          }
+
           var _this = this;
 
           if (!mapOptions.zoom) {
@@ -181,7 +43,13 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           }
           
           console.log("mapOptions", mapOptions);
-          _this.map = new google.maps.Map(element[0], mapOptions);
+          // create a new div for map portion, so it does not touch map element at all.
+          // http://stackoverflow.com/questions/20955356
+          var el = document.createElement("div");
+          el.style.width = "100%";
+          el.style.height = "100%";
+          element.prepend(el);
+          _this.map = new google.maps.Map(el, mapOptions);
 
           if (typeof savedCenter == 'string') { //address
             GeoCoder.geocode({address: savedCenter})
@@ -405,13 +273,11 @@ ngMap.provider('Attr2Options', function() {
       /**
        * filtering attributes  
        *  1. skip all angularjs methods $.. $$..
-       *  2. all control related ones(this is handled by control directive)
        */
       this.filter = function(attrs) {
         var options = {};
         for(var key in attrs) {
           if (key.match(/^\$/));
-          else if (key.match(/Control(Options)?$/)) ;
           else
             options[key] = attrs[key];
         }
@@ -426,7 +292,10 @@ ngMap.provider('Attr2Options', function() {
         for(var key in attrs) {
           if (key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
             continue;
+          } else if (key.match(/ControlOptions$/)) { // skip controlOptions
+            continue
           }
+
           var val = attrs[key];
           try { // 1. Number?
             var num = Number(val);
@@ -490,9 +359,58 @@ ngMap.provider('Attr2Options', function() {
         }
         return events;
       }
-    
-    };
-  };
+
+      // control means map controls, i.e streetview, pan, etc, not a general control
+      this.getControlOptions = function(filtered) {
+        var controlOptions = {};
+
+        for (var attr in filtered) {
+          if (!attr.match(/(.*)ControlOptions$/)) { 
+            continue; // if not controlOptions, skip it
+          }
+
+          //change invalid json to valid one, i.e. {foo:1} to {"foo": 1}
+          var orgValue = filtered[attr];
+          var newValue = orgValue.replace(/'/g, '"');
+          newValue = newValue.replace(/([^"]+)|("[^"]+")/g, function($0, $1, $2) {
+            if ($1) {
+                return $1.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+            } else {
+                return $2; 
+            } 
+          });
+          try {
+            var options = JSON.parse(newValue);
+            for (var key in options) { //assign the right values
+              var value = options[key];
+              if (typeof value  == 'string') {
+                var value = value.toUpperCase();
+              } else if (key == "mapTypeIds") {
+                var value = value.map(function(str) {
+                  return google.maps.MapTypeId[str.toUpperCase()];
+                });
+              } 
+              
+              if (key == "style") {
+                var str = attr.charAt(0).toUpperCase() + attr.slice(1);
+                var objName = str.replace(/Options$/,'')+"Style";
+                options[key] = google.maps[objName][value];
+              } else if (key == "position") {
+                options[key] = google.maps.ControlPosition[value];
+              } else {
+                options[key] = value;
+              }
+            }
+            controlOptions[attr] = options;
+          } catch (e) {
+            console.error('invald option for', attr, newValue, e, e.stack);
+          }
+        } // for
+
+        return controlOptions;
+      } // function
+    }; // return
+  } // $.get
 });
 
 ngMap.service('GeoCoder', ['$q', function($q) {

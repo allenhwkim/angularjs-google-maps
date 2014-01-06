@@ -41,7 +41,13 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           }
           
           console.log("mapOptions", mapOptions);
-          _this.map = new google.maps.Map(element[0], mapOptions);
+          // create a new div for map portion, so it does not touch map element at all.
+          // http://stackoverflow.com/questions/20955356
+          var el = document.createElement("div");
+          el.style.width = "100%";
+          el.style.height = "100%";
+          element.prepend(el);
+          _this.map = new google.maps.Map(el, mapOptions);
 
           if (typeof savedCenter == 'string') { //address
             GeoCoder.geocode({address: savedCenter})
