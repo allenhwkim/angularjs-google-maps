@@ -34,6 +34,16 @@ END : ng-map.js -->
     </map>
   </div>
 
-  <pre><script>document.write(document.getElementById("my-html").innerHTML.replace(/</g, '&lt;'))</script></pre>
+  <pre>
+    &lt;map zoom="11" center="[40.74, -74.18]">
+      &lt;marker position="[40.71, -74.21]" on-click="showInfoWindow('marker-info')">&lt;/marker>
+      &lt;marker position="[40.72, -74.20]" on-click="showInfoWindow('marker-info')">&lt;/marker>
+      &lt;marker position="[40.73, -74.19]" on-mouseover="showInfoWindow('marker-info')">&lt;/marker>
+      &lt;info-window id="marker-info">
+        &lt;h1> I am an InfoWindow &lt;/h1>
+        I am here at { { mapEventTarget.getPosition() } }
+      &lt;/info-window>
+    &lt;/map>
+  </pre>
 </body>
 </html>
