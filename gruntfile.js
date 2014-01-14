@@ -29,7 +29,7 @@ module.exports = function (grunt) {
     connect: {
       all : {
         options: {
-          port: 9000,
+          port: 9001,
           middleware: function(connect, options) {
             return [
               require('connect-livereload')({

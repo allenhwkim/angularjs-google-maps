@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style>
+  map, div[map] {display:block; width:600px; height:400px;}
+  pre {margin:0px} h3{margin-bottom:0px}
+</style>
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<!-- START : ng-map.js 
+<script src="../dist/ng-map.js"></script>
+END : ng-map.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/info_window.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/providers/providers.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+</head>
+
+<body>
+  <div id="my-html" style="height:100%">
+    <map zoom="11" center="[40.74, -74.18]">
+      <marker position="[40.71, -74.21]" on-click="showInfoWindow('marker-info')"></marker>
+      <marker position="[40.72, -74.20]" on-click="showInfoWindow('marker-info')"></marker>
+      <marker position="[40.73, -74.19]" on-mouseover="showInfoWindow('marker-info')"></marker>
+      <info-window id="marker-info">
+        <h1> I am an InfoWindow </h1>
+        I am here at {{mapEventTarget.getPosition()}}
+      </info-window>
+    </map>
+  </div>
+
+  <pre><script>document.write(document.getElementById("my-html").innerHTML.replace(/</g, '&lt;'))</script></pre>
+</body>
+</html>

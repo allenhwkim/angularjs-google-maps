@@ -85,13 +85,10 @@ ngMap.provider('Attr2Options', function() {
             return "_"+$1.toLowerCase();
           });
 
-          var funcName = attrs[key].replace(/\(.*\)/,'');
-          var func = scope.$eval(funcName);
-          if (func instanceof Function) {
-            events[eventName] = func;
-          } else {
-            var safeJs = attrs[key].replace(/[\n\r\;]/g,'');
-            events[eventName] = function(event) { eval(safeJs) }
+          events[eventName] = function(event) { 
+            scope.mapEvent  = event;
+            scope.mapEventTarget = this;
+            scope.$eval(attrs[key]);
           }
         }
         return events;

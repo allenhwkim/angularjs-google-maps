@@ -1,5 +1,5 @@
-ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder',
-  function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder) {
+ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile',
+  function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
     var parser = new Attr2Options();
 
     return {
@@ -9,6 +9,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         this.controls = {};
         this.markers = [];
         this.shapes = [];
+        this.infoWindows = [];
 
         /**
          * Initialize map and events
@@ -111,11 +112,33 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           }
         };
 
+        /**
+         * Initialize infoWindows for this map
+         */
+        this.initializeInfoWindows = function() {
+          $scope.infoWindows = {};
+          for (var i=0; i<this.infoWindows.length; i++) {
+            var obj = this.infoWindows[i];
+            $scope.infoWindows[obj.id || (i+1) ] = obj; 
+          }
+        };
       }],
       link: function (scope, element, attrs, ctrl) {
         ctrl.initializeMap(scope, element, attrs);
         ctrl.initializeMarkers();
         ctrl.initializeShapes();
+        ctrl.initializeInfoWindows();
+        scope.showInfoWindow = function(id, options) {
+          var infoWindow = scope.infoWindows[id];
+          var contents = infoWindow.contents;
+          var matches = contents.match(/{{[^}]+}}/g)
+          for(var i=0, length=matches.length; i<length; i++) {
+            var expression = matches[i].replace(/{{/,'').replace(/}}/,'');
+            contents = contents.replace(matches[i], scope.$eval(expression));
+          }
+          infoWindow.setContent(contents);
+          infoWindow.open(scope.map, scope.mapEventTarget);
+        }
       }
     }; // return
   } // function
