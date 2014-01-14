@@ -1,7 +1,45 @@
 var ngMap = angular.module('ngMap', []);  //map directives
 
-ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder',
-  function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder) {
+ngMap.directive('infoWindow', [ 'Attr2Options', 
+  function(Attr2Options) {
+    var parser = new Attr2Options();
+
+    return {
+      restrict: 'E',
+      require: '^map',
+      link: function(scope, element, attrs, mapController) {
+        var filtered = new parser.filter(attrs);
+
+        /*
+         * set infoWindow options
+         */
+        var options = parser.getOptions(filtered);
+        if (options.pixelOffset) {
+          options.pixelOffset = google.maps.Size.apply(this, options.pixelOffset);
+        }
+        infoWindow = new google.maps.InfoWindow(options);
+        infoWindow.contents = element.html();
+
+        /*
+         * set infoWindow events
+         */
+        var events = parser.getEvents(scope, filtered);
+        for(var eventName in events) {
+          google.maps.event.addListener(infoWindow, eventName, events[eventname]);
+        }
+
+        // set infoWindows to map controller
+        mapController.infoWindows.push(infoWindow);
+
+        // do NOT show this
+        element.css({display:'none'});
+      } //link
+    } // return
+  } // function
+]);
+
+ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile',
+  function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
     var parser = new Attr2Options();
 
     return {
@@ -11,6 +49,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         this.controls = {};
         this.markers = [];
         this.shapes = [];
+        this.infoWindows = [];
 
         /**
          * Initialize map and events
@@ -113,11 +152,33 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           }
         };
 
+        /**
+         * Initialize infoWindows for this map
+         */
+        this.initializeInfoWindows = function() {
+          $scope.infoWindows = {};
+          for (var i=0; i<this.infoWindows.length; i++) {
+            var obj = this.infoWindows[i];
+            $scope.infoWindows[obj.id || (i+1) ] = obj; 
+          }
+        };
       }],
       link: function (scope, element, attrs, ctrl) {
         ctrl.initializeMap(scope, element, attrs);
         ctrl.initializeMarkers();
         ctrl.initializeShapes();
+        ctrl.initializeInfoWindows();
+        scope.showInfoWindow = function(id, options) {
+          var infoWindow = scope.infoWindows[id];
+          var contents = infoWindow.contents;
+          var matches = contents.match(/{{[^}]+}}/g)
+          for(var i=0, length=matches.length; i<length; i++) {
+            var expression = matches[i].replace(/{{/,'').replace(/}}/,'');
+            contents = contents.replace(matches[i], scope.$eval(expression));
+          }
+          infoWindow.setContent(contents);
+          infoWindow.open(scope.map, scope.mapEventTarget);
+        }
       }
     }; // return
   } // function
@@ -354,13 +415,10 @@ ngMap.provider('Attr2Options', function() {
             return "_"+$1.toLowerCase();
           });
 
-          var funcName = attrs[key].replace(/\(.*\)/,'');
-          var func = scope.$eval(funcName);
-          if (func instanceof Function) {
-            events[eventName] = func;
-          } else {
-            var safeJs = attrs[key].replace(/[\n\r\;]/g,'');
-            events[eventName] = function(event) { eval(safeJs) }
+          events[eventName] = function(event) { 
+            scope.mapEvent  = event;
+            scope.mapEventTarget = this;
+            scope.$eval(attrs[key]);
           }
         }
         return events;
