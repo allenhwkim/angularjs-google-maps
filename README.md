@@ -153,3 +153,8 @@ To see the full list of options of a shape for attributes, please visit the docu
   * [image](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)
   * [circle](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)
 
+
+license
+=======
+[MIT License](https://github.com/allenhwkim/angularjs-google-maps/blob/master/LICENSE)
+
