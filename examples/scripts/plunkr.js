@@ -89,9 +89,6 @@ plunkr.directive('plunkr', function(submitForm) {
       this.css = (el = document.querySelector('#my-css')) && el.innerHTML;
       this.js = (el = document.querySelector('#my-js'))
               &&  el.innerHTML.replace(/,[\ "']+plunkr['"]/,'');
-      console.log('html', this.html);
-      console.log('css', this.css);
-      console.log('js', this.js);
 
       document.querySelector("#html").innerHTML = this.html;
       document.querySelector("#css").innerHTML = this.css;
