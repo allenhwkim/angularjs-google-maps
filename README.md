@@ -10,6 +10,9 @@ However, I found myself doing totally different approach for this purpose than t
   2. Expose the original Google Maps V3 api  
      By doing so, programmers don't need to learn this module.
   
+There is a blog that introduces this module.   
+The title of it is '[Google Map As The Simplest Way](http://allenhwkim.tumblr.com/post/70986888283/google-map-as-the-simplest-way)'
+
 To Get Started
 ---------------
 
