@@ -27,12 +27,12 @@ END : ng-map.js -->
 <body>
   <div id="my-html" style="height:100%">
     <map zoom="11" center="[40.74, -74.18]">
-      <marker position="[40.71, -74.21]" on-click="showInfoWindow('marker-info')"></marker>
-      <marker position="[40.72, -74.20]" on-click="showInfoWindow('marker-info')"></marker>
-      <marker position="[40.73, -74.19]" on-mouseover="showInfoWindow('marker-info')"></marker>
+      <marker position="[40.71, -74.21]" on-click="showInfoWindow(event, 'marker-info')"></marker>
+      <marker position="[40.72, -74.20]" on-click="showInfoWindow(event, 'marker-info')"></marker>
+      <marker position="[40.73, -74.19]" on-mouseover="showInfoWindow(event, 'marker-info')"></marker>
       <info-window id="marker-info">
         <h1> I am an InfoWindow </h1>
-        I am here at [[mapEventTarget.getPosition()]]
+        I am here at [[this.getPosition()]]
       </info-window>
     </map>
   </div>

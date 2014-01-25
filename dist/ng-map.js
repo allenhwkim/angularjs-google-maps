@@ -33,6 +33,21 @@ ngMap.directive('infoWindow', [ 'Attr2Options',
 
         // do NOT show this
         element.css({display:'none'});
+
+        //provide showInfoWindow function to controller
+        scope.showInfoWindow = function(event, id, options) {
+          var infoWindow = scope.infoWindows[id];
+          var contents = infoWindow.contents;
+          var matches = contents.match(/\[\[[^\]]+\]\]/g)
+          if (matches) {
+            for(var i=0, length=matches.length; i<length; i++) {
+              var expression = matches[i].replace(/\[\[/,'').replace(/\]\]/,'');
+              contents = contents.replace(matches[i], eval(expression));
+            }
+          }
+          infoWindow.setContent(contents);
+          infoWindow.open(scope.map, this);
+        }
       } //link
     } // return
   } // function
@@ -168,19 +183,6 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         ctrl.initializeMarkers();
         ctrl.initializeShapes();
         ctrl.initializeInfoWindows();
-        scope.showInfoWindow = function(id, options) {
-          var infoWindow = scope.infoWindows[id];
-          var contents = infoWindow.contents;
-          var matches = contents.match(/\[\[[^\]]+\]\]/g)
-          if (matches) {
-            for(var i=0, length=matches.length; i<length; i++) {
-              var expression = matches[i].replace(/\[\[/,'').replace(/\]\]/,'');
-              contents = contents.replace(matches[i], scope.$eval(expression));
-            }
-          }
-          infoWindow.setContent(contents);
-          infoWindow.open(scope.map, scope.mapEventTarget);
-        }
       }
     }; // return
   } // function
@@ -406,7 +408,7 @@ ngMap.provider('Attr2Options', function() {
       this.getEvents = function(scope, attrs) {
         var events = {};
         for(var key in attrs) {
-          if (!key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
+          if (!key.match(/^on[A-Z]/)) { //skip if not events
             continue;
           }
           
@@ -417,10 +419,13 @@ ngMap.provider('Attr2Options', function() {
             return "_"+$1.toLowerCase();
           });
 
-          events[eventName] = function(event) { 
-            scope.mapEvent  = event;
-            scope.mapEventTarget = this;
-            scope.$eval(attrs[key]);
+          events[eventName] = function(event) {
+            var matches = attrs[key].match(/([^\(]+)\(([^\)]*)\)/);
+            var funcName = matches[1];
+            var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
+            
+            args = scope.$eval("["+argsStr+"]");
+            scope[funcName].apply(this, [event].concat(args));
           }
         }
         return events;

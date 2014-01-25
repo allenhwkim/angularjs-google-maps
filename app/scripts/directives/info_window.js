@@ -31,6 +31,21 @@ ngMap.directive('infoWindow', [ 'Attr2Options',
 
         // do NOT show this
         element.css({display:'none'});
+
+        //provide showInfoWindow function to controller
+        scope.showInfoWindow = function(event, id, options) {
+          var infoWindow = scope.infoWindows[id];
+          var contents = infoWindow.contents;
+          var matches = contents.match(/\[\[[^\]]+\]\]/g)
+          if (matches) {
+            for(var i=0, length=matches.length; i<length; i++) {
+              var expression = matches[i].replace(/\[\[/,'').replace(/\]\]/,'');
+              contents = contents.replace(matches[i], eval(expression));
+            }
+          }
+          infoWindow.setContent(contents);
+          infoWindow.open(scope.map, this);
+        }
       } //link
     } // return
   } // function

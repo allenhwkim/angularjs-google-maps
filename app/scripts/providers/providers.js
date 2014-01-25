@@ -74,7 +74,7 @@ ngMap.provider('Attr2Options', function() {
       this.getEvents = function(scope, attrs) {
         var events = {};
         for(var key in attrs) {
-          if (!key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
+          if (!key.match(/^on[A-Z]/)) { //skip if not events
             continue;
           }
           
@@ -85,10 +85,13 @@ ngMap.provider('Attr2Options', function() {
             return "_"+$1.toLowerCase();
           });
 
-          events[eventName] = function(event) { 
-            scope.mapEvent  = event;
-            scope.mapEventTarget = this;
-            scope.$eval(attrs[key]);
+          events[eventName] = function(event) {
+            var matches = attrs[key].match(/([^\(]+)\(([^\)]*)\)/);
+            var funcName = matches[1];
+            var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
+            
+            args = scope.$eval("["+argsStr+"]");
+            scope[funcName].apply(this, [event].concat(args));
           }
         }
         return events;

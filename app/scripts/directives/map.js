@@ -128,19 +128,6 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         ctrl.initializeMarkers();
         ctrl.initializeShapes();
         ctrl.initializeInfoWindows();
-        scope.showInfoWindow = function(id, options) {
-          var infoWindow = scope.infoWindows[id];
-          var contents = infoWindow.contents;
-          var matches = contents.match(/\[\[[^\]]+\]\]/g)
-          if (matches) {
-            for(var i=0, length=matches.length; i<length; i++) {
-              var expression = matches[i].replace(/\[\[/,'').replace(/\]\]/,'');
-              contents = contents.replace(matches[i], scope.$eval(expression));
-            }
-          }
-          infoWindow.setContent(contents);
-          infoWindow.open(scope.map, scope.mapEventTarget);
-        }
       }
     }; // return
   } // function

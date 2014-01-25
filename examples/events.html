@@ -9,8 +9,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
 <script src="scripts/plunkr.js"></script>
 <link rel="stylesheet" href="css/styles.css"></script>
-<script src="../dist/ng-map.min.js"></script>
 <!-- START : ng-map.js 
+<script src="../dist/ng-map.min.js"></script>
+END : ng-map.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map.js"></script>
 <script src="../app/scripts/directives/marker.js"></script>
@@ -18,20 +19,19 @@
 <script src="../app/scripts/providers/providers.js"></script>
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
-END : ng-map.js -->
 <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']); 
   app.controller('MyController', ['$scope', function($scope) {
     $scope.latlng = [40.741, -74.181];
     $scope.radius = 3500;
-    $scope.getRadius = function() {
-      alert('this circle has radius ' + $scope.mapEventTarget.getRadius());
+    $scope.getRadius = function(event) {
+      alert('this circle has radius ' + this.getRadius());
     }
-    $scope.setCenter = function() {
-      $scope.mapEventTarget.setCenter($scope.mapEvent.latLng);
+    $scope.setCenter = function(event) {
+      this.setCenter(event.latLng);
     }
-    $scope.foo = function(arg1, arg2) {
-      alert('this is at '+$scope.mapEventTarget.getPosition());
+    $scope.foo = function(event, arg1, arg2) {
+      alert('this is at '+ this.getPosition());
       alert(arg1+arg2);
     }
   }]);
