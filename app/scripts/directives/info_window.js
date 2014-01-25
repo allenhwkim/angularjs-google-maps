@@ -40,7 +40,12 @@ ngMap.directive('infoWindow', [ 'Attr2Options',
           if (matches) {
             for(var i=0, length=matches.length; i<length; i++) {
               var expression = matches[i].replace(/\[\[/,'').replace(/\]\]/,'');
-              contents = contents.replace(matches[i], eval(expression));
+              try {
+                contents = contents.replace(matches[i], eval(expression));
+              } catch(e) {
+                expression = "options."+expression;
+                contents = contents.replace(matches[i], eval(expression));
+              }
             }
           }
           infoWindow.setContent(contents);
