@@ -17,12 +17,16 @@ To Get Started
 ---------------
 
  1. include ng-map.js or ng-map.min.js and ngMap module to be active. 
- 
-    &lt;script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    &lt;script src="http://code.angularjs.org/1.2.5/angular.js"></script>
-    &lt;script src="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"></script>
+    
+  <pre>
+  &lt;script src="http://maps.google.com/maps/api/js?sensor=false">&lt;/script>
+  &lt;script src="http://code.angularjs.org/1.2.5/angular.js">&lt;/script>
+  &lt;script src="http://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js">&lt;/script>
+  </pre>
 
- 2. name angular app as ngMap, or add it as a dependency 
+
+ 2. name angular app as ngMap, or add it as a dependency   
+ 
     `<html ng-app="ngMap">`
 
  3. use `map` tag, and optionally, `marker`, and `shape` tags  
