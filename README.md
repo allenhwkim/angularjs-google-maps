@@ -18,9 +18,9 @@ To Get Started
 
  1. include ng-map.js or ng-map.min.js and ngMap module to be active. 
  
-    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script src="http://code.angularjs.org/1.2.5/angular.js"></script>
-    <script src="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"></script>
+    &lt;script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    &lt;script src="http://code.angularjs.org/1.2.5/angular.js"></script>
+    &lt;script src="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"></script>
 
  2. name angular app as ngMap, or add it as a dependency 
     `<html ng-app="ngMap">`
@@ -71,7 +71,7 @@ There are three directives defined with ng-map module.
 [As documented](https://developers.google.com/maps/documentation/javascript/reference#MapOptions),
 it requires minimum two options, center and zoom. You can specify all map options as attributes.
 
-These are attributes of map tag
+These are attributes of map tag which is EXACTLY the same as the documentation.
 
 <table>
 <tr><th>Attributes<th>Description                                     
@@ -98,7 +98,7 @@ These are attributes of map tag
    <br/> i.e. on-click="myfunc"
 </table>
 
-These are full list of controls that can be used as map attributes;
+These are full list of controls that can be used as map attributes; 
 
   * [overviewMap](https://developers.google.com/maps/documentation/javascript/reference#OverviewMapControlOptions)
   * [pan](https://developers.google.com/maps/documentation/javascript/reference#PanControlOptions)
@@ -116,7 +116,8 @@ For usage of map controls, please refer to [this example](https://rawgithub.com/
 [As documented](https://developers.google.com/maps/documentation/javascript/reference#Marker), it reqires `position` as an attribute.
 You can list any [maker options](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions) as attribute of marker tag
 
-These are attributes of marker tag
+These are attributes of marker tag which ate EXACTLY the same as the documentation.
+
 
 <table>
 <tr><th>Attribute<th>Description
