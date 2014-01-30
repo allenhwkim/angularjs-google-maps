@@ -16,12 +16,16 @@ The title of it is '[Google Map As The Simplest Way](http://allenhwkim.tumblr.co
 To Get Started
 ---------------
 
- 1. include ng-map.js or ng-map.min.js and ngMap module to be active.
-    `<script src="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"></script>`
+ 1. include ng-map.js or ng-map.min.js and ngMap module to be active. 
+ 
+    <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="http://code.angularjs.org/1.2.5/angular.js"></script>
+    <script src="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"></script>
 
+ 2. name angular app as ngMap, or add it as a dependency 
     `<html ng-app="ngMap">`
 
- 2. use `map` tag, and optionally, `marker`, and `shape` tags  
+ 3. use `map` tag, and optionally, `marker`, and `shape` tags  
  
     <pre>
     &lt;map style="display:block;height:300px" />  
@@ -42,10 +46,12 @@ Examples
   * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/multiple_maps_on_a_page.html)
   * [Index of Examples](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/index.html)
 
-To use it in your app, please include 'ngMap' as dependency to your app.
+To use it in your app, please include 'ngMap' as dependency.
 
    `var myApp = angular.module('myApp', ['ngMap']); `
-   
+   `<html ng-app="myApp">`
+
+
 You will also have these three scope variables after these directives are initialized.
 
     * $scope.map
