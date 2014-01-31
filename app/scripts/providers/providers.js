@@ -85,8 +85,9 @@ ngMap.provider('Attr2Options', function() {
             return "_"+$1.toLowerCase();
           });
 
+	  var attrValue = attrs[key];
           events[eventName] = function(event) {
-            var matches = attrs[key].match(/([^\(]+)\(([^\)]*)\)/);
+            var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
             var funcName = matches[1];
             var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
             

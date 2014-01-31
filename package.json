@@ -17,6 +17,7 @@
     "grunt-bump": "~0.0.13",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-connect": "~0.6.0",
-    "connect-livereload": "~0.3.1"
+    "connect-livereload": "~0.3.1",
+    "matchdep": "~0.3.0"
   }
 }

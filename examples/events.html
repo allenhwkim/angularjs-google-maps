@@ -47,7 +47,8 @@ END : ng-map.js -->
       <br/>
       <br/>
       <map zoom="11" center="{{latlng}}" 
-          on-click="setCenter()">
+          on-click="setCenter()"
+	  tilt="0">
         <marker position="[40.79, -74.20]" 
           on-click="foo(2,3)"></marker>
         <shape name="circle" stroke-color='#FF0000' stroke-weight="2" 
