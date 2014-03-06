@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "dependencies": {},
   "engines": {
     "node": ">=0.8.0"
