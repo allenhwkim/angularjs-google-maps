@@ -267,227 +267,247 @@ ngMap.directive('marker', [ 'Attr2Options', 'GeoCoder', 'NavigatorGeolocation',
   } // function
 ]);
 
+/* global ngMap */
+/* global google */
 ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
-  var parser = new Attr2Options();
-  
-  var getPoints = function(array) { // return latitude && longitude points
-    if (array[0] && array[0] instanceof Array) { // [[1,2],[3,4]] 
-      return array.map(function(el) {
-        return new google.maps.LatLng(el[0], el[1]);
-      });
-    } else {
-      return new google.maps.LatLng(array[0],array[1]);      
-    }
-  };
-  
-  var getBounds = function(array) {
-    var points = getPoints(array);
-    return new google.maps.LatLngBounds(points[0], points[1]);
-  };
-  
-  var getShape = function(shapeName, options) {
-    switch(shapeName) {
-      case "circle":
-        options.center = getPoints(options.center);
-        return new google.maps.Circle(options);
-      case "polygon":
-        options.paths = getPoints(options.paths);
-        return new google.maps.Polygon(options);
-      case "polyline": 
-        options.path = getPoints(options.path);
-        return new google.maps.Polyline(options);
-      case "rectangle": 
-        options.bounds = getBounds(options.bounds);
-        return new google.maps.Rectangle(options);
-      case "groundOverlay":
-      case "image":
-        var url = options.url;
-        var bounds = getBounds(options.bounds);
-        var opts = {opacity: options.opacity, clickable: options.clickable};
-        return new google.maps.GroundOverlay(url, bounds, opts)
-        return new google.maps.GroundOverlay(options);
-    }
-    return null;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var shapeName = filtered.name;
-      delete filtered.name;  //remove name bcoz it's not for options
-      
-      var shapeOptions = parser.getOptions(filtered);
-      console.log('shape', shapeName, 'options', shapeOptions);
-      var shape = getShape(shapeName, shapeOptions);
-      if (shape) {
-        mapController.shapes.push(shape);
-      } else {
-        console.error("shape", shapeName, "is not defined");
-      }
-      
-      //shape events
-      var events = parser.getEvents(scope, filtered);
-      console.log("shape", shapeName, "events", events);
-      for (var eventName in events) {
-        google.maps.event.addListener(shape, eventName, events[eventName]);
-      }
-    }
-   };
+    var parser = new Attr2Options();
+    
+    var getPoints = function(array) { // return latitude && longitude points
+        if (array[0] && array[0] instanceof Array) { // [[1,2],[3,4]] 
+            return array.map(function(el) {
+                return new google.maps.LatLng(el[0], el[1]);
+            });
+        } else {
+            return new google.maps.LatLng(array[0],array[1]);            
+        }
+    };
+    
+    var getBounds = function(array) {
+        var points = getPoints(array);
+        return new google.maps.LatLngBounds(points[0], points[1]);
+    };
+    
+    var getShape = function(shapeName, options) {
+        switch(shapeName) {
+        case "circle":
+            options.center = getPoints(options.center);
+            return new google.maps.Circle(options);
+        case "polygon":
+            options.paths = getPoints(options.paths);
+            return new google.maps.Polygon(options);
+        case "polyline": 
+            options.path = getPoints(options.path);
+            return new google.maps.Polyline(options);
+        case "rectangle": 
+            options.bounds = getBounds(options.bounds);
+            return new google.maps.Rectangle(options);
+        case "groundOverlay":
+        case "image":
+            var url = options.url;
+            var bounds = getBounds(options.bounds);
+            var opts = {opacity: options.opacity, clickable: options.clickable};
+            return new google.maps.GroundOverlay(url, bounds, opts);
+        }
+        return null;
+    };
+    
+    return {
+        restrict: 'E',
+        require: '^map',
+        link: function(scope, element, attrs, mapController) {
+            var filtered = parser.filter(attrs);
+            var shapeName = filtered.name;
+            delete filtered.name;    //remove name bcoz it's not for options
+            
+            var shapeOptions = parser.getOptions(filtered);
+            console.log('shape', shapeName, 'options', shapeOptions);
+            var shape = getShape(shapeName, shapeOptions);
+            if (shape) {
+                mapController.shapes.push(shape);
+            } else {
+                console.error("shape", shapeName, "is not defined");
+            }
+            
+            //shape events
+            var events = parser.getEvents(scope, filtered);
+            console.log("shape", shapeName, "events", events);
+            for (var eventName in events) {
+                if (events[eventName]) {
+                    console.log(eventName, events[eventName]);
+                    google.maps.event.addListener(shape, eventName, events[eventName]);
+                }
+            }
+        }
+     };
 }]);
 
 /**
  * this filters out angularJs specific attributes 
  * and returns attributes to be used as options
  */
+/* global ngMap */
+/* global google */
 ngMap.provider('Attr2Options', function() {
 
-  this.$get = function() {
-    return function() {
+    this.$get = function() {
+        return function() {
 
-      /**
-       * filtering attributes  
-       *  1. skip all angularjs methods $.. $$..
-       */
-      this.filter = function(attrs) {
-        var options = {};
-        for(var key in attrs) {
-          if (key.match(/^\$/));
-          else
-            options[key] = attrs[key];
-        }
-        return options;
-      };
+            /**
+             * filtering attributes    
+             *    1. skip all angularjs methods $.. $$..
+             */
+            this.filter = function(attrs) {
+                var options = {};
+                for(var key in attrs) {
+                    if (!key.match(/^\$/)) {
+                        options[key] = attrs[key];
+                    }
+                }
+                return options;
+            };
 
-      /**
-       * converting attributes hash to Google Maps API v3 options
-       */
-      this.getOptions = function(attrs) {
-        var options = {};
-        for(var key in attrs) {
-          if (key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
-            continue;
-          } else if (key.match(/ControlOptions$/)) { // skip controlOptions
-            continue
-          }
+            /**
+             * converting attributes hash to Google Maps API v3 options
+             */
+            this.getOptions = function(attrs) {
+                var options = {};
+                for(var key in attrs) {
+                    if (attrs[key]) {
+                        if (key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
+                            continue;
+                        } else if (key.match(/ControlOptions$/)) { // skip controlOptions
+                            continue;
+                        }
 
-          var val = attrs[key];
-          try { // 1. Number?
-            var num = Number(val);
-            if (isNaN(num))
-              throw "Not a number";
-            else 
-              options[key] = num;
-          } catch(err) { 
-            try { // 2.JSON?
-              options[key] = JSON.parse(val);
-            } catch(err) {
-              // 3. Object Expression. i.e. LatLng(80,-49)
-              if (val.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
-                try {
-                  var exp = "new google.maps."+val;
-                  options[key] = eval(exp); // Warning!! eval can be harmful
-                } catch(e) {
-                  options[key] = val;
-                } 
-              } else if (val.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
-                try {
-                  options[key] = eval("google.maps."+val);
-                } catch(e) {
-                  options[key] = val;
-                } 
-              } else {
-                options[key] = val;
-              }
+                        var val = attrs[key];
+                        try { // 1. Number?
+                            var num = Number(val);
+                            if (isNaN(num)) {
+                                throw "Not a number";
+                            } else  {
+                                options[key] = num;
+                            }
+                        } catch(err) { 
+                            try { // 2.JSON?
+                                options[key] = JSON.parse(val);
+                            } catch(err2) {
+                                // 3. Object Expression. i.e. LatLng(80,-49)
+                                if (val.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
+                                    try {
+                                        var exp = "new google.maps."+val;
+                                        options[key] = eval(exp); // Warning!! eval can be harmful
+                                    } catch(e) {
+                                        options[key] = val;
+                                    } 
+                                } else if (val.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
+                                    try {
+                                        options[key] = eval("google.maps."+val);
+                                    } catch(e) {
+                                        options[key] = val;
+                                    } 
+                                } else {
+                                    options[key] = val;
+                                }
+                            }
+                        }
+                    }
+                }
+                return options;
+            };
+
+            /**
+             * converting attributes hash to scope-specific function 
+             * scope is to validate a function within the scope
+             */
+            this.getEvents = function(scope, attrs) {
+                var events = {};
+                var toLowercaseFunc = function($1){
+                    return "_"+$1.toLowerCase();
+                };
+                var eventFunc = function(attrValue) {
+                    var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
+                    var funcName = matches[1];
+                    var argsStr = matches[2].replace(/event[ ,]*/,'');    //remove string 'event'
+                    
+                    var args = scope.$eval("["+argsStr+"]");
+                    return function(event) {
+                        scope[funcName].apply(this, [event].concat(args));
+                    }
+                }
+
+                for(var key in attrs) {
+                    if (attrs[key]) {
+                        if (!key.match(/^on[A-Z]/)) { //skip if not events
+                            continue;
+                        }
+                        
+                        //get event name as underscored. i.e. zoom_changed
+                        var eventName = key.replace(/^on/,'');
+                        eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
+                        eventName = eventName.replace(/([A-Z])/g, toLowercaseFunc);
+
+                        var attrValue = attrs[key];
+                        events[eventName] = new eventFunc(attrValue);
+                    }
+                }
+                return events;
             }
-          }
-        }
-        return options;
-      };
 
-      /**
-       * converting attributes hash to scope-specific function 
-       * scope is to validate a function within the scope
-       */
-      this.getEvents = function(scope, attrs) {
-        var events = {};
-        for(var key in attrs) {
-          if (!key.match(/^on[A-Z]/)) { //skip if not events
-            continue;
-          }
-          
-          //get event name as underscored. i.e. zoom_changed
-          var eventName = key.replace(/^on/,'');
-          eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
-          eventName = eventName.replace(/([A-Z])/g, function($1){
-            return "_"+$1.toLowerCase();
-          });
+            // control means map controls, i.e streetview, pan, etc, not a general control
+            this.getControlOptions = function(filtered) {
+                var controlOptions = {};
 
-	  var attrValue = attrs[key];
-          events[eventName] = function(event) {
-            var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
-            var funcName = matches[1];
-            var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
-            
-            args = scope.$eval("["+argsStr+"]");
-            scope[funcName].apply(this, [event].concat(args));
-          }
-        }
-        return events;
-      }
+                for (var attr in filtered) {
+                    if (filtered[attr]) {
+                        if (!attr.match(/(.*)ControlOptions$/)) { 
+                            continue; // if not controlOptions, skip it
+                        }
 
-      // control means map controls, i.e streetview, pan, etc, not a general control
-      this.getControlOptions = function(filtered) {
-        var controlOptions = {};
+                        //change invalid json to valid one, i.e. {foo:1} to {"foo": 1}
+                        var orgValue = filtered[attr];
+                        var newValue = orgValue.replace(/'/g, '"');
+                        newValue = newValue.replace(/([^"]+)|("[^"]+")/g, function($0, $1, $2) {
+                            if ($1) {
+                                return $1.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+                            } else {
+                                return $2; 
+                            } 
+                        });
+                        try {
+                            var options = JSON.parse(newValue);
+                            for (var key in options) { //assign the right values
+                                if (options[key]) {
+                                    var value = options[key];
+                                    if (typeof value === 'string') {
+                                        value = value.toUpperCase();
+                                    } else if (key === "mapTypeIds") {
+                                        value = value.map( function(str) {
+                                            return google.maps.MapTypeId[str.toUpperCase()];
+                                        });
+                                    } 
+                                    
+                                    if (key === "style") {
+                                        var str = attr.charAt(0).toUpperCase() + attr.slice(1);
+                                        var objName = str.replace(/Options$/,'')+"Style";
+                                        options[key] = google.maps[objName][value];
+                                    } else if (key === "position") {
+                                        options[key] = google.maps.ControlPosition[value];
+                                    } else {
+                                        options[key] = value;
+                                    }
+                                }
+                            }
+                            controlOptions[attr] = options;
+                        } catch (e) {
+                            console.error('invald option for', attr, newValue, e, e.stack);
+                        }
+                    }
+                } // for
 
-        for (var attr in filtered) {
-          if (!attr.match(/(.*)ControlOptions$/)) { 
-            continue; // if not controlOptions, skip it
-          }
-
-          //change invalid json to valid one, i.e. {foo:1} to {"foo": 1}
-          var orgValue = filtered[attr];
-          var newValue = orgValue.replace(/'/g, '"');
-          newValue = newValue.replace(/([^"]+)|("[^"]+")/g, function($0, $1, $2) {
-            if ($1) {
-                return $1.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-            } else {
-                return $2; 
-            } 
-          });
-          try {
-            var options = JSON.parse(newValue);
-            for (var key in options) { //assign the right values
-              var value = options[key];
-              if (typeof value  == 'string') {
-                var value = value.toUpperCase();
-              } else if (key == "mapTypeIds") {
-                var value = value.map(function(str) {
-                  return google.maps.MapTypeId[str.toUpperCase()];
-                });
-              } 
-              
-              if (key == "style") {
-                var str = attr.charAt(0).toUpperCase() + attr.slice(1);
-                var objName = str.replace(/Options$/,'')+"Style";
-                options[key] = google.maps[objName][value];
-              } else if (key == "position") {
-                options[key] = google.maps.ControlPosition[value];
-              } else {
-                options[key] = value;
-              }
-            }
-            controlOptions[attr] = options;
-          } catch (e) {
-            console.error('invald option for', attr, newValue, e, e.stack);
-          }
-        } // for
-
-        return controlOptions;
-      } // function
-    }; // return
-  } // $.get
+                return controlOptions;
+            }; // function
+        }; // return
+    }; // $.get
 });
 
 ngMap.service('GeoCoder', ['$q', function($q) {
