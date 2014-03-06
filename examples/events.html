@@ -9,8 +9,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
 <script src="scripts/plunkr.js"></script>
 <link rel="stylesheet" href="css/styles.css"></script>
-<script src="../dist/ng-map.min.js"></script>
 <!-- START : ng-map.js 
+<script src="../dist/ng-map.min.js"></script>
+END : ng-map.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map.js"></script>
 <script src="../app/scripts/directives/marker.js"></script>
@@ -18,7 +19,6 @@
 <script src="../app/scripts/providers/providers.js"></script>
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
-END : ng-map.js -->
 <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']); 
   app.controller('MyController', ['$scope', function($scope) {
@@ -33,6 +33,15 @@ END : ng-map.js -->
     $scope.foo = function(event, arg1, arg2) {
       alert('this is at '+ this.getPosition());
       alert(arg1+arg2);
+    }
+    $scope.dragStart = function(event) {
+        console.log("drag started");
+    }
+    $scope.drag = function(event) {
+        console.log("dragging");
+    }
+    $scope.dragEnd = function(event) {
+        console.log("drag ended");
     }
   }]);
 </script>
@@ -53,7 +62,12 @@ END : ng-map.js -->
           on-click="foo(2,3)"></marker>
         <shape name="circle" stroke-color='#FF0000' stroke-weight="2" 
           center="{{latlng}}" radius="{{radius}}"
-          on-click="getRadius()" />
+          on-click="getRadius()" 
+          draggable="true"
+          on-dragstart="dragStart()"
+          on-drag="drag()"
+          on-dragend="dragEnd()"
+          />
       </map>
     </div>
   </div>
