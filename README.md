@@ -40,6 +40,7 @@ Examples
 
   * [Hello Map](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/hello_map.html)
   * [Markers](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker.html)
+  * [Dynamic Markers] (https://rawgithub.com/hamzaazeem/angularjs-google-maps/master/examples/dynamic_markers.html)
   * [My Address](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_address.html)
   * [Where am I?](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_current_position.html)
   * [Controls](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_control.html)
