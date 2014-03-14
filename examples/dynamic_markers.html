@@ -6,7 +6,7 @@
   <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
   <script src="http://code.angularjs.org/1.2.5/angular.js"></script>
   <script src="http://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"></script>
-  <script>
+  <script id="my-js">
       var app = angular.module('myApp', ['ngMap']);
 
       app.controller('mapController', function($scope, $http, $interval)
@@ -36,12 +36,8 @@
         $interval($scope.GenerateMapMarkers, 2000);
       });
   </script>
-  <style>
-    map {
-      width: 100%;
-      height: 400px;
-      display: block;
-    }
+  <style id="my-css">
+    map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
 
@@ -49,11 +45,13 @@
   <h1>Dynamic ngMap demo</h1>
   <hr />
   
-  <div ng-controller="mapController">
+  <div ng-controller="mapController" id="my-html">
     <map zoom="14" center="[43.6650000, -79.4103000]"></map>
     <hr />
     <p>Time: {{ date }}</p>
   </div>
 
+  <div ng-include="'source_code.html'" plunkr module-name="myApp"></div>
+  
 </body>
 </html>
