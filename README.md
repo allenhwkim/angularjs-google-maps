@@ -40,7 +40,7 @@ Examples
 
   * [Hello Map](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/hello_map.html)
   * [Markers](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker.html)
-  * [Dynamic Markers] (https://rawgithub.com/hamzaazeem/angularjs-google-maps/master/examples/dynamic_markers.html)
+  * [Dynamic Markers] (https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/dynamic_markers.html)
   * [My Address](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_address.html)
   * [Where am I?](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_current_position.html)
   * [Controls](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_control.html)
@@ -49,7 +49,7 @@ Examples
   * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
   * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_and_street_view.html)
   * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/multiple_maps_on_a_page.html)
-  * [Index of Examples](https://rawgithub.com/hamzaazeem/angularjs-google-maps/master/examples/index.html)
+  * [Index of Examples](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/index.html)
 
 To use it in your app, please include 'ngMap' as dependency.
 
