@@ -1,0 +1,6 @@
+{
+  "name": "ngmap",
+  "version": "0.3.8",
+  "dependencies": {},
+  "main": "./dist/ng-map.js"
+}
