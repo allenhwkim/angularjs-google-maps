@@ -132,6 +132,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
 
           //assign map to parent scope  
           scope.map = _this.map;
+          scope.$emit('mapInitialized', [_this.map]);  
 
           return _this.map;
         },
