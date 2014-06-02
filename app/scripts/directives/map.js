@@ -1,3 +1,5 @@
+/* global ngMap */
+/* global google */
 ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile',
   function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
     var parser = new Attr2Options();
@@ -16,29 +18,35 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
          */ 
         this.initializeMap = function(scope, element, attrs) {
           var filtered = parser.filter(attrs);
-          var mapOptions = parser.getOptions(filtered);
+          scope.google = google;
+          var mapOptions = parser.getOptions(filtered, scope);
           var controlOptions = parser.getControlOptions(filtered);
-          for (key in controlOptions) {
-            mapOptions[key] = controlOptions[key];
+          for(var key in controlOptions) {
+            if (key) {
+              mapOptions[key] = controlOptions[key];
+            }
           }
 
           var _this = this;
+          var savedCenter = null;
 
           if (!mapOptions.zoom) {
-            mapOptions.zoom = 15 //default zoom
+            mapOptions.zoom = 15; //default zoom
           }
           if (mapOptions.center instanceof Array) {
             var lat = mapOptions.center[0], lng= mapOptions.center[1];
             mapOptions.center = new google.maps.LatLng(lat,lng);
           } else {
-            var savedCenter = mapOptions.center;
+            savedCenter = mapOptions.center;
             delete mapOptions.center; //cannot show map with center as string
           }
           
           for (var name in this.controls) {
-            mapOptions[name+"Control"] = this.controls[name].enabled === "false" ? 0:1;
-            delete this.controls[name].enabled;
-            mapOptions[name+"ControlOptions"] = this.controls[name];
+            if (name) {
+              mapOptions[name+"Control"] = this.controls[name].enabled === "false" ? 0:1;
+              delete this.controls[name].enabled;
+              mapOptions[name+"ControlOptions"] = this.controls[name];
+            }
           }
           
           console.log("mapOptions", mapOptions);
@@ -67,7 +75,9 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           var events = parser.getEvents(scope, filtered);
           console.log("mapEvents", events);
           for (var eventName in events) {
-            google.maps.event.addListener(_this.map, eventName, events[eventName]);
+            if (eventName) {
+              google.maps.event.addListener(_this.map, eventName, events[eventName]);
+            }
           }
 
           //assign map to parent scope  

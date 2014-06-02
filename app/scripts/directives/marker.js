@@ -1,3 +1,5 @@
+/* global ngMap */
+/* global google */
 ngMap.directive('marker', [ 'Attr2Options', 'GeoCoder', 'NavigatorGeolocation', 
   function(Attr2Options, GeoCoder, NavigatorGeolocation) {
     var parser = new Attr2Options();
@@ -7,15 +9,19 @@ ngMap.directive('marker', [ 'Attr2Options', 'GeoCoder', 'NavigatorGeolocation',
       require: '^map',
       link: function(scope, element, attrs, mapController) {
         var filtered = new parser.filter(attrs);
-        var markerOptions = parser.getOptions(filtered);
+        scope.google = google;
+        var markerOptions = parser.getOptions(filtered, scope);
         var markerEvents = parser.getEvents(scope, filtered);
 
         var getMarker = function() {
           var marker = new google.maps.Marker(markerOptions);
-          if (Object.keys(markerEvents).length > 0)
+          if (Object.keys(markerEvents).length > 0) {
             console.log("markerEvents", markerEvents);
+          }
           for (var eventName in markerEvents) {
-            google.maps.event.addListener(marker, eventName, markerEvents[eventName]);
+            if (eventName) {
+              google.maps.event.addListener(marker, eventName, markerEvents[eventName]);
+            }
           }
           return marker;
         };
@@ -67,6 +73,6 @@ ngMap.directive('marker', [ 'Attr2Options', 'GeoCoder', 'NavigatorGeolocation',
           console.error('invalid marker position', markerOptions.position);
         }
       } //link
-    } // return
+    }; // return
   } // function
 ]);
