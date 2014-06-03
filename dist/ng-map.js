@@ -147,8 +147,6 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
 
           //assign map to parent scope  
           scope.map = _this.map;
-          scope.$emit('mapInitialized', [_this.map]);  
-
           return _this.map;
         },
 
@@ -174,6 +172,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
             var marker = this.markers[i];
             this.addMarker(marker);
           }
+          return $scope.markers;
         };
 
         /**
@@ -186,6 +185,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
             shape.setMap(this.map);
             $scope.shapes[shape.id || (i+1) ] = shape; // can have id as key
           }
+          return $scope.shapes;
         };
 
         /**
@@ -197,13 +197,18 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
             var obj = this.infoWindows[i];
             $scope.infoWindows[obj.id || (i+1) ] = obj; 
           }
+          return $scope.infoWindows;
         };
       }],
       link: function (scope, element, attrs, ctrl) {
-        ctrl.initializeMap(scope, element, attrs);
-        ctrl.initializeMarkers();
-        ctrl.initializeShapes();
-        ctrl.initializeInfoWindows();
+        var map = ctrl.initializeMap(scope, element, attrs);
+        scope.$emit('mapInitialized', [map]);  
+        var markers = ctrl.initializeMarkers();
+        scope.$emit('markersInitialized', [markers]);  
+        var shapes = ctrl.initializeShapes();
+        scope.$emit('shapesInitialized', [shapes]);  
+        var infoWindows = ctrl.initializeInfoWindows();
+        scope.$emit('infoWindowsInitialized', [infoWindows]);  
       }
     }; // return
   } // function
@@ -415,7 +420,6 @@ ngMap.provider('Attr2Options', function() {
               } catch(err2) {
                 // 3. Object Expression. i.e. LatLng(80,-49)
                 if (val.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
-                  console.log(1, val);
                   try {
                     var exp = "new google.maps."+val;
                     options[key] = eval(exp); // TODO, still eval
@@ -424,7 +428,6 @@ ngMap.provider('Attr2Options', function() {
                   } 
                 // 4. Object Expression. i.e. MayTypeId.HYBRID 
                 } else if (val.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
-                  console.log(2, val);
                   try {
                     options[key] = scope.$eval("google.maps."+val);
                   } catch(e) {
@@ -432,7 +435,6 @@ ngMap.provider('Attr2Options', function() {
                   } 
                 // 5. Object Expression. i.e. HYBRID 
                 } else if (val.match(/^[A-Z]+$/)) {
-                  console.log(3, val);
                   try {
                     var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
                     options[key] = scope.$eval("google.maps."+capitializedKey+"."+val);
@@ -440,7 +442,6 @@ ngMap.provider('Attr2Options', function() {
                     options[key] = val;
                   } 
                 } else {
-                  console.log(4);
                   options[key] = val;
                 }
               } // catch(err2)

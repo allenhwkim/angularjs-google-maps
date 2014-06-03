@@ -23,10 +23,8 @@ END : ng-map.js -->
 </head>
 
 <body>
-  <div id="my-html" style="width:600px; height:400px">
-    <map style="display:block;height:300px" center="[ 52.374304, 4.898723 ]" zoom="13" draggable="true" 
-      street-view="StreetViewPanorama(document.querySelector('#sv'), {position:new google.maps.LatLng(52.374304, 4.898723)})"/>
-      <marker position="[52.374304, 4.898723]" name="hello Vicky" draggable="true" on-dragend="dragEnd()"></marker>
+  <div id="my-html" style="width:100%; height:400px">
+    <map street-view="StreetViewPanorama(document.querySelector('#my-html'), {position:new google.maps.LatLng(40.688738,-74.043871)})">
     </map>
   </div>
 

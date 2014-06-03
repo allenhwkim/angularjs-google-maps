@@ -82,8 +82,6 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
 
           //assign map to parent scope  
           scope.map = _this.map;
-          scope.$emit('mapInitialized', [_this.map]);  
-
           return _this.map;
         },
 
@@ -109,6 +107,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
             var marker = this.markers[i];
             this.addMarker(marker);
           }
+          return $scope.markers;
         };
 
         /**
@@ -121,6 +120,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
             shape.setMap(this.map);
             $scope.shapes[shape.id || (i+1) ] = shape; // can have id as key
           }
+          return $scope.shapes;
         };
 
         /**
@@ -132,13 +132,18 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
             var obj = this.infoWindows[i];
             $scope.infoWindows[obj.id || (i+1) ] = obj; 
           }
+          return $scope.infoWindows;
         };
       }],
       link: function (scope, element, attrs, ctrl) {
-        ctrl.initializeMap(scope, element, attrs);
-        ctrl.initializeMarkers();
-        ctrl.initializeShapes();
-        ctrl.initializeInfoWindows();
+        var map = ctrl.initializeMap(scope, element, attrs);
+        scope.$emit('mapInitialized', [map]);  
+        var markers = ctrl.initializeMarkers();
+        scope.$emit('markersInitialized', [markers]);  
+        var shapes = ctrl.initializeShapes();
+        scope.$emit('shapesInitialized', [shapes]);  
+        var infoWindows = ctrl.initializeInfoWindows();
+        scope.$emit('infoWindowsInitialized', [infoWindows]);  
       }
     }; // return
   } // function

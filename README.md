@@ -38,6 +38,7 @@ To Get Started
 Examples
 --------
 
+  * [All Examples](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/index.html)
   * [Hello Map](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/hello_map.html)
   * [Markers](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker.html)
   * [Dynamic Markers] (https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/dynamic_markers.html)
@@ -49,7 +50,7 @@ Examples
   * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
   * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_and_street_view.html)
   * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/multiple_maps_on_a_page.html)
-  * [Index of Examples](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/index.html)
+  * [Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/street_view.html)
 
 To use it in your app, please include 'ngMap' as dependency.
 
@@ -62,6 +63,21 @@ You will also have these three scope variables after these directives are initia
     * $scope.map
     * $scope.markers as a hash
     * $scope.shapes as a hash
+
+In case your map directive scope is different from your controller scope, there are event emitted when each is initialized.
+There are three events emitted
+    * `mapInitialized` with [map] argument 
+    * `markersInitialized` with [markers] argument 
+    * `shpaesInitialized` with [shapes] argument 
+
+Example Usage:
+
+    app.controller('parentParentController', function($scope) {
+      $scope.$on('mapInitialized', function(event, args) {
+        var map = args[0];
+        ..
+      });
+    });
 
 Directives
 -----------

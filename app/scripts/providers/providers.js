@@ -50,7 +50,6 @@ ngMap.provider('Attr2Options', function() {
               } catch(err2) {
                 // 3. Object Expression. i.e. LatLng(80,-49)
                 if (val.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
-                  console.log(1, val);
                   try {
                     var exp = "new google.maps."+val;
                     options[key] = eval(exp); // TODO, still eval
@@ -59,7 +58,6 @@ ngMap.provider('Attr2Options', function() {
                   } 
                 // 4. Object Expression. i.e. MayTypeId.HYBRID 
                 } else if (val.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
-                  console.log(2, val);
                   try {
                     options[key] = scope.$eval("google.maps."+val);
                   } catch(e) {
@@ -67,7 +65,6 @@ ngMap.provider('Attr2Options', function() {
                   } 
                 // 5. Object Expression. i.e. HYBRID 
                 } else if (val.match(/^[A-Z]+$/)) {
-                  console.log(3, val);
                   try {
                     var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
                     options[key] = scope.$eval("google.maps."+capitializedKey+"."+val);
@@ -75,7 +72,6 @@ ngMap.provider('Attr2Options', function() {
                     options[key] = val;
                   } 
                 } else {
-                  console.log(4);
                   options[key] = val;
                 }
               } // catch(err2)
