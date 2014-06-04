@@ -60,15 +60,16 @@ To use it in your app, please include 'ngMap' as dependency.
 
 You will also have these three scope variables after these directives are initialized.
 
-    * $scope.map
-    * $scope.markers as a hash
-    * $scope.shapes as a hash
+  * $scope.map
+  * $scope.markers as a hash
+  * $scope.shapes as a hash
 
 In case your map directive scope is different from your controller scope, there are event emitted when each is initialized.
-There are three events emitted
-    * `mapInitialized` with [map] argument 
-    * `markersInitialized` with [markers] argument 
-    * `shpaesInitialized` with [shapes] argument 
+There are three events emitted;
+
+  * `mapInitialized` with [map] argument 
+  * `markersInitialized` with [markers] argument 
+  * `shpaesInitialized` with [shapes] argument 
 
 Example Usage:
 
