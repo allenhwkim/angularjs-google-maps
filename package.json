@@ -1,7 +1,9 @@
 {
   "name": "ngmap",
   "version": "0.5.0",
-  "dependencies": {},
+  "dependencies": {
+    "connect-livereload": "~0.4.0"
+  },
   "engines": {
     "node": ">=0.8.0"
   },
@@ -12,13 +14,13 @@
     "grunt": "~0.4.2",
     "grunt-contrib-uglify": "~0.2.7",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-bump": "~0.0.13",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-connect": "~0.6.0",
-    "connect-livereload": "~0.3.1",
+    "grunt-contrib-connect": "~0.7.1",
     "matchdep": "~0.3.0",
-    "protractor": "~0.23.1"
+    "protractor": "~0.23.1",
+    "grunt-protractor-runner": "~1.0.0",
+    "grunt-express": "~1.3.5",
+    "grunt-contrib-concat": "~0.4.0"
   }
 }

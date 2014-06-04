@@ -31,31 +31,28 @@ module.exports = function (grunt) {
         ext: '.min.js'   // replace .js to .min.js
       }
     },
-    
-    connect: {
-      all : {
+
+    express: {
+      site1: {
         options: {
           port: 9001,
-          middleware: function(connect /*, options */) {
-            return [
-              require('connect-livereload')({
-                src: "//rawgithub.com/allenhwkim/util/master/livereload.js"
-              }),
-              connect.static('examples'),
-              connect.directory('examples')
-            ];
-          }
+          bases: 'examples'
         }
-      }
+      },
     },
-
-    watch: {
-      all: {
-        files: ['app/**/*', 'examples/*'],
-        options: {
-          livereload: true  // starts livereload server at port 35729
+      
+    protractor: {
+      options: {
+        configFile: "protractor_conf.js", // Default config file
+        keepAlive: false, // If false, the grunt process stops when the test fails.
+        noColor: false, // If true, protractor will not use colors in its output.
+        args: {
+          // Arguments passed to the command
         }
-      }
+      },
+      single: {
+        options: {}
+      },
     },
 
     bump: {
@@ -67,7 +64,8 @@ module.exports = function (grunt) {
 
   });
 
-  grunt.registerTask('server', ['connect', 'watch']);
+  grunt.registerTask('test', ['express', 'protractor']);
+  grunt.registerTask('server', ['express', 'express-keepalive']);
   grunt.registerTask('min', ['clean', 'concat', 'uglify']);
 
 };

@@ -14,9 +14,9 @@
 
       app.controller('mapController', function($scope, $http, $interval)
       {
-        var markers = [];
+        $scope.dynMarkers = [];
         for (var i = 0; i < 8; i++) {
-          markers[i] = new google.maps.Marker({
+          $scope.dynMarkers[i] = new google.maps.Marker({
             title: "Marker: " + i
           })
         }
@@ -31,8 +31,8 @@
             var lng = -79.4103000 + (Math.random() / 100);
 
             var loc = new google.maps.LatLng(lat, lng);
-            markers[i].setPosition(loc);
-            markers[i].setMap($scope.map);
+            $scope.dynMarkers[i].setPosition(loc);
+            $scope.dynMarkers[i].setMap($scope.map);
           }
         };
 
