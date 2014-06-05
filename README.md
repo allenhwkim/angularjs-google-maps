@@ -1,9 +1,6 @@
 GoogleMap AngularJS Directive
 =============================
 
-
-[![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
-
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
   
