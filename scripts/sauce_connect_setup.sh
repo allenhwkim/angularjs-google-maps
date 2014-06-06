@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -ex
+#set -ex
+set -e
 
 if [ "$(uname)" == "Darwin" ]; then
   CONNECT_URL="https://d2nkw87yt5k0to.cloudfront.net/downloads/sc-latest-osx.zip"
@@ -45,7 +46,6 @@ echo "  $CONNECT_STDERR"
 sauce-connect/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -v $ARGS \
   --logfile $CONNECT_LOG 2> $CONNECT_STDERR 1> $CONNECT_STDOUT &
 
-set -e
 # Wait for Connect to be ready before exiting
 while [ ! -f $READY_FILE ]; do
   sleep .5
