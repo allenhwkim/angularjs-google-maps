@@ -1,24 +1,21 @@
 #!/bin/bash
 
-set -e
+set -ex
 
-# Setup and start Sauce Connect for your TravisCI build
-# This script requires your .travis.yml to include the following two private env variables:
-# SAUCE_USERNAME
-# SAUCE_ACCESS_KEY
-# Follow the steps at https://saucelabs.com/opensource/travis to set that up.
-#
-# Curl and run this script as part of your .travis.yml before_script section:
-# before_script:
-#   - curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash
-
-CONNECT_URL="https://d2nkw87yt5k0to.cloudfront.net/downloads/sc-latest-linux.tar.gz"
+if [ "$(uname)" == "Darwin" ]; then
+  CONNECT_URL="https://d2nkw87yt5k0to.cloudfront.net/downloads/sc-latest-osx.zip"
+  CONNECT_DOWNLOAD="sc-latest-osx.tar.gz"
+else
+  CONNECT_URL="https://d2nkw87yt5k0to.cloudfront.net/downloads/sc-latest-linux.tar.gz"
+  CONNECT_DOWNLOAD="sc-latest-linux.tar.gz"
+fi
 CONNECT_DIR="/tmp/sauce-connect-$RANDOM"
-CONNECT_DOWNLOAD="sc-latest-linux.tar.gz"
 
-CONNECT_LOG="$LOGS_DIR/sauce-connect"
-CONNECT_STDOUT="$LOGS_DIR/sauce-connect.stdout"
-CONNECT_STDERR="$LOGS_DIR/sauce-connect.stderr"
+CONNECT_LOG="$CONNECT_DIR/sauce-connect.log"
+CONNECT_STDOUT="$CONNECT_DIR/sauce-connect.stdout"
+CONNECT_STDERR="$CONNECT_DIR/sauce-connect.stderr"
+
+READY_FILE="connect-ready-$RANDOM"
 
 # Get Connect and start it
 mkdir -p $CONNECT_DIR
@@ -28,8 +25,7 @@ mkdir sauce-connect
 tar --extract --file=$CONNECT_DOWNLOAD --strip-components=1 --directory=sauce-connect > /dev/null
 rm $CONNECT_DOWNLOAD
 
-SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
-
+#SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
 
 ARGS=""
 
@@ -37,8 +33,8 @@ ARGS=""
 if [ ! -z "$TRAVIS_JOB_NUMBER" ]; then
   ARGS="$ARGS --tunnel-identifier $TRAVIS_JOB_NUMBER"
 fi
-if [ ! -z "$BROWSER_PROVIDER_READY_FILE" ]; then
-  ARGS="$ARGS --readyfile $BROWSER_PROVIDER_READY_FILE"
+if [ ! -z "$READY_FILE" ]; then
+  ARGS="$ARGS --readyfile $READY_FILE"
 fi
 
 
@@ -48,3 +44,8 @@ echo "  $CONNECT_STDOUT"
 echo "  $CONNECT_STDERR"
 sauce-connect/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -v $ARGS \
   --logfile $CONNECT_LOG 2> $CONNECT_STDERR 1> $CONNECT_STDOUT &
+
+# Wait for Connect to be ready before exiting
+while [ ! -f $READY_FILE ]; do
+  sleep .5
+done

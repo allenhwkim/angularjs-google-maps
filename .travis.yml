@@ -8,12 +8,9 @@ env:
   global:
     - SAUCE_USERNAME=allenhwkim
     - SAUCE_ACCESS_KEY=9a0b91d5-4602-44cb-afdb-cd7a2fc3fdb4
-    - LOGS_DIR=/tmp/angularjs-google-maps/logs
-    - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
 
 before_script:
-  - mkdir -p $LOGS_DIR
-  - curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash
+  - ./scripts/sauce_connect_setup.sh
 
 script:
   - ./scripts/testserver.sh
