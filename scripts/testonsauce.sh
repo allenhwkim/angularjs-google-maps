@@ -1,4 +1,4 @@
-SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
+//SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
 
 if [ $JOB = "smoke" ]; then
   node ./node_modules/protractor/bin/protractor spec/smokeConf.js
