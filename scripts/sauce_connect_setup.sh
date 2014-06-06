@@ -45,6 +45,7 @@ echo "  $CONNECT_STDERR"
 sauce-connect/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -v $ARGS \
   --logfile $CONNECT_LOG 2> $CONNECT_STDERR 1> $CONNECT_STDOUT &
 
+set -e
 # Wait for Connect to be ready before exiting
 while [ ! -f $READY_FILE ]; do
   sleep .5
