@@ -1,0 +1,13 @@
+<div ng-init="activeTab = 1">
+  <div class="tabs">
+    <a ng-class="{active: activeTab == 1}" ng-click="activeTab = 1">HTML</a>
+    <a ng-class="{active: activeTab == 2}" ng-click="activeTab = 2">Script</a>
+    <a ng-class="{active: activeTab == 3}" ng-click="activeTab = 3">CSS</a>
+    <a href="#" ng-click="postToPlunkr()">Plunkr</a>
+  </div>
+  <div class="tab-contents">
+    <div id="html" ng-show="activeTab == 1"></div>
+    <div id="js" ng-show="activeTab == 2"></div>
+    <div id="css" ng-show="activeTab == 3"></div>
+  </div>
+</div>

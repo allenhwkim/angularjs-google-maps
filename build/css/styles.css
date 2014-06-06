@@ -1,0 +1,4 @@
+.tabs a {display: inline-block; text-align: center; padding: 10px;}
+.tabs a.active {background: #ccc; text-align: center; padding: 10px}
+.tab-contents {padding: 10px; width: 600px; border: 1px solid #333}
+.tab-contents * {width: 100%; min-height: 100px; white-space: pre; font-family:Courier New; font-size: 13px; overflow: auto}
