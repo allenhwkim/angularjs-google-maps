@@ -13,8 +13,7 @@ env:
 
 before_script:
   - mkdir -p $LOGS_DIR
-  - ./scripts/sauce_connect_setup.sh
-  - ./scripts/wait_for_browser_provider.sh
+  - curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash
 
 script:
   - ./scripts/testserver.sh
