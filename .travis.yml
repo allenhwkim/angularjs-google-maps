@@ -1,5 +1,25 @@
 language: node_js
 node_js:
   - "0.10"
-before_install: npm install -g grunt-cli
-install: npm install
+
+env:
+  matrix:
+    - JOB=smoke
+    - JOB=suite
+  global:
+    - SAUCE_USERNAME=allenhwkim
+    - SAUCE_ACCESS_KEY=9a0b91d5-4602-44cb-afdb-cd7a2fc3fdb4
+    - LOGS_DIR=/tmp/angularjs-google-maps/logs
+    - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
+
+before_script:
+  - mkdir -p $LOGS_DIR
+  - ./scripts/sauce_connect_setup.sh
+  - ./scripts/wait_for_browser_provider.sh
+
+script:
+  - ./scripts/testserver.sh
+  - ./scripts/testonsauce.sh
+
+after_script:
+  - ./scripts/print_logs.sh

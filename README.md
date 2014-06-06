@@ -41,19 +41,19 @@ To Get Started
 Examples
 --------
 
-  * [All Examples](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/index.html)
-  * [Hello Map](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/hello_map.html)
-  * [Markers](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker.html)
-  * [Dynamic Markers] (https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/dynamic_markers.html)
-  * [My Address](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_address.html)
-  * [Where am I?](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/marker_with_current_position.html)
-  * [Controls](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_control.html)
-  * [Map Options](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_options.html)
-  * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/shape.html)
-  * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/events.html)
-  * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/bird_eyes_and_street_view.html)
-  * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/multiple_maps_on_a_page.html)
-  * [Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/street_view.html)
+  * [All Examples](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html)
+  * [Hello Map](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/hello_map.html)
+  * [Markers](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker.html)
+  * [Dynamic Markers] (https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/dynamic_markers.html)
+  * [My Address](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_address.html)
+  * [Where am I?](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_current_position.html)
+  * [Controls](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html)
+  * [Map Options](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_options.html)
+  * [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
+  * [Events](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/events.html)
+  * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/bird_eyes_and_street_view.html)
+  * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/multiple_maps_on_a_page.html)
+  * [Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/street_view.html)
 
 To use it in your app, please include 'ngMap' as dependency.
 
@@ -105,21 +105,21 @@ These are attributes of map tag which is EXACTLY the same as the documentation.
                   i.e. center="[40.79,-54,18]", center="toronto, canada"
 <tr><td>disable-default-u-i <td> true or false
 <tr><td>disable-double-click-zoom <td> true of false 
-<tr><td>draggable           <td> true of false
-<tr><td>draggable-cursor     <td> i.e. pointer
-<tr><td>dragging-cursor      <td> i.e. hand
-<tr><td>heading             <td> The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
+<tr><td>draggable        <td> true of false
+<tr><td>draggable-cursor <td> i.e. pointer
+<tr><td>dragging-cursor  <td> i.e. hand
+<tr><td>heading          <td> The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
 <tr><td>keyboard-shortcuts   <td> true or false
-<tr><td>map-maker            <td> true or false
-<tr><td>map-type-id  <td> i.e. mapTypeId="HYBRID"
-<tr><td>max-zoom             <td> number, i.e. 12, 13
-<tr><td>min-zoom             <td> numer, i.e. 4, 5
-<tr><td>no-clear             <td> true or false
-<tr><td>scrollwheel         <td> true or false
+<tr><td>map-maker   <td> true or false
+<tr><td>map-type-id <td> i.e. mapTypeId="HYBRID"
+<tr><td>max-zoom    <td> number, i.e. 12, 13
+<tr><td>min-zoom    <td> numer, i.e. 4, 5
+<tr><td>no-clear    <td> true or false
+<tr><td>scrollwheel <td>true or false
 <tr><td>street-view <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
-<tr><td>styles     <td>i.e. styles='{featureType: "poi"}'
-<tr><td>zoom       <td> initial map zoom level, required. i.e. 12
-<tr><td>EVENTS     <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
+<tr><td>styles      <td>i.e. styles='{featureType: "poi"}'
+<tr><td>zoom        <td> initial map zoom level, required. i.e. 12
+<tr><td>EVENTS      <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
    <br/> i.e. on-click="myfunc"
 </table>
 
@@ -133,7 +133,7 @@ These are full list of controls that can be used as map attributes;
   * [zoom](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
   * [mapType](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
 
-For usage of map controls, please refer to [this example](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/examples/map_control.html).
+For usage of map controls, please refer to [this example](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html).
 
 
 #### **marker** Tag(Directive) ####
