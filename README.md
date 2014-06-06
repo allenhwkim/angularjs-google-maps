@@ -1,9 +1,6 @@
 GoogleMap AngularJS Directive
 =============================
 
-
-[![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
-
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
   
@@ -117,9 +114,9 @@ These are attributes of map tag which is EXACTLY the same as the documentation.
 <tr><td>no-clear    <td> true or false
 <tr><td>scrollwheel <td>true or false
 <tr><td>street-view <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
-<tr><td>styles      <td>i.e. styles='{featureType: "poi"}'
-<tr><td>zoom        <td> initial map zoom level, required. i.e. 12
-<tr><td>EVENTS      <td> You can also specify any href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
+<tr><td>styles     <td>i.e. styles='{featureType: "poi"}'
+<tr><td>zoom       <td> initial map zoom level, required. i.e. 12
+<tr><td>EVENTS     <td> You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
    <br/> i.e. on-click="myfunc"
 </table>
 
@@ -166,7 +163,7 @@ These are attributes of marker tag which ate EXACTLY the same as the documentati
   <tr><td> visible <td> true or false
   <tr><td> zIndex <td> number
   <tr><td> EVENTS <td>
-    You can also specify any [marker events](https://developers.google.com/maps/documentation/javascript/reference#Marker) as an attribute.  
+    You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">marker events</a>   
     i.e. on-click="myfunc"
 </table>
 
