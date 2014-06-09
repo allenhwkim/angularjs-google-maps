@@ -1,7 +1,7 @@
-describe('Hello Map', function() {
+describe('Marker Clusterer', function() {
 
-  it('sets map and its center', function() {
-  browser.get('hello_map.html');
+  it('sets marker cluster', function() {
+  browser.get('marker_clusterer.html');
     // expect(browser.getLocationAbsUrl()).toMatch("/hello_map.html");
     browser.wait( function() {
       return browser.executeScript( function() {
@@ -12,11 +12,11 @@ describe('Hello Map', function() {
         return result;
       });
     }, 5000);
-    element(by.css("map")).evaluate('map.getCenter().lat()').then(function(lat) {
-      expect(lat).toBeGreaterThan(0);
-    });
-    element(by.css("map")).evaluate('map.getCenter().lng()').then(function(lng) {
-      expect(lng).toBeLessThan(0);
+    element(by.css("map")).evaluate('markerClusterer.markers.length').then(function(len1) {
+      element(by.css("map")).evaluate('map.markers.length').then(function(len2) {
+        expect(len2).toBeGreaterThanl(1000);
+        expect(len2).toEqual(len1);
+      });
     });
   });
 

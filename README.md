@@ -3,6 +3,8 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
+[![Imgur]](http://i.imgur.com/tVEUg88.png)
+
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
   
@@ -53,6 +55,7 @@ Examples
   * [Bird Eyes View/Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/bird_eyes_and_street_view.html)
   * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/multiple_maps_on_a_page.html)
   * [Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/street_view.html)
+  * [Marker Clusterer](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html)
 
 To use it in your app, please include 'ngMap' as dependency.
 

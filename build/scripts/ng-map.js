@@ -65,6 +65,7 @@ ngMap.directive('infoWindow', [ 'Attr2Options',
 
 /* global ngMap */
 /* global google */
+/* global MarkerClusterer */
 ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile',
   function (Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
     var parser = new Attr2Options();
@@ -77,11 +78,12 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         this.markers = [];
         this.shapes = [];
         this.infoWindows = [];
+        this.markerCluster = null;
 
         /**
          * Initialize map and events
          */ 
-        this.initializeMap = function(scope, element, attrs) {
+        this.initMap = function(scope, element, attrs) {
           var filtered = parser.filter(attrs);
           scope.google = google;
           var mapOptions = parser.getOptions(filtered, scope);
@@ -166,7 +168,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           $scope.markers[marker.id || len] = marker;
         };
 
-        this.initializeMarkers = function() {
+        this.initMarkers = function() {
           $scope.markers = {};
           for (var i=0; i<this.markers.length; i++) {
             var marker = this.markers[i];
@@ -178,7 +180,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         /**
          * Initialize shapes for this map
          */
-        this.initializeShapes = function() {
+        this.initShapes = function() {
           $scope.shapes = {};
           for (var i=0; i<this.shapes.length; i++) {
             var shape = this.shapes[i];
@@ -191,7 +193,7 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
         /**
          * Initialize infoWindows for this map
          */
-        this.initializeInfoWindows = function() {
+        this.initInfoWindows = function() {
           $scope.infoWindows = {};
           for (var i=0; i<this.infoWindows.length; i++) {
             var obj = this.infoWindows[i];
@@ -199,16 +201,32 @@ ngMap.directive('map', ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCo
           }
           return $scope.infoWindows;
         };
+
+        /**
+         * Initialize markerClusterere for this map
+         */
+        this.initMarkerClusterer = function() {
+          if (this.markerClusterer) {
+            $scope.markerClusterer = new MarkerClusterer(
+              this.map, 
+              this.markerClusterer.data, 
+              this.markerClusterer.pptions
+            );
+          }
+          return $scope.markerClusterer;
+        };
       }],
       link: function (scope, element, attrs, ctrl) {
-        var map = ctrl.initializeMap(scope, element, attrs);
-        scope.$emit('mapInitialized', [map]);  
-        var markers = ctrl.initializeMarkers();
-        scope.$emit('markersInitialized', [markers]);  
-        var shapes = ctrl.initializeShapes();
-        scope.$emit('shapesInitialized', [shapes]);  
-        var infoWindows = ctrl.initializeInfoWindows();
-        scope.$emit('infoWindowsInitialized', [infoWindows]);  
+        var map = ctrl.initMap(scope, element, attrs);
+        scope.$emit('mapInitialized', map);  
+        var markers = ctrl.initMarkers();
+        scope.$emit('markersInitialized', markers);  
+        var shapes = ctrl.initShapes();
+        scope.$emit('shapesInitialized', shapes);  
+        var infoWindows = ctrl.initInfoWindows();
+        scope.$emit('infoWindowsInitialized', infoWindows);  
+        var markerClusterer= ctrl.initMarkerClusterer();
+        scope.$emit('markerClustererInitialized', markerClusterer);  
       }
     }; // return
   } // function
@@ -289,6 +307,45 @@ ngMap.directive('marker', [ 'Attr2Options', 'GeoCoder', 'NavigatorGeolocation',
         } else {
           console.error('invalid marker position', markerOptions.position);
         }
+      } //link
+    }; // return
+  } // function
+]);
+
+/* global ngMap */
+/* global google */
+/* global MarkerClusterer */
+ngMap.directive('markerClusterer', [ 'Attr2Options',
+  function(Attr2Options) {
+    var parser = new Attr2Options();
+
+    return {
+      restrict: 'E',
+      require: '^map',
+      link: function(scope, element, attrs, mapController) {
+        var markersData = scope.$eval(attrs.markers);
+        delete attrs.markers;
+        var options = new parser.filter(attrs);
+
+        var markers = [];
+        for (var i=0; i< markersData.length; i++) {
+          var data = markersData[i];
+
+          var lat = data.position[0], lng = data.position[1];
+          data.position = new google.maps.LatLng(lat,lng);
+          var marker = new google.maps.Marker(data);
+          
+          var markerEvents = parser.getEvents(scope, data);
+          for (var eventName in markerEvents) {
+            if (eventName) {
+              google.maps.event.addListener(marker, eventName, markerEvents[eventName]);
+            }
+          }
+          markers.push(marker);
+        } // for (var i=0;..
+        mapController.markers = markers;
+        mapController.markerClusterer =  { data: markers, options:options };
+        console.log('markerClusterer', mapController.markerClusterer);
       } //link
     }; // return
   } // function
