@@ -3,7 +3,7 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
-![Imgur](http://i.imgur.com/tVEUg88.png)
+[![Marker Cluster](http://i.imgur.com/tVEUg88.png)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html)
 
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
