@@ -7,16 +7,13 @@ describe('Marker Clusterer', function() {
       return browser.executeScript( function() {
         var el = document.querySelector("map");  
         var scope = angular.element(el).scope();
-        return scope.map.getCenter().lat();
+        return scope.markerClusterer.getMarkers() && scope.markerClusterer.getMarkers().length;
       }).then(function(result) {
         return result;
       });
     }, 5000);
-    element(by.css("map")).evaluate('markerClusterer.markers.length').then(function(len1) {
-      element(by.css("map")).evaluate('map.markers.length').then(function(len2) {
-        expect(len2).toBeGreaterThan(1000);
-        expect(len2).toEqual(len1);
-      });
+    element(by.css("map")).evaluate('markerClusterer.getMarkers().length').then(function(len1) {
+      expect(len1).toBeGreaterThan(1000);
     });
   });
 
