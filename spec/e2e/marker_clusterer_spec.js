@@ -14,7 +14,7 @@ describe('Marker Clusterer', function() {
     }, 5000);
     element(by.css("map")).evaluate('markerClusterer.markers.length').then(function(len1) {
       element(by.css("map")).evaluate('map.markers.length').then(function(len2) {
-        expect(len2).toBeGreaterThanl(1000);
+        expect(len2).toBeGreaterThan(1000);
         expect(len2).toEqual(len1);
       });
     });

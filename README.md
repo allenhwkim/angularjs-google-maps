@@ -3,7 +3,7 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
-[![Imgur]](http://i.imgur.com/tVEUg88.png)
+![Imgur](http://i.imgur.com/tVEUg88.png)
 
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
@@ -68,29 +68,35 @@ You will also have these three scope variables after these directives are initia
   * $scope.map
   * $scope.markers as a hash
   * $scope.shapes as a hash
+  * $scope.infoWindow as a hash
+  * $scope.markerCluster as a hash
 
 In case your map directive scope is different from your controller scope, there are event emitted when each is initialized.
 There are three events emitted;
 
-  * `mapInitialized` with [map] argument 
-  * `markersInitialized` with [markers] argument 
-  * `shpaesInitialized` with [shapes] argument 
+  * `mapInitialized`
+  * `markersInitialized`
+  * `shpaesInitialized`
+  * `infoWindowInitialized` 
+  * `markerClusterInitialized` 
 
 Example Usage:
 
     app.controller('parentParentController', function($scope) {
-      $scope.$on('mapInitialized', function(event, args) {
-        var map = args[0];
+      $scope.$on('mapInitialized', function(event, map) {
+        map.setCenter( .... )
         ..
       });
     });
 
 Directives
 -----------
-There are three directives defined with ng-map module.
+There are five directives defined with ng-map module.
   1. map
   2. marker
   3. shape
+  4. info-window
+  5. marker-cluster
 
 #### **map** Tag(Directive) ####
 
@@ -98,42 +104,15 @@ There are three directives defined with ng-map module.
 [As documented](https://developers.google.com/maps/documentation/javascript/reference#MapOptions),
 it requires minimum two options, center and zoom. You can specify all map options as attributes.
 
-These are attributes of map tag which is EXACTLY the same as the documentation.
+These are attributes of map tag which is EXACTLY the same as the documentation except the following for the convenience
 
 <table>
 <tr><th>Attributes<th>Description                                     
-<tr><td>background-color <td> i.e. 'yellow', 'red'
 <tr><td>center<td>address or latitude/langitude<br/>   
                   i.e. center="[40.79,-54,18]", center="toronto, canada"
-<tr><td>disable-default-u-i <td> true or false
-<tr><td>disable-double-click-zoom <td> true of false 
-<tr><td>draggable        <td> true of false
-<tr><td>draggable-cursor <td> i.e. pointer
-<tr><td>dragging-cursor  <td> i.e. hand
-<tr><td>heading          <td> The heading for aerial imagery in degrees measured clockwise from cardinal direction North. Headings are snapped to the nearest available angle for which imagery is available.
-<tr><td>keyboard-shortcuts   <td> true or false
-<tr><td>map-maker   <td> true or false
-<tr><td>map-type-id <td> i.e. mapTypeId="HYBRID"
-<tr><td>max-zoom    <td> number, i.e. 12, 13
-<tr><td>min-zoom    <td> numer, i.e. 4, 5
-<tr><td>no-clear    <td> true or false
-<tr><td>scrollwheel <td>true or false
-<tr><td>street-view <td>i.e. streetView="StreetViewPanorama($("#pano")[0], {position:fenway, pov:{heading: 34, pitch: 10}})"
-<tr><td>styles     <td>i.e. styles='{featureType: "poi"}'
-<tr><td>zoom       <td> initial map zoom level, required. i.e. 12
 <tr><td>EVENTS     <td> You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
    <br/> i.e. on-click="myfunc"
 </table>
-
-These are full list of controls that can be used as map attributes; 
-
-  * [overviewMap](https://developers.google.com/maps/documentation/javascript/reference#OverviewMapControlOptions)
-  * [pan](https://developers.google.com/maps/documentation/javascript/reference#PanControlOptions)
-  * [rotate](https://developers.google.com/maps/documentation/javascript/reference#RotateControlOptions)
-  * [scale](https://developers.google.com/maps/documentation/javascript/reference#ScaleControlOptions)
-  * [streetView](https://developers.google.com/maps/documentation/javascript/reference#StreetViewControlOptions)
-  * [zoom](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
-  * [mapType](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
 
 For usage of map controls, please refer to [this example](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html).
 
@@ -143,30 +122,15 @@ For usage of map controls, please refer to [this example](https://rawgithub.com/
 [As documented](https://developers.google.com/maps/documentation/javascript/reference#Marker), it reqires `position` as an attribute.
 You can list any [maker options](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions) as attribute of marker tag
 
-These are attributes of marker tag which ate EXACTLY the same as the documentation.
+These are attributes of marker tag which ate EXACTLY the same as the documentation except the following for the convenienece.
 
 
 <table>
 <tr><th>Attribute<th>Description
   <tr><td> id <td> Used for programming purpose. i.e. $scope.markers.myId
-  <tr><td> anchor-point <td> i.e. Point(x:number, y:number)
-  <tr><td> animation <td> i.e. Animation.Bounce, Animation.Drop
-  <tr><td> clickable <td> true or false
-  <tr><td> cross-on-drag <td> true or false
-  <tr><td> cursor <td> Mouse cursor to show on hover
-  <tr><td> draggable <td> true or false
-  <tr><td> flat <td> not to show shadow, true or false
-  <tr><td> icon <td> icon for the foreground
-  <tr><td> optimized <td> true or false, to show markers as canvas tag or not
   <tr><td> position   <td>
     'current', address, or latitude/longitude  <br/>
     i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
-  <tr><td> raise-on-drag  <td> true or false
-  <tr><td> shadow <td> shadow image
-  <tr><td> shape <td> Image map region definition used for drag/click.
-  <tr><td> title <td> hover text
-  <tr><td> visible <td> true or false
-  <tr><td> zIndex <td> number
   <tr><td> EVENTS <td>
     You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">marker events</a>   
     i.e. on-click="myfunc"
@@ -181,7 +145,6 @@ These are attributes of marker tag which ate EXACTLY the same as the documentati
 
   * optionally, you can provide `id` for programming purpose. i.e. $scope.shapes.myCircle
 
-
 All other attributes are based on the `name` you specified.  
 To see the full list of options of a shape for attributes, please visit the documentation.
 
@@ -189,7 +152,6 @@ To see the full list of options of a shape for attributes, please visit the docu
   * [polyline](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
   * [image](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)
   * [circle](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)
-
 
 license
 =======
