@@ -25,7 +25,7 @@ To Get Started
   <pre>
   &lt;script src="http://maps.google.com/maps/api/js?sensor=false">&lt;/script>
   &lt;script src="http://code.angularjs.org/1.2.5/angular.js">&lt;/script>
-  &lt;script src="http://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js">&lt;/script>
+  &lt;script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js">&lt;/script>
   </pre>
 
 
