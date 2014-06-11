@@ -56,6 +56,7 @@ Examples
   * [Multiple Maps On A Page](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/multiple_maps_on_a_page.html)
   * [Street View](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/street_view.html)
   * [Marker Clusterer](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html)
+  * [Starbucks World Wide](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_app.html)
 
 To use it in your app, please include 'ngMap' as dependency.
 
