@@ -9,15 +9,14 @@
   <script src="scripts/ng-map.min.js"></script>
   <script src="scripts/plunkr.js"></script>
   <link rel="stylesheet" href="css/styles.css"></script>
-  <script src="scripts/starbucks.json" type="text/javascript"></script>
   <script src="scripts/markerclusterer.js"></script>
   <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']);
   app.controller('mapController', function($scope, $http, StreetView) {
     $scope.stores = [];
     $scope.$on('mapInitialized', function(event, map) {
-      console.log('loading /scripts/starbucks.json');
-      $http.get('/scripts/starbucks.json').success( function(stores) {
+      console.log('loading scripts/starbucks.json');
+      $http.get('scripts/starbucks.json').success( function(stores) {
         for (var i=0; i<stores.length; i++) {
           var store = stores[i];
           store.position = new google.maps.LatLng(store.latitude,store.longitude);
@@ -39,7 +38,7 @@
 
           $scope.stores.push(marker); 
         }
-        console.log('finished loading /scripts/starbucks.json', '$scope.stores', $scope.stores.length);
+        console.log('finished loading scripts/starbucks.json', '$scope.stores', $scope.stores.length);
         $scope.markerClusterer = new MarkerClusterer(map, $scope.stores, {});
         $scope.fullScreenToggle.click();
       });
