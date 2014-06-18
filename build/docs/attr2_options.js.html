@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: services/attr2_options.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: services/attr2_options.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace ngMap.services.Attr2Options
+ */
+var ngMap = ngMap || {};
+ngMap.services = ngMap.services || {};
+/**
+ * @memberof ngMap.services.Attr2Options
+ * @name deps
+ */
+ngMap.services.Attr2Options = { deps: [] };
+/**
+ * @memberof ngMap.services.Attr2Options
+ * @name func
+ * @description
+ *   Filters out angularJs specific attributes 
+ *   and returns attributes to be used as options
+ */
+ngMap.services.Attr2Options.func = function() { 
+  return {
+    /**
+     * filtering attributes  
+     * 1. skip all angularjs methods $.. $$..
+     * @memberof ngMap.services.Attr2Options
+     */
+    filter: function(attrs) {
+      var options = {};
+      for(var key in attrs) {
+        if (!key.match(/^\$/)) {
+          options[key] = attrs[key];
+        }
+      }
+      return options;
+    },
+
+    /**
+     * @memberof ngMap.services.Attr2Options
+     * converting attributes hash to Google Maps API v3 options
+     */
+    getOptions: function(attrs, scope) {
+      var options = {};
+      for(var key in attrs) {
+        if (attrs[key]) {
+          if (key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
+            continue;
+          } else if (key.match(/ControlOptions$/)) { // skip controlOptions
+            continue;
+          }
+
+          var val = attrs[key];
+          try { // 1. Number?
+            var num = Number(val);
+            if (isNaN(num)) {
+              throw "Not a number";
+            } else  {
+              options[key] = num;
+            }
+          } catch(err) { 
+            try { // 2.JSON?
+              options[key] = JSON.parse(val);
+            } catch(err2) {
+              // 3. Object Expression. i.e. LatLng(80,-49)
+              if (val.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
+                try {
+                  var exp = "new google.maps."+val;
+                  options[key] = eval(exp); // TODO, still eval
+                } catch(e) {
+                  options[key] = val;
+                } 
+              // 4. Object Expression. i.e. MayTypeId.HYBRID 
+              } else if (val.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
+                try {
+                  options[key] = scope.$eval("google.maps."+val);
+                } catch(e) {
+                  options[key] = val;
+                } 
+              // 5. Object Expression. i.e. HYBRID 
+              } else if (val.match(/^[A-Z]+$/)) {
+                try {
+                  var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
+                  options[key] = scope.$eval("google.maps."+capitializedKey+"."+val);
+                } catch(e) {
+                  options[key] = val;
+                } 
+              } else {
+                options[key] = val;
+              }
+            } // catch(err2)
+          } // catch(err)
+        } // if (attrs[key])
+      } //for(var key in attrs)
+      return options;
+    },
+
+    /**
+     * converting attributes hash to scope-specific function 
+     * scope is to validate a function within the scope
+     * @memberof ngMap.services.Attr2Options
+     */
+    getEvents: function(scope, attrs) {
+      var events = {};
+      var toLowercaseFunc = function($1){
+        return "_"+$1.toLowerCase();
+      };
+      var eventFunc = function(attrValue) {
+        var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
+        var funcName = matches[1];
+        var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
+        
+        var args = scope.$eval("["+argsStr+"]");
+        return function(event) {
+          scope[funcName].apply(this, [event].concat(args));
+        }
+      }
+
+      for(var key in attrs) {
+        if (attrs[key]) {
+          if (!key.match(/^on[A-Z]/)) { //skip if not events
+            continue;
+          }
+          
+          //get event name as underscored. i.e. zoom_changed
+          var eventName = key.replace(/^on/,'');
+          eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
+          eventName = eventName.replace(/([A-Z])/g, toLowercaseFunc);
+
+          var attrValue = attrs[key];
+          events[eventName] = new eventFunc(attrValue);
+        }
+      }
+      return events;
+    },
+
+    /**
+     * control means map controls, i.e streetview, pan, etc, not a general control
+     * @memberof ngMap.services.Attr2Options
+     */
+    getControlOptions: function(filtered) {
+      var controlOptions = {};
+
+      for (var attr in filtered) {
+        if (filtered[attr]) {
+          if (!attr.match(/(.*)ControlOptions$/)) { 
+            continue; // if not controlOptions, skip it
+          }
+
+          //change invalid json to valid one, i.e. {foo:1} to {"foo": 1}
+          var orgValue = filtered[attr];
+          var newValue = orgValue.replace(/'/g, '"');
+          newValue = newValue.replace(/([^"]+)|("[^"]+")/g, function($0, $1, $2) {
+            if ($1) {
+              return $1.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+            } else {
+              return $2; 
+            } 
+          });
+          try {
+            var options = JSON.parse(newValue);
+            for (var key in options) { //assign the right values
+              if (options[key]) {
+                var value = options[key];
+                if (typeof value === 'string') {
+                  value = value.toUpperCase();
+                } else if (key === "mapTypeIds") {
+                  value = value.map( function(str) {
+                    return google.maps.MapTypeId[str.toUpperCase()];
+                  });
+                } 
+                
+                if (key === "style") {
+                  var str = attr.charAt(0).toUpperCase() + attr.slice(1);
+                  var objName = str.replace(/Options$/,'')+"Style";
+                  options[key] = google.maps[objName][value];
+                } else if (key === "position") {
+                  options[key] = google.maps.ControlPosition[value];
+                } else {
+                  options[key] = value;
+                }
+              }
+            }
+            controlOptions[attr] = options;
+          } catch (e) {
+            console.error('invald option for', attr, newValue, e, e.stack);
+          }
+        }
+      } // for
+
+      return controlOptions;
+    } // function
+  }; // return
+}; // function
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.directives.infoWindow.html">ngMap.directives.infoWindow</a></li><li><a href="ngMap.directives.map.html">ngMap.directives.map</a></li><li><a href="ngMap.directives.marker.html">ngMap.directives.marker</a></li><li><a href="ngMap.directives.markerClusterer.html">ngMap.directives.markerClusterer</a></li><li><a href="ngMap.directives.shape.html">ngMap.directives.shape</a></li><li><a href="ngMap.services.html">ngMap.services</a></li><li><a href="ngMap.services.Attr2Options.html">ngMap.services.Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">ngMap.services.GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">ngMap.services.NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">ngMap.services.StreetView</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Jun 18 2014 16:10:07 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -27,6 +27,8 @@
     "express": "~4.4.1",
     "gulp-tap": "~0.1.1",
     "gulp-shell": "~0.2.5",
-    "compression": "~1.0.6"
+    "compression": "~1.0.6",
+    "jsdoc": "~3.3.0-alpha8",
+    "gulp-jsdoc": "~0.1.4"
   }
 }

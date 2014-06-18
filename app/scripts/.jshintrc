@@ -1,0 +1,4 @@
+{
+  "predef" : ["google", "MarkerCluster" ],
+  "forin" : false
+}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: directives/map.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: directives/map.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace ngMap.directives.map
+ */
+var ngMap = ngMap || {};
+ngMap.directives = ngMap.directives || {};
+/**
+ * @memberof ngMap.directives.map
+ * @name deps
+ */
+ngMap.directives.map = { deps: ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'] };
+/**
+ * @memberof ngMap.directives.map
+ * @name func
+ */
+ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
+  //var parser = new Attr2Options();
+  var parser = Attr2Options;
+
+  return {
+    restrict: 'AE',
+    controller: ['$scope', function($scope) { //parent controller scope
+      this.map = null;
+      this.controls = {};
+      this.markers = [];
+      this.shapes = [];
+      this.infoWindows = [];
+      this.markerCluster = null;
+
+      /**
+       * Initialize map and events
+       */ 
+      this.initMap = function(scope, element, attrs) {
+        var filtered = parser.filter(attrs);
+        scope.google = google;
+        var mapOptions = parser.getOptions(filtered, scope);
+        var controlOptions = parser.getControlOptions(filtered);
+        for(var key in controlOptions) {
+          if (key) {
+            mapOptions[key] = controlOptions[key];
+          }
+        }
+
+        var _this = this;
+        var savedCenter = null;
+
+        if (!mapOptions.zoom) {
+          mapOptions.zoom = 15; //default zoom
+        }
+        if (mapOptions.center instanceof Array) {
+          var lat = mapOptions.center[0], lng= mapOptions.center[1];
+          mapOptions.center = new google.maps.LatLng(lat,lng);
+        } else {
+          savedCenter = mapOptions.center;
+          delete mapOptions.center; //cannot show map with center as string
+        }
+        
+        for (var name in this.controls) {
+          if (name) {
+            mapOptions[name+"Control"] = this.controls[name].enabled === "false" ? 0:1;
+            delete this.controls[name].enabled;
+            mapOptions[name+"ControlOptions"] = this.controls[name];
+          }
+        }
+        
+        console.log("mapOptions", mapOptions);
+        // create a new div for map portion, so it does not touch map element at all.
+        // http://stackoverflow.com/questions/20955356
+        var el = document.createElement("div");
+        el.style.width = "100%";
+        el.style.height = "100%";
+        element.prepend(el);
+        _this.map = new google.maps.Map(el, mapOptions);
+
+        if (typeof savedCenter == 'string') { //address
+          GeoCoder.geocode({address: savedCenter})
+            .then(function(results) {
+              _this.map.setCenter(results[0].geometry.location);
+            });
+        } else if (!mapOptions.center) { //current location
+          NavigatorGeolocation.getCurrentPosition()
+            .then(function(position) {
+              var lat = position.coords.latitude, lng = position.coords.longitude;
+              _this.map.setCenter(new google.maps.LatLng(lat, lng));
+            })
+        }
+
+        //map events
+        var events = parser.getEvents(scope, filtered);
+        console.log("mapEvents", events);
+        for (var eventName in events) {
+          if (eventName) {
+            google.maps.event.addListener(_this.map, eventName, events[eventName]);
+          }
+        }
+
+        //assign map to parent scope  
+        scope.map = _this.map;
+        return _this.map;
+      },
+
+      /**
+       * Initial markers for this map
+       * 
+       * This does not work with async. actions. i.e, geocoder
+       * because markers are not added at this moment
+       * Thus, markers will be watched and updated with scope.$watch
+       */
+      this.addMarker = function(marker) {
+        marker.setMap(this.map);
+        if (marker.centered) {
+          this.map.setCenter(marker.position);
+        }
+        var len = Object.keys($scope.markers).length;
+        $scope.markers[marker.id || len] = marker;
+      };
+
+      this.initMarkers = function() {
+        $scope.markers = {};
+        for (var i=0; i&lt;this.markers.length; i++) {
+          var marker = this.markers[i];
+          this.addMarker(marker);
+        }
+        return $scope.markers;
+      };
+
+      /**
+       * Initialize shapes for this map
+       */
+      this.initShapes = function() {
+        $scope.shapes = {};
+        for (var i=0; i&lt;this.shapes.length; i++) {
+          var shape = this.shapes[i];
+          shape.setMap(this.map);
+          $scope.shapes[shape.id || (i+1) ] = shape; // can have id as key
+        }
+        return $scope.shapes;
+      };
+
+      /**
+       * Initialize infoWindows for this map
+       */
+      this.initInfoWindows = function() {
+        $scope.infoWindows = {};
+        for (var i=0; i&lt;this.infoWindows.length; i++) {
+          var obj = this.infoWindows[i];
+          $scope.infoWindows[obj.id || (i+1) ] = obj; 
+        }
+        return $scope.infoWindows;
+      };
+
+      /**
+       * Initialize markerClusterere for this map
+       */
+      this.initMarkerClusterer = function() {
+        if (this.markerClusterer) {
+          $scope.markerClusterer = new MarkerClusterer(
+            this.map, 
+            this.markerClusterer.data, 
+            this.markerClusterer.pptions
+          );
+        }
+        return $scope.markerClusterer;
+      };
+    }],
+    link: function (scope, element, attrs, ctrl) {
+      var map = ctrl.initMap(scope, element, attrs);
+      scope.$emit('mapInitialized', map);  
+      var markers = ctrl.initMarkers();
+      scope.$emit('markersInitialized', markers);  
+      var shapes = ctrl.initShapes();
+      scope.$emit('shapesInitialized', shapes);  
+      var infoWindows = ctrl.initInfoWindows();
+      scope.$emit('infoWindowsInitialized', infoWindows);  
+      var markerClusterer= ctrl.initMarkerClusterer();
+      scope.$emit('markerClustererInitialized', markerClusterer);  
+    }
+  }; // return
+}; // function
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.directives.infoWindow.html">ngMap.directives.infoWindow</a></li><li><a href="ngMap.directives.map.html">ngMap.directives.map</a></li><li><a href="ngMap.directives.marker.html">ngMap.directives.marker</a></li><li><a href="ngMap.directives.markerClusterer.html">ngMap.directives.markerClusterer</a></li><li><a href="ngMap.directives.shape.html">ngMap.directives.shape</a></li><li><a href="ngMap.services.html">ngMap.services</a></li><li><a href="ngMap.services.Attr2Options.html">ngMap.services.Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">ngMap.services.GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">ngMap.services.NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">ngMap.services.StreetView</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Jun 18 2014 16:10:07 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

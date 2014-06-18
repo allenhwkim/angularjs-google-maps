@@ -13,6 +13,7 @@ var through = require('through2');
 var replace = require('gulp-replace');
 var tap = require('gulp-tap');
 var shell = require('gulp-shell');
+var jsdoc = require('gulp-jsdoc');
 var bump = require('gulp-bump');
 var bumpVersion = function(type) {
   type = type || 'patch';
@@ -42,7 +43,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build-js', function() {
-  return gulp.src(['app/scripts/*.js', 'app/scripts/**/*.js'])
+  return gulp.src(['app/scripts/*/*.js', 'app/scripts/app.js'])
     .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
     .pipe(filesize())
@@ -72,11 +73,16 @@ gulp.task('build-html', function() {
     .pipe(gulp.dest('./build'));
 });
 
+gulp.task('docs', function() {
+  return gulp.src(['./app/**/*.js'])
+    .pipe(jsdoc('./build/docs', {path: './docs/custom'}));
+});
+
 gulp.task('bump', function() { bumpVersion('patch'); });
 gulp.task('bump:patch', function() { bumpVersion('patch'); });
 gulp.task('bump:minor', function() { bumpVersion('minor'); });
 gulp.task('bump:major', function() { bumpVersion('major'); });
 
 gulp.task('build', function(callback) {
-  runSequence('clean', 'build-js', 'copy', 'build-html', callback);
+  runSequence('clean', 'build-js', 'copy', 'build-html', 'docs', callback);
 });
