@@ -288,7 +288,6 @@ function buildNav(members) {
     var nav = '<h2><a href="index.html">Index</a></h2>',
         seen = {},
         hasClassList = false,
-        classNav = '',
         globalNav = '';
 
     if (members.modules.length) {
@@ -316,19 +315,29 @@ function buildNav(members) {
     }
 
     if (members.classes.length) {
-        members.classes.forEach(function(c) {
-            if ( !hasOwnProp.call(seen, c.longname) ) {
-                classNav += '<li>' + linkto(c.longname, c.name) + '</li>';
-            }
-            seen[c.longname] = true;
-        });
-
-        if (classNav !== '') {
-            nav += '<h3>Classes</h3><ul>';
-            nav += classNav;
-            nav += '</ul>';
+        var groups = {};
+        for (var i=0; i< members.classes.length; i++) {
+          var klass = members.classes[i];
+          var groupName = klass.ngdoc || 'class';
+          groups[groupName] = groups[groupName] || [];
+          groups[groupName].push( klass );
         }
-    }
+        for (var groupName in groups) {
+            var classNav = '';
+            groups[groupName].forEach(function(c) {
+                if ( !hasOwnProp.call(seen, c.longname) ) {
+                    classNav += '<li>' + linkto(c.longname, c.name) + '</li>';
+                }
+                seen[c.longname] = true;
+            });
+
+            if (classNav !== '') {
+                nav += '<h3>' + groupName + '</h3><ul>';
+                nav += classNav;
+                nav += '</ul>';
+            }
+        } // for
+    } // if
 
     if (members.events.length) {
         nav += '<h3>Events</h3><ul>';
@@ -606,7 +615,8 @@ exports.publish = function(taffyData, opts, tutorials) {
     Object.keys(helper.longnameToUrl).forEach(function(longname) {
         var myClasses = helper.find(classes, {longname: longname});
         if (myClasses.length) {
-            generate('Class: ' + myClasses[0].name, myClasses, helper.longnameToUrl[longname]);
+            var titlePrefix = myClasses[0].ngdoc ? myClasses[0].ngdoc : 'Class';
+            generate(titlePrefix + ': ' + myClasses[0].name, myClasses, helper.longnameToUrl[longname]);
         }
 
         var myModules = helper.find(modules, {longname: longname});

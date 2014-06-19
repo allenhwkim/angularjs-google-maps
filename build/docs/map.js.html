@@ -26,20 +26,19 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @namespace ngMap.directives.map
+ * @class
+ * @ngdoc directive
+ * @param Attr2Options
+ * @param $parse
+ * @param NavigatorGeolocation
+ * @param GeoCoder
+ * @param $compile
+ * @returns 
+ *   restrict: AE&lt;br>
+ *   controller: map controller that is used by children directives&lt;br>
+ *   link: initiliaze map&lt;br>
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.map
- * @name deps
- */
-ngMap.directives.map = { deps: ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'] };
-/**
- * @memberof ngMap.directives.map
- * @name func
- */
-ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
+ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -55,6 +54,10 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize map and events
+       * @param scope
+       * @param element
+       * @param attrs
+       * @return map object
        */ 
       this.initMap = function(scope, element, attrs) {
         var filtered = parser.filter(attrs);
@@ -131,6 +134,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
        * This does not work with async. actions. i.e, geocoder
        * because markers are not added at this moment
        * Thus, markers will be watched and updated with scope.$watch
+       * @param marker
        */
       this.addMarker = function(marker) {
         marker.setMap(this.map);
@@ -141,6 +145,10 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
         $scope.markers[marker.id || len] = marker;
       };
 
+      /**
+       * Initialize markers
+       * @returns markers
+       */
       this.initMarkers = function() {
         $scope.markers = {};
         for (var i=0; i&lt;this.markers.length; i++) {
@@ -152,6 +160,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize shapes for this map
+       * @returns shapes
        */
       this.initShapes = function() {
         $scope.shapes = {};
@@ -165,6 +174,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize infoWindows for this map
+       * @returns infoWindows
        */
       this.initInfoWindows = function() {
         $scope.infoWindows = {};
@@ -177,6 +187,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize markerClusterere for this map
+       * @returns markerClusterer
        */
       this.initMarkerClusterer = function() {
         if (this.markerClusterer) {
@@ -203,6 +214,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
     }
   }; // return
 }; // function
+ngMap.directives.map.$inject = ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'];
 </code></pre>
         </article>
     </section>
@@ -213,13 +225,13 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.directives.infoWindow.html">ngMap.directives.infoWindow</a></li><li><a href="ngMap.directives.map.html">ngMap.directives.map</a></li><li><a href="ngMap.directives.marker.html">ngMap.directives.marker</a></li><li><a href="ngMap.directives.markerClusterer.html">ngMap.directives.markerClusterer</a></li><li><a href="ngMap.directives.shape.html">ngMap.directives.shape</a></li><li><a href="ngMap.services.html">ngMap.services</a></li><li><a href="ngMap.services.Attr2Options.html">ngMap.services.Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">ngMap.services.GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">ngMap.services.NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">ngMap.services.StreetView</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>directive</h3><ul><li><a href="ngMap.directives.infoWindow.html">infoWindow</a></li><li><a href="ngMap.directives.map.html">map</a></li><li><a href="ngMap.directives.marker.html">marker</a></li><li><a href="ngMap.directives.markerClusterer.html">markerClusterer</a></li><li><a href="ngMap.directives.shape.html">shape</a></li></ul><h3>service</h3><ul><li><a href="ngMap.services.Attr2Options.html">Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">StreetView</a></li></ul><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.services.html">ngMap.services</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Jun 18 2014 16:10:07 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Thu Jun 19 2014 17:46:10 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

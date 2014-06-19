@@ -1,21 +1,8 @@
 /**
- * @namespace ngMap.services.Attr2Options
+ * @class
+ * @ngdoc service
  */
-var ngMap = ngMap || {};
-ngMap.services = ngMap.services || {};
-/**
- * @memberof ngMap.services.Attr2Options
- * @name deps
- */
-ngMap.services.Attr2Options = { deps: [] };
-/**
- * @memberof ngMap.services.Attr2Options
- * @name func
- * @description
- *   Filters out angularJs specific attributes 
- *   and returns attributes to be used as options
- */
-ngMap.services.Attr2Options.func = function() { 
+ngMap.services.Attr2Options = function() { 
   return {
     /**
      * filtering attributes  

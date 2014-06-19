@@ -1,18 +1,8 @@
 /**
- * @namespace ngMap.directives.marker
+ * @class
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.marker
- * @name deps
- */
-ngMap.directives.marker = { deps: ['Attr2Options', 'GeoCoder', 'NavigatorGeolocation'] };
-/**
- * @memberof ngMap.directives.marker
- * @name func
- */
-ngMap.directives.marker.func  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
+ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -88,3 +78,4 @@ ngMap.directives.marker.func  = function(Attr2Options, GeoCoder, NavigatorGeoloc
     } //link
   }; // return
 };// function
+ngMap.directives.marker.$inject  = ['Attr2Options', 'GeoCoder', 'NavigatorGeolocation'];

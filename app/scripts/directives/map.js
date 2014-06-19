@@ -1,18 +1,17 @@
 /**
- * @namespace ngMap.directives.map
+ * @class
+ * @ngdoc directive
+ * @param Attr2Options
+ * @param $parse
+ * @param NavigatorGeolocation
+ * @param GeoCoder
+ * @param $compile
+ * @returns 
+ *   restrict: AE<br>
+ *   controller: map controller that is used by children directives<br>
+ *   link: initiliaze map<br>
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.map
- * @name deps
- */
-ngMap.directives.map = { deps: ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'] };
-/**
- * @memberof ngMap.directives.map
- * @name func
- */
-ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
+ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -28,6 +27,10 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize map and events
+       * @param scope
+       * @param element
+       * @param attrs
+       * @return map object
        */ 
       this.initMap = function(scope, element, attrs) {
         var filtered = parser.filter(attrs);
@@ -104,6 +107,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
        * This does not work with async. actions. i.e, geocoder
        * because markers are not added at this moment
        * Thus, markers will be watched and updated with scope.$watch
+       * @param marker
        */
       this.addMarker = function(marker) {
         marker.setMap(this.map);
@@ -114,6 +118,10 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
         $scope.markers[marker.id || len] = marker;
       };
 
+      /**
+       * Initialize markers
+       * @returns markers
+       */
       this.initMarkers = function() {
         $scope.markers = {};
         for (var i=0; i<this.markers.length; i++) {
@@ -125,6 +133,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize shapes for this map
+       * @returns shapes
        */
       this.initShapes = function() {
         $scope.shapes = {};
@@ -138,6 +147,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize infoWindows for this map
+       * @returns infoWindows
        */
       this.initInfoWindows = function() {
         $scope.infoWindows = {};
@@ -150,6 +160,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize markerClusterere for this map
+       * @returns markerClusterer
        */
       this.initMarkerClusterer = function() {
         if (this.markerClusterer) {
@@ -176,3 +187,4 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
     }
   }; // return
 }; // function
+ngMap.directives.map.$inject = ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'];

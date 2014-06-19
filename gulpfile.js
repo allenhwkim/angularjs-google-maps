@@ -43,7 +43,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build-js', function() {
-  return gulp.src(['app/scripts/*/*.js', 'app/scripts/app.js'])
+  return gulp.src(['app/scripts/namespace.js', 'app/scripts/*/*.js', 'app/scripts/app.js'])
     .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
     .pipe(filesize())
@@ -75,7 +75,10 @@ gulp.task('build-html', function() {
 
 gulp.task('docs', function() {
   return gulp.src(['./app/**/*.js'])
-    .pipe(jsdoc('./build/docs', {path: './docs/custom'}));
+    .pipe(jsdoc('./build/docs', 
+      {path: './docs/custom'}, 
+      {plugins: [__dirname+'/docs/custom/plugins/angular']}
+    ));
 });
 
 gulp.task('bump', function() { bumpVersion('patch'); });

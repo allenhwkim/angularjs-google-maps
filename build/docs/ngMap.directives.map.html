@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: map</title>
+    <title>JSDoc: directive: map</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: map</h1>
+    <h1 class="page-title">directive: map</h1>
 
     
 
@@ -40,8 +40,137 @@
 
     
         
+<dt>
+    <h4 class="name" id="map"><span class="type-signature"></span>map<span class="signature">(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile)</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>Attr2Options</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>$parse</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>NavigatorGeolocation</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>GeoCoder</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>$compile</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
 <dl class="details">
     
 
@@ -64,7 +193,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line1">line 1</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -76,7 +205,33 @@
 </dl>
 
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    restrict: AE<br>
+  controller: map controller that is used by children directives<br>
+  link: initiliaze map<br>
+</div>
+
+
+
         
+
+    
+</dd>
+
     
     </div>
 
@@ -93,114 +248,6 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<dt>
-    <h4 class="name" id="deps"><span class="type-signature">(static) </span>deps<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line6">line 6</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="func"><span class="type-signature">(static) </span>func<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line11">line 11</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-</dd>
-
-        </dl>
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -208,7 +255,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="addMarker"><span class="type-signature"></span>addMarker<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addMarker"><span class="type-signature"></span>addMarker<span class="signature">(marker)</span><span class="type-signature"></span></h4>
 
     
 </dt>
@@ -229,6 +276,49 @@ Thus, markers will be watched and updated with scope.$watch
     
 
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>marker</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
 
     
 <dl class="details">
@@ -253,7 +343,7 @@ Thus, markers will be watched and updated with scope.$watch
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line108">line 108</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line112">line 112</a>
     </li></ul></dd>
     
 
@@ -324,7 +414,7 @@ Thus, markers will be watched and updated with scope.$watch
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line142">line 142</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -347,6 +437,16 @@ Thus, markers will be watched and updated with scope.$watch
     
 
     
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    infoWindows
+</div>
+
+
+
+        
 
     
 </dd>
@@ -354,7 +454,7 @@ Thus, markers will be watched and updated with scope.$watch
         
             
 <dt>
-    <h4 class="name" id="initMap"><span class="type-signature"></span>initMap<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="initMap"><span class="type-signature"></span>initMap<span class="signature">(scope, element, attrs)</span><span class="type-signature"></span></h4>
 
     
 </dt>
@@ -370,6 +470,85 @@ Thus, markers will be watched and updated with scope.$watch
 
     
 
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>scope</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>attrs</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
     
 
     
@@ -395,7 +574,7 @@ Thus, markers will be watched and updated with scope.$watch
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line32">line 32</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -418,6 +597,16 @@ Thus, markers will be watched and updated with scope.$watch
     
 
     
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    map object
+</div>
+
+
+
+        
 
     
 </dd>
@@ -466,7 +655,7 @@ Thus, markers will be watched and updated with scope.$watch
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line154">line 154</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line165">line 165</a>
     </li></ul></dd>
     
 
@@ -489,6 +678,97 @@ Thus, markers will be watched and updated with scope.$watch
     
 
     
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    markerClusterer
+</div>
+
+
+
+        
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="initMarkers"><span class="type-signature"></span>initMarkers<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Initialize markers
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    markers
+</div>
+
+
+
+        
 
     
 </dd>
@@ -537,7 +817,7 @@ Thus, markers will be watched and updated with scope.$watch
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line129">line 129</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line138">line 138</a>
     </li></ul></dd>
     
 
@@ -560,6 +840,16 @@ Thus, markers will be watched and updated with scope.$watch
     
 
     
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    shapes
+</div>
+
+
+
+        
 
     
 </dd>
@@ -580,13 +870,13 @@ Thus, markers will be watched and updated with scope.$watch
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.directives.infoWindow.html">ngMap.directives.infoWindow</a></li><li><a href="ngMap.directives.map.html">ngMap.directives.map</a></li><li><a href="ngMap.directives.marker.html">ngMap.directives.marker</a></li><li><a href="ngMap.directives.markerClusterer.html">ngMap.directives.markerClusterer</a></li><li><a href="ngMap.directives.shape.html">ngMap.directives.shape</a></li><li><a href="ngMap.services.html">ngMap.services</a></li><li><a href="ngMap.services.Attr2Options.html">ngMap.services.Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">ngMap.services.GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">ngMap.services.NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">ngMap.services.StreetView</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>directive</h3><ul><li><a href="ngMap.directives.infoWindow.html">infoWindow</a></li><li><a href="ngMap.directives.map.html">map</a></li><li><a href="ngMap.directives.marker.html">marker</a></li><li><a href="ngMap.directives.markerClusterer.html">markerClusterer</a></li><li><a href="ngMap.directives.shape.html">shape</a></li></ul><h3>service</h3><ul><li><a href="ngMap.services.Attr2Options.html">Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">StreetView</a></li></ul><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.services.html">ngMap.services</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Wed Jun 18 2014 16:10:07 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Thu Jun 19 2014 17:46:10 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

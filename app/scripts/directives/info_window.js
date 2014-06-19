@@ -1,18 +1,8 @@
 /**
- * @namespace ngMap.directives.infoWindow
+ * @class
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.infoWindow
- * @name deps
- */
-ngMap.directives.infoWindow = { deps: ['Attr2Options'] };
-/**
- * @memberof ngMap.directives.infoWindow
- * @name func
- */
-ngMap.directives.infoWindow.func = function(Attr2Options) {
+ngMap.directives.infoWindow = function(Attr2Options) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -72,3 +62,4 @@ ngMap.directives.infoWindow.func = function(Attr2Options) {
     } //link
   };// return
 };// function
+ngMap.directives.infoWindow.$inject = ['Attr2Options'];

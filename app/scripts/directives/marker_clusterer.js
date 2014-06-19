@@ -1,18 +1,8 @@
 /**
- * @namespace ngMap.directives.markerClusterer
+ * @class
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.markerClusterer
- * @name deps
- */
-ngMap.directives.markerClusterer = { deps: ['Attr2Options'] };
-/**
- * @memberof ngMap.directives.markerClusterer
- * @name func
- */
-ngMap.directives.markerClusterer.func  = function(Attr2Options) {
+ngMap.directives.markerClusterer  = function(Attr2Options) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -51,3 +41,4 @@ ngMap.directives.markerClusterer.func  = function(Attr2Options) {
     } //link
   }; // return
 };// function
+ngMap.directives.markerClusterer.$inject  = ['Attr2Options'];
