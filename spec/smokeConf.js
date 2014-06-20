@@ -10,7 +10,7 @@ exports.config = {
     'e2e/*_spec.js'
   ],
 
-  // Two latest versions of Chrome, Firefox, IE.
+  // Latest versions of Chrome, Firefox, IE.
   // TODO - add mobile.
   multiCapabilities: [{
     'browserName': 'chrome',
@@ -33,14 +33,6 @@ exports.config = {
     'build': process.env.TRAVIS_BUILD_NUMBER,
     'name': 'Protractor smoke tests',
     'version': '11',
-    'selenium-version': '2.42.0',
-    'platform': 'Windows 7'
-  }, {
-    'browserName': 'internet explorer',
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    'build': process.env.TRAVIS_BUILD_NUMBER,
-    'name': 'Protractor smoke tests',
-    'version': '10',
     'selenium-version': '2.42.0',
     'platform': 'Windows 7'
   }],
