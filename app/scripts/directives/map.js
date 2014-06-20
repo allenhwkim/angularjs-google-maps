@@ -1,5 +1,4 @@
 /**
- * @class
  * @ngdoc directive
  * @param Attr2Options
  * @param $parse

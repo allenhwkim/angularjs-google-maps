@@ -1,5 +1,4 @@
 /**
- * @class
  * @ngdoc directive
  */
 ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {

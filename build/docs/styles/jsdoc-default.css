@@ -10,6 +10,7 @@ body
     line-height: 130%;
     color: #000;
     background-color: #fff;
+    box-sizing: border-box;
 }
 
 a {
@@ -41,17 +42,15 @@ header
 
 #main {
     float: left;
-    width: 100%;
+    width: 69%;
 }
 
 section
 {
     display: block;
-
     background-color: #fff;
-    padding: 12px 24px;
+    margin: 12px 24px;
     border-bottom: 1px solid #ccc;
-    margin-right: 240px;
 }
 
 .variation {
@@ -69,9 +68,8 @@ nav
 {
     display: block;
     float: left;
-    margin-left: -300px;
     margin-top: 28px;
-    width: 220px;
+    width: 29%;
     border-left: 1px solid #ccc;
     padding-left: 9px;
 }
@@ -188,6 +186,10 @@ h6
 
 .type-signature {
     color: #aaa;
+}
+
+a.name-link {
+    text-decoration: none;
 }
 
 .name, .signature {

@@ -1,18 +1,15 @@
+/** @namespace ngMap */
+var ngMap = {
+  /** @namespace ngMap.services */
+  services: {},
+  /** @namespace ngMap.directives */
+  directives: {}
+};
+
 /**
- * @namespace ngMap.directives.infoWindow
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.infoWindow
- * @name deps
- */
-ngMap.directives.infoWindow = { deps: ['Attr2Options'] };
-/**
- * @memberof ngMap.directives.infoWindow
- * @name func
- */
-ngMap.directives.infoWindow.func = function(Attr2Options) {
+ngMap.directives.infoWindow = function(Attr2Options) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -72,22 +69,21 @@ ngMap.directives.infoWindow.func = function(Attr2Options) {
     } //link
   };// return
 };// function
+ngMap.directives.infoWindow.$inject = ['Attr2Options'];
 
 /**
- * @namespace ngMap.directives.map
+ * @ngdoc directive
+ * @param Attr2Options
+ * @param $parse
+ * @param NavigatorGeolocation
+ * @param GeoCoder
+ * @param $compile
+ * @returns 
+ *   restrict: AE<br>
+ *   controller: map controller that is used by children directives<br>
+ *   link: initiliaze map<br>
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.map
- * @name deps
- */
-ngMap.directives.map = { deps: ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'] };
-/**
- * @memberof ngMap.directives.map
- * @name func
- */
-ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
+ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -103,6 +99,10 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize map and events
+       * @param scope
+       * @param element
+       * @param attrs
+       * @return map object
        */ 
       this.initMap = function(scope, element, attrs) {
         var filtered = parser.filter(attrs);
@@ -179,6 +179,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
        * This does not work with async. actions. i.e, geocoder
        * because markers are not added at this moment
        * Thus, markers will be watched and updated with scope.$watch
+       * @param marker
        */
       this.addMarker = function(marker) {
         marker.setMap(this.map);
@@ -189,6 +190,10 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
         $scope.markers[marker.id || len] = marker;
       };
 
+      /**
+       * Initialize markers
+       * @returns markers
+       */
       this.initMarkers = function() {
         $scope.markers = {};
         for (var i=0; i<this.markers.length; i++) {
@@ -200,6 +205,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize shapes for this map
+       * @returns shapes
        */
       this.initShapes = function() {
         $scope.shapes = {};
@@ -213,6 +219,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize infoWindows for this map
+       * @returns infoWindows
        */
       this.initInfoWindows = function() {
         $scope.infoWindows = {};
@@ -225,6 +232,7 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
 
       /**
        * Initialize markerClusterere for this map
+       * @returns markerClusterer
        */
       this.initMarkerClusterer = function() {
         if (this.markerClusterer) {
@@ -251,22 +259,12 @@ ngMap.directives.map.func = function(Attr2Options, $parse, NavigatorGeolocation,
     }
   }; // return
 }; // function
+ngMap.directives.map.$inject = ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'];
 
 /**
- * @namespace ngMap.directives.marker
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.marker
- * @name deps
- */
-ngMap.directives.marker = { deps: ['Attr2Options', 'GeoCoder', 'NavigatorGeolocation'] };
-/**
- * @memberof ngMap.directives.marker
- * @name func
- */
-ngMap.directives.marker.func  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
+ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -342,22 +340,12 @@ ngMap.directives.marker.func  = function(Attr2Options, GeoCoder, NavigatorGeoloc
     } //link
   }; // return
 };// function
+ngMap.directives.marker.$inject  = ['Attr2Options', 'GeoCoder', 'NavigatorGeolocation'];
 
 /**
- * @namespace ngMap.directives.markerClusterer
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.markerClusterer
- * @name deps
- */
-ngMap.directives.markerClusterer = { deps: ['Attr2Options'] };
-/**
- * @memberof ngMap.directives.markerClusterer
- * @name func
- */
-ngMap.directives.markerClusterer.func  = function(Attr2Options) {
+ngMap.directives.markerClusterer  = function(Attr2Options) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
@@ -396,22 +384,12 @@ ngMap.directives.markerClusterer.func  = function(Attr2Options) {
     } //link
   }; // return
 };// function
+ngMap.directives.markerClusterer.$inject  = ['Attr2Options'];
 
 /**
- * @namespace ngMap.directives.shape
+ * @ngdoc directive
  */
-var ngMap = ngMap || {};
-ngMap.directives = ngMap.directives || {};
-/**
- * @memberof ngMap.directives.shape
- * @name deps
- */
-ngMap.directives.shape = { deps: ['Attr2Options'] };
-/**
- * @memberof ngMap.directives.shape
- * @name func
- */
-ngMap.directives.shape.func = function(Attr2Options) {
+ngMap.directives.shape = function(Attr2Options) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
   
@@ -487,25 +465,13 @@ ngMap.directives.shape.func = function(Attr2Options) {
       }
    }; // return
 }; // function
+ngMap.directives.shape.$inject  = ['Attr2Options'];
 
 /**
- * @namespace ngMap.services.Attr2Options
+ * @class
+ * @ngdoc service
  */
-var ngMap = ngMap || {};
-ngMap.services = ngMap.services || {};
-/**
- * @memberof ngMap.services.Attr2Options
- * @name deps
- */
-ngMap.services.Attr2Options = { deps: [] };
-/**
- * @memberof ngMap.services.Attr2Options
- * @name func
- * @description
- *   Filters out angularJs specific attributes 
- *   and returns attributes to be used as options
- */
-ngMap.services.Attr2Options.func = function() { 
+ngMap.services.Attr2Options = function() { 
   return {
     /**
      * filtering attributes  
@@ -680,143 +646,99 @@ ngMap.services.Attr2Options.func = function() {
 }; // function
 
 
-var ngMap = ngMap || {};
-ngMap.services = ngMap.services || {};
 /**
- * @namespace ngMap.services.GeoCoder
+ * @class
+ * @ngdoc service
  */
-ngMap.services.GeoCoder = {
-  /**
-   * @memberof ngMap.services.GeoCoder
-   */
-  deps: ['$q'],
-  /**
-   * @memberof ngMap.services.GeoCoder
-   * @name func
-   */
-  func: function($q) {
-    return {
-      geocode : function(options) {
-        var deferred = $q.defer();
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode(options, function (results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            deferred.resolve(results);
-          } else {
-            deferred.reject('Geocoder failed due to: '+ status);
-          }
-        });
-        return deferred.promise;
-      }
+ngMap.services.GeoCoder = function($q) {
+  return {
+    geocode : function(options) {
+      var deferred = $q.defer();
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode(options, function (results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          deferred.resolve(results);
+        } else {
+          deferred.reject('Geocoder failed due to: '+ status);
+        }
+      });
+      return deferred.promise;
     }
   }
 };
+ngMap.services.GeoCoder.$inject = ['$q'];
 
-var ngMap = ngMap || {};
-ngMap.services = ngMap.services || {};
+
 /**
- * @namespace ngMap.services.NavigatorGeolocation
+ * @class
+ * @ngdoc service
  */
-ngMap.services.NavigatorGeolocation = { 
-  /**
-   * @memberof ngMap.services.NavigatorGeolocation
-   */
-  deps: ['$q'],
-  /**
-   * @memberof ngMap.services.NavigatorGeolocation
-   * @name func
-   */
-  func: function($q) {
-    return {
-      getCurrentPosition: function() {
-        var deferred = $q.defer();
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            function(position) {
-              deferred.resolve(position);
-            }, function(evt) {
-              console.error(evt);
-              deferred.reject(evt);
-            }
-          );
-        } else {
-          deferred.reject("Browser Geolocation service failed.");
-        }
-        return deferred.promise;
-      },
-
-      watchPosition: function() {
-        return "TODO";
-      },
-
-      clearWatch: function() {
-        return "TODO";
-      }
-    };
-  } // func
-}; // map
-
-var ngMap = ngMap || {};
-ngMap.services = ngMap.services || {};
-/**
- * @namespace ngMap.services.StreetView
- */
-ngMap.services.StreetView = {
-  /**
-   * @memberof ngMap.services.StreetView
-   */
-  deps: ['$q'],
-  /**
-   * @memberof ngMap.services.StreetView
-   * @name func
-   */
-  func: function($q) {
-    return {
-      getPanorama : function(map, latlng) {
-        latlng = latlng || map.getCenter();
-        var deferred = $q.defer();
-        var svs = new google.maps.StreetViewService();
-        svs.getPanoramaByLocation( (latlng||map.getCenter), 100, function (data, status) {
-          // if streetView available
-          if (status === google.maps.StreetViewStatus.OK) {
-            deferred.resolve(data.location.pano);
-          } else {
-            // no street view available in this range, or some error occurred
-            deferred.resolve(false);
-            //deferred.reject('Geocoder failed due to: '+ status);
+ngMap.services.NavigatorGeolocation =  function($q) {
+  return {
+    getCurrentPosition: function() {
+      var deferred = $q.defer();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            deferred.resolve(position);
+          }, function(evt) {
+            console.error(evt);
+            deferred.reject(evt);
           }
-        });
-        return deferred.promise;
-      },
-      setPanorama : function(map, panoId) {
-        var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
-        svp.setPano(panoId);
+        );
+      } else {
+        deferred.reject("Browser Geolocation service failed.");
       }
-    }; // return
-  } // func
-}; // streetView
+      return deferred.promise;
+    },
+
+    watchPosition: function() {
+      return "TODO";
+    },
+
+    clearWatch: function() {
+      return "TODO";
+    }
+  };
+} // func
+ngMap.services.NavigatorGeolocation.$inject =   ['$q'];
 
 /**
- * @namespace ngMap
+ * @class
+ * @ngdoc service
  */
-var AngularFunc = function(obj) {
-  if (typeof obj.func !== 'function' || !obj.deps instanceof Array)
-    throw "Invalid obj. obj must have a `func` as function and `deps` as an array";
-  obj.func.$inject = obj.deps;
-  return obj.func;
-};
+ngMap.services.StreetView = function($q) {
+  return {
+    getPanorama : function(map, latlng) {
+      latlng = latlng || map.getCenter();
+      var deferred = $q.defer();
+      var svs = new google.maps.StreetViewService();
+      svs.getPanoramaByLocation( (latlng||map.getCenter), 100, function (data, status) {
+        // if streetView available
+        if (status === google.maps.StreetViewStatus.OK) {
+          deferred.resolve(data.location.pano);
+        } else {
+          // no street view available in this range, or some error occurred
+          deferred.resolve(false);
+          //deferred.reject('Geocoder failed due to: '+ status);
+        }
+      });
+      return deferred.promise;
+    },
+    setPanorama : function(map, panoId) {
+      var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
+      svp.setPano(panoId);
+    }
+  }; // return
+} // func
+ngMap.services.StreetView.$inject =  ['$q'];
 
 var ngMapModule = angular.module('ngMap', []);
-/**
- * @namespace ngMap.services 
- */
+
 for (var key in ngMap.services) {
-  ngMapModule.service(key, AngularFunc(ngMap.services[key]));
+  ngMapModule.service(key, ngMap.services[key]);
 }
 
-/**
- * @namespace ngMap.directives 
- */ 
 for (var key in ngMap.directives) {
-  ngMapModule.directive(key, AngularFunc(ngMap.directives[key]));
+  ngMapModule.directive(key, ngMap.directives[key]);
 }

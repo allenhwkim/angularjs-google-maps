@@ -1,5 +1,4 @@
 /**
- * @class
  * @ngdoc directive
  */
 ngMap.directives.infoWindow = function(Attr2Options) {

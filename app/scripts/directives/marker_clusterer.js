@@ -1,5 +1,4 @@
 /**
- * @class
  * @ngdoc directive
  */
 ngMap.directives.markerClusterer  = function(Attr2Options) {

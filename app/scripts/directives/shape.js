@@ -1,5 +1,4 @@
 /**
- * @class
  * @ngdoc directive
  */
 ngMap.directives.shape = function(Attr2Options) {
