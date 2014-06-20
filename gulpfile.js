@@ -76,8 +76,8 @@ gulp.task('build-html', function() {
 gulp.task('docs', function() {
   return gulp.src(['./app/**/*.js'])
     .pipe(jsdoc('./build/docs', 
-      {path: './docs/custom'}, 
-      {plugins: [__dirname+'/docs/custom/plugins/angular']}
+      {path: './config/jsdoc/template'}, 
+      {plugins: [__dirname+'/config/jsdoc/plugins/angular']}
     ));
 });
 
