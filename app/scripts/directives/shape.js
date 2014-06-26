@@ -38,7 +38,7 @@ ngMap.directives.shape = function(Attr2Options) {
       case "image":
           var url = options.url;
           var bounds = getBounds(options.bounds);
-          var opts = {opacity: options.opacity, clickable: options.clickable};
+          var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
           return new google.maps.GroundOverlay(url, bounds, opts);
       }
       return null;

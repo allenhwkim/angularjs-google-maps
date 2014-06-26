@@ -1,7 +1,7 @@
-/** @namespace ngMap */
+/** @module ngMap */
 var ngMap = {
-  /** @namespace ngMap.services */
+  /* @namespace ngMap.services */
   services: {},
-  /** @namespace ngMap.directives */
+  /* @namespace ngMap.directives */
   directives: {}
 };

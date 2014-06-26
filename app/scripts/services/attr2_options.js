@@ -123,6 +123,8 @@ ngMap.services.Attr2Options = function() {
      */
     getControlOptions: function(filtered) {
       var controlOptions = {};
+      if (typeof filtered != 'object')
+        return false;
 
       for (var attr in filtered) {
         if (filtered[attr]) {

@@ -15,6 +15,7 @@ var tap = require('gulp-tap');
 var shell = require('gulp-shell');
 var jsdoc = require('gulp-jsdoc');
 var bump = require('gulp-bump');
+var shell = require('gulp-shell');
 var bumpVersion = function(type) {
   type = type || 'patch';
   var version = '';
@@ -89,3 +90,7 @@ gulp.task('bump:major', function() { bumpVersion('major'); });
 gulp.task('build', function(callback) {
   runSequence('clean', 'build-js', 'copy', 'build-html', 'docs', callback);
 });
+
+gulp.task('test', shell.task([
+  './node_modules/karma/bin/karma start'
+]));

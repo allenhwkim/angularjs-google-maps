@@ -2,14 +2,12 @@
  * @ngdoc directive
  */
 ngMap.directives.infoWindow = function(Attr2Options) {
-  //var parser = new Attr2Options();
   var parser = Attr2Options;
 
   return {
     restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      //var filtered = new parser.filter(attrs);
       var filtered = parser.filter(attrs);
 
       /**
@@ -39,7 +37,7 @@ ngMap.directives.infoWindow = function(Attr2Options) {
       // do NOT show this
       element.css({display:'none'});
 
-      //provide showInfoWindow function to controller
+      //provide showInfoWindow function to scope
       scope.showInfoWindow = function(event, id, options) {
         var infoWindow = scope.infoWindows[id];
         var contents = infoWindow.contents;
@@ -57,8 +55,8 @@ ngMap.directives.infoWindow = function(Attr2Options) {
         }
         infoWindow.setContent(contents);
         infoWindow.open(scope.map, this);
-      }
-    } //link
+      };
+    } // link
   };// return
 };// function
 ngMap.directives.infoWindow.$inject = ['Attr2Options'];

@@ -9,8 +9,7 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "killall java chromedriver; scripts/test.js",
-    "start": "killall node; testapp/web-server.js &"
+    "test": "gulp test"
   },
   "devDependencies": {
     "protractor": "~0.23.1",
@@ -26,9 +25,14 @@
     "gulp-html-replace": "~1.1.0",
     "express": "~4.4.1",
     "gulp-tap": "~0.1.1",
-    "gulp-shell": "~0.2.5",
+    "gulp-shell": "~0.2.7",
     "compression": "~1.0.6",
     "jsdoc": "~3.3.0-alpha8",
-    "gulp-jsdoc": "~0.1.4"
+    "gulp-jsdoc": "~0.1.4",
+    "karma": "~0.12.16",
+    "karma-jasmine": "~0.1.5",
+    "karma-ng-html2js-preprocessor": "~0.1.0",
+    "karma-chrome-launcher": "~0.1.4",
+    "karma-phantomjs-launcher": "~0.1.4"
   }
 }

@@ -29,14 +29,12 @@
  * @ngdoc directive
  */
 ngMap.directives.infoWindow = function(Attr2Options) {
-  //var parser = new Attr2Options();
   var parser = Attr2Options;
 
   return {
     restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      //var filtered = new parser.filter(attrs);
       var filtered = parser.filter(attrs);
 
       /**
@@ -66,7 +64,7 @@ ngMap.directives.infoWindow = function(Attr2Options) {
       // do NOT show this
       element.css({display:'none'});
 
-      //provide showInfoWindow function to controller
+      //provide showInfoWindow function to scope
       scope.showInfoWindow = function(event, id, options) {
         var infoWindow = scope.infoWindows[id];
         var contents = infoWindow.contents;
@@ -84,8 +82,8 @@ ngMap.directives.infoWindow = function(Attr2Options) {
         }
         infoWindow.setContent(contents);
         infoWindow.open(scope.map, this);
-      }
-    } //link
+      };
+    } // link
   };// return
 };// function
 ngMap.directives.infoWindow.$inject = ['Attr2Options'];
@@ -99,7 +97,7 @@ ngMap.directives.infoWindow.$inject = ['Attr2Options'];
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>directive</h3><ul><li><a href="ngMap.directives.infoWindow.html">infoWindow</a></li><li><a href="ngMap.directives.map.html">map</a></li><li><a href="ngMap.directives.marker.html">marker</a></li><li><a href="ngMap.directives.markerClusterer.html">markerClusterer</a></li><li><a href="ngMap.directives.shape.html">shape</a></li></ul><h3>service</h3><ul><li><a href="ngMap.services.Attr2Options.html">Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">StreetView</a></li></ul><h3>Namespaces</h3><ul><li><a href="ngMap.html">ngMap</a></li><li><a href="ngMap.directives.html">ngMap.directives</a></li><li><a href="ngMap.services.html">ngMap.services</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>directive</h3><ul><li><a href="ngMap.directives.infoWindow.html">infoWindow</a></li><li><a href="ngMap.directives.markerClusterer.html">markerClusterer</a></li><li><a href="ngMap.directives.shape.html">shape</a></li><li><a href="ngMap.map.html">map</a></li><li><a href="ngMap.MapController.html">MapController</a></li><li><a href="ngMap.marker.html">marker</a></li></ul><h3>service</h3><ul><li><a href="ngMap.services.Attr2Options.html">Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">StreetView</a></li></ul>
 </nav>
 
 <br clear="both">

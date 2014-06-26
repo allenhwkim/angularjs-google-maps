@@ -3,6 +3,14 @@
 #set -ex
 set -e
 
+export SAUCE_USERNAME=allenhwkim
+export SAUCE_ACCESS_KEY=9a0b91d5-4602-44cb-afdb-cd7a2fc3fdb4
+
+killall node
+testapp/web-server.js &
+sleep 1
+echo Test application started
+ 
 if [ "$(uname)" == "Darwin" ]; then
   CONNECT_URL="https://d2nkw87yt5k0to.cloudfront.net/downloads/sc-latest-osx.zip"
   CONNECT_DOWNLOAD="sc-latest-osx.tar.gz"
@@ -50,3 +58,5 @@ sauce-connect/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -v $ARGS \
 while [ ! -f $READY_FILE ]; do
   sleep .5
 done
+
+node ./node_modules/protractor/bin/protractor spec/smokeConf.js

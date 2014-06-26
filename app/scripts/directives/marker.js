@@ -1,5 +1,7 @@
 /**
  * @ngdoc directive
+ * @memberof ngMap
+ * @name marker
  */
 ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
   //var parser = new Attr2Options();
@@ -15,14 +17,14 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
 
-      var getMarker = function() {
-        var marker = new google.maps.Marker(markerOptions);
-        if (Object.keys(markerEvents).length > 0) {
-          console.log("markerEvents", markerEvents);
+      var getMarker = function(options, events) {
+        var marker = new google.maps.Marker(options);
+        if (Object.keys(events).length > 0) {
+          console.log("markerEvents", events);
         }
-        for (var eventName in markerEvents) {
+        for (var eventName in events) {
           if (eventName) {
-            google.maps.event.addListener(marker, eventName, markerEvents[eventName]);
+            google.maps.event.addListener(marker, eventName, events[eventName]);
           }
         }
         return marker;
@@ -35,12 +37,12 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
         markerOptions.position = new google.maps.LatLng(lat,lng);
 
         console.log("adding marker with options, ", markerOptions);
-        var marker = getMarker();
 
         /**
-         * ng-repeat does not happen while map tag is parsed
-         * so treating it as asynchronous
+         * ng-repeat does not happen while map tag is initialized
+         * so add markers after it is initialized
          */
+        var marker = getMarker(markerOptions, markerEvents);
         if (markerOptions.ngRepeat) { 
           mapController.addMarker(marker);
         } else {
@@ -56,9 +58,9 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
             .then(function(position) {
               var lat = position.coords.latitude, lng = position.coords.longitude;
               markerOptions.position = new google.maps.LatLng(lat, lng);
-              var marker = getMarker();
+              var marker = getMarker(markerOptions, markerEvents);
               mapController.addMarker(marker);
-            })
+            });
 
         } else { //assuming it is address
 
@@ -66,7 +68,7 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
             .then(function(results) {
               var latLng = results[0].geometry.location;
               markerOptions.position = latLng;
-              var marker = getMarker();
+              var marker = getMarker(markerOptions, markerEvents);
               mapController.addMarker(marker);
             });
 

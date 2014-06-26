@@ -12,19 +12,19 @@ describe('Shape', function() {
         return result;
       });
     }, 5000);
-    element(by.css("map")).evaluate('shapes[1].map.getCenter().lat()').then(function(lat) {
+    element(by.css("map")).evaluate('shapes.polyline.map.getCenter().lat()').then(function(lat) {
       expect(lat).toBeGreaterThan(0);
     });
-    element(by.css("map")).evaluate('shapes[2].map.getCenter().lat()').then(function(lat) {
+    element(by.css("map")).evaluate('shapes.polygon.map.getCenter().lat()').then(function(lat) {
       expect(lat).toBeGreaterThan(0);
     });
-    element(by.css("map")).evaluate('shapes[3].map.getCenter().lat()').then(function(lat) {
+    element(by.css("map")).evaluate('shapes.rectangle.map.getCenter().lat()').then(function(lat) {
       expect(lat).toBeGreaterThan(0);
     });
-    element(by.css("map")).evaluate('shapes[4].map.getCenter().lat()').then(function(lat) {
+    element(by.css("map")).evaluate('shapes.circle.map.getCenter().lat()').then(function(lat) {
       expect(lat).toBeGreaterThan(0);
     });
-    element(by.css("map")).evaluate('shapes[5].map.getCenter().lat()').then(function(lat) {
+    element(by.css("map")).evaluate('shapes.image.map.getCenter().lat()').then(function(lat) {
       expect(lat).toBeGreaterThan(0);
     });
   });

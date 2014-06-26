@@ -1,0 +1,98 @@
+/* global google */
+describe('Attr2Options', function() {
+  var scope, parser;
+
+  // load the tabs code
+  beforeEach(function() {
+    module('ngMap');
+    inject(function($rootScope, $injector) {
+      scope = $rootScope;
+      scope.google = { maps: {
+          Marker: function() {},
+          MapTypeId: {HYBRID:'hybrid'}
+        }
+      };
+
+      scope.$apply();
+      parser = $injector.get('Attr2Options');
+    });
+  });
+
+  describe("filter", function() {
+    it('should filter all angularjs methods', function() {
+      var attrs ={a:1, $a:1, $$a:1};
+      expect(parser.filter(attrs).a).toEqual(1);
+      expect(parser.filter(attrs).$a).toEqual(undefined);
+      expect(parser.filter(attrs).$$a).toEqual(undefined);
+    });
+  });
+
+  describe("getOptions", function() {
+    it('should filter out ControlOptions', function() {
+      var attrs ={a:1, aControlOptions:1};
+      expect(parser.getOptions(attrs).aControlOptions).toEqual(undefined);
+    });
+    it('should filter out events', function() {
+      var attrs ={a:1, onClick:'func'};
+      expect(parser.getOptions(attrs).onClick).toEqual(undefined);
+    });
+    it('should convert string to number', function() {
+      var attrs ={a:'100.99'};
+      expect(parser.getOptions(attrs).a).toEqual(100.99);
+    });
+    it('should convert JSON to an object', function() {
+      var attrs = {a:'{"foo":123}'};
+      expect(parser.getOptions(attrs).a.foo).toEqual(123);
+    });
+    it('should convert Class name to google object', function() {
+      var attrs = {a:'Marker()'};
+      expect(typeof parser.getOptions(attrs, scope).a).toEqual('object');
+    });
+    it('should convert constant to google constant', function() {
+      var attrs = {a:'MapTypeId.HYBRID'};
+      expect(parser.getOptions(attrs, scope).a).toEqual(google.maps.MapTypeId.HYBRID);
+      attrs = {MapTypeId:'HYBRID'};
+      expect(parser.getOptions(attrs, scope).MapTypeId).toEqual(google.maps.MapTypeId.HYBRID);
+    });
+  });
+
+  describe("getControlOptions", function() {
+    it('should filter out non control options', function() {
+      var attrs ={a:1};
+      expect(parser.getControlOptions(attrs).a).toEqual(undefined);
+    });
+    it('should accept object notation, i.e {foo:1}', function() {
+      var attrs ={aControlOptions: '{foo:1}'};
+      expect(parser.getControlOptions(attrs).aControlOptions.foo).toEqual(1);
+    });
+    it('should convert string to uppercase. i.e {"a":"foo"}', function() {
+      var attrs ={aControlOptions: '{"foo":"bar"}'};
+      expect(parser.getControlOptions(attrs).aControlOptions.foo).toEqual("BAR");
+    });
+    it('should convert mapTypeIds to google MapTypeIds', function() {
+      var attrs ={aControlOptions: '{"mapTypeIds":["HYBRID"]}'};
+      expect(parser.getControlOptions(attrs).aControlOptions.mapTypeIds).toEqual(["hybrid"]);
+    });
+    it('should convert style to matching google ones, i.e. ZoomControlStyle', function() {
+      var attrs ={zoomControlOptions: '{"style":"SMALL"}'};
+      expect(parser.getControlOptions(attrs).zoomControlOptions.style).toEqual(1);
+    });
+    it('should convert position to matching google ones, i.e. google.maps.ControlPosition', function() {
+      var attrs ={zoomControlOptions: '{"position":"TOP_LEFT"}'};
+      expect(parser.getControlOptions(attrs).zoomControlOptions.position).toEqual(1);
+    });
+  });
+
+  describe("getEvents", function() {
+    it('should filter out non events', function() {
+      var attrs ={a:1};
+      expect(parser.getEvents(scope, attrs).a).toEqual(undefined);
+    });
+    it('should set scope function as events', function() {
+      scope.scopeFunc = function() {}
+      var attrs ={onClick:'scopeFunc()'};
+      var events = parser.getEvents(scope, attrs);
+      expect(typeof events.click).toEqual('function');
+    });
+  });
+});

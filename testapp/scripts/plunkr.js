@@ -38,7 +38,7 @@ plunkr.directive('plunkr', function(submitForm) {
           deps : [
               "http://maps.google.com/maps/api/js?sensor=false",
               "http://code.angularjs.org/1.2.5/angular.js",
-              "http://rawgithub.com/allenhwkim/angularjs-google-maps/master/dist/ng-map.min.js"
+              "http://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"
             ],
           title: "AngularJS Google Maps Directive",
           module: (_this.moduleName||'ngMap')

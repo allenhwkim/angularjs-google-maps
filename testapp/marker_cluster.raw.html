@@ -8,6 +8,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
   <!-- build:js scripts/ng-map.min.js -->
   <script src="../app/scripts/namespace.js"></script>
+  <script src="../app/scripts/directives/map_controller.js"></script>
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
   <script src="../app/scripts/directives/shape.js"></script>
@@ -18,7 +19,7 @@
   <!-- endbuild -->
   <script src="scripts/plunkr.js"></script>
   <link rel="stylesheet" href="css/styles.css"></script>
-  <script src="scripts/data.json"></script>
+  <script src="scripts/markers.js"></script>
   <script src="scripts/markerclusterer.js"></script>
   <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']);
@@ -27,7 +28,7 @@
     $scope.dynMarkers = [];
     $scope.$on('mapInitialized', function(event, map) {
       for (var i=0; i<1000; i++) {
-        var latLng = new google.maps.LatLng(data.photos[i].latitude, data.photos[i].longitude);
+        var latLng = new google.maps.LatLng(markers[i].position[0], markers[i].position[1]);
         $scope.dynMarkers.push(new google.maps.Marker({position:latLng}));
       }
       $scope.markerClusterer = new MarkerClusterer(map, $scope.dynMarkers, {});

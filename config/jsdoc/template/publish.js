@@ -326,6 +326,7 @@ function buildNav(members) {
             var classNav = '';
             groups[groupName].forEach(function(c) {
                 if ( !hasOwnProp.call(seen, c.longname) ) {
+                    //console.log('class', c);
                     classNav += '<li>' + linkto(c.longname, c.name) + '</li>';
                 }
                 seen[c.longname] = true;

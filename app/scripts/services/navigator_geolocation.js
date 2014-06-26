@@ -6,6 +6,7 @@ ngMap.services.NavigatorGeolocation =  function($q) {
   return {
     getCurrentPosition: function() {
       var deferred = $q.defer();
+console.log('navigator.geolocation', navigator.geolocation);
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(position) {
