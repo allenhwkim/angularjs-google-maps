@@ -33,6 +33,7 @@
     "karma-jasmine": "~0.1.5",
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "karma-chrome-launcher": "~0.1.4",
-    "karma-phantomjs-launcher": "~0.1.4"
+    "karma-phantomjs-launcher": "~0.1.4",
+    "run-sequence": "~0.3.6"
   }
 }
