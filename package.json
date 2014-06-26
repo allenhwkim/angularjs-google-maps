@@ -34,6 +34,9 @@
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "karma-chrome-launcher": "~0.1.4",
     "karma-phantomjs-launcher": "~0.1.4",
-    "run-sequence": "~0.3.6"
+    "run-sequence": "~0.3.6",
+    "through2": "~0.5.1",
+    "gulp-replace": "~0.3.0",
+    "gulp-bump": "~0.1.9"
   }
 }
