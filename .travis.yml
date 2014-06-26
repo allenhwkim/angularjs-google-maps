@@ -1,20 +1,3 @@
 language: node_js
 node_js:
   - "0.10"
-
-env:
-  matrix:
-    - JOB=smoke
-  global:
-    - SAUCE_USERNAME=allenhwkim
-    - SAUCE_ACCESS_KEY=9a0b91d5-4602-44cb-afdb-cd7a2fc3fdb4
-
-before_script:
-  - ./scripts/sauce_connect_setup.sh
-
-script:
-  - ./scripts/testserver.sh
-  - ./scripts/testonsauce.sh
-
-after_script:
-  - ./scripts/print_logs.sh
