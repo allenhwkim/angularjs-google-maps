@@ -2,6 +2,8 @@ html
 {
     overflow: auto;
     background-color: #fff;
+    width: 100%;
+    height: 100%;
 }
 
 body
@@ -11,6 +13,8 @@ body
     color: #000;
     background-color: #fff;
     box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 a {
@@ -67,11 +71,15 @@ section
 nav
 {
     display: block;
-    float: left;
-    margin-top: 28px;
+    top: 28px;
+    bottom: 10px;
     width: 29%;
     border-left: 1px solid #ccc;
     padding-left: 9px;
+    height: 100%;
+    overflow-y: auto;
+    position: fixed;
+    left: 70%;
 }
 
 nav ul {

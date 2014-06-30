@@ -12,7 +12,6 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var replace = require('gulp-replace');
 var tap = require('gulp-tap');
-var jsdoc = require('gulp-jsdoc');
 var bump = require('gulp-bump');
 var shell = require('gulp-shell');
 var bumpVersion = function(type) {
@@ -73,13 +72,12 @@ gulp.task('build-html', function() {
     .pipe(gulp.dest('./build'));
 });
 
-gulp.task('docs', function() {
-  return gulp.src(['./app/**/*.js'])
-    .pipe(jsdoc('./build/docs', 
-      {path: './config/jsdoc/template'}, 
-      {plugins: [__dirname+'/config/jsdoc/plugins/angular']}
-    ));
-});
+gulp.task('docs', shell.task([
+  'node_modules/jsdoc/jsdoc.js '+
+    '-c node_modules/angular-jsdoc/conf.json '+
+    '-t node_modules/angular-jsdoc/template '+ 
+    '-d build/docs -r app/scripts'
+]));
 
 gulp.task('bump', function() { bumpVersion('patch'); });
 gulp.task('bump:patch', function() { bumpVersion('patch'); });
