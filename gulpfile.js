@@ -12,7 +12,6 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var replace = require('gulp-replace');
 var tap = require('gulp-tap');
-var shell = require('gulp-shell');
 var jsdoc = require('gulp-jsdoc');
 var bump = require('gulp-bump');
 var shell = require('gulp-shell');
@@ -30,7 +29,7 @@ var bumpVersion = function(type) {
         .pipe(shell([
           'git commit --all --message "Version ' + version + '"',
           (type != 'patch' ? 'git tag --annotate "v' + version + '" --message "Version ' + version + '"' : 'true')
-        ], {ignoreErrors: true}))
+        ], {ignoreErrors: false}))
         .pipe(tap(function() {
           gutil.log(color.green("Version bumped to ") + color.yellow(version) + color.green(", don't forget to push!"));
         }));
