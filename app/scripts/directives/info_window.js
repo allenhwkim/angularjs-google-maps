@@ -1,11 +1,34 @@
 /**
  * @ngdoc directive
+ * @name info-window
+ * @requires Attr2Options 
+ * @description 
+ *   Initialize a Google map InfoWindow and set a scope method `showInfoWindow` 
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element Or Attribute
+ *
+ * @param {String} &lt;InfoWindowOption> Any InfoWindow options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+ * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+ * @example
+ * Example: 
+ *   <map center="[40.74, -74.18]">
+ *     <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info'"></marker>
+ *     <info-window id="marker-info" style="display: none;">
+ *       <h1> I am an InfoWindow </h1>
+ *       I am here at [[this.getPosition()]]
+ *     </info-window>
+ *   </map>
+ *
+ * For working example, please visit:  
+ *   https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html
  */
 ngMap.directives.infoWindow = function(Attr2Options) {
   var parser = Attr2Options;
 
   return {
-    restrict: 'E',
+    restrict: 'AE',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
       var filtered = parser.filter(attrs);

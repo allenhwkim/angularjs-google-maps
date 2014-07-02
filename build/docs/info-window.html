@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: ngMap</title>
+    <title>JSDoc: directive: info-window</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: ngMap</h1>
+    <h1 class="page-title">directive: info-window</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    ngMap
+    info-window
     </h2>
     
 </header>
@@ -38,8 +38,101 @@
 
     
         
+<dt>
+    
+    
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Initialize a Google map InfoWindow and set a scope method <code>showInfoWindow</code> </p>
+<p>  Requires:  map directive</p>
+<p>  Restrict To:  Element Or Attribute</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Attributes:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>&lt;InfoWindowOption></code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Any InfoWindow options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>&lt;InfoWindowEvent></code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
 <dl class="details">
     
 
@@ -62,7 +155,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="namespace.js.html">namespace.js</a>, <a href="namespace.js.html#line1">line 1</a>
+        <a href="info_window.js.html">directives/info_window.js</a>, <a href="info_window.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -74,7 +167,42 @@
 </dl>
 
 
+    
+    <h5>Dependencies:</h5>
+    <ul>
         
+        <li><a href="Attr2Options.html">Attr2Options servivce</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>Example: 
+  &lt;map center="[40.74, -74.18]">
+    &lt;marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info'">&lt;/marker>
+    &lt;info-window id="marker-info" style="display: none;">
+      &lt;h1> I am an InfoWindow &lt;/h1>
+      I am here at [[this.getPosition()]]
+    &lt;/info-window>
+  &lt;/map>
+
+For working example, please visit:  
+  https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html</code></pre>
+
+    
+</dd>
+
     
     </div>
 
@@ -83,6 +211,12 @@
     
 
     <!--
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:Attr2Options</li>
+        </ul>
     
     -->
 

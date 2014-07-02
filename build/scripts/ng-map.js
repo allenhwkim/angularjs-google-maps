@@ -1,19 +1,40 @@
 /** @module ngMap */
 var ngMap = {
-  /* @namespace ngMap.services */
   services: {},
-  /* @namespace ngMap.directives */
   directives: {}
 };
 
 /**
  * @ngdoc directive
+ * @name info-window
+ * @requires Attr2Options 
+ * @description 
+ *   Initialize a Google map InfoWindow and set a scope method `showInfoWindow` 
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element Or Attribute
+ *
+ * @param {String} &lt;InfoWindowOption> Any InfoWindow options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+ * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+ * @example
+ * Example: 
+ *   <map center="[40.74, -74.18]">
+ *     <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info'"></marker>
+ *     <info-window id="marker-info" style="display: none;">
+ *       <h1> I am an InfoWindow </h1>
+ *       I am here at [[this.getPosition()]]
+ *     </info-window>
+ *   </map>
+ *
+ * For working example, please visit:  
+ *   https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html
  */
 ngMap.directives.infoWindow = function(Attr2Options) {
   var parser = Attr2Options;
 
   return {
-    restrict: 'E',
+    restrict: 'AE',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
       var filtered = parser.filter(attrs);
@@ -72,22 +93,60 @@ ngMap.directives.infoWindow.$inject = ['Attr2Options'];
 /**
  * @ngdoc directive
  * @name map
- * @memberof ngMap
+ * @requires Attr2Options
+ * @requires $parse
+ * @requires NavigatorGeolocation
+ * @requires GeoCoder
+ * @requires $compile
+ * @description 
+ *   Implementation of {@link MapController}  
+ *   Initialize a Google map within a `<div>` tag with given options and register events  
+ *   It accepts children directives; marker, shape, info-window, or marker-clusterer  
+ *   
+ *   It initialize map, children tags, then emits message as soon as the action is done  
+ *   The message emitted from this directive are;  
+ *     . mapInitialized
+ *     . markersInitialized
+ *     . shapesInitialized
+ *     . infoWindowInitialized
+ *     . markerClustererInitializd
+ *
+ *   Restrict To:
+ *     Element Or Attribute
+ *
+ * @param {String} &lt;MapOption> Any Google map options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions  
+ * @param {String} &lt;MapEvent> Any Google map events, https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ * @example
+ * Usage: 
+ *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
+ *     ... Any children directives
+ *   </map>
+ *   Or, 
+ *   <ANY map MAP_OPTIONS_OR_MAP_EVENTS ..>
+ *     ... Any children directives
+ *   </ANY>
+ *
+ * Example: 
+ *   <map center="[40.74, -74.18]" on-click="doThat()">
+ *   </map>
+ *
+ *   <div map center="[40.74, -74.18]" on-click="doThat()">
+ *   </div>
  */
-
 ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
   var parser = Attr2Options;
 
-  /**
-   * Initialize map and events
-   * @param scope
-   * @param element
-   * @param attrs
-   * @return map object
-   */ 
   return {
     restrict: 'AE',
     controller: ngMap.directives.MapController,
+    /**
+     * Initialize map and events
+     * @memberof map
+     * @param {$scope} scope
+     * @param {angular.element} element
+     * @param {Hash} attrs
+     * @ctrl {MapController} ctrl
+     */ 
     link: function (scope, element, attrs, ctrl) {
       scope.google = google; // ??
 
@@ -151,8 +210,13 @@ ngMap.directives.map.$inject = ['Attr2Options', '$parse', 'NavigatorGeolocation'
 
 /**
  * @ngdoc directive
- * @memberof ngMap
  * @name MapController
+ * @requires $scope
+ * @property {Hash} controls collection of Controls initiated within `map` directive
+ * @property {Hash} markersi collection of Markers initiated within `map` directive
+ * @property {Hash} shapes collection of shapes initiated within `map` directive
+ * @property {Hash} infoWindows collection of InfoWindows initiated within `map` directive
+ * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
 ngMap.directives.MapController = function($scope) { 
 
@@ -164,7 +228,12 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize map with options, center and events
-   * @returns mapOptions
+   * This emits a message `mapInitialized` with the parmater of map, Google Map Object
+   * @memberof MapController
+   * @name initMap
+   * @param {MapOptions} options google map options
+   * @param {LatLng} center the center of the map
+   * @param {Hash} events  google map events. The key is the name of the event
    */
   this.initMap = function(options, center, events) {
     options.center = null; // use parameter center instead
@@ -179,8 +248,12 @@ ngMap.directives.MapController = function($scope) {
   };
 
   /**
-   * Add marker to the map
-   * @param marker
+   * Add a marker to map and $scope.markers
+   * @memberof MapController
+   * @name addMarker
+   * @param {Marker} marker google map marker
+   *    if marker has centered attribute with the key of the value,
+   *    the map will be centered with the marker
    */
   this.addMarker = function(marker) {
     marker.setMap($scope.map);
@@ -193,7 +266,9 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize markers
-   * @returns markers
+   * @memberof MapController
+   * @name initMarkers
+   * @returns {Hash} markers collection of markers
    */
   this.initMarkers = function() {
     $scope.markers = {};
@@ -205,8 +280,10 @@ ngMap.directives.MapController = function($scope) {
   };
 
   /**
-   * Initialize shapes for this map
-   * @returns shapes
+   * Initialize shapes
+   * @memberof MapController
+   * @name initShapes
+   * @returns {Hash} shapes collection of shapes
    */
   this.initShapes = function() {
     $scope.shapes = {};
@@ -220,7 +297,9 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize infoWindows for this map
-   * @returns infoWindows
+   * @memberof MapController
+   * @name initInfoWindows
+   * @returns {Hash} infoWindows collection of InfoWindows
    */
   this.initInfoWindows = function() {
     $scope.infoWindows = {};
@@ -233,7 +312,9 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize markerClusterere for this map
-   * @returns markerClusterer
+   * @memberof MapController
+   * @name initMarkerClusterer
+   * @returns {MarkerClusterer} markerClusterer
    */
   this.initMarkerClusterer = function() {
     if (this.markerClusterer) {
@@ -250,15 +331,45 @@ ngMap.directives.MapController.$inject = ['$scope'];
 
 /**
  * @ngdoc directive
- * @memberof ngMap
  * @name marker
+ * @requires Attr2Options 
+ * @requires GeoCoder
+ * @requires NavigatorGeolocation
+ * @description 
+ *   Initialize a Google map marker in map with given options and register events  
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element Or Attribute
+ *
+ * @param {String} position address, 'current', or [latitude, longitude]  
+ *    example:  
+ *      '1600 Pennsylvania Ave, 20500  Washingtion DC',   
+ *      'current position',  
+ *      '[40.74, -74.18]'  
+ * @param {Boolean} centered if set, map will be centered with this marker
+ * @param {String} &lt;MarkerOption> Any Marker options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions  
+ * @param {String} &lt;MapEvent> Any Marker events, https://developers.google.com/maps/documentation/javascript/reference
+ * @example
+ * Usage: 
+ *   <map MAP_ATTRIBUTES>
+ *    <marker ANY_MARKER_OPTIONS ANY_MARKER_EVENTS"></MARKER>
+ *   </map>
+ *
+ * Example: 
+ *   <map center="[40.74, -74.18]">
+ *    <marker position="[40.74, -74.18]" on-click="myfunc()"></div>
+ *   </map>
+ *
+ *   <map center="the cn tower">
+ *    <marker position="the cn tower" on-click="myfunc()"></div>
+ *   </map>
  */
 ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
-  //var parser = new Attr2Options();
   var parser = Attr2Options;
 
   return {
-    restrict: 'E',
+    restrict: 'AE',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
       //var filtered = new parser.filter(attrs);
@@ -333,18 +444,41 @@ ngMap.directives.marker.$inject  = ['Attr2Options', 'GeoCoder', 'NavigatorGeoloc
 
 /**
  * @ngdoc directive
+ * @name marker-clusterer
+ * @requires Attr2Options 
+ * @description 
+ *   Initialize a Google map with marker-clusterer
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element Or Attribute
+ *
+ * @param {Array} markers The initial markers for this marker clusterer  
+ *   The options of each marker must be exactly the same as options of marker directive.  
+ *   The markers are also will be set to $scope.markers
+ * @param {String} &lt;MarkerClustererOption> Any MarkerClusterer options,  
+ *   http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#MarkerClustererOptions
+ *
+ * @example
+ * Usage: 
+ *   <map MAP_ATTRIBUTES>
+ *    <marker-clusterer markers="DATA" ANY_MARKER_CLUSTERER_OPTIONS"></marker-clusterer>
+ *   </map>
+ *
+ * Example: 
+ *   <map zoom="1" center="[43.6650000, -79.4103000]">
+ *      <marker-clusterer markers="markersData" max-zoom="2">
+ *   </marker-clusterer>
+ *
+ *   For full working example, please visit https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html
  */
 ngMap.directives.markerClusterer  = function(Attr2Options) {
   //var parser = new Attr2Options();
   var parser = Attr2Options;
 
   return {
-    restrict: 'E',
+    restrict: 'AE',
     require: '^map',
-    /**
-     * @memberof ngMap.directives.markerClusterer
-     * link function
-     */
     link: function(scope, element, attrs, mapController) {
       var markersData = scope.$eval(attrs.markers);
       delete attrs.markers;
@@ -377,6 +511,64 @@ ngMap.directives.markerClusterer.$inject  = ['Attr2Options'];
 
 /**
  * @ngdoc directive
+ * @name shape
+ * @requires Attr2Options 
+ * @description 
+ *   Initialize a Google map shape in map with given options and register events  
+ *   The shapes are:
+ *     . circle
+ *     . polygon
+ *     . polyline
+ *     . rectangle
+ *     . groundOverlay(or image)
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element Or Attribute
+ *
+ * @param {Boolean} centered if set, map will be centered with this marker
+ * @param {String} &lt;OPTIONS>
+ *   For circle, [any circle options](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)  
+ *   For polygon, [any polygon options](https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions)  
+ *   For polyline, [any polyline options](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)   
+ *   For rectangle, [any rectangle options](https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions)   
+ *   For image, [any groundOverlay options](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)   
+ * @param {String} &lt;MapEvent> Any Shape events, https://developers.google.com/maps/documentation/javascript/reference
+ * @example
+ * Usage: 
+ *   <map MAP_ATTRIBUTES>
+ *    <shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></MARKER>
+ *   </map>
+ *
+ * Example: 
+ *
+ *   <map zoom="11" center="[40.74, -74.18]">
+ *     <shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
+ *      path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" ></shape>
+ *    </map>
+ *
+ *   <map zoom="11" center="[40.74, -74.18]">
+ *     <shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
+ *      paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" ></shape>
+ *   </map>
+ *   
+ *   <map zoom="11" center="[40.74, -74.18]">
+ *     <shape id="rectangle" name="rectangle" stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2"
+ *      bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" ></shape>
+ *   </map>
+ *
+ *   <map zoom="11" center="[40.74, -74.18]">
+ *     <shape id="circle" name="circle" stroke-color='#FF0000' stroke-opacity="0.8"stroke-weight="2" 
+ *      center="[40.70,-74.14]" radius="4000" editable="true" ></shape>
+ *   </map>
+ *
+ *   <map zoom="11" center="[40.74, -74.18]">
+ *     <shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
+ *      bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" ></shape>
+ *   </map>
+ *
+ *  For full-working example, please visit 
+ *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
 ngMap.directives.shape = function(Attr2Options) {
   //var parser = new Attr2Options();
@@ -422,7 +614,7 @@ ngMap.directives.shape = function(Attr2Options) {
   };
   
   return {
-      restrict: 'E',
+      restrict: 'AE',
       require: '^map',
       /**
        * link function
@@ -457,15 +649,18 @@ ngMap.directives.shape = function(Attr2Options) {
 ngMap.directives.shape.$inject  = ['Attr2Options'];
 
 /**
- * @class
  * @ngdoc service
+ * @name Attr2Options
+ * @description 
+ *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
 ngMap.services.Attr2Options = function() { 
   return {
     /**
-     * filtering attributes  
-     * 1. skip all angularjs methods $.. $$..
-     * @memberof ngMap.services.Attr2Options
+     * filters attributes by skipping angularjs methods $.. $$..
+     * @memberof Attr2Options
+     * @param {Hash} attrs tag attributes
+     * @returns {Hash} filterd attributes
      */
     filter: function(attrs) {
       var options = {};
@@ -478,8 +673,19 @@ ngMap.services.Attr2Options = function() {
     },
 
     /**
-     * @memberof ngMap.services.Attr2Options
-     * converting attributes hash to Google Maps API v3 options
+     * converts attributes hash to Google Maps API v3 options  
+     * ```
+     *  . converts numbers to number   
+     *  . converts class-like string to google maps instance   
+     *    i.e. `LatLng(1,1)` to `new google.maps.LatLng(1,1)`  
+     *  . converts constant-like string to google maps constant    
+     *    i.e. `MapTypeId.HYBRID` to `google.maps.MapTypeId.HYBRID`   
+     *    i.e. `HYBRID"` to `google.maps.MapTypeId.HYBRID`  
+     * ```
+     * @memberof Attr2Options
+     * @param {Hash} attrs tag attributes
+     * @param {scope} scope angularjs scope
+     * @returns {Hash} options converted attributess
      */
     getOptions: function(attrs, scope) {
       var options = {};
@@ -537,9 +743,11 @@ ngMap.services.Attr2Options = function() {
     },
 
     /**
-     * converting attributes hash to scope-specific function 
-     * scope is to validate a function within the scope
-     * @memberof ngMap.services.Attr2Options
+     * converts attributes hash to scope-specific event function 
+     * @memberof Attr2Options
+     * @param {scope} scope angularjs scope
+     * @param {Hash} attrs tag attributes
+     * @returns {Hash} events converted events
      */
     getEvents: function(scope, attrs) {
       var events = {};
@@ -577,7 +785,9 @@ ngMap.services.Attr2Options = function() {
 
     /**
      * control means map controls, i.e streetview, pan, etc, not a general control
-     * @memberof ngMap.services.Attr2Options
+     * @memberof Attr2Options
+     * @param {Hash} filtered filtered tag attributes
+     * @returns {Hash} Google Map options
      */
     getControlOptions: function(filtered) {
       var controlOptions = {};
@@ -638,11 +848,24 @@ ngMap.services.Attr2Options = function() {
 
 
 /**
- * @class
  * @ngdoc service
+ * @name GeoCoder
+ * @description
+ *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
  */
 ngMap.services.GeoCoder = function($q) {
   return {
+    /**
+     * @memberof GeoCoder
+     * @param {Hash} options https://developers.google.com/maps/documentation/geocoding/#geocoding
+     * @example
+     * ```
+     *   GeoCoder.geocode({address: 'the cn tower'}).then(function(result) {
+     *     //... do something with result
+     *   });
+     * ```
+     * @returns {HttpPromise} Future object
+     */
     geocode : function(options) {
       var deferred = $q.defer();
       var geocoder = new google.maps.Geocoder();
@@ -661,14 +884,29 @@ ngMap.services.GeoCoder.$inject = ['$q'];
 
 
 /**
- * @class
  * @ngdoc service
+ * @name NavigatorGeolocation
+ * @description
+ *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for navigator.geolocation methods
  */
 ngMap.services.NavigatorGeolocation =  function($q) {
   return {
+    /**
+     * @memberof NavigatorGeolocation
+     * @param {function} success success callback function
+     * @param {function} failure failure callback function
+     * @example
+     * ```
+     *  NavigatorGeolocation.getCurrentPosition()
+     *    .then(function(position) {
+     *      var lat = position.coords.latitude, lng = position.coords.longitude;
+     *      .. do something lat and lng
+     *    });
+     * ```
+     * @returns {HttpPromise} Future object
+     */
     getCurrentPosition: function() {
       var deferred = $q.defer();
-console.log('navigator.geolocation', navigator.geolocation);
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function(position) {
@@ -693,14 +931,29 @@ console.log('navigator.geolocation', navigator.geolocation);
     }
   };
 } // func
-ngMap.services.NavigatorGeolocation.$inject =   ['$q'];
+
 
 /**
- * @class
  * @ngdoc service
+ * @name StreetView
+ * @description
+ *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
+ *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
  */
 ngMap.services.StreetView = function($q) {
   return {
+    /**
+     * Retrieves panorama id from the given map (and or position)
+     * @memberof StreetView
+     * @param {map} map Google map instance
+     * @param {LatLng} latlng Google LatLng instance  
+     *   default: the center of the map
+     * @example
+     *   StreetView.getPanorama(map).then(function(panoId) {
+     *     $scope.panoId = panoId;
+     *   });
+     * @returns {HttpPromise} Future object
+     */
     getPanorama : function(map, latlng) {
       latlng = latlng || map.getCenter();
       var deferred = $q.defer();
@@ -717,6 +970,14 @@ ngMap.services.StreetView = function($q) {
       });
       return deferred.promise;
     },
+    /**
+     * Set panorama view on the given map with the panorama id
+     * @memberof StreetView
+     * @param {map} map Google map instance
+     * @param {String} panoId Panorama id fro getPanorama method
+     * @example
+     *   StreetView.setPanorama(map, panoId);
+     */
     setPanorama : function(map, panoId) {
       var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
       svp.setPano(panoId);

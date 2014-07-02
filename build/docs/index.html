@@ -40,6 +40,132 @@
 
 
 
+    <section>
+        <article><h1>GoogleMap AngularJS Directive</h1><p><a href="https://travis-ci.org/allenhwkim/angularjs-google-maps"><img src="https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master" alt="Build Status"></a></p>
+<p><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html"><img src="http://i.imgur.com/tVEUg88.png" alt="Marker Cluster"></a></p>
+<p><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html">Demo</a>
+<a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html">Documentation</a></p>
+<p>There is already <a href="https://github.com/nlaplante/angular-google-maps">one</a> for this.
+However, I found myself doing totally different approach for this purpose than the existing one, such as;</p>
+<ol>
+<li><p>Everything in tag and attributes<br>Therefore, basic users does not even have to know what Javascript is. Tag does it all.</p>
+</li>
+<li><p>Expose the original Google Maps V3 api<br>By doing so, programmers don't need to learn this module.</p>
+</li>
+</ol>
+<p>There is a blog that introduces this module.<br>The title of it is '<a href="http://allenhwkim.tumblr.com/post/70986888283/google-map-as-the-simplest-way">Google Map As The Simplest Way</a>'</p>
+<h2>To Get Started</h2><ol>
+<li><p>include ng-map.js or ng-map.min.js and ngMap module to be active. </p>
+<pre>
+&lt;script src="http://maps.google.com/maps/api/js?sensor=false">&lt;/script>
+&lt;script src="http://code.angularjs.org/1.2.5/angular.js">&lt;/script>
+&lt;script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js">&lt;/script>
+</pre>
+
+
+</li>
+</ol>
+<ol>
+<li><p>name angular app as ngMap, or add it as a dependency   </p>
+<p><code>&lt;html ng-app=&quot;ngMap&quot;&gt;</code></p>
+</li>
+<li><p>use <code>map</code> tag, and optionally, <code>marker</code>, and <code>shape</code> tags  </p>
+<pre>
+&lt;map style="display:block;height:300px" />  
+</pre>
+
+</li>
+</ol>
+<h2>Examples</h2><ul>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html">All Examples</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/hello_map.html">Hello Map</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker.html">Markers</a></li>
+<li>[Dynamic Markers] (https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/dynamic_markers.html)</li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_address.html">My Address</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_current_position.html">Where am I?</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html">Controls</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_options.html">Map Options</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/shape.html">Shapes(Rectangle, Triangle, Image)</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/events.html">Events</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/bird_eyes_and_street_view.html">Bird Eyes View/Street View</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/multiple_maps_on_a_page.html">Multiple Maps On A Page</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/street_view.html">Street View</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html">Marker Clusterer</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_app.html">Starbucks World Wide</a></li>
+</ul>
+<p>To use it in your app, please include 'ngMap' as dependency.</p>
+<p>   <code>var myApp = angular.module('myApp', ['ngMap']);</code>
+   <code>&lt;html ng-app=&quot;myApp&quot;&gt;</code></p>
+<p>You will also have these three scope variables after these directives are initialized.</p>
+<ul>
+<li>$scope.map</li>
+<li>$scope.markers as a hash</li>
+<li>$scope.shapes as a hash</li>
+<li>$scope.infoWindow as a hash</li>
+<li>$scope.markerCluster as a hash</li>
+</ul>
+<p>In case your map directive scope is different from your controller scope, there are event emitted when each is initialized.
+There are three events emitted;</p>
+<ul>
+<li><code>mapInitialized</code></li>
+<li><code>markersInitialized</code></li>
+<li><code>shpaesInitialized</code></li>
+<li><code>infoWindowInitialized</code> </li>
+<li><code>markerClusterInitialized</code> </li>
+</ul>
+<p>Example Usage:</p>
+<pre class="prettyprint source"><code>app.controller('parentParentController', function($scope) {
+  $scope.$on('mapInitialized', function(event, map) {
+    map.setCenter( .... )
+    ..
+  });
+});</code></pre><h2>Directives</h2><p>There are five directives defined with ng-map module.</p>
+<ol>
+<li>map</li>
+<li>marker</li>
+<li>shape</li>
+<li>info-window</li>
+<li>marker-cluster</li>
+</ol>
+<h4><strong>map</strong> Tag(Directive)</h4><p><a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">As documented</a>,
+it requires minimum two options, center and zoom. You can specify all map options as attributes.</p>
+<p>These are attributes of map tag which is EXACTLY the same as the documentation except the following for the convenience</p>
+<table>
+<tr><th>Attributes<th>Description<br><tr><td>center<td>address or latitude/langitude<br/><br>                  i.e. center=&quot;[40.79,-54,18]&quot;, center=&quot;toronto, canada&quot;
+<tr><td>EVENTS     <td> You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.<br>   <br/> i.e. on-click=&quot;myfunc&quot;
+</table>
+
+<p>For usage of map controls, please refer to <a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html">this example</a>.</p>
+<h4><strong>marker</strong> Tag(Directive)</h4><p><a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">As documented</a>, it reqires <code>position</code> as an attribute.
+You can list any <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">maker options</a> as attribute of marker tag</p>
+<p>These are attributes of marker tag which ate EXACTLY the same as the documentation except the following for the convenienece.</p>
+<table>
+<tr><th>Attribute<th>Description
+  <tr><td> id <td> Used for programming purpose. i.e. $scope.markers.myId
+  <tr><td> position   <td>
+    'current', address, or latitude/longitude  <br/>
+    i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
+  <tr><td> EVENTS <td>
+    You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">marker events</a><br>    i.e. on-click=&quot;myfunc&quot;
+</table>
+
+<h4><strong>shape</strong> Tag(Directive)</h4><p>  shape tag always requires <code>name</code> attribute</p>
+<ul>
+<li><p>name (the name of shape)<br>i.e. <code>polygon</code>, <code>image</code>, <code>polyline</code>, or <code>circle</code>.</p>
+</li>
+<li><p>optionally, you can provide <code>id</code> for programming purpose. i.e. $scope.shapes.myCircle</p>
+</li>
+</ul>
+<p>All other attributes are based on the <code>name</code> you specified.<br>To see the full list of options of a shape for attributes, please visit the documentation.</p>
+<ul>
+<li><a href="https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions">polygon</a></li>
+<li><a href="https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions">polyline</a></li>
+<li><a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions">image</a></li>
+<li><a href="https://developers.google.com/maps/documentation/javascript/reference#CircleOptions">circle</a></li>
+</ul>
+<h1>license</h1><p><a href="https://github.com/allenhwkim/angularjs-google-maps/blob/master/LICENSE">MIT License</a></p></article>
+    </section>
+
 
 
 
@@ -48,24 +174,30 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>directive</h3><ul><li><a href="ngMap.directives.infoWindow.html">infoWindow</a></li><li><a href="ngMap.directives.markerClusterer.html">markerClusterer</a></li><li><a href="ngMap.directives.shape.html">shape</a></li><li><a href="ngMap.map.html">map</a></li><li><a href="ngMap.MapController.html">MapController</a></li><li><a href="ngMap.marker.html">marker</a></li></ul><h3>service</h3><ul><li><a href="ngMap.services.Attr2Options.html">Attr2Options</a></li><li><a href="ngMap.services.GeoCoder.html">GeoCoder</a></li><li><a href="ngMap.services.NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="ngMap.services.StreetView.html">StreetView</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="info-window.html">info-window</a></li><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="marker-clusterer.html">marker-clusterer</a></li><li><a href="shape.html">shape</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> 
-    using <a href="https://github.com/allenhwkim/angularjs-google-maps/tree/master/config/jsdoc/template">custom template </a> and 
-    <a href="https://raw.githubusercontent.com/allenhwkim/angularjs-google-maps/master/config/jsdoc/plugins/angular.js">custom tag @ngdoc</a>
+    using <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template </a> 
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
 <script>
+  // scroll to the current document navigation
   var href=window.location.href.match(/\/([^\/]+$)/)[1];
-  document.querySelector("nav a[href='"+href+"']").scrollIntoView(true);
+  if (currentNav = document.querySelector("nav a[href='"+href+"']"))
+    currentNav.scrollIntoView(true);
+  // scroll to the top of the document
   if (window.location.hash == "")
     document.querySelector("body").scrollIntoView(true);
+  // adjust the width of main section by navigation width
+  var navWidth = document.querySelector('nav').getBoundingClientRect().width;
+  var mainWidth = document.querySelector('#main').getBoundingClientRect().width;
+  document.querySelector('#main').style.width = (mainWidth - navWidth)+'px';
 </script>
 </body>
 </html>

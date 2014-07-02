@@ -1,9 +1,22 @@
 /**
- * @class
  * @ngdoc service
+ * @name GeoCoder
+ * @description
+ *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
  */
 ngMap.services.GeoCoder = function($q) {
   return {
+    /**
+     * @memberof GeoCoder
+     * @param {Hash} options https://developers.google.com/maps/documentation/geocoding/#geocoding
+     * @example
+     * ```
+     *   GeoCoder.geocode({address: 'the cn tower'}).then(function(result) {
+     *     //... do something with result
+     *   });
+     * ```
+     * @returns {HttpPromise} Future object
+     */
     geocode : function(options) {
       var deferred = $q.defer();
       var geocoder = new google.maps.Geocoder();

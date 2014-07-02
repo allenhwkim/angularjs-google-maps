@@ -1,9 +1,24 @@
 /**
- * @class
  * @ngdoc service
+ * @name StreetView
+ * @description
+ *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
+ *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
  */
 ngMap.services.StreetView = function($q) {
   return {
+    /**
+     * Retrieves panorama id from the given map (and or position)
+     * @memberof StreetView
+     * @param {map} map Google map instance
+     * @param {LatLng} latlng Google LatLng instance  
+     *   default: the center of the map
+     * @example
+     *   StreetView.getPanorama(map).then(function(panoId) {
+     *     $scope.panoId = panoId;
+     *   });
+     * @returns {HttpPromise} Future object
+     */
     getPanorama : function(map, latlng) {
       latlng = latlng || map.getCenter();
       var deferred = $q.defer();
@@ -20,6 +35,14 @@ ngMap.services.StreetView = function($q) {
       });
       return deferred.promise;
     },
+    /**
+     * Set panorama view on the given map with the panorama id
+     * @memberof StreetView
+     * @param {map} map Google map instance
+     * @param {String} panoId Panorama id fro getPanorama method
+     * @example
+     *   StreetView.setPanorama(map, panoId);
+     */
     setPanorama : function(map, panoId) {
       var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
       svp.setPano(panoId);

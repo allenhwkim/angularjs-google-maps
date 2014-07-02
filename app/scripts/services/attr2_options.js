@@ -1,13 +1,16 @@
 /**
- * @class
  * @ngdoc service
+ * @name Attr2Options
+ * @description 
+ *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
 ngMap.services.Attr2Options = function() { 
   return {
     /**
-     * filtering attributes  
-     * 1. skip all angularjs methods $.. $$..
-     * @memberof ngMap.services.Attr2Options
+     * filters attributes by skipping angularjs methods $.. $$..
+     * @memberof Attr2Options
+     * @param {Hash} attrs tag attributes
+     * @returns {Hash} filterd attributes
      */
     filter: function(attrs) {
       var options = {};
@@ -20,8 +23,19 @@ ngMap.services.Attr2Options = function() {
     },
 
     /**
-     * @memberof ngMap.services.Attr2Options
-     * converting attributes hash to Google Maps API v3 options
+     * converts attributes hash to Google Maps API v3 options  
+     * ```
+     *  . converts numbers to number   
+     *  . converts class-like string to google maps instance   
+     *    i.e. `LatLng(1,1)` to `new google.maps.LatLng(1,1)`  
+     *  . converts constant-like string to google maps constant    
+     *    i.e. `MapTypeId.HYBRID` to `google.maps.MapTypeId.HYBRID`   
+     *    i.e. `HYBRID"` to `google.maps.MapTypeId.HYBRID`  
+     * ```
+     * @memberof Attr2Options
+     * @param {Hash} attrs tag attributes
+     * @param {scope} scope angularjs scope
+     * @returns {Hash} options converted attributess
      */
     getOptions: function(attrs, scope) {
       var options = {};
@@ -79,9 +93,11 @@ ngMap.services.Attr2Options = function() {
     },
 
     /**
-     * converting attributes hash to scope-specific function 
-     * scope is to validate a function within the scope
-     * @memberof ngMap.services.Attr2Options
+     * converts attributes hash to scope-specific event function 
+     * @memberof Attr2Options
+     * @param {scope} scope angularjs scope
+     * @param {Hash} attrs tag attributes
+     * @returns {Hash} events converted events
      */
     getEvents: function(scope, attrs) {
       var events = {};
@@ -119,7 +135,9 @@ ngMap.services.Attr2Options = function() {
 
     /**
      * control means map controls, i.e streetview, pan, etc, not a general control
-     * @memberof ngMap.services.Attr2Options
+     * @memberof Attr2Options
+     * @param {Hash} filtered filtered tag attributes
+     * @returns {Hash} Google Map options
      */
     getControlOptions: function(filtered) {
       var controlOptions = {};

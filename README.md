@@ -5,6 +5,9 @@ GoogleMap AngularJS Directive
 
 [![Marker Cluster](http://i.imgur.com/tVEUg88.png)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html)
 
+[Demo](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html)
+[Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)
+
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this.
 However, I found myself doing totally different approach for this purpose than the existing one, such as;
   

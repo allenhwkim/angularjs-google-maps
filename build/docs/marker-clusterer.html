@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: ngMap</title>
+    <title>JSDoc: directive: marker-clusterer</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: ngMap</h1>
+    <h1 class="page-title">directive: marker-clusterer</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    ngMap
+    marker-clusterer
     </h2>
     
 </header>
@@ -38,8 +38,101 @@
 
     
         
+<dt>
+    
+    
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Initialize a Google map with marker-clusterer</p>
+<p>  Requires:  map directive</p>
+<p>  Restrict To:  Element Or Attribute</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Attributes:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>markers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The initial markers for this marker clusterer<br>  The options of each marker must be exactly the same as options of marker directive.<br>  The markers are also will be set to $scope.markers</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>&lt;MarkerClustererOption></code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Any MarkerClusterer options,<br>  http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#MarkerClustererOptions</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
 <dl class="details">
     
 
@@ -62,7 +155,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="namespace.js.html">namespace.js</a>, <a href="namespace.js.html#line1">line 1</a>
+        <a href="marker_clusterer.js.html">directives/marker_clusterer.js</a>, <a href="marker_clusterer.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -74,7 +167,42 @@
 </dl>
 
 
+    
+    <h5>Dependencies:</h5>
+    <ul>
         
+        <li><a href="Attr2Options.html">Attr2Options servivce</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>Usage: 
+  &lt;map MAP_ATTRIBUTES>
+   &lt;marker-clusterer markers="DATA" ANY_MARKER_CLUSTERER_OPTIONS">&lt;/marker-clusterer>
+  &lt;/map>
+
+Example: 
+  &lt;map zoom="1" center="[43.6650000, -79.4103000]">
+     &lt;marker-clusterer markers="markersData" max-zoom="2">
+  &lt;/marker-clusterer>
+
+  For full working example, please visit https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html</code></pre>
+
+    
+</dd>
+
     
     </div>
 
@@ -83,6 +211,12 @@
     
 
     <!--
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:Attr2Options</li>
+        </ul>
     
     -->
 

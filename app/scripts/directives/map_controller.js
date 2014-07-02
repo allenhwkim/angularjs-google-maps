@@ -1,7 +1,12 @@
 /**
  * @ngdoc directive
- * @memberof ngMap
  * @name MapController
+ * @requires $scope
+ * @property {Hash} controls collection of Controls initiated within `map` directive
+ * @property {Hash} markersi collection of Markers initiated within `map` directive
+ * @property {Hash} shapes collection of shapes initiated within `map` directive
+ * @property {Hash} infoWindows collection of InfoWindows initiated within `map` directive
+ * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
 ngMap.directives.MapController = function($scope) { 
 
@@ -13,7 +18,12 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize map with options, center and events
-   * @returns mapOptions
+   * This emits a message `mapInitialized` with the parmater of map, Google Map Object
+   * @memberof MapController
+   * @name initMap
+   * @param {MapOptions} options google map options
+   * @param {LatLng} center the center of the map
+   * @param {Hash} events  google map events. The key is the name of the event
    */
   this.initMap = function(options, center, events) {
     options.center = null; // use parameter center instead
@@ -28,8 +38,12 @@ ngMap.directives.MapController = function($scope) {
   };
 
   /**
-   * Add marker to the map
-   * @param marker
+   * Add a marker to map and $scope.markers
+   * @memberof MapController
+   * @name addMarker
+   * @param {Marker} marker google map marker
+   *    if marker has centered attribute with the key of the value,
+   *    the map will be centered with the marker
    */
   this.addMarker = function(marker) {
     marker.setMap($scope.map);
@@ -42,7 +56,9 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize markers
-   * @returns markers
+   * @memberof MapController
+   * @name initMarkers
+   * @returns {Hash} markers collection of markers
    */
   this.initMarkers = function() {
     $scope.markers = {};
@@ -54,8 +70,10 @@ ngMap.directives.MapController = function($scope) {
   };
 
   /**
-   * Initialize shapes for this map
-   * @returns shapes
+   * Initialize shapes
+   * @memberof MapController
+   * @name initShapes
+   * @returns {Hash} shapes collection of shapes
    */
   this.initShapes = function() {
     $scope.shapes = {};
@@ -69,7 +87,9 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize infoWindows for this map
-   * @returns infoWindows
+   * @memberof MapController
+   * @name initInfoWindows
+   * @returns {Hash} infoWindows collection of InfoWindows
    */
   this.initInfoWindows = function() {
     $scope.infoWindows = {};
@@ -82,7 +102,9 @@ ngMap.directives.MapController = function($scope) {
 
   /**
    * Initialize markerClusterere for this map
-   * @returns markerClusterer
+   * @memberof MapController
+   * @name initMarkerClusterer
+   * @returns {MarkerClusterer} markerClusterer
    */
   this.initMarkerClusterer = function() {
     if (this.markerClusterer) {

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: directive: marker</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">directive: marker</h1>
+
+    
+
+
+
+<section>
+
+<header>
+    <h2>
+    marker
+    </h2>
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    
+    
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Initialize a Google map marker in map with given options and register events  </p>
+<p>  Requires:  map directive</p>
+<p>  Restrict To:  Element Or Attribute</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Attributes:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>address, 'current', or [latitude, longitude]<br>   example:<br>     '1600 Pennsylvania Ave, 20500  Washingtion DC',<br>     'current position',<br>     '[40.74, -74.18]'</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>centered</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>if set, map will be centered with this marker</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>&lt;MarkerOption></code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Any Marker options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>&lt;MapEvent></code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Any Marker events, https://developers.google.com/maps/documentation/javascript/reference</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="marker.js.html">directives/marker.js</a>, <a href="marker.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+    <h5>Dependencies:</h5>
+    <ul>
+        
+        <li><a href="Attr2Options.html">Attr2Options servivce</a></li>
+    
+        
+        <li><a href="GeoCoder.html">GeoCoder servivce</a></li>
+    
+        
+        <li><a href="NavigatorGeolocation.html">NavigatorGeolocation servivce</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>Usage: 
+  &lt;map MAP_ATTRIBUTES>
+   &lt;marker ANY_MARKER_OPTIONS ANY_MARKER_EVENTS">&lt;/MARKER>
+  &lt;/map>
+
+Example: 
+  &lt;map center="[40.74, -74.18]">
+   &lt;marker position="[40.74, -74.18]" on-click="myfunc()">&lt;/div>
+  &lt;/map>
+
+  &lt;map center="the cn tower">
+   &lt;marker position="the cn tower" on-click="myfunc()">&lt;/div>
+  &lt;/map></code></pre>
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    <!--
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:Attr2Options</li>
+        
+            <li>module:GeoCoder</li>
+        
+            <li>module:NavigatorGeolocation</li>
+        </ul>
+    
+    -->
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="info-window.html">info-window</a></li><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="marker-clusterer.html">marker-clusterer</a></li><li><a href="shape.html">shape</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> 
+    using <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template </a> 
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script>
+  // scroll to the current document navigation
+  var href=window.location.href.match(/\/([^\/]+$)/)[1];
+  if (currentNav = document.querySelector("nav a[href='"+href+"']"))
+    currentNav.scrollIntoView(true);
+  // scroll to the top of the document
+  if (window.location.hash == "")
+    document.querySelector("body").scrollIntoView(true);
+  // adjust the width of main section by navigation width
+  var navWidth = document.querySelector('nav').getBoundingClientRect().width;
+  var mainWidth = document.querySelector('#main').getBoundingClientRect().width;
+  document.querySelector('#main').style.width = (mainWidth - navWidth)+'px';
+</script>
+</body>
+</html>
