@@ -46,4 +46,5 @@ ngMap.services.NavigatorGeolocation =  function($q) {
     }
   };
 } // func
+ngMap.services.NavigatorGeolocation.$inject = ['$q'];
 
