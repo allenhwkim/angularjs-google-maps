@@ -437,13 +437,13 @@ ngMap.directives.infoWindow.$inject = ['Attr2Options'];
  * @requires NavigatorGeolocation
  * @requires GeoCoder
  * @requires $compile
- * @description 
- *   Implementation of {@link MapController}  
- *   Initialize a Google map within a `<div>` tag with given options and register events  
- *   It accepts children directives; marker, shape, info-window, or marker-clusterer  
- *   
- *   It initialize map, children tags, then emits message as soon as the action is done  
- *   The message emitted from this directive are;  
+ * @description
+ *   Implementation of {@link MapController}
+ *   Initialize a Google map within a `<div>` tag with given options and register events
+ *   It accepts children directives; marker, shape, info-window, or marker-clusterer
+ *
+ *   It initialize map, children tags, then emits message as soon as the action is done
+ *   The message emitted from this directive are;
  *     . mapInitialized
  *     . markersInitialized
  *     . shapesInitialized
@@ -453,19 +453,19 @@ ngMap.directives.infoWindow.$inject = ['Attr2Options'];
  *   Restrict To:
  *     Element Or Attribute
  *
- * @param {String} &lt;MapOption> Any Google map options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions  
+ * @param {String} &lt;MapOption> Any Google map options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @param {String} &lt;MapEvent> Any Google map events, https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
- * Usage: 
+ * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
  *     ... Any children directives
  *   </map>
- *   Or, 
+ *   Or,
  *   <ANY map MAP_OPTIONS_OR_MAP_EVENTS ..>
  *     ... Any children directives
  *   </ANY>
  *
- * Example: 
+ * Example:
  *   <map center="[40.74, -74.18]" on-click="doThat()">
  *   </map>
  *
@@ -485,12 +485,12 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
      * @param {angular.element} element
      * @param {Hash} attrs
      * @ctrl {MapController} ctrl
-     */ 
+     */
     link: function (scope, element, attrs, ctrl) {
       scope.google = google; // ??
 
-      /** 
-       * create a new `div` inside map tag, so that it does not touch map element 
+      /**
+       * create a new `div` inside map tag, so that it does not touch map element
        * http://stackoverflow.com/questions/20955356
        */
       var el = document.createElement("div");
@@ -528,20 +528,27 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
           .then(function(position) {
             var lat = position.coords.latitude, lng = position.coords.longitude;
             ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
+          },function(){
+            if(mapOptions.fallbackcenter != undefined){
+              var lat = mapOptions.fallbackcenter[0], lng= mapOptions.fallbackcenter[1];
+              ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
+            } else{
+              ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);
+            }
           });
-      } 
+      }
 
       var markers = ctrl.initMarkers();
-      scope.$emit('markersInitialized', markers);  
+      scope.$emit('markersInitialized', markers);
 
       var shapes = ctrl.initShapes();
-      scope.$emit('shapesInitialized', shapes);  
+      scope.$emit('shapesInitialized', shapes);
 
       var infoWindows = ctrl.initInfoWindows();
-      scope.$emit('infoWindowsInitialized', [infoWindows, scope.showInfoWindow]);  
+      scope.$emit('infoWindowsInitialized', [infoWindows, scope.showInfoWindow]);
 
       var markerClusterer= ctrl.initMarkerClusterer();
-      scope.$emit('markerClustererInitialized', markerClusterer);  
+      scope.$emit('markerClustererInitialized', markerClusterer);
     }
   }; // return
 }; // function
