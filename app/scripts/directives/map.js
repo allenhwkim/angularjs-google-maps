@@ -97,12 +97,12 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
           .then(function(position) {
             var lat = position.coords.latitude, lng = position.coords.longitude;
             ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-          },function(){
-            if(mapOptions.fallbackcenter != undefined){
-              var lat = mapOptions.fallbackcenter[0], lng= mapOptions.fallbackcenter[1];
+          },function(){//current location failed, use fallback
+            if(mapOptions.geofallbackcenter != undefined){
+              var lat = mapOptions.geofallbackcenter[0], lng= mapOptions.geofallbackcenter[1];
               ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
             } else{
-              ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);
+              ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);//no fallback set, go to 0/0
             }
           });
       }
