@@ -453,6 +453,9 @@ ngMap.directives.infoWindow.$inject = ['Attr2Options'];
  *   Restrict To:
  *     Element Or Attribute
  *
+ * @param {Array} geo-fallback-center 
+ *    The center of map incase geo location failed. 
+ *    This should not be used with `center`, since `center` overrides `geo-fallback-center`
  * @param {String} &lt;MapOption> Any Google map options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @param {String} &lt;MapEvent> Any Google map events, https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
@@ -470,6 +473,9 @@ ngMap.directives.infoWindow.$inject = ['Attr2Options'];
  *   </map>
  *
  *   <div map center="[40.74, -74.18]" on-click="doThat()">
+ *   </div>
+ *
+ *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
 ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
@@ -529,8 +535,8 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
             var lat = position.coords.latitude, lng = position.coords.longitude;
             ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
           },function(){//current location failed, use fallback
-            if(mapOptions.geofallbackcenter != undefined){
-              var lat = mapOptions.geofallbackcenter[0], lng= mapOptions.geofallbackcenter[1];
+            if(mapOptions.geoFallbackCenter instanceof Array){
+              var lat = mapOptions.geoFallbackCenter[0], lng= mapOptions.geoFallbackCenter[1];
               ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
             } else{
               ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);//no fallback set, go to 0/0

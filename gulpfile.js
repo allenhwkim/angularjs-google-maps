@@ -84,13 +84,13 @@ gulp.task('docs', shell.task([
     '-r app/scripts' 
 ]));
 
-gulp.task('bump', function() { bumpVersion('patch'); });
-gulp.task('bump:patch', function() { bumpVersion('patch'); });
-gulp.task('bump:minor', function() { bumpVersion('minor'); });
-gulp.task('bump:major', function() { bumpVersion('major'); });
+gulp.task('bump', ['build'], function() { bumpVersion('patch'); });
+gulp.task('bump:patch', ['build'], function() { bumpVersion('patch'); });
+gulp.task('bump:minor', ['build'], function() { bumpVersion('minor'); });
+gulp.task('bump:major', ['build'], function() { bumpVersion('major'); });
 
 gulp.task('build', function(callback) {
-  runSequence('clean', 'build-js', 'copy', 'build-html', 'docs', callback);
+  runSequence('clean', 'build-js', 'copy', 'build-html','test', 'docs', callback);
 });
 
 gulp.task('test', shell.task([

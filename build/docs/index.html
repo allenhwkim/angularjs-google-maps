@@ -63,23 +63,6 @@
 &lt;map style="display:block;height:300px" />  
 </pre>
 
-<h2>Examples</h2><ul>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html">All Examples</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/hello_map.html">Hello Map</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker.html">Markers</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/dynamic_markers.html">Dynamic Markers</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_address.html">My Address</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_current_position.html">Where am I?</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html">Controls</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_options.html">Map Options</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/shape.html">Shapes(Rectangle, Triangle, Image)</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/events.html">Events</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/bird_eyes_and_street_view.html">Bird Eyes View/Street View</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/multiple_maps_on_a_page.html">Multiple Maps On A Page</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/street_view.html">Street View</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html">Marker Clusterer</a></li>
-<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_app.html">Starbucks World Wide</a></li>
-</ul>
 <p>To use it in your app, please include 'ngMap' as dependency.</p>
 <p><code>var myApp = angular.module('myApp', ['ngMap']);</code> <code>&lt;html ng-app=&quot;myApp&quot;&gt;</code></p>
 <p>You will also have these three scope variables after these directives are initialized.</p>
@@ -104,45 +87,111 @@
     map.setCenter( .... )
     ..
   });
-});</code></pre><h2>Directives</h2><p>There are five directives defined with ng-map module. 1. map 2. marker 3. shape 4. info-window 5. marker-cluster</p>
-<h4><strong>map</strong> Tag(Directive)</h4><p><a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">As documented</a>, it requires minimum two options, center and zoom. You can specify all map options as attributes.</p>
+});</code></pre><h2>Advanced Examples</h2><ul>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/index.html">All Examples</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html">Marker Clusterer</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_app.html">Starbucks World Wide</a></li>
+</ul>
+<h2>Directives</h2><p>There are five directives defined with ng-map module. 1. map 2. marker 3. shape 4. info-window 5. marker-cluster</p>
+<h4><strong>map</strong> Directive</h4><p>It is used as a tag or an attribute.</p>
 <p>These are attributes of map tag which is EXACTLY the same as the documentation except the following for the convenience</p>
 <table>
 <tr><th>Attributes<th>Description
 <tr><td>center<td>address or latitude/longitude<br/>
                   i.e. center=&quot;[40.79,-54,18]&quot;, center=&quot;toronto, canada&quot;
-<tr><td>geoFallbackCenter<td>latitude/longitude<br/>
-                   Coordinates to be loaded when no center is defined and retrieving current location fails<br/> 
-                  i.e. geoFallbackCenter=&quot;[40.79,-54,18]&quot;
-<tr><td>EVENTS     <td> You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.<br>   <br/> i.e. on-click=&quot;myfunc&quot;
+<tr><td>geo-fallback-center<td>latitude/longitude<br/>
+                  Coordinates to be loaded when no center is defined and retrieving current location fails<br>                  i.e. geoFallbackCenter=&quot;[40.79,-54,18]&quot;
+<tr><td>ANY OPTIONS<td><a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">As documented</a><br/>
+                   It requires minimum two options, center and zoom. You can specify all map options as attributes.
+                  i.e.  zoom=&quot;11&quot; center=&quot;[40.74, -74.18]&quot;<br>                        zoom-control=&quot;true&quot;<br>                        zoom-control-options='{style:&quot;small&quot;,position:&quot;bottom_left&quot;}'<br>                        map-type-control=&quot;true&quot;<br>                        map-type-control-options='{position:&quot;top_right&quot;, style:&quot;dropdown_menu&quot;, mapTypeIds:[&quot;HYBRID&quot;,&quot;ROADMAP&quot;,&quot;SATELLITE&quot;,&quot;TERRAIN&quot;]}'<br>                        overview-map-control=&quot;true&quot;<br>                        overview-map-control-options=&quot;{opened:true}&quot;<br>                        pan-control=&quot;true&quot;<br>                        pan-control-options='{position:&quot;left_center&quot;}'<br>                        rotate-control=&quot;true&quot;<br>                        rotate-control-options='{position:&quot;right_center&quot;}'<br>                        scale-control=&quot;true&quot;<br>                        scale-control-options='{position:&quot;bottom_right&quot;, style:&quot;default&quot;}'<br>                        street-view-control=&quot;true&quot;<br>                        street-view-control-options='{position:&quot;right_center&quot;}'<br><tr><td>EVENTS     <td> You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.<br>   <br/> i.e. on-click=&quot;myfunc&quot;
+          on-click=&quot;getRadius()&quot; 
 </table>
 
 <p>For usage of map controls, please refer to <a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html">this example</a>.</p>
-<h4><strong>marker</strong> Tag(Directive)</h4><p><a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">As documented</a>, it reqires <code>position</code> as an attribute. You can list any <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">maker options</a> as attribute of marker tag</p>
-<p>These are attributes of marker tag which ate EXACTLY the same as the documentation except the following for the convenienece.</p>
+<p>Map Examples</p>
+<ul>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/hello_map.html">Hello Map</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_options.html">Map Options</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_control.html">Controls</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/street_view.html">Street View</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/bird_eyes_and_street_view.html">Bird Eyes View/Street View</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/multiple_maps_on_a_page.html">Multiple Maps On A Page</a></li>
+</ul>
+<h4><strong>marker</strong> Directive</h4><p>It is used as a tag or an attribute.</p>
 <table>
 <tr><th>Attribute<th>Description
   <tr><td> id <td> Used for programming purpose. i.e. $scope.markers.myId
   <tr><td> position   <td>
     'current', address, or latitude/longitude  <br/>
     i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
+  <tr><td>ANY OPTIONS<td>
+    <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">As documented</a><br>    It reqires <code>position</code> as an attribute. You can list any <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">maker options</a> as attribute of marker tag
+    i.e. position=&quot;[40.76, -74.16]&quot;<br>        title=&quot;Hello Marker&quot;<br>        animation=&quot;Animation.BOUNCE&quot;<br>        draggable=&quot;true&quot;<br>        visible=&quot;true&quot;<br>        icon=&quot;https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png&quot;
   <tr><td> EVENTS <td>
     You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">marker events</a>
     i.e. on-click=&quot;myfunc&quot;
 </table>
 
-<h4><strong>shape</strong> Tag(Directive)</h4><p>shape tag always requires <code>name</code> attribute</p>
+<p>Marker Examples</p>
 <ul>
-<li>name (the name of shape) i.e. <code>polygon</code>, <code>image</code>, <code>polyline</code>, or <code>circle</code>.</li>
-<li>optionally, you can provide <code>id</code> for programming purpose. i.e. $scope.shapes.myCircle</li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker.html">Markers</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/dynamic_markers.html">Dynamic Markers</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_address.html">My Address</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_with_current_position.html">Where am I?</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/events.html">Events</a></li>
 </ul>
-<p>All other attributes are based on the <code>name</code> you specified. To see the full list of options of a shape for attributes, please visit the documentation.</p>
+<h4><strong>shape</strong> Directive</h4><p>It is used as a tag or an attribute.</p>
+<table>
+<tr><th>Attribute<th>Description
+  <tr><td> name <td> Required, The name of the shape i.e <code>polygon</code>, <code>image</code>, <code>polyline</code>, or <code>circle</code>
+  <tr><td> id   <td> Optinal, Used for programming purpose. i.e. $scope.shapes.myCircle
+  <tr><td>ANY SHAPE OPTIONS<td>
+    You can specify any options as attribute that are specified in documentation following;
+    To see the full list of options of a shape for attributes, please visit the documentation.
+     - <a href="https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions">polygon</a> 
+     - <a href="https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions">polyline</a>
+     - <a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions">image</a>
+     - <a href="https://developers.google.com/maps/documentation/javascript/reference#CircleOptions">circle</a>
+    i.e. position=&quot;[40.76, -74.16]&quot;<br>        title=&quot;Hello Marker&quot;<br>        animation=&quot;Animation.BOUNCE&quot;<br>        draggable=&quot;true&quot;<br>        visible=&quot;true&quot;<br>        icon=&quot;https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png&quot;
+  <tr><td>ANY SHAPE EVENTS <td>
+    You can also specify any shape options with the prefix of <code>on-</code>
+    - <a href="https://developers.google.com/maps/documentation/javascript/reference#Polygon">polygon events</a>
+    - <a href="https://developers.google.com/maps/documentation/javascript/reference#Polyline">polyline events</a>
+    - <a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlay">image events</a>
+    - <a href="https://developers.google.com/maps/documentation/javascript/reference#Circle">circle events</a>
+</table>
+
+<p>Shape Examples</p>
 <ul>
-<li><a href="https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions">polygon</a></li>
-<li><a href="https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions">polyline</a></li>
-<li><a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions">image</a></li>
-<li><a href="https://developers.google.com/maps/documentation/javascript/reference#CircleOptions">circle</a></li>
+<li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/shape.html">Shapes(Rectangle, Triangle, Image)</a></li>
 </ul>
+<h4><strong>info-window</strong> Directive</h4><p>It is used as a tag or an attribute</p>
+<table>
+<tr><th>Attribute<th>Description
+  <tr><td>ANY OPTION<td> Optional, 
+    Any InfoWindow options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+  <tr><td>ANY EVENT <td> Optional, 
+    Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+</table>
+
+<p>Example: </p>
+<pre class="prettyprint source"><code><map center="[40.74, -74.18]">
+  <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info'"></marker>
+  <info-window id="marker-info" style="display: none;">
+    <h1> I am an InfoWindow </h1>
+    I am here at [[this.getPosition()]]
+  </info-window>
+</map></code></pre><p>For working example, please visit: https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html</p>
+<h4><strong>marker-clusterer</strong> Directive</h4><table>
+<tr><th>Attribute<th>Description
+  <tr><td>markers<td> Required, the initial markers for this marker clusterer<br>    The properties of each marker must be exactly the same as options of marker directive.<br>    The markers are also will be set to <code>$scope.markers</code>
+  <tr><td>ANY OPTION<td> Any MarkerClusterer options,<br>    http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#MarkerClustererOptions
+</table>
+
+<p>Example: </p>
+<pre class="prettyprint source"><code><map zoom="1" center="[43.6650000, -79.4103000]">
+   <marker-clusterer markers="markersData" max-zoom="2">
+</marker-clusterer></code></pre><p>For full working example, please visit https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html</p>
 <h1>license</h1><p><a href="https://github.com/allenhwkim/angularjs-google-maps/blob/master/LICENSE">MIT License</a></p></article>
     </section>
 
@@ -160,18 +209,24 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> 
-    using <a href="https://github.com/allenhwkim/angularjs-google-maps/tree/master/config/jsdoc/template">custom template </a> and 
-    <a href="https://raw.githubusercontent.com/allenhwkim/angularjs-google-maps/master/config/jsdoc/plugins/angular.js">custom tag @ngdoc</a>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> 
+    using <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template </a> 
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
 <script>
+  // scroll to the current document navigation
   var href=window.location.href.match(/\/([^\/]+$)/)[1];
-  document.querySelector("nav a[href='"+href+"']").scrollIntoView(true);
+  if (currentNav = document.querySelector("nav a[href='"+href+"']"))
+    currentNav.scrollIntoView(true);
+  // scroll to the top of the document
   if (window.location.hash == "")
     document.querySelector("body").scrollIntoView(true);
+  // adjust the width of main section by navigation width
+  var navWidth = document.querySelector('nav').getBoundingClientRect().width;
+  var mainWidth = document.querySelector('#main').getBoundingClientRect().width;
+  document.querySelector('#main').style.width = (mainWidth - navWidth)+'px';
 </script>
 </body>
 </html>
