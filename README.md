@@ -206,7 +206,8 @@ Example:
       </info-window>
     </map>
  
-For working example, please visit: https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html
+For working example,   
+please visit: https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html
 
 #### **marker-clusterer** Directive
 
@@ -225,7 +226,8 @@ Example:
        <marker-clusterer markers="markersData" max-zoom="2">
     </marker-clusterer>
 
-For full working example, please visit https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html
+For full working example,  
+please visit https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html
 
 license
 =======
