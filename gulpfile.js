@@ -90,7 +90,7 @@ gulp.task('bump:minor', ['build'], function() { bumpVersion('minor'); });
 gulp.task('bump:major', ['build'], function() { bumpVersion('major'); });
 
 gulp.task('build', function(callback) {
-  runSequence('clean', 'build-js', 'copy', 'build-html','test', 'docs', callback);
+  runSequence('clean', 'build-js', 'copy', 'build-html', 'test', 'docs', callback);
 });
 
 gulp.task('test', shell.task([
