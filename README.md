@@ -90,7 +90,6 @@ These are attributes of map tag which is EXACTLY the same as the documentation e
         zoom-control="true"
         zoom-control-options='{style:"small",position:"bottom_left"}'
         map-type-control="true"
-        map-type-control-options='{position:"top_right", style:"dropdown_menu", mapTypeIds:["HYBRID","ROADMAP","SATELLITE","TERRAIN"]}'
         overview-map-control="true"
         overview-map-control-options="{opened:true}"
         pan-control="true"
@@ -136,7 +135,7 @@ It is used as a tag or an attribute.
         animation="Animation.BOUNCE"
         draggable="true"
         visible="true"
-        icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+        icon="beachflag.png"
 </pre>
   <tr><td> EVENTS <td>
     You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">marker events</a>
@@ -160,10 +159,10 @@ It is used as a tag or an attribute.
   <tr><td> id   <td> Optinal, Used for programming purpose. i.e. $scope.shapes.myCircle
   <tr><td>ANY SHAPE OPTIONS<td>
     You can specify any options as attribute that are specified in documentation following;
-    To see the full list of options of a shape for attributes, please visit the documentation.
+    To see the full list of options of a shape for attributes, please visit the documentation. <br/>
     
      - <a href=https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions>polygon</a><br/>
-     - <a href=https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions>polyline</a><br/><br/>
+     - <a href=https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions>polyline</a><br/>
      - <a href=https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions>image</a><br/>
      - <a href=https://developers.google.com/maps/documentation/javascript/reference#CircleOptions>circle</a><br/>
 
@@ -172,7 +171,7 @@ It is used as a tag or an attribute.
         animation="Animation.BOUNCE" 
         draggable="true"
         visible="true"
-        icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+        icon="beachflag.png"
 </pre>
   <tr><td>ANY SHAPE EVENTS <td>
     You can also specify any shape options with the prefix of `on-` <br/>
