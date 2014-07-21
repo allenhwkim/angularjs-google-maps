@@ -70,6 +70,18 @@ ngMap.directives.MapController = function($scope) {
   };
 
   /**
+   * Add a shape to map and $scope.shapes
+   * @memberof MapController
+   * @name addShape
+   * @param {Shape} shape google map shape
+   */
+  this.addShape = function(shape) {
+    shape.setMap($scope.map);
+    var len = Object.keys($scope.shapes).length;
+    $scope.shapes[shape.id || len] = shape;
+  };
+
+  /**
    * Initialize shapes
    * @memberof MapController
    * @name initShapes
