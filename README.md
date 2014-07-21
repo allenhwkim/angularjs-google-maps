@@ -84,23 +84,24 @@ These are attributes of map tag which is EXACTLY the same as the documentation e
 <tr><td>geo-fallback-center<td>latitude/longitude<br/>
                   Coordinates to be loaded when no center is defined and retrieving current location fails  
                   i.e. geoFallbackCenter="[40.79,-54,18]"
-<tr><td>ANY OPTIONS<td>[As documented](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)<br/>
-                   It requires minimum two options, center and zoom. You can specify all map options as attributes.
-                  i.e.  zoom="11" center="[40.74, -74.18]"  
-                        zoom-control="true"  
-                        zoom-control-options='{style:"small",position:"bottom_left"}'  
-                        map-type-control="true"  
-                        map-type-control-options='{position:"top_right", style:"dropdown_menu", mapTypeIds:["HYBRID","ROADMAP","SATELLITE","TERRAIN"]}'  
-                        overview-map-control="true"   
-                        overview-map-control-options="{opened:true}"  
-                        pan-control="true"   
-                        pan-control-options='{position:"left_center"}'  
-                        rotate-control="true"   
-                        rotate-control-options='{position:"right_center"}'  
-                        scale-control="true"   
-                        scale-control-options='{position:"bottom_right", style:"default"}'  
-                        street-view-control="true"  
-                        street-view-control-options='{position:"right_center"}'  
+<tr><td>ANY OPTIONS<td><a href=https://developers.google.com/maps/documentation/javascript/reference#MapOptions>As Documented</a><br/>
+                   It requires minimum two options, center and zoom. You can specify all map options as attributes. <br/><pre>
+  i.e.  zoom="11" center="[40.74, -74.18]"
+        zoom-control="true"
+        zoom-control-options='{style:"small",position:"bottom_left"}'
+        map-type-control="true"
+        map-type-control-options='{position:"top_right", style:"dropdown_menu", mapTypeIds:["HYBRID","ROADMAP","SATELLITE","TERRAIN"]}'
+        overview-map-control="true"
+        overview-map-control-options="{opened:true}"
+        pan-control="true"
+        pan-control-options='{position:"left_center"}'
+        rotate-control="true"
+        rotate-control-options='{position:"right_center"}'
+        scale-control="true"
+        scale-control-options='{position:"bottom_right", style:"default"}'
+        street-view-control="true
+        street-view-control-options='{position:"right_center"}'
+  </pre>
 <tr><td>EVENTS     <td> You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Map">map events</a> as an attribute.  
    <br/> i.e. on-click="myfunc"
           on-click="getRadius()" 
@@ -127,14 +128,16 @@ It is used as a tag or an attribute.
     'current', address, or latitude/longitude  <br/>
     i.e. 'current location', 'current position', 'Toronto, Canada', or [40.74, -74.18]
   <tr><td>ANY OPTIONS<td>
-    [As documented](https://developers.google.com/maps/documentation/javascript/reference#Marker)  
-    It reqires `position` as an attribute. You can list any [maker options](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions) as attribute of marker tag
-    i.e. position="[40.76, -74.16]"  
-        title="Hello Marker"  
-        animation="Animation.BOUNCE"  
-        draggable="true"  
-        visible="true"  
+    <a href=https://developers.google.com/maps/documentation/javascript/reference#Marker>As Documented</a> 
+    It reqires `position` as an attribute. You can list <<a href=https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions>marker options</a> as attribute of marker tag<br/>
+<pre>
+    i.e. position="[40.76, -74.16]"
+        title="Hello Marker"
+        animation="Animation.BOUNCE"
+        draggable="true"
+        visible="true"
         icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+</pre>
   <tr><td> EVENTS <td>
     You can also specify any <a href="https://developers.google.com/maps/documentation/javascript/reference#Marker">marker events</a>
     i.e. on-click="myfunc"
@@ -158,22 +161,25 @@ It is used as a tag or an attribute.
   <tr><td>ANY SHAPE OPTIONS<td>
     You can specify any options as attribute that are specified in documentation following;
     To see the full list of options of a shape for attributes, please visit the documentation.
-     - [polygon](https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions) 
-     - [polyline](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
-     - [image](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)
-     - [circle](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)
-    i.e. position="[40.76, -74.16]"  
-        title="Hello Marker"  
-        animation="Animation.BOUNCE"  
-        draggable="true"  
-        visible="true"  
+    
+     - <a href=https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions>polygon</a><br/>
+     - <a href=https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions>polyline</a><br/><br/>
+     - <a href=https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions>image</a><br/>
+     - <a href=https://developers.google.com/maps/documentation/javascript/reference#CircleOptions>circle</a><br/>
+
+<pre>    i.e. position="[40.76, -74.16]"
+        title="Hello Marker"
+        animation="Animation.BOUNCE" 
+        draggable="true"
+        visible="true"
         icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+</pre>
   <tr><td>ANY SHAPE EVENTS <td>
-    You can also specify any shape options with the prefix of `on-`
-    - [polygon events](https://developers.google.com/maps/documentation/javascript/reference#Polygon)
-    - [polyline events]( https://developers.google.com/maps/documentation/javascript/reference#Polyline)
-    - [image events](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlay)
-    - [circle events](https://developers.google.com/maps/documentation/javascript/reference#Circle)
+    You can also specify any shape options with the prefix of `on-` <br/>
+    - <a href=https://developers.google.com/maps/documentation/javascript/reference#Polygon>polygon events</a><br/>
+    - <a href=https://developers.google.com/maps/documentation/javascript/reference#Polyline>polyline events</a><br/>
+    - <a href=https://developers.google.com/maps/documentation/javascript/reference#GroundOverlay>image events</a><br/>
+    - <a href=https://developers.google.com/maps/documentation/javascript/reference#Circle>circle events</a><br/>
 </table>
 
 Shape Examples
@@ -186,9 +192,9 @@ It is used as a tag or an attribute
 <table>
 <tr><th>Attribute<th>Description
   <tr><td>ANY OPTION<td> Optional, 
-    Any InfoWindow options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+   <a href=https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions>Any InfoWindow options</a>
   <tr><td>ANY EVENT <td> Optional, 
-    Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+   <a href=https://developers.google.com/maps/documentation/javascript/reference> Any InfoWindow events</a>
 </table>
 
 Example: 
@@ -210,8 +216,8 @@ For working example, please visit: https://rawgit.com/allenhwkim/angularjs-googl
   <tr><td>markers<td> Required, the initial markers for this marker clusterer  
     The properties of each marker must be exactly the same as options of marker directive.  
     The markers are also will be set to `$scope.markers`
-  <tr><td>ANY OPTION<td> Any MarkerClusterer options,  
-    http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#MarkerClustererOptions
+  <tr><td>ANY OPTION<td> 
+    <a href=http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#MarkerClustererOptions>Any MarkerClusterer options</a>
 </table>
 
 Example: 
