@@ -5,5 +5,7 @@ for (var key in ngMap.services) {
 }
 
 for (var key in ngMap.directives) {
-  ngMapModule.directive(key, ngMap.directives[key]);
+  if(key != "MapController") {   // MapController is a controller for directives
+    ngMapModule.directive(key, ngMap.directives[key]);
+  }
 }
