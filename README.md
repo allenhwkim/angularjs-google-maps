@@ -9,8 +9,8 @@ GoogleMap AngularJS Directive
 
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach for this purpose than the existing one, such as;
 
-1. Everything in tag and attributes Therefore, basic users does not even have to know what Javascript is. Tag does it all.
-2. Expose the original Google Maps V3 api By doing so, programmers don't need to learn this module.
+1. Everything in tag and attributes. Therefore, basic users does not even have to know what Javascript is. Tag and attribute does it all.
+2. Expose all Original Google Maps V3 api to the user through this directive. No hiding, no wraping, or whatsoever. By doing so, programmers don't need to learn this module again for AngularJS Google Map. You only need to know Google Maps V3 API.
 
 There is a blog that introduces this module. The title of it is '[Google Map As The Simplest Way](http://allenhwkim.tumblr.com/post/70986888283/google-map-as-the-simplest-way)'
 
