@@ -199,7 +199,7 @@ It is used as a tag or an attribute
 Example: 
 
     <map center="[40.74, -74.18]">
-      <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info'"></marker>
+      <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info')"></marker>
       <info-window id="marker-info" style="display: none;">
         <h1> I am an InfoWindow </h1>
         I am here at [[this.getPosition()]]
