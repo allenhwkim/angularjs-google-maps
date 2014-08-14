@@ -16,22 +16,30 @@ There is a blog that introduces this module. The title of it is '[Google Map As 
 
 To Get Started
 --------------
+For Bower users, 
 
-1. include ng-map.js or ng-map.min.js and ngMap module to be active.
+  `$ bower install ngMap`
 
-<pre> &lt;script src="http://maps.google.com/maps/api/js?sensor=false">&lt;/script> &lt;script src="http://code.angularjs.org/1.2.5/angular.js">&lt;/script> &lt;script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js">&lt;/script> </pre>
+1. Include `ng-map.min.js` as well as google maps.  
+    `<script src="http://maps.google.com/maps/api/js?sensor=false"></script>`  
+    `<script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>`
 
-1. name angular app as ngMap, or add it as a dependency
+2. name angular app as ngMap, or add it as a dependency
 
-`<html ng-app="ngMap">` 2. use `map` tag, and optionally, `marker`, and `shape` tags
+    `<html ng-app="ngMap">`
 
-<pre>
-&lt;map style="display:block;height:300px" />  
-</pre>
+3. use `map` tag, and optionally, `marker`, and `shape` tags
+
+    `<map style="display:block;height:300px" />`  
 
 To use it in your app, please include 'ngMap' as dependency.
 
-`var myApp = angular.module('myApp', ['ngMap']);` `<html ng-app="myApp">`
+      <script>
+      var myApp = angular.module('myApp', ['ngMap']);
+      </script>
+      <div ng-app="myApp">
+      ...
+      </div>
 
 You will also have these three scope variables after these directives are initialized.
 
@@ -51,14 +59,12 @@ In case your map directive scope is different from your controller scope, there 
 
 Example Usage:
 
-```
-app.controller('parentParentController', function($scope) {
-  $scope.$on('mapInitialized', function(event, map) {
-    map.setCenter( .... )
-    ..
-  });
-});
-```
+    app.controller('parentParentController', function($scope) {
+      $scope.$on('mapInitialized', function(event, map) {
+        map.setCenter( .... )
+        ..
+      });
+    });
 
 Advanced Examples
 -------------------
