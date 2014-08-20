@@ -2,5 +2,5 @@
   "name": "ngmap",
   "version": "0.15.3",
   "dependencies": {},
-  "main": "./dist/ng-map.js"
+  "main": "./build/scripts/ng-map.js"
 }
