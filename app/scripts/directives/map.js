@@ -91,6 +91,8 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
        * initialize map
        */
       attrs.$observe('center', function(data) {
+        mapOptions.center = data;
+        
         if (mapOptions.center instanceof Array) {
           var lat = mapOptions.center[0], lng= mapOptions.center[1];
           ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
