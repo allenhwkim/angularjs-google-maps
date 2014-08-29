@@ -521,32 +521,28 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
       /**
        * initialize map
        */
-      attrs.$observe('center', function(data) {
-        mapOptions.center = data;
-
-        if (mapOptions.center instanceof Array) {
-          var lat = mapOptions.center[0], lng= mapOptions.center[1];
-          ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-        } else if (typeof mapOptions.center == 'string') { //address
-          GeoCoder.geocode({address: mapOptions.center})
-            .then(function(results) {
-              ctrl.initMap(mapOptions, results[0].geometry.location, mapEvents);
-            });
-        } else if (!mapOptions.center) { //no center given, use current location
-          NavigatorGeolocation.getCurrentPosition()
-            .then(function(position) {
-              var lat = position.coords.latitude, lng = position.coords.longitude;
+      if (mapOptions.center instanceof Array) {
+        var lat = mapOptions.center[0], lng= mapOptions.center[1];
+        ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
+      } else if (typeof mapOptions.center == 'string') { //address
+        GeoCoder.geocode({address: mapOptions.center})
+          .then(function(results) {
+            ctrl.initMap(mapOptions, results[0].geometry.location, mapEvents);
+          });
+      } else if (!mapOptions.center) { //no center given, use current location
+        NavigatorGeolocation.getCurrentPosition()
+          .then(function(position) {
+            var lat = position.coords.latitude, lng = position.coords.longitude;
+            ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
+          },function(){//current location failed, use fallback
+            if(mapOptions.geoFallbackCenter instanceof Array){
+              var lat = mapOptions.geoFallbackCenter[0], lng= mapOptions.geoFallbackCenter[1];
               ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-            },function(){//current location failed, use fallback
-              if(mapOptions.geoFallbackCenter instanceof Array){
-                var lat = mapOptions.geoFallbackCenter[0], lng= mapOptions.geoFallbackCenter[1];
-                ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-              } else{
-                ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);//no fallback set, go to 0/0
-              }
-            });
-        }
-      });
+            } else{
+              ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);//no fallback set, go to 0/0
+            }
+          });
+      }
 
       var markers = ctrl.initMarkers();
       scope.$emit('markersInitialized', markers);
