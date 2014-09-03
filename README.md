@@ -18,7 +18,7 @@ To Get Started
 --------------
 For Bower users, 
 
-  `$ bower install ngMap`
+  `$ bower install ngmap`
 
 1. Include `ng-map.min.js` as well as google maps.  
     `<script src="http://maps.google.com/maps/api/js?sensor=false"></script>`  
