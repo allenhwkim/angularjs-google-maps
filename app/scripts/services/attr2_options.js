@@ -28,6 +28,15 @@ ngMap.services.Attr2Options = function($parse) {
     } catch(err) { 
       try { // 2.JSON?
         output = JSON.parse(input);
+        if (output instanceof Array) {
+          if (output[0] instanceof Array) { // [[1,2],[3,4]] 
+            output =  output.map(function(el) {
+              return new google.maps.LatLng(el[0], el[1]);
+            });
+          } else {
+            return new google.maps.LatLng(output[0], output[1]);
+          }
+        }
       } catch(err2) {
         // 3. Object Expression. i.e. LatLng(80,-49)
         if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
@@ -217,13 +226,17 @@ ngMap.services.Attr2Options = function($parse) {
       var attrsToObserve = [];
       for (var i=0; i<attrs.length; i++) {
         var attr = attrs[i];
-        //console.log('attr', attr.name, attr.value);
-        if (attr.value && attr.value.match(/{{.*}}/)) {
+        console.log('attr', attr.name, attr.value);
+        if (attr.value && attr.value.match(/\{\{.*\}\}/)) {
+          console.log('attr', attr.name, camelCase(attr.name), attr.value);
           attrsToObserve.push(camelCase(attr.name));
         }
       }
       return attrsToObserve;
-    }
+    },
+
+    toOptionValue: toOptionValue,
+    camelCase: camelCase
 
   }; // return
 }; // function

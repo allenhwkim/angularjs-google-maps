@@ -29,18 +29,11 @@ ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder
   this.initMap = function(el, options, events) {
     this.map = new google.maps.Map(el, {});
     var center = options.center;
-    delete options.center;
-    this.map.setOptions(options);
-    for (var eventName in events) {
-      if (eventName) {
-        google.maps.event.addListener(this.map, eventName, events[eventName]);
-      }
+    if (!(center instanceof google.maps.LatLng)) {
+      delete options.center;
     }
     var _this = this;
-    if (center instanceof Array) {
-      var lat = center[0], lng= center[1];
-      this.map.setCenter(new google.maps.LatLng(lat,lng));
-    } else if (typeof center == 'string') { // address
+    if (typeof center == 'string') { // address
       GeoCoder.geocode({address: center})
         .then(function(results) {
           _this.map.setCenter(results[0].geometry.location);
@@ -63,6 +56,13 @@ ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder
             }
           }
         ); // then
+    }
+
+    this.map.setOptions(options);
+    for (var eventName in events) {
+      if (eventName) {
+        google.maps.event.addListener(this.map, eventName, events[eventName]);
+      }
     }
   };
 
