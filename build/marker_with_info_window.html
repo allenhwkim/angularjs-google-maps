@@ -15,9 +15,16 @@
 <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']); 
   app.controller('MyController', ['$scope', function($scope) {
-    $scope.stores = [
-      {name: "store 1"}, {name: "store 2"}, {name: "store 3"}
-    ];
+    var map, marker;
+    var infoWindow = new google.maps.InfoWindow({
+      content:'Hi<br/>I am an infowindow'
+    });
+    $scope.$on('mapsInitialized', function(event, maps) {
+      map = maps[0], marker = map.markers[0];
+    });
+    $scope.showInfoWindow = function() {
+      infoWindow.open(map, marker);
+    }
   }]);
 </script>
 </head>
@@ -25,14 +32,7 @@
 <body>
   <div id="my-html" style="height:100%" ng-controller="MyController">
     <map zoom="11" center="[40.74, -74.18]">
-      <marker position="[40.71, -74.21]" on-click="showInfoWindow(event, 'marker-info', {store: stores[0]})"></marker>
-      <marker position="[40.72, -74.20]" on-click="showInfoWindow(event, 'marker-info', {store: stores[1]})"></marker>
-      <marker position="[40.73, -74.19]" on-mouseover="showInfoWindow(event, 'marker-info', {store: stores[2]})"></marker>
-      <info-window id="marker-info">
-        <h1> I am an InfoWindow </h1>
-        I am here at [[this.getPosition()]]
-        and the store name is [[store.name]]
-      </info-window>
+      <marker position="[40.71, -74.21]" on-click="showInfoWindow()"></marker>
     </map>
   </div>
 

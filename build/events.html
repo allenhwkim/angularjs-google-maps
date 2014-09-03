@@ -13,13 +13,18 @@
 <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']); 
   app.controller('MyController', ['$scope', function($scope) {
+    var map;
+    $scope.$on('mapsInitialized', function(evt, maps) {
+      map = maps[0];
+    });
     $scope.latlng = [40.741, -74.181];
     $scope.radius = 3500;
     $scope.getRadius = function(event) {
       alert('this circle has radius ' + this.getRadius());
     }
     $scope.setCenter = function(event) {
-      this.setCenter(event.latLng);
+      console.log('event', event);
+      map.setCenter(event.latLng);
     }
     $scope.foo = function(event, arg1, arg2) {
       alert('this is at '+ this.getPosition());
@@ -47,7 +52,7 @@
       <br/>
       <br/>
       <map zoom="11" center="{{latlng}}" 
-          on-click="setCenter()"
+          on-click="setCenter(event)"
 	  tilt="0">
         <marker position="[40.79, -74.20]" 
           on-click="foo(2,3)"></marker>

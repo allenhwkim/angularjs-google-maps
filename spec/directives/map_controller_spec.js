@@ -14,7 +14,7 @@ describe('MapController', function() {
 
   describe('initMap', function() {
     it('should init map with options, center and events', function() {
-      var options = {zoom: 10, center: [1,1]};
+      var options = {zoom: 10, center: new google.maps.LatLng(1,1)};
       var events = { click: function() {} };
       ctrl.initMap(el, options, events);
       // options

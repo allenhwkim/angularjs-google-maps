@@ -12,9 +12,13 @@
   <script src="scripts/markerclusterer.js"></script>
   <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']);
+
   app.controller('mapController', function($scope, $http, StreetView) {
+    $scope.map;
     $scope.stores = [];
-    $scope.$on('mapInitialized', function(event, map) {
+    $scope.$on('mapsInitialized', function(event, maps) {
+      map = maps[0];
+      $scope.map = map;
       console.log('loading scripts/starbucks.json');
       $http.get('scripts/starbucks.json').success( function(stores) {
         for (var i=0; i<stores.length; i++) {
@@ -44,28 +48,30 @@
       });
     });
     $scope.showStreetView = function() {
-      StreetView.setPanorama($scope.map, $scope.panoId);
+      StreetView.setPanorama(map, $scope.panoId);
       $scope.storeInfo.hide();
     };
     $scope.showHybridView = function() {
-      $scope.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      $scope.map.setTilt(45);
+      map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      map.setTilt(45);
       $scope.storeInfo.hide();
     }
   });
+
   app.directive('fullScreenToggle', function() {
     return {
       link: function(scope, e, a) {
         this.click = function() {
           e.parent().toggleClass('full-screen');
           e.text( e.parent().hasClass('full-screen') ? 'Exit Full Screen' : 'Full Screen' );
-          google.maps.event.trigger(scope.map,'resize');
+          google.maps.event.trigger(scope.map, 'resize');
         };
         e.on('click', this.click);
         scope.fullScreenToggle = this;
       }
     }
   });
+
   app.directive('storeInfo', function() {
     var StoreInfo = function(s, e, a) {
       this.scope = s;
@@ -130,7 +136,7 @@
   
   <div id="my-html">
     <div id="map-container" ng-controller="mapController">
-      <map zoom="2" center="45.518970, -122.672899"></map>
+      <map zoom="2" center="[45.518970, -122.672899]"></map>
       <div full-screen-toggle class="custom-control">Full Screen</div>
       <div store-info class="custom-control">Store Info</div>
     </div>

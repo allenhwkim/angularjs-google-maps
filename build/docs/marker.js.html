@@ -76,6 +76,9 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
 
       var getMarker = function(options, events) {
         var marker = new google.maps.Marker(options);
+        /**
+         * set events
+         */
         if (Object.keys(events).length > 0) {
           console.log("markerEvents", events);
         }
@@ -84,16 +87,28 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
             google.maps.event.addListener(marker, eventName, events[eventName]);
           }
         }
+        /**
+         * set opbservers
+         */
+        var attrsToObserve = parser.getAttrsToObserve(element);
+        console.log('marker attrs to observe', attrsToObserve);
+        for (var i=0; i&lt;attrsToObserve.length; i++) {
+          var attrName = attrsToObserve[i];
+          attrs.$observe(attrName, function(val) {
+            console.log('observing marker attribute', attrName, val);
+            var setMethod = parser.camelCase('set-'+attrName);
+            var optionValue = parser.toOptionValue(val, {key: attrName});
+            console.log('attr option value', optionValue);
+            if (marker[setMethod]) { //if set method does exist
+              marker[setMethod](optionValue);
+            }
+          });
+        }
+
         return marker;
       };
 
-      if (markerOptions.position instanceof Array) {
-
-        var lat = markerOptions.position[0]; 
-        var lng = markerOptions.position[1];
-        markerOptions.position = new google.maps.LatLng(lat,lng);
-
-        console.log("adding marker with options, ", markerOptions);
+      if (markerOptions.position instanceof google.maps.LatLng) {
 
         /**
          * ng-repeat does not happen while map tag is initialized
@@ -147,7 +162,7 @@ ngMap.directives.marker.$inject  = ['Attr2Options', 'GeoCoder', 'NavigatorGeoloc
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="info-window.html">info-window</a></li><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="marker-clusterer.html">marker-clusterer</a></li><li><a href="shape.html">shape</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="marker-clusterer.html">marker-clusterer</a></li><li><a href="shape.html">shape</a></li></ul>
 </nav>
 
 <br clear="both">
