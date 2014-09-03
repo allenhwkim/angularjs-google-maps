@@ -46,22 +46,17 @@ You will also have these three scope variables after these directives are initia
 - $scope.map
 - $scope.markers as a hash
 - $scope.shapes as a hash
-- $scope.infoWindow as a hash
 - $scope.markerCluster as a hash
 
-In case your map directive scope is different from your controller scope, there are event emitted when each is initialized. There are three events emitted;
+In case your map directive scope is different from your controller scope, there is an event emitted when a map is initialized.
 
-- `mapInitialized`
-- `markersInitialized`
-- `shpaesInitialized`
-- `infoWindowInitialized`
-- `markerClusterInitialized`
+- `mapsInitialized`
 
 Example Usage:
 
     app.controller('parentParentController', function($scope) {
-      $scope.$on('mapInitialized', function(event, map) {
-        map.setCenter( .... )
+      $scope.$on('mapsInitialized', function(event, maps) {
+        maps[0].setCenter( .... )
         ..
       });
     });
@@ -76,7 +71,7 @@ Advanced Examples
 Directives
 ----------
 
-There are five directives defined with ng-map module. 1. map 2. marker 3. shape 4. info-window 5. marker-cluster
+There are five directives defined with ng-map module. 1. map 2. marker 3. shape 4. marker-cluster
 
 #### **map** Directive
 It is used as a tag or an attribute.
@@ -191,28 +186,7 @@ Shape Examples
 
 - [Shapes(Rectangle, Triangle, Image)](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
 
-#### **info-window** Directive
-It is used as a tag or an attribute
-
-<table>
-<tr><th>Attribute<th>Description
-  <tr><td>ANY OPTION<td> Optional, 
-   <a href=https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions>Any InfoWindow options</a>
-  <tr><td>ANY EVENT <td> Optional, 
-   <a href=https://developers.google.com/maps/documentation/javascript/reference> Any InfoWindow events</a>
-</table>
-
-Example: 
-
-    <map center="[40.74, -74.18]">
-      <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info')"></marker>
-      <info-window id="marker-info" style="display: none;">
-        <h1> I am an InfoWindow </h1>
-        I am here at [[this.getPosition()]]
-      </info-window>
-    </map>
- 
-For working example,   
+#### **info-window** Example
 please visit: https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html
 
 #### **marker-clusterer** Directive

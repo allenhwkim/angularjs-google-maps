@@ -5,7 +5,7 @@
  * @requires GeoCoder
  * @requires NavigatorGeolocation
  * @description 
- *   Initialize a Google map marker in map with given options and register events  
+ *   Draw a Google map marker on a map with given options and register events  
  *   
  *   Requires:  map directive
  *
@@ -85,7 +85,7 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
 
         /**
          * ng-repeat does not happen while map tag is initialized
-         * so add markers after it is initialized
+         * thus, we need to add markers after map tag is initialized
          */
         var marker = getMarker(markerOptions, markerEvents);
         if (markerOptions.ngRepeat) { 

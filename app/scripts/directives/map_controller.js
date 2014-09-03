@@ -19,10 +19,9 @@ ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder
 
   /**
    * Initialize map with options, center and events
-   * This emits a message `mapInitialized` with the parmater of map, Google Map Object
    * @memberof MapController
    * @name initMap
-   * @param {HtmlElement} el element that a map is initialized
+   * @param {HtmlElement} el element that a map is drawn
    * @param {MapOptions} options google map options
    * @param {Hash} events google map events. The key is the name of the event
    */

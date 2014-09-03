@@ -398,11 +398,8 @@ ngMap.services.StreetView.$inject =  ['$q'];
  *   It accepts children directives; marker, shape, or marker-clusterer
  *
  *   It initialize map, children tags, then emits message as soon as the action is done
- *   The message emitted from this directive are;
- *     . mapInitialized
- *     . markersInitialized
- *     . shapesInitialized
- *     . markerClustererInitializd
+ *   The message emitted from this directive is;
+ *     . mapsInitialized
  *
  *   Restrict To:
  *     Element Or Attribute
@@ -524,10 +521,9 @@ ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder
 
   /**
    * Initialize map with options, center and events
-   * This emits a message `mapInitialized` with the parmater of map, Google Map Object
    * @memberof MapController
    * @name initMap
-   * @param {HtmlElement} el element that a map is initialized
+   * @param {HtmlElement} el element that a map is drawn
    * @param {MapOptions} options google map options
    * @param {Hash} events google map events. The key is the name of the event
    */
@@ -650,7 +646,7 @@ ngMap.directives.MapController.$inject = ['$scope', 'NavigatorGeolocation', 'Geo
  * @requires GeoCoder
  * @requires NavigatorGeolocation
  * @description 
- *   Initialize a Google map marker in map with given options and register events  
+ *   Draw a Google map marker on a map with given options and register events  
  *   
  *   Requires:  map directive
  *
@@ -730,7 +726,7 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
 
         /**
          * ng-repeat does not happen while map tag is initialized
-         * so add markers after it is initialized
+         * thus, we need to add markers after map tag is initialized
          */
         var marker = getMarker(markerOptions, markerEvents);
         if (markerOptions.ngRepeat) { 

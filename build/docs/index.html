@@ -51,7 +51,7 @@
 </ol>
 <p>There is a blog that introduces this module. The title of it is '<a href="http://allenhwkim.tumblr.com/post/70986888283/google-map-as-the-simplest-way">Google Map As The Simplest Way</a>'</p>
 <h2>To Get Started</h2><p>For Bower users, </p>
-<p>  <code>$ bower install ngMap</code></p>
+<p>  <code>$ bower install ngmap</code></p>
 <ol>
 <li><p>Include <code>ng-map.min.js</code> as well as google maps.<br> <code>&lt;script src=&quot;http://maps.google.com/maps/api/js?sensor=false&quot;&gt;&lt;/script&gt;</code><br> <code>&lt;script src=&quot;http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js&quot;&gt;&lt;/script&gt;</code></p>
 </li>
@@ -73,21 +73,16 @@
 <li>$scope.map</li>
 <li>$scope.markers as a hash</li>
 <li>$scope.shapes as a hash</li>
-<li>$scope.infoWindow as a hash</li>
 <li>$scope.markerCluster as a hash</li>
 </ul>
-<p>In case your map directive scope is different from your controller scope, there are event emitted when each is initialized. There are three events emitted;</p>
+<p>In case your map directive scope is different from your controller scope, there is an event emitted when a map is initialized.</p>
 <ul>
-<li><code>mapInitialized</code></li>
-<li><code>markersInitialized</code></li>
-<li><code>shpaesInitialized</code></li>
-<li><code>infoWindowInitialized</code></li>
-<li><code>markerClusterInitialized</code></li>
+<li><code>mapsInitialized</code></li>
 </ul>
 <p>Example Usage:</p>
 <pre class="prettyprint source"><code>app.controller('parentParentController', function($scope) {
-  $scope.$on('mapInitialized', function(event, map) {
-    map.setCenter( .... )
+  $scope.$on('mapsInitialized', function(event, maps) {
+    maps[0].setCenter( .... )
     ..
   });
 });</code></pre><h2>Advanced Examples</h2><ul>
@@ -95,7 +90,7 @@
 <li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html">Marker Clusterer</a></li>
 <li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/map_app.html">Starbucks World Wide</a></li>
 </ul>
-<h2>Directives</h2><p>There are five directives defined with ng-map module. 1. map 2. marker 3. shape 4. info-window 5. marker-cluster</p>
+<h2>Directives</h2><p>There are five directives defined with ng-map module. 1. map 2. marker 3. shape 4. marker-cluster</p>
 <h4><strong>map</strong> Directive</h4><p>It is used as a tag or an attribute.</p>
 <p>These are attributes of map tag which is EXACTLY the same as the documentation except the following for the convenience</p>
 <table>
@@ -199,23 +194,7 @@
 <ul>
 <li><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/shape.html">Shapes(Rectangle, Triangle, Image)</a></li>
 </ul>
-<h4><strong>info-window</strong> Directive</h4><p>It is used as a tag or an attribute</p>
-<table>
-<tr><th>Attribute<th>Description
-  <tr><td>ANY OPTION<td> Optional, 
-   <a href=https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions>Any InfoWindow options</a>
-  <tr><td>ANY EVENT <td> Optional, 
-   <a href=https://developers.google.com/maps/documentation/javascript/reference> Any InfoWindow events</a>
-</table>
-
-<p>Example: </p>
-<pre class="prettyprint source"><code><map center="[40.74, -74.18]">
-  <marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info')"></marker>
-  <info-window id="marker-info" style="display: none;">
-    <h1> I am an InfoWindow </h1>
-    I am here at [[this.getPosition()]]
-  </info-window>
-</map></code></pre><p>For working example,<br>please visit: https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html</p>
+<h4><strong>info-window</strong> Example</h4><p>please visit: https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html</p>
 <h4><strong>marker-clusterer</strong> Directive</h4><table>
 <tr><th>Attribute<th>Description
   <tr><td>markers<td> Required, the initial markers for this marker clusterer<br>    The properties of each marker must be exactly the same as options of marker directive.<br>    The markers are also will be set to <code>$scope.markers</code>
