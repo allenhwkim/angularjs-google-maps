@@ -39,25 +39,25 @@ describe('map', function() {
       $compile(elm)(scope);
       scope.$digest();
       waitsFor(function() {
-        return scope.map;
+        return scope.maps;
       });
     });
   });
 
   it('should prepend a div tag', function() {
     var divTag = elm.find('div');
-    expect(scope.map.getDiv()).toBe(divTag[0]);
+    expect(scope.maps[0].getDiv()).toBe(divTag[0]);
   });
 
   it('should set map options', function() {
-    expect(scope.map.getZoom()).toEqual(11);
-    expect(scope.map.mapTypeId).toBe(google.maps.MapTypeId.TERRAIN);
+    expect(scope.maps[0].getZoom()).toEqual(11);
+    expect(scope.maps[0].mapTypeId).toBe(google.maps.MapTypeId.TERRAIN);
   });
 
   it('should set map controls', function() {
-    expect(scope.map.zoomControl).toBe(true);
-    expect(scope.map.zoomControlOptions.style).toBe(google.maps.ZoomControlStyle.SMALL);
-    expect(scope.map.zoomControlOptions.position).toBe(google.maps.ControlPosition.BOTTOM_LEFT);
+    expect(scope.maps[0].zoomControl).toBe(true);
+    expect(scope.maps[0].zoomControlOptions.style).toBe(google.maps.ZoomControlStyle.SMALL);
+    expect(scope.maps[0].zoomControlOptions.position).toBe(google.maps.ControlPosition.BOTTOM_LEFT);
   });
 
 });

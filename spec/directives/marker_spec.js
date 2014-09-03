@@ -37,15 +37,17 @@ describe('marker', function() {
       scope = $rootScope;
       $compile(elm)(scope);
       scope.$digest();
-      waitsFor(function() { return scope.map; });
+      waitsFor(function() { 
+        return scope.maps[0]; 
+      });
     });
   });
 
   it('should set scope.markers with options ', function() {
     // scope.markers
-    expect(Object.keys(scope.markers).length).toEqual(2);
+    expect(Object.keys(scope.maps[0].markers).length).toEqual(2);
     // options from attribute
-    expect(scope.markers[0].draggable).toEqual(true);
+    expect(scope.maps[0].markers[0].draggable).toEqual(true);
     // contents from html
   });
 

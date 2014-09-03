@@ -2,21 +2,16 @@
  * @ngdoc directive
  * @name map
  * @requires Attr2Options
- * @requires $parse
- * @requires NavigatorGeolocation
- * @requires GeoCoder
- * @requires $compile
  * @description
  *   Implementation of {@link MapController}
  *   Initialize a Google map within a `<div>` tag with given options and register events
- *   It accepts children directives; marker, shape, info-window, or marker-clusterer
+ *   It accepts children directives; marker, shape, or marker-clusterer
  *
  *   It initialize map, children tags, then emits message as soon as the action is done
  *   The message emitted from this directive are;
  *     . mapInitialized
  *     . markersInitialized
  *     . shapesInitialized
- *     . infoWindowInitialized
  *     . markerClustererInitializd
  *
  *   Restrict To:
@@ -47,7 +42,7 @@
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoCoder, $compile) {
+ngMap.directives.map = function(Attr2Options) {
   var parser = Attr2Options;
 
   return {
@@ -72,8 +67,6 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
       el.style.width = "100%";
       el.style.height = "100%";
       element.prepend(el);
-      scope.map = new google.maps.Map(el, {});
-      console.log('scope.map', scope.map);
 
       /**
        * get map optoins
@@ -90,41 +83,15 @@ ngMap.directives.map = function(Attr2Options, $parse, NavigatorGeolocation, GeoC
       /**
        * initialize map
        */
-      if (mapOptions.center instanceof Array) {
-        var lat = mapOptions.center[0], lng= mapOptions.center[1];
-        ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-      } else if (typeof mapOptions.center == 'string') { //address
-        GeoCoder.geocode({address: mapOptions.center})
-          .then(function(results) {
-            ctrl.initMap(mapOptions, results[0].geometry.location, mapEvents);
-          });
-      } else if (!mapOptions.center) { //no center given, use current location
-        NavigatorGeolocation.getCurrentPosition()
-          .then(function(position) {
-            var lat = position.coords.latitude, lng = position.coords.longitude;
-            ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-          },function(){//current location failed, use fallback
-            if(mapOptions.geoFallbackCenter instanceof Array){
-              var lat = mapOptions.geoFallbackCenter[0], lng= mapOptions.geoFallbackCenter[1];
-              ctrl.initMap(mapOptions, new google.maps.LatLng(lat,lng), mapEvents);
-            } else{
-              ctrl.initMap(mapOptions, new google.maps.LatLng(0,0), mapEvents);//no fallback set, go to 0/0
-            }
-          });
-      }
+      ctrl.initMap(el, mapOptions, mapEvents);
+      ctrl.initMarkers();
+      ctrl.initShapes();
+      ctrl.initMarkerClusterer();
 
-      var markers = ctrl.initMarkers();
-      scope.$emit('markersInitialized', markers);
-
-      var shapes = ctrl.initShapes();
-      scope.$emit('shapesInitialized', shapes);
-
-      var infoWindows = ctrl.initInfoWindows();
-      scope.$emit('infoWindowsInitialized', [infoWindows, scope.showInfoWindow]);
-
-      var markerClusterer= ctrl.initMarkerClusterer();
-      scope.$emit('markerClustererInitialized', markerClusterer);
+      scope.maps = scope.maps || {};
+      scope.maps[options.id||Object.keys(scope.maps).length] = ctrl.map;
+      scope.$emit('mapsInitialized', scope.maps);  
     }
   }; // return
 }; // function
-ngMap.directives.map.$inject = ['Attr2Options', '$parse', 'NavigatorGeolocation', 'GeoCoder', '$compile'];
+ngMap.directives.map.$inject = ['Attr2Options'];

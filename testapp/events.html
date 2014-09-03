@@ -29,7 +29,8 @@
       alert('this circle has radius ' + this.getRadius());
     }
     $scope.setCenter = function(event) {
-      this.setCenter(event.latLng);
+      console.log('event', event);
+      scope.map[0].setCenter(event.latLng);
     }
     $scope.foo = function(event, arg1, arg2) {
       alert('this is at '+ this.getPosition());
@@ -57,7 +58,7 @@
       <br/>
       <br/>
       <map zoom="11" center="{{latlng}}" 
-          on-click="setCenter()"
+          on-click="setCenter(event)"
 	  tilt="0">
         <marker position="[40.79, -74.20]" 
           on-click="foo(2,3)"></marker>

@@ -22,23 +22,25 @@ describe('shape', function() {
       scope = $rootScope;
       $compile(elm)(scope);
       scope.$digest();
-      waitsFor(function() { return scope.map; });
+      waitsFor(function() { 
+        return scope.maps[0]; 
+      });
     });
   });
 
   it('should set scope.shapes with options ', function() {
     // scope.shapes
-    expect(Object.keys(scope.shapes).length).toEqual(5);
+    expect(Object.keys(scope.maps[0].shapes).length).toEqual(5);
     // polyline
-    expect(scope.shapes.polyline.geodesic).toBe(true);
+    expect(scope.maps[0].shapes.polyline.geodesic).toBe(true);
     // polygon
-    expect(scope.shapes.polygon.strokeColor).toEqual('#FF0000');
+    expect(scope.maps[0].shapes.polygon.strokeColor).toEqual('#FF0000');
     // rectangle
-    expect(scope.shapes.rectangle.editable).toBe(true);
+    expect(scope.maps[0].shapes.rectangle.editable).toBe(true);
     // circle
-    expect(scope.shapes.circle.radius).toEqual(4000);
+    expect(scope.maps[0].shapes.circle.radius).toEqual(4000);
     // image
-    expect(scope.shapes.image.getUrl()).toEqual("https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg");
+    expect(scope.maps[0].shapes.image.getUrl()).toEqual("https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg");
   });
 
   it('should set shape events', function() {

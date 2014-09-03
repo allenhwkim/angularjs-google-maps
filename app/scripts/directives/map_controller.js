@@ -2,18 +2,19 @@
  * @ngdoc directive
  * @name MapController
  * @requires $scope
+ * @requires NavigatorGeolocation
+ * @requires GeoCoder
  * @property {Hash} controls collection of Controls initiated within `map` directive
  * @property {Hash} markersi collection of Markers initiated within `map` directive
  * @property {Hash} shapes collection of shapes initiated within `map` directive
- * @property {Hash} infoWindows collection of InfoWindows initiated within `map` directive
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
-ngMap.directives.MapController = function($scope) { 
+ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder) { 
 
+  this.map = null;
   this.controls = {};
   this.markers = [];
   this.shapes = [];
-  this.infoWindows = [];
   this.markerClusterer = null;
 
   /**
@@ -21,20 +22,48 @@ ngMap.directives.MapController = function($scope) {
    * This emits a message `mapInitialized` with the parmater of map, Google Map Object
    * @memberof MapController
    * @name initMap
+   * @param {HtmlElement} el element that a map is initialized
    * @param {MapOptions} options google map options
-   * @param {LatLng} center the center of the map
-   * @param {Hash} events  google map events. The key is the name of the event
+   * @param {Hash} events google map events. The key is the name of the event
    */
-  this.initMap = function(options, center, events) {
-    options.center = null; // use parameter center instead
-    $scope.map.setOptions(options);
-    $scope.map.setCenter(center);
+  this.initMap = function(el, options, events) {
+    this.map = new google.maps.Map(el, {});
+    var center = options.center;
+    delete options.center;
+    this.map.setOptions(options);
     for (var eventName in events) {
       if (eventName) {
-        google.maps.event.addListener($scope.map, eventName, events[eventName]);
+        google.maps.event.addListener(this.map, eventName, events[eventName]);
       }
     }
-    $scope.$emit('mapInitialized', $scope.map);  
+    var _this = this;
+    if (center instanceof Array) {
+      var lat = center[0], lng= center[1];
+      this.map.setCenter(new google.maps.LatLng(lat,lng));
+    } else if (typeof center == 'string') { // address
+      GeoCoder.geocode({address: center})
+        .then(function(results) {
+          _this.map.setCenter(results[0].geometry.location);
+        });
+    } else if (!center) { //no center given, use current location
+      NavigatorGeolocation.getCurrentPosition()
+        .then(
+          function(position) {
+            var lat = position.coords.latitude, 
+                lng = position.coords.longitude;
+            _this.map.setCenter(new google.maps.LatLng(lat,lng));
+          },
+          function() { //current location failed, use fallback
+            if(options.geoFallbackCenter instanceof Array) {
+              var lat = options.geoFallbackCenter[0],
+                  lng = options.geoFallbackCenter[1];
+              _this.map.setCenter(new google.maps.LatLng(lat,lng));
+            } else {
+              this.map.setCenter(new google.maps.LatLng(0,0)); //default lat, lng
+            }
+          }
+        ); // then
+    }
   };
 
   /**
@@ -46,27 +75,25 @@ ngMap.directives.MapController = function($scope) {
    *    the map will be centered with the marker
    */
   this.addMarker = function(marker) {
-    marker.setMap($scope.map);
+    marker.setMap(this.map);
     if (marker.centered) {
-      $scope.map.setCenter(marker.position);
+      this.map.setCenter(marker.position);
     }
-    var len = Object.keys($scope.markers).length;
-    $scope.markers[marker.id || len] = marker;
+    var len = Object.keys(this.map.markers).length;
+    this.map.markers[marker.id || len] = marker;
   };
 
   /**
    * Initialize markers
    * @memberof MapController
    * @name initMarkers
-   * @returns {Hash} markers collection of markers
    */
   this.initMarkers = function() {
-    $scope.markers = {};
+    this.map.markers = {};
     for (var i=0; i<this.markers.length; i++) {
       var marker = this.markers[i];
-      this.addMarker(marker);
+      this.addMarker(marker);  //set this.map.markers
     }
-    return $scope.markers;
   };
 
   /**
@@ -76,57 +103,37 @@ ngMap.directives.MapController = function($scope) {
    * @param {Shape} shape google map shape
    */
   this.addShape = function(shape) {
-    shape.setMap($scope.map);
-    var len = Object.keys($scope.shapes).length;
-    $scope.shapes[shape.id || len] = shape;
+    shape.setMap(this.map);
+    var len = Object.keys(this.map.shapes).length;
+    this.map.shapes[shape.id || len] = shape;
   };
 
   /**
    * Initialize shapes
    * @memberof MapController
    * @name initShapes
-   * @returns {Hash} shapes collection of shapes
    */
   this.initShapes = function() {
-    $scope.shapes = {};
+    this.map.shapes = {};
     for (var i=0; i<this.shapes.length; i++) {
       var shape = this.shapes[i];
-      shape.setMap($scope.map);
-      $scope.shapes[shape.id || i] = shape; // can have id as key
+      this.addShape(shape);
     }
-    return $scope.shapes;
-  };
-
-  /**
-   * Initialize infoWindows for this map
-   * @memberof MapController
-   * @name initInfoWindows
-   * @returns {Hash} infoWindows collection of InfoWindows
-   */
-  this.initInfoWindows = function() {
-    $scope.infoWindows = {};
-    for (var i=0; i<this.infoWindows.length; i++) {
-      var obj = this.infoWindows[i];
-      $scope.infoWindows[obj.id || i] = obj; 
-    }
-    return $scope.infoWindows;
   };
 
   /**
    * Initialize markerClusterere for this map
    * @memberof MapController
    * @name initMarkerClusterer
-   * @returns {MarkerClusterer} markerClusterer
    */
   this.initMarkerClusterer = function() {
     if (this.markerClusterer) {
-      $scope.markerClusterer = new MarkerClusterer(
-        $scope.map, 
+      this.map.markerClusterer = new MarkerClusterer(
+        this.map, 
         this.markerClusterer.data, 
         this.markerClusterer.options
       );
     }
-    return $scope.markerClusterer;
   };
 };
-ngMap.directives.MapController.$inject = ['$scope'];
+ngMap.directives.MapController.$inject = ['$scope', 'NavigatorGeolocation', 'GeoCoder'];

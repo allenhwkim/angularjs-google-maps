@@ -4,7 +4,62 @@
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
-ngMap.services.Attr2Options = function() { 
+ngMap.services.Attr2Options = function($parse) { 
+  var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
+  var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
+
+  function camelCase(name) {
+    return name.
+      replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+        return offset ? letter.toUpperCase() : letter;
+      }).
+      replace(MOZ_HACK_REGEXP, 'Moz$1');
+  }
+
+  var toOptionValue = function(input, options) {
+    var output, key=options.key, scope=options.scope;
+    try { // 1. Number?
+      var num = Number(input);
+      if (isNaN(num)) {
+        throw "Not a number";
+      } else  {
+        output = num;
+      }
+    } catch(err) { 
+      try { // 2.JSON?
+        output = JSON.parse(input);
+      } catch(err2) {
+        // 3. Object Expression. i.e. LatLng(80,-49)
+        if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
+          try {
+            var exp = "new google.maps."+input;
+            output = eval(exp); // TODO, still eval
+          } catch(e) {
+            output = input;
+          } 
+        // 4. Object Expression. i.e. MayTypeId.HYBRID 
+        } else if (input.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
+          try {
+            output = scope.$eval("google.maps."+input);
+          } catch(e) {
+            output = input;
+          } 
+        // 5. Object Expression. i.e. HYBRID 
+        } else if (input.match(/^[A-Z]+$/)) {
+          try {
+            var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
+            output = scope.$eval("google.maps."+capitializedKey+"."+input);
+          } catch(e) {
+            output = input;
+          } 
+        } else {
+          output = input;
+        }
+      } // catch(err2)
+    } // catch(err)
+    return output;
+  };
+
   return {
     /**
      * filters attributes by skipping angularjs methods $.. $$..
@@ -21,6 +76,7 @@ ngMap.services.Attr2Options = function() {
       }
       return options;
     },
+
 
     /**
      * converts attributes hash to Google Maps API v3 options  
@@ -45,50 +101,11 @@ ngMap.services.Attr2Options = function() {
             continue;
           } else if (key.match(/ControlOptions$/)) { // skip controlOptions
             continue;
+          } else {
+            options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
           }
-
-          var val = attrs[key];
-          try { // 1. Number?
-            var num = Number(val);
-            if (isNaN(num)) {
-              throw "Not a number";
-            } else  {
-              options[key] = num;
-            }
-          } catch(err) { 
-            try { // 2.JSON?
-              options[key] = JSON.parse(val);
-            } catch(err2) {
-              // 3. Object Expression. i.e. LatLng(80,-49)
-              if (val.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
-                try {
-                  var exp = "new google.maps."+val;
-                  options[key] = eval(exp); // TODO, still eval
-                } catch(e) {
-                  options[key] = val;
-                } 
-              // 4. Object Expression. i.e. MayTypeId.HYBRID 
-              } else if (val.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
-                try {
-                  options[key] = scope.$eval("google.maps."+val);
-                } catch(e) {
-                  options[key] = val;
-                } 
-              // 5. Object Expression. i.e. HYBRID 
-              } else if (val.match(/^[A-Z]+$/)) {
-                try {
-                  var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
-                  options[key] = scope.$eval("google.maps."+capitializedKey+"."+val);
-                } catch(e) {
-                  options[key] = val;
-                } 
-              } else {
-                options[key] = val;
-              }
-            } // catch(err2)
-          } // catch(err)
         } // if (attrs[key])
-      } //for(var key in attrs)
+      } // for(var key in attrs)
       return options;
     },
 
@@ -192,7 +209,22 @@ ngMap.services.Attr2Options = function() {
       } // for
 
       return controlOptions;
-    } // function
+    }, // function
+
+    getAttrsToObserve : function(elem) {
+      var attrs = elem[0].attributes;
+      //console.log('attrs', attrs);
+      var attrsToObserve = [];
+      for (var i=0; i<attrs.length; i++) {
+        var attr = attrs[i];
+        //console.log('attr', attr.name, attr.value);
+        if (attr.value && attr.value.match(/{{.*}}/)) {
+          attrsToObserve.push(camelCase(attr.name));
+        }
+      }
+      return attrsToObserve;
+    }
+
   }; // return
 }; // function
 
