@@ -429,7 +429,7 @@ ngMap.services.StreetView.$inject =  ['$q'];
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options) {
+ngMap.directives.map = function(Attr2Options, GeoCoder) {
   var parser = Attr2Options;
 
   return {
@@ -488,7 +488,15 @@ ngMap.directives.map = function(Attr2Options) {
           var optionValue = parser.toOptionValue(val, {key: attrName});
           console.log('attr option value', optionValue);
           if (ctrl.map[setMethod]) { //if set method does exist
-            ctrl.map[setMethod](optionValue);
+            /* if address is being observed */
+            if (setMethod == "setCenter" && typeof optionValue == 'string') {
+              GeoCoder.geocode({address: optionValue})
+                .then(function(results) {
+                  ctrl.map.setCenter(results[0].geometry.location);
+                });
+            } else {
+              ctrl.map[setMethod](optionValue);
+            }
           }
         });
       }
@@ -498,7 +506,7 @@ ngMap.directives.map = function(Attr2Options) {
     }
   }; 
 }; // function
-ngMap.directives.map.$inject = ['Attr2Options'];
+ngMap.directives.map.$inject = ['Attr2Options', 'GeoCoder'];
 
 /**
  * @ngdoc directive
@@ -714,7 +722,15 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
             var optionValue = parser.toOptionValue(val, {key: attrName});
             console.log('attr option value', optionValue);
             if (marker[setMethod]) { //if set method does exist
-              marker[setMethod](optionValue);
+              /* if position as address is being observed */
+              if (setMethod == "setPosition" && typeof optionValue == 'string') {
+                GeoCoder.geocode({address: optionValue})
+                  .then(function(results) {
+                    marker[setMethod](results[0].geometry.location);
+                  });
+              } else {
+                marker[setMethod](optionValue);
+              }
             }
           });
         }

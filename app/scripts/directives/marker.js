@@ -73,7 +73,15 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
             var optionValue = parser.toOptionValue(val, {key: attrName});
             console.log('attr option value', optionValue);
             if (marker[setMethod]) { //if set method does exist
-              marker[setMethod](optionValue);
+              /* if position as address is being observed */
+              if (setMethod == "setPosition" && typeof optionValue == 'string') {
+                GeoCoder.geocode({address: optionValue})
+                  .then(function(results) {
+                    marker[setMethod](results[0].geometry.location);
+                  });
+              } else {
+                marker[setMethod](optionValue);
+              }
             }
           });
         }
