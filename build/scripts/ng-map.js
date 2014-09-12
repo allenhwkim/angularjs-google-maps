@@ -226,9 +226,24 @@ ngMap.services.Attr2Options = function($parse) {
       return controlOptions;
     }, // function
 
+    /* will be deprecated */
     getAttrsToObserve : function(elem) {
       var attrs = elem[0].attributes;
       //console.log('attrs', attrs);
+      var attrsToObserve = [];
+      for (var i=0; i<attrs.length; i++) {
+        var attr = attrs[i];
+        console.log('attr', attr.name, attr.value);
+        if (attr.value && attr.value.match(/\{\{.*\}\}/)) {
+          console.log('attr', attr.name, camelCase(attr.name), attr.value);
+          attrsToObserve.push(camelCase(attr.name));
+        }
+      }
+      return attrsToObserve;
+    },
+
+    getAttrsToObserve2 : function(attrs) {
+      console.log('attrs', attrs);
       var attrsToObserve = [];
       for (var i=0; i<attrs.length; i++) {
         var attr = attrs[i];
@@ -479,14 +494,12 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
        * observe attributes
        */
       var attrsToObserve = parser.getAttrsToObserve(element);
-      console.log('map attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        var attrName = attrsToObserve[i];
+      var observeFunc = function(attrName) {
         attrs.$observe(attrName, function(val) {
-          console.log('observing', attrName, val);
+          console.log('observing map', attrName, val);
           var setMethod = parser.camelCase('set-'+attrName);
           var optionValue = parser.toOptionValue(val, {key: attrName});
-          console.log('attr option value', optionValue);
+          console.log('setting map', attrName, 'with new value', optionValue);
           if (ctrl.map[setMethod]) { //if set method does exist
             /* if address is being observed */
             if (setMethod == "setCenter" && typeof optionValue == 'string') {
@@ -499,6 +512,10 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
             }
           }
         });
+      };
+      console.log('map attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        observeFunc(attrsToObserve[i]);
       }
 
       scope.maps = scope.maps || {}; scope.maps[options.id||Object.keys(scope.maps).length] = ctrl.map;
@@ -695,9 +712,21 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       scope.google = google;
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+      var orgAttributes = [];
+      for (var i=0; i<element[0].attributes.length; i++) {
+        var attr = element[0].attributes[i];
+        orgAttributes.push({name: attr.name, value: attr.value});
+      }
+      console.log('orgAttributes', orgAttributes);
 
       var getMarker = function(options, events) {
-        var marker = new google.maps.Marker(options);
+        var marker;
+        if (typeof options.position == "string") {
+          options.position = new google.maps.LatLng(0,0);
+          marker = new google.maps.Marker(options);
+        } else {
+          marker = new google.maps.Marker(options);
+        }
         /**
          * set events
          */
@@ -712,15 +741,14 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
         /**
          * set opbservers
          */
-        var attrsToObserve = parser.getAttrsToObserve(element);
+        var attrsToObserve = parser.getAttrsToObserve2(orgAttributes);
         console.log('marker attrs to observe', attrsToObserve);
-        for (var i=0; i<attrsToObserve.length; i++) {
-          var attrName = attrsToObserve[i];
+        var observeFunc = function(attrName) {
           attrs.$observe(attrName, function(val) {
             console.log('observing marker attribute', attrName, val);
             var setMethod = parser.camelCase('set-'+attrName);
             var optionValue = parser.toOptionValue(val, {key: attrName});
-            console.log('attr option value', optionValue);
+            console.log('setting marker', attrName,  'with new value',  optionValue);
             if (marker[setMethod]) { //if set method does exist
               /* if position as address is being observed */
               if (setMethod == "setPosition" && typeof optionValue == 'string') {
@@ -734,17 +762,20 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
             }
           });
         }
+        for (var i=0; i<attrsToObserve.length; i++) {
+          observeFunc(attrsToObserve[i]);
+        }
 
         return marker;
       };
 
       if (markerOptions.position instanceof google.maps.LatLng) {
 
+        var marker = getMarker(markerOptions, markerEvents);
         /**
          * ng-repeat does not happen while map tag is initialized
          * thus, we need to add markers after map tag is initialized
          */
-        var marker = getMarker(markerOptions, markerEvents);
         if (markerOptions.ngRepeat) { 
           mapController.addMarker(marker);
         } else {
@@ -758,9 +789,9 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
 
           NavigatorGeolocation.getCurrentPosition()
             .then(function(position) {
-              var lat = position.coords.latitude, lng = position.coords.longitude;
-              markerOptions.position = new google.maps.LatLng(lat, lng);
               var marker = getMarker(markerOptions, markerEvents);
+              var lat = position.coords.latitude, lng = position.coords.longitude;
+              marker.setPosition(new google.maps.LatLng(lat, lng));
               mapController.addMarker(marker);
             });
 
@@ -768,9 +799,8 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
 
           GeoCoder.geocode({address: markerOptions.position})
             .then(function(results) {
-              var latLng = results[0].geometry.location;
-              markerOptions.position = latLng;
               var marker = getMarker(markerOptions, markerEvents);
+              marker.setPosition(results[0].geometry.location);
               mapController.addMarker(marker);
             });
 

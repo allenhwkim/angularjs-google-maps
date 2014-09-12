@@ -21,7 +21,8 @@ app.controller('MyCtrl', function($scope) {
 <body ng-controller="MyCtrl">
   <div id="my-html" style="width:600px; height:400px">
     <map zoom="11" center="{{address}}">
-      <marker position="{{address}}" title="hello"></marker>
+      <marker position="{{address}}" title="{{address}}"></marker>
+      <marker position="Brampton Canada" title="Brampton Canada"></marker>
     </map>
   </div>
   <br/>Address : <input ng-model="address" />

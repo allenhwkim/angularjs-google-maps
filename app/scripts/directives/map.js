@@ -89,14 +89,12 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
        * observe attributes
        */
       var attrsToObserve = parser.getAttrsToObserve(element);
-      console.log('map attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        var attrName = attrsToObserve[i];
+      var observeFunc = function(attrName) {
         attrs.$observe(attrName, function(val) {
-          console.log('observing', attrName, val);
+          console.log('observing map', attrName, val);
           var setMethod = parser.camelCase('set-'+attrName);
           var optionValue = parser.toOptionValue(val, {key: attrName});
-          console.log('attr option value', optionValue);
+          console.log('setting map', attrName, 'with new value', optionValue);
           if (ctrl.map[setMethod]) { //if set method does exist
             /* if address is being observed */
             if (setMethod == "setCenter" && typeof optionValue == 'string') {
@@ -109,6 +107,10 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
             }
           }
         });
+      };
+      console.log('map attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        observeFunc(attrsToObserve[i]);
       }
 
       scope.maps = scope.maps || {}; scope.maps[options.id||Object.keys(scope.maps).length] = ctrl.map;

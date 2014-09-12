@@ -247,9 +247,24 @@ ngMap.services.Attr2Options = function($parse) {
       return controlOptions;
     }, // function
 
+    /* will be deprecated */
     getAttrsToObserve : function(elem) {
       var attrs = elem[0].attributes;
       //console.log('attrs', attrs);
+      var attrsToObserve = [];
+      for (var i=0; i&lt;attrs.length; i++) {
+        var attr = attrs[i];
+        console.log('attr', attr.name, attr.value);
+        if (attr.value &amp;&amp; attr.value.match(/\{\{.*\}\}/)) {
+          console.log('attr', attr.name, camelCase(attr.name), attr.value);
+          attrsToObserve.push(camelCase(attr.name));
+        }
+      }
+      return attrsToObserve;
+    },
+
+    getAttrsToObserve2 : function(attrs) {
+      console.log('attrs', attrs);
       var attrsToObserve = [];
       for (var i=0; i&lt;attrs.length; i++) {
         var attr = attrs[i];

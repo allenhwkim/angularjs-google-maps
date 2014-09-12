@@ -31,7 +31,7 @@ app.controller('MyCtrl', function($scope) {
 <body ng-controller="MyCtrl">
   <div id="my-html" style="width:600px; height:400px">
     <map zoom="11" center="[{{lat}}, {{lng}}]">
-      <marker position="[{{lat}}, {{lng}}]" title="hello"></marker>
+      <marker position="[{{lat}}, {{lng}}]" title="{{lat}}, {{lng}}"></marker>
     </map>
   </div>
   <br/>Latigude : <input type="number" ng-model="lat" />
