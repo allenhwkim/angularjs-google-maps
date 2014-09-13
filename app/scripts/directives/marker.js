@@ -46,6 +46,7 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       scope.google = google;
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+
       var orgAttributes = [];
       for (var i=0; i<element[0].attributes.length; i++) {
         var attr = element[0].attributes[i];
@@ -75,25 +76,27 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
         /**
          * set opbservers
          */
-        var attrsToObserve = parser.getAttrsToObserve2(orgAttributes);
+        var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
         console.log('marker attrs to observe', attrsToObserve);
         var observeFunc = function(attrName) {
           attrs.$observe(attrName, function(val) {
-            console.log('observing marker attribute', attrName, val);
-            var setMethod = parser.camelCase('set-'+attrName);
-            var optionValue = parser.toOptionValue(val, {key: attrName});
-            console.log('setting marker', attrName,  'with new value',  optionValue);
-            if (marker[setMethod]) { //if set method does exist
-              /* if position as address is being observed */
-              if (setMethod == "setPosition" && typeof optionValue == 'string') {
-                GeoCoder.geocode({address: optionValue})
-                  .then(function(results) {
-                    marker[setMethod](results[0].geometry.location);
-                  });
-              } else {
-                marker[setMethod](optionValue);
+            if (val) { // if no value given, no update on map
+              console.log('observing marker attribute', attrName, val);
+              var setMethod = parser.camelCase('set-'+attrName);
+              var optionValue = parser.toOptionValue(val, {key: attrName});
+              console.log('setting marker', attrName,  'with new value',  optionValue);
+              if (marker[setMethod]) { //if set method does exist
+                /* if position as address is being observed */
+                if (setMethod == "setPosition" && typeof optionValue == 'string') {
+                  GeoCoder.geocode({address: optionValue})
+                    .then(function(results) {
+                      marker[setMethod](results[0].geometry.location);
+                    });
+                } else {
+                  marker[setMethod](optionValue);
+                }
               }
-            }
+            } // if (val)
           });
         }
         for (var i=0; i<attrsToObserve.length; i++) {
