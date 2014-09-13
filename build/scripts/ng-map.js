@@ -226,30 +226,12 @@ ngMap.services.Attr2Options = function($parse) {
       return controlOptions;
     }, // function
 
-    /* will be deprecated */
-    getAttrsToObserve : function(elem) {
-      var attrs = elem[0].attributes;
-      //console.log('attrs', attrs);
+    getAttrsToObserve : function(attrs) {
       var attrsToObserve = [];
       for (var i=0; i<attrs.length; i++) {
         var attr = attrs[i];
-        console.log('attr', attr.name, attr.value);
         if (attr.value && attr.value.match(/\{\{.*\}\}/)) {
-          console.log('attr', attr.name, camelCase(attr.name), attr.value);
-          attrsToObserve.push(camelCase(attr.name));
-        }
-      }
-      return attrsToObserve;
-    },
-
-    getAttrsToObserve2 : function(attrs) {
-      console.log('attrs', attrs);
-      var attrsToObserve = [];
-      for (var i=0; i<attrs.length; i++) {
-        var attr = attrs[i];
-        console.log('attr', attr.name, attr.value);
-        if (attr.value && attr.value.match(/\{\{.*\}\}/)) {
-          console.log('attr', attr.name, camelCase(attr.name), attr.value);
+          console.log('setting attribute to observe', attr.name, camelCase(attr.name), attr.value);
           attrsToObserve.push(camelCase(attr.name));
         }
       }
@@ -483,6 +465,16 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
       console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
 
       /**
+       * get original attributes, so that we can use it for observers
+       */
+      var orgAttributes = [];
+      for (var i=0; i<element[0].attributes.length; i++) {
+        var attr = element[0].attributes[i];
+        orgAttributes.push({name: attr.name, value: attr.value});
+      }
+      console.log('orgAttributes', orgAttributes);
+
+      /**
        * initialize map
        */
       ctrl.initMap(el, mapOptions, mapEvents);
@@ -493,22 +485,24 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
       /**
        * observe attributes
        */
-      var attrsToObserve = parser.getAttrsToObserve(element);
+      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
       var observeFunc = function(attrName) {
         attrs.$observe(attrName, function(val) {
-          console.log('observing map', attrName, val);
-          var setMethod = parser.camelCase('set-'+attrName);
-          var optionValue = parser.toOptionValue(val, {key: attrName});
-          console.log('setting map', attrName, 'with new value', optionValue);
-          if (ctrl.map[setMethod]) { //if set method does exist
-            /* if address is being observed */
-            if (setMethod == "setCenter" && typeof optionValue == 'string') {
-              GeoCoder.geocode({address: optionValue})
-                .then(function(results) {
-                  ctrl.map.setCenter(results[0].geometry.location);
-                });
-            } else {
-              ctrl.map[setMethod](optionValue);
+          if (val) {
+            console.log('observing map', attrName, val);
+            var setMethod = parser.camelCase('set-'+attrName);
+            var optionValue = parser.toOptionValue(val, {key: attrName});
+            console.log('setting map', attrName, 'with new value', optionValue);
+            if (ctrl.map[setMethod]) { //if set method does exist
+              /* if address is being observed */
+              if (setMethod == "setCenter" && typeof optionValue == 'string') {
+                GeoCoder.geocode({address: optionValue})
+                  .then(function(results) {
+                    ctrl.map.setCenter(results[0].geometry.location);
+                  });
+              } else {
+                ctrl.map[setMethod](optionValue);
+              }
             }
           }
         });
@@ -712,6 +706,7 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       scope.google = google;
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+
       var orgAttributes = [];
       for (var i=0; i<element[0].attributes.length; i++) {
         var attr = element[0].attributes[i];
@@ -741,25 +736,27 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
         /**
          * set opbservers
          */
-        var attrsToObserve = parser.getAttrsToObserve2(orgAttributes);
+        var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
         console.log('marker attrs to observe', attrsToObserve);
         var observeFunc = function(attrName) {
           attrs.$observe(attrName, function(val) {
-            console.log('observing marker attribute', attrName, val);
-            var setMethod = parser.camelCase('set-'+attrName);
-            var optionValue = parser.toOptionValue(val, {key: attrName});
-            console.log('setting marker', attrName,  'with new value',  optionValue);
-            if (marker[setMethod]) { //if set method does exist
-              /* if position as address is being observed */
-              if (setMethod == "setPosition" && typeof optionValue == 'string') {
-                GeoCoder.geocode({address: optionValue})
-                  .then(function(results) {
-                    marker[setMethod](results[0].geometry.location);
-                  });
-              } else {
-                marker[setMethod](optionValue);
+            if (val) { // if no value given, no update on map
+              console.log('observing marker attribute', attrName, val);
+              var setMethod = parser.camelCase('set-'+attrName);
+              var optionValue = parser.toOptionValue(val, {key: attrName});
+              console.log('setting marker', attrName,  'with new value',  optionValue);
+              if (marker[setMethod]) { //if set method does exist
+                /* if position as address is being observed */
+                if (setMethod == "setPosition" && typeof optionValue == 'string') {
+                  GeoCoder.geocode({address: optionValue})
+                    .then(function(results) {
+                      marker[setMethod](results[0].geometry.location);
+                    });
+                } else {
+                  marker[setMethod](optionValue);
+                }
               }
-            }
+            } // if (val)
           });
         }
         for (var i=0; i<attrsToObserve.length; i++) {
