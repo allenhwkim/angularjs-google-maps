@@ -228,11 +228,14 @@ ngMap.services.Attr2Options = function($parse) {
 
     getAttrsToObserve : function(attrs) {
       var attrsToObserve = [];
-      for (var i=0; i<attrs.length; i++) {
-        var attr = attrs[i];
-        if (attr.value && attr.value.match(/\{\{.*\}\}/)) {
-          console.log('setting attribute to observe', attr.name, camelCase(attr.name), attr.value);
-          attrsToObserve.push(camelCase(attr.name));
+      if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
+      } else {
+        for (var attrName in attrs) {
+          var attrValue = attrs[attrName];
+          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+            attrsToObserve.push(camelCase(attrName));
+          }
         }
       }
       return attrsToObserve;
@@ -467,10 +470,10 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
       /**
        * get original attributes, so that we can use it for observers
        */
-      var orgAttributes = [];
+      var orgAttributes = {};
       for (var i=0; i<element[0].attributes.length; i++) {
         var attr = element[0].attributes[i];
-        orgAttributes.push({name: attr.name, value: attr.value});
+        orgAttributes[attr.name] = attr.value;
       }
       console.log('orgAttributes', orgAttributes);
 
@@ -707,12 +710,26 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
 
-      var orgAttributes = [];
+      /**
+       * set event to clean up removed marker
+       */
+      if (markerOptions.ngRepeat) {
+        element.bind('$destroy', function() {
+          var markers = marker.map.markers;
+          for (var name in markers) {
+            if (markers[name] == marker) {
+              delete markers[name];
+            }
+          }
+          marker.setMap(null);          
+        });
+      }
+
+      var orgAttributes = {};
       for (var i=0; i<element[0].attributes.length; i++) {
         var attr = element[0].attributes[i];
-        orgAttributes.push({name: attr.name, value: attr.value});
+        orgAttributes[attr.name] = attr.value;
       }
-      console.log('orgAttributes', orgAttributes);
 
       var getMarker = function(options, events) {
         var marker;

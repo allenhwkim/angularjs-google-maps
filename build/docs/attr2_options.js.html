@@ -249,11 +249,14 @@ ngMap.services.Attr2Options = function($parse) {
 
     getAttrsToObserve : function(attrs) {
       var attrsToObserve = [];
-      for (var i=0; i&lt;attrs.length; i++) {
-        var attr = attrs[i];
-        if (attr.value &amp;&amp; attr.value.match(/\{\{.*\}\}/)) {
-          console.log('setting attribute to observe', attr.name, camelCase(attr.name), attr.value);
-          attrsToObserve.push(camelCase(attr.name));
+      if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
+      } else {
+        for (var attrName in attrs) {
+          var attrValue = attrs[attrName];
+          if (attrValue &amp;&amp; attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+            attrsToObserve.push(camelCase(attrName));
+          }
         }
       }
       return attrsToObserve;
