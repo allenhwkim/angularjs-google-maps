@@ -47,6 +47,21 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
 
+      /**
+       * set event to clean up removed marker
+       */
+      if (markerOptions.ngRepeat) {
+        element.bind('$destroy', function() {
+          var markers = marker.map.markers;
+          for (var name in markers) {
+            if (markers[name] == marker) {
+              delete markers[name];
+            }
+          }
+          marker.setMap(null);          
+        });
+      }
+
       var orgAttributes = {};
       for (var i=0; i<element[0].attributes.length; i++) {
         var attr = element[0].attributes[i];
