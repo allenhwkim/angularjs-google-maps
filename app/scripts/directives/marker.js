@@ -47,12 +47,11 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
 
-      var orgAttributes = [];
+      var orgAttributes = {};
       for (var i=0; i<element[0].attributes.length; i++) {
         var attr = element[0].attributes[i];
-        orgAttributes.push({name: attr.name, value: attr.value});
+        orgAttributes[attr.name] = attr.value;
       }
-      console.log('orgAttributes', orgAttributes);
 
       var getMarker = function(options, events) {
         var marker;
