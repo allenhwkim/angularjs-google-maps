@@ -60,32 +60,56 @@
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
 ngMap.directives.shape = function(Attr2Options) {
-  //var parser = new Attr2Options();
   var parser = Attr2Options;
   
   var getBounds = function(points) {
     return new google.maps.LatLngBounds(points[0], points[1]);
   };
   
-  var getShape = function(shapeName, options) {
+  var getShape = function(options, events) {
+    var shape;
+
+    var shapeName = options.name;
+    delete options.name;  //remove name bcoz it's not for options
+
+    /**
+     * set options
+     */
+    console.log("shape", shapeName, "options", options);
     switch(shapeName) {
-    case "circle":
-      return new google.maps.Circle(options);
-    case "polygon":
-      return new google.maps.Polygon(options);
-    case "polyline": 
-      return new google.maps.Polyline(options);
-    case "rectangle": 
-      options.bounds = getBounds(options.bounds);
-      return new google.maps.Rectangle(options);
-    case "groundOverlay":
-    case "image":
-      var url = options.url;
-      var bounds = getBounds(options.bounds);
-      var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
-      return new google.maps.GroundOverlay(url, bounds, opts);
+      case "circle":
+        shape = new google.maps.Circle(options);
+        break;
+      case "polygon":
+        shape = new google.maps.Polygon(options);
+        break;
+      case "polyline": 
+        shape = new google.maps.Polyline(options);
+        break;
+      case "rectangle": 
+        options.bounds = getBounds(options.bounds);
+        shape = new google.maps.Rectangle(options);
+        break;
+      case "groundOverlay":
+      case "image":
+        var url = options.url;
+        var bounds = getBounds(options.bounds);
+        var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
+        shape = new google.maps.GroundOverlay(url, bounds, opts);
+        break;
     }
-    return null;
+
+    /**
+     * set events
+     */
+    console.log("shape", shapeName, "events", events);
+    for (var eventName in events) {
+      if (events[eventName]) {
+        console.log(eventName, events[eventName]);
+        google.maps.event.addListener(shape, eventName, events[eventName]);
+      }
+    }
+    return shape;
   };
   
   return {
@@ -97,29 +121,25 @@ ngMap.directives.shape = function(Attr2Options) {
      */
     link: function(scope, element, attrs, mapController) {
       var filtered = parser.filter(attrs);
-      var shapeName = filtered.name;
-      delete filtered.name;  //remove name bcoz it's not for options
-      
       var shapeOptions = parser.getOptions(filtered);
-      console.log('shape', shapeName, 'options', shapeOptions);
-      var shape = getShape(shapeName, shapeOptions);
+      var shapeEvents = parser.getEvents(scope, filtered);
 
-      if (shapeOptions.ngRepeat) { 
-        mapController.addShape(shape);
-      } else if (shape) {
-        mapController.shapes.push(shape);
-      } else {
-        console.error("shape", shapeName, "is not defined");
+      var shape = getShape(shapeOptions, shapeEvents);
+      mapController.addShape(shape);
+
+      var orgAttributes = {};
+      for (var i=0; i<element[0].attributes.length; i++) {
+        var attr = element[0].attributes[i];
+        orgAttributes[attr.name] = attr.value;
       }
-      
-      //shape events
-      var events = parser.getEvents(scope, filtered);
-      console.log("shape", shapeName, "events", events);
-      for (var eventName in events) {
-        if (events[eventName]) {
-          console.log(eventName, events[eventName]);
-          google.maps.event.addListener(shape, eventName, events[eventName]);
-        }
+
+      /**
+       * set observers
+       */
+      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
+      console.log('shape attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        parser.observeAndSet(attrs, attrsToObserve[i], shape);
       }
     }
    }; // return

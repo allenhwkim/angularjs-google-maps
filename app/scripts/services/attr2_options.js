@@ -4,11 +4,11 @@
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
-ngMap.services.Attr2Options = function($parse) { 
+ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) { 
   var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
   var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
 
-  function camelCase(name) {
+  var camelCase = function(name) {
     return name.
       replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
         return offset ? letter.toUpperCase() : letter;
@@ -67,6 +67,51 @@ ngMap.services.Attr2Options = function($parse) {
       } // catch(err2)
     } // catch(err)
     return output;
+  };
+
+  var setDelayedGeoLocation = function(object, method, param, fallbackLocation) {
+    if (!param || param.match(/^current/i)) { // sensored position
+      NavigatorGeolocation.getCurrentPosition().then(
+        function(position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+          var latLng = new google.maps.LatLng(lat,lng);
+          object[method](latLng);
+          if (object.centered) {
+            object.map.setCenter(latLng);
+          }
+        },
+        function() {
+          object[method](fallbackLocation);
+        });
+    } else { //assuming it is address
+      GeoCoder.geocode({address: param}).then(function(results) {
+        object[method](results[0].geometry.location);
+        if (object.centered) {
+          object.map.setCenter(results[0].geometry.location);
+        }
+      });
+    } 
+  };
+
+  var observeAndSet = function(attrs, attrName, object) {
+    attrs.$observe(attrName, function(val) {
+      if (val) {
+        console.log('observing ', object, attrName, val);
+        var setMethod = camelCase('set-'+attrName);
+        var optionValue = toOptionValue(val, {key: attrName});
+        console.log('setting ', object, attrName, 'with value', optionValue);
+        if (object[setMethod]) { //if set method does exist
+          /* if an location is being observed */
+          if (attrName.match(/center|position/) && 
+            typeof optionValue == 'string') {
+            setDelayedGeoLocation(object, setMethod, optionValue);
+          } else {
+            object[setMethod](optionValue);
+          }
+        }
+      }
+    });
   };
 
   return {
@@ -236,8 +281,10 @@ ngMap.services.Attr2Options = function($parse) {
     },
 
     toOptionValue: toOptionValue,
-    camelCase: camelCase
+    camelCase: camelCase,
+    setDelayedGeoLocation: setDelayedGeoLocation,
+    observeAndSet: observeAndSet
 
   }; // return
 }; // function
-
+ngMap.services.Attr2Options.$inject = ['$parse', 'NavigatorGeolocation', 'GeoCoder']; 

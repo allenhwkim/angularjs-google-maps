@@ -2,7 +2,7 @@
 <html ng-app="myApp">
 
 <head>
-  <title>Marker Cluster</title>
+  <title>Dynamic ngMap demo</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
@@ -12,7 +12,6 @@
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
   <script src="../app/scripts/directives/shape.js"></script>
-  <script src="../app/scripts/directives/marker_clusterer.js"></script>
   <script src="../app/scripts/services/geo_coder.js"></script>
   <script src="../app/scripts/services/navigator_geolocation.js"></script>
   <script src="../app/scripts/services/attr2_options.js"></script>
@@ -24,11 +23,18 @@
   <script src="scripts/markerclusterer.js"></script>
   <script id="my-js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']);
+
   app.controller('mapController', function($scope, $http, $interval) {
-    $scope.markersData = markers; // markers data from markers.json
-    $scope.markerClicked = function() { 
-      alert('this is marker at '+ this.getPosition());
-    }
+    var map;
+    $scope.dynMarkers = [];
+    $scope.$on('mapsInitialized', function(event, maps) {
+      map = maps[0];
+      for (var i=0; i<1000; i++) {
+        var latLng = new google.maps.LatLng(markers[i].position[0], markers[i].position[1]);
+        $scope.dynMarkers.push(new google.maps.Marker({position:latLng}));
+      }
+      $scope.markerClusterer = new MarkerClusterer(map, $scope.dynMarkers, {});
+    });
   });
   </script>
   <style id="my-css">
@@ -42,9 +48,7 @@
   
   <div id="my-html">
     <div ng-controller="mapController">
-      <map zoom="1" center="[43.6650000, -79.4103000]">
-        <marker-clusterer markers="markersData" />
-      </map>
+      <map zoom="2" center="[43.6650000, -79.4103000]"></map>
     </div>
   </div>
 

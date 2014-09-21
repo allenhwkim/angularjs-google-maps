@@ -2,7 +2,6 @@
  * @ngdoc directive
  * @name marker
  * @requires Attr2Options 
- * @requires GeoCoder
  * @requires NavigatorGeolocation
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
@@ -34,8 +33,38 @@
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
-ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
+ngMap.directives.marker  = function(Attr2Options)  {
   var parser = Attr2Options;
+
+  var getMarker = function(options, events) {
+    var marker;
+
+    /**
+     * set options
+     */
+    if (!(options.position instanceof google.maps.LatLng)) {
+      var orgPosition = options.position;
+      options.position = new google.maps.LatLng(0,0);
+      marker = new google.maps.Marker(options);
+      parser.setDelayedGeoLocation(marker, 'setPosition', orgPosition);
+    } else {
+      marker = new google.maps.Marker(options);
+    }
+
+    /**
+     * set events
+     */
+    if (Object.keys(events).length > 0) {
+      console.log("markerEvents", events);
+    }
+    for (var eventName in events) {
+      if (eventName) {
+        google.maps.event.addListener(marker, eventName, events[eventName]);
+      }
+    }
+
+    return marker;
+  };
 
   return {
     restrict: 'AE',
@@ -43,12 +72,12 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
     link: function(scope, element, attrs, mapController) {
       //var filtered = new parser.filter(attrs);
       var filtered = parser.filter(attrs);
-      scope.google = google;
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
 
       /**
        * set event to clean up removed marker
+       * useful with ng-repeat
        */
       if (markerOptions.ngRepeat) {
         element.bind('$destroy', function() {
@@ -68,98 +97,19 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
         orgAttributes[attr.name] = attr.value;
       }
 
-      var getMarker = function(options, events) {
-        var marker;
-        if (typeof options.position == "string") {
-          options.position = new google.maps.LatLng(0,0);
-          marker = new google.maps.Marker(options);
-        } else {
-          marker = new google.maps.Marker(options);
-        }
-        /**
-         * set events
-         */
-        if (Object.keys(events).length > 0) {
-          console.log("markerEvents", events);
-        }
-        for (var eventName in events) {
-          if (eventName) {
-            google.maps.event.addListener(marker, eventName, events[eventName]);
-          }
-        }
-        /**
-         * set opbservers
-         */
-        var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-        console.log('marker attrs to observe', attrsToObserve);
-        var observeFunc = function(attrName) {
-          attrs.$observe(attrName, function(val) {
-            if (val) { // if no value given, no update on map
-              console.log('observing marker attribute', attrName, val);
-              var setMethod = parser.camelCase('set-'+attrName);
-              var optionValue = parser.toOptionValue(val, {key: attrName});
-              console.log('setting marker', attrName,  'with new value',  optionValue);
-              if (marker[setMethod]) { //if set method does exist
-                /* if position as address is being observed */
-                if (setMethod == "setPosition" && typeof optionValue == 'string') {
-                  GeoCoder.geocode({address: optionValue})
-                    .then(function(results) {
-                      marker[setMethod](results[0].geometry.location);
-                    });
-                } else {
-                  marker[setMethod](optionValue);
-                }
-              }
-            } // if (val)
-          });
-        }
-        for (var i=0; i<attrsToObserve.length; i++) {
-          observeFunc(attrsToObserve[i]);
-        }
+      var marker = getMarker(markerOptions, markerEvents);
+      mapController.addMarker(marker);
 
-        return marker;
-      };
-
-      if (markerOptions.position instanceof google.maps.LatLng) {
-
-        var marker = getMarker(markerOptions, markerEvents);
-        /**
-         * ng-repeat does not happen while map tag is initialized
-         * thus, we need to add markers after map tag is initialized
-         */
-        if (markerOptions.ngRepeat) { 
-          mapController.addMarker(marker);
-        } else {
-          mapController.markers.push(marker);
-        }
-      } else if (typeof markerOptions.position == 'string') { //need to get lat/lng
-
-        var position = markerOptions.position;
-
-        if (position.match(/^current/i)) { // sensored position
-
-          NavigatorGeolocation.getCurrentPosition()
-            .then(function(position) {
-              var marker = getMarker(markerOptions, markerEvents);
-              var lat = position.coords.latitude, lng = position.coords.longitude;
-              marker.setPosition(new google.maps.LatLng(lat, lng));
-              mapController.addMarker(marker);
-            });
-
-        } else { //assuming it is address
-
-          GeoCoder.geocode({address: markerOptions.position})
-            .then(function(results) {
-              var marker = getMarker(markerOptions, markerEvents);
-              marker.setPosition(results[0].geometry.location);
-              mapController.addMarker(marker);
-            });
-
-        } 
-      } else {
-        console.error('invalid marker position', markerOptions.position);
+      /**
+       * set observers
+       */
+      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
+      console.log('marker attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        parser.observeAndSet(attrs, attrsToObserve[i], marker);
       }
+
     } //link
   }; // return
 };// function
-ngMap.directives.marker.$inject  = ['Attr2Options', 'GeoCoder', 'NavigatorGeolocation'];
+ngMap.directives.marker.$inject  = ['Attr2Options'];
