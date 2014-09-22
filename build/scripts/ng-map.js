@@ -10,11 +10,11 @@ var ngMap = {
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
-ngMap.services.Attr2Options = function($parse) { 
+ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) { 
   var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
   var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
 
-  function camelCase(name) {
+  var camelCase = function(name) {
     return name.
       replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
         return offset ? letter.toUpperCase() : letter;
@@ -73,6 +73,51 @@ ngMap.services.Attr2Options = function($parse) {
       } // catch(err2)
     } // catch(err)
     return output;
+  };
+
+  var setDelayedGeoLocation = function(object, method, param, fallbackLocation) {
+    if (!param || param.match(/^current/i)) { // sensored position
+      NavigatorGeolocation.getCurrentPosition().then(
+        function(position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+          var latLng = new google.maps.LatLng(lat,lng);
+          object[method](latLng);
+          if (object.centered) {
+            object.map.setCenter(latLng);
+          }
+        },
+        function() {
+          object[method](fallbackLocation);
+        });
+    } else { //assuming it is address
+      GeoCoder.geocode({address: param}).then(function(results) {
+        object[method](results[0].geometry.location);
+        if (object.centered) {
+          object.map.setCenter(results[0].geometry.location);
+        }
+      });
+    } 
+  };
+
+  var observeAndSet = function(attrs, attrName, object) {
+    attrs.$observe(attrName, function(val) {
+      if (val) {
+        console.log('observing ', object, attrName, val);
+        var setMethod = camelCase('set-'+attrName);
+        var optionValue = toOptionValue(val, {key: attrName});
+        console.log('setting ', object, attrName, 'with value', optionValue);
+        if (object[setMethod]) { //if set method does exist
+          /* if an location is being observed */
+          if (attrName.match(/center|position/) && 
+            typeof optionValue == 'string') {
+            setDelayedGeoLocation(object, setMethod, optionValue);
+          } else {
+            object[setMethod](optionValue);
+          }
+        }
+      }
+    });
   };
 
   return {
@@ -242,11 +287,13 @@ ngMap.services.Attr2Options = function($parse) {
     },
 
     toOptionValue: toOptionValue,
-    camelCase: camelCase
+    camelCase: camelCase,
+    setDelayedGeoLocation: setDelayedGeoLocation,
+    observeAndSet: observeAndSet
 
   }; // return
 }; // function
-
+ngMap.services.Attr2Options.$inject = ['$parse', 'NavigatorGeolocation', 'GeoCoder']; 
 
 /**
  * @ngdoc service
@@ -429,7 +476,7 @@ ngMap.services.StreetView.$inject =  ['$q'];
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options, GeoCoder) {
+ngMap.directives.map = function(Attr2Options) {
   var parser = Attr2Options;
 
   return {
@@ -444,7 +491,11 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
      * @ctrl {MapController} ctrl
      */
     link: function (scope, element, attrs, ctrl) {
-      scope.google = google; // ??
+      /*
+       * without this, bird_eyes_and_street_view.html and map_options does not work.
+       * I don't know why
+       */
+      scope.google = google; 
 
       /**
        * create a new `div` inside map tag, so that it does not touch map element
@@ -462,7 +513,6 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
       console.log('filtered', filtered);
       var options = parser.getOptions(filtered, scope);
       var controlOptions = parser.getControlOptions(filtered);
-      var mapEvents = parser.getEvents(scope, filtered);
       var mapOptions = angular.extend(options, controlOptions);
       mapOptions.zoom = mapOptions.zoom || 15;
       console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
@@ -477,145 +527,103 @@ ngMap.directives.map = function(Attr2Options, GeoCoder) {
       }
       console.log('orgAttributes', orgAttributes);
 
-      /**
-       * initialize map
-       */
-      ctrl.initMap(el, mapOptions, mapEvents);
-      ctrl.initMarkers();
-      ctrl.initShapes();
-      ctrl.initMarkerClusterer();
+      var map = new google.maps.Map(el, {});
+      map.markers = {};
+      map.shapes = {};
 
       /**
-       * observe attributes
+       * set options
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      var observeFunc = function(attrName) {
-        attrs.$observe(attrName, function(val) {
-          if (val) {
-            console.log('observing map', attrName, val);
-            var setMethod = parser.camelCase('set-'+attrName);
-            var optionValue = parser.toOptionValue(val, {key: attrName});
-            console.log('setting map', attrName, 'with new value', optionValue);
-            if (ctrl.map[setMethod]) { //if set method does exist
-              /* if address is being observed */
-              if (setMethod == "setCenter" && typeof optionValue == 'string') {
-                GeoCoder.geocode({address: optionValue})
-                  .then(function(results) {
-                    ctrl.map.setCenter(results[0].geometry.location);
-                  });
-              } else {
-                ctrl.map[setMethod](optionValue);
-              }
-            }
-          }
-        });
-      };
-      console.log('map attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        observeFunc(attrsToObserve[i]);
+      var center = mapOptions.center;
+      if (!(center instanceof google.maps.LatLng)) {
+        delete options.center;
+        Attr2Options.setDelayedGeoLocation(
+          map, 
+          'setCenter', 
+          center, 
+          options.geoFallbackCenter
+        );
+      }
+      map.setOptions(options);
+
+      /**
+       * set events
+       */
+      var mapEvents = parser.getEvents(scope, filtered);
+      for (var eventName in mapEvents) {
+        if (eventName) {
+          google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+        }
       }
 
-      scope.maps = scope.maps || {}; scope.maps[options.id||Object.keys(scope.maps).length] = ctrl.map;
+      /**
+       * set observers
+       */
+      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
+      console.log('map attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        parser.observeAndSet(attrs, attrsToObserve[i], map);
+      }
+
+      /**
+       * set controller and set objects
+       * so that map can be used by other directives; marker or shape 
+       * ctrl._objects are gathered when marker and shape are initialized before map is set
+       */
+      ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
+      ctrl.addObjects(ctrl._objects);
+
+      /**
+       * set map for scope and controller and broadcast map event
+       */
+      scope.map = map;
+      scope.$emit('mapInitialized', scope.map);  
+
+      // the following lines will be deprecated on behalf of mapInitialized
+      scope.maps = scope.maps || {}; 
+      scope.maps[options.id||Object.keys(scope.maps).length] = map;
       scope.$emit('mapsInitialized', scope.maps);  
     }
   }; 
 }; // function
-ngMap.directives.map.$inject = ['Attr2Options', 'GeoCoder'];
+ngMap.directives.map.$inject = ['Attr2Options'];
 
 /**
  * @ngdoc directive
  * @name MapController
  * @requires $scope
- * @requires NavigatorGeolocation
- * @requires GeoCoder
  * @property {Hash} controls collection of Controls initiated within `map` directive
  * @property {Hash} markersi collection of Markers initiated within `map` directive
  * @property {Hash} shapes collection of shapes initiated within `map` directive
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
-ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder) { 
+ngMap.directives.MapController = function($scope) { 
 
   this.map = null;
-  this.controls = {};
-  this.markers = [];
-  this.shapes = [];
-  this.markerClusterer = null;
-
-  /**
-   * Initialize map with options, center and events
-   * @memberof MapController
-   * @name initMap
-   * @param {HtmlElement} el element that a map is drawn
-   * @param {MapOptions} options google map options
-   * @param {Hash} events google map events. The key is the name of the event
-   */
-  this.initMap = function(el, options, events) {
-    this.map = new google.maps.Map(el, {});
-    var center = options.center;
-    if (!(center instanceof google.maps.LatLng)) {
-      delete options.center;
-    }
-    var _this = this;
-    if (typeof center == 'string') { // address
-      GeoCoder.geocode({address: center})
-        .then(function(results) {
-          _this.map.setCenter(results[0].geometry.location);
-        });
-    } else if (!center) { //no center given, use current location
-      NavigatorGeolocation.getCurrentPosition()
-        .then(
-          function(position) {
-            var lat = position.coords.latitude, 
-                lng = position.coords.longitude;
-            _this.map.setCenter(new google.maps.LatLng(lat,lng));
-          },
-          function() { //current location failed, use fallback
-            if(options.geoFallbackCenter instanceof Array) {
-              var lat = options.geoFallbackCenter[0],
-                  lng = options.geoFallbackCenter[1];
-              _this.map.setCenter(new google.maps.LatLng(lat,lng));
-            } else {
-              this.map.setCenter(new google.maps.LatLng(0,0)); //default lat, lng
-            }
-          }
-        ); // then
-    }
-
-    this.map.setOptions(options);
-    for (var eventName in events) {
-      if (eventName) {
-        google.maps.event.addListener(this.map, eventName, events[eventName]);
-      }
-    }
-  };
+  this._objects = [];
 
   /**
    * Add a marker to map and $scope.markers
    * @memberof MapController
    * @name addMarker
    * @param {Marker} marker google map marker
-   *    if marker has centered attribute with the key of the value,
-   *    the map will be centered with the marker
    */
   this.addMarker = function(marker) {
-    marker.setMap(this.map);
-    if (marker.centered) {
-      this.map.setCenter(marker.position);
-    }
-    var len = Object.keys(this.map.markers).length;
-    this.map.markers[marker.id || len] = marker;
-  };
-
-  /**
-   * Initialize markers
-   * @memberof MapController
-   * @name initMarkers
-   */
-  this.initMarkers = function() {
-    this.map.markers = {};
-    for (var i=0; i<this.markers.length; i++) {
-      var marker = this.markers[i];
-      this.addMarker(marker);  //set this.map.markers
+    /**
+     * marker and shape are initialized before map is initialized
+     * so, collect _objects then will init. those when map is initialized
+     * However the case as in ng-repeat, we can directly add to map
+     */
+    if (this.map) {
+      this.map.markers = this.map.markers || {};
+      marker.setMap(this.map);
+      if (marker.centered) {
+        this.map.setCenter(marker.position);
+      }
+      var len = Object.keys(this.map.markers).length;
+      this.map.markers[marker.id || len] = marker;
+    } else {
+      this._objects.push(marker);
     }
   };
 
@@ -626,46 +634,44 @@ ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder
    * @param {Shape} shape google map shape
    */
   this.addShape = function(shape) {
-    shape.setMap(this.map);
-    var len = Object.keys(this.map.shapes).length;
-    this.map.shapes[shape.id || len] = shape;
-  };
-
-  /**
-   * Initialize shapes
-   * @memberof MapController
-   * @name initShapes
-   */
-  this.initShapes = function() {
-    this.map.shapes = {};
-    for (var i=0; i<this.shapes.length; i++) {
-      var shape = this.shapes[i];
-      this.addShape(shape);
+    if (this.map) {
+      this.map.shapes = this.map.shapes || {};
+      shape.setMap(this.map);
+      var len = Object.keys(this.map.shapes).length;
+      this.map.shapes[shape.id || len] = shape;
+    } else {
+      this._objects.push(shape);
     }
   };
 
   /**
-   * Initialize markerClusterere for this map
+   * Add a shape to map and $scope.shapes
    * @memberof MapController
-   * @name initMarkerClusterer
+   * @name addShape
+   * @param {Shape} shape google map shape
    */
-  this.initMarkerClusterer = function() {
-    if (this.markerClusterer) {
-      this.map.markerClusterer = new MarkerClusterer(
-        this.map, 
-        this.markerClusterer.data, 
-        this.markerClusterer.options
-      );
+  this.addObjects = function(objects) {
+    for (var i=0; i<objects.length; i++) {
+      var obj=objects[i];
+      if (obj instanceof google.maps.Marker) {
+        this.addMarker(obj);
+      } else if (obj instanceof google.maps.Circle ||
+        obj instanceof google.maps.Polygon ||
+        obj instanceof google.maps.Polyline ||
+        obj instanceof google.maps.Rectangle ||
+        obj instanceof google.maps.GroundOverlay) {
+        this.addShape(obj);
+      }
     }
   };
+
 };
-ngMap.directives.MapController.$inject = ['$scope', 'NavigatorGeolocation', 'GeoCoder'];
+ngMap.directives.MapController.$inject = ['$scope'];
 
 /**
  * @ngdoc directive
  * @name marker
  * @requires Attr2Options 
- * @requires GeoCoder
  * @requires NavigatorGeolocation
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
@@ -697,8 +703,38 @@ ngMap.directives.MapController.$inject = ['$scope', 'NavigatorGeolocation', 'Geo
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
-ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation) {
+ngMap.directives.marker  = function(Attr2Options)  {
   var parser = Attr2Options;
+
+  var getMarker = function(options, events) {
+    var marker;
+
+    /**
+     * set options
+     */
+    if (!(options.position instanceof google.maps.LatLng)) {
+      var orgPosition = options.position;
+      options.position = new google.maps.LatLng(0,0);
+      marker = new google.maps.Marker(options);
+      parser.setDelayedGeoLocation(marker, 'setPosition', orgPosition);
+    } else {
+      marker = new google.maps.Marker(options);
+    }
+
+    /**
+     * set events
+     */
+    if (Object.keys(events).length > 0) {
+      console.log("markerEvents", events);
+    }
+    for (var eventName in events) {
+      if (eventName) {
+        google.maps.event.addListener(marker, eventName, events[eventName]);
+      }
+    }
+
+    return marker;
+  };
 
   return {
     restrict: 'AE',
@@ -706,12 +742,12 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
     link: function(scope, element, attrs, mapController) {
       //var filtered = new parser.filter(attrs);
       var filtered = parser.filter(attrs);
-      scope.google = google;
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
 
       /**
        * set event to clean up removed marker
+       * useful with ng-repeat
        */
       if (markerOptions.ngRepeat) {
         element.bind('$destroy', function() {
@@ -731,168 +767,22 @@ ngMap.directives.marker  = function(Attr2Options, GeoCoder, NavigatorGeolocation
         orgAttributes[attr.name] = attr.value;
       }
 
-      var getMarker = function(options, events) {
-        var marker;
-        if (typeof options.position == "string") {
-          options.position = new google.maps.LatLng(0,0);
-          marker = new google.maps.Marker(options);
-        } else {
-          marker = new google.maps.Marker(options);
-        }
-        /**
-         * set events
-         */
-        if (Object.keys(events).length > 0) {
-          console.log("markerEvents", events);
-        }
-        for (var eventName in events) {
-          if (eventName) {
-            google.maps.event.addListener(marker, eventName, events[eventName]);
-          }
-        }
-        /**
-         * set opbservers
-         */
-        var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-        console.log('marker attrs to observe', attrsToObserve);
-        var observeFunc = function(attrName) {
-          attrs.$observe(attrName, function(val) {
-            if (val) { // if no value given, no update on map
-              console.log('observing marker attribute', attrName, val);
-              var setMethod = parser.camelCase('set-'+attrName);
-              var optionValue = parser.toOptionValue(val, {key: attrName});
-              console.log('setting marker', attrName,  'with new value',  optionValue);
-              if (marker[setMethod]) { //if set method does exist
-                /* if position as address is being observed */
-                if (setMethod == "setPosition" && typeof optionValue == 'string') {
-                  GeoCoder.geocode({address: optionValue})
-                    .then(function(results) {
-                      marker[setMethod](results[0].geometry.location);
-                    });
-                } else {
-                  marker[setMethod](optionValue);
-                }
-              }
-            } // if (val)
-          });
-        }
-        for (var i=0; i<attrsToObserve.length; i++) {
-          observeFunc(attrsToObserve[i]);
-        }
+      var marker = getMarker(markerOptions, markerEvents);
+      mapController.addMarker(marker);
 
-        return marker;
-      };
-
-      if (markerOptions.position instanceof google.maps.LatLng) {
-
-        var marker = getMarker(markerOptions, markerEvents);
-        /**
-         * ng-repeat does not happen while map tag is initialized
-         * thus, we need to add markers after map tag is initialized
-         */
-        if (markerOptions.ngRepeat) { 
-          mapController.addMarker(marker);
-        } else {
-          mapController.markers.push(marker);
-        }
-      } else if (typeof markerOptions.position == 'string') { //need to get lat/lng
-
-        var position = markerOptions.position;
-
-        if (position.match(/^current/i)) { // sensored position
-
-          NavigatorGeolocation.getCurrentPosition()
-            .then(function(position) {
-              var marker = getMarker(markerOptions, markerEvents);
-              var lat = position.coords.latitude, lng = position.coords.longitude;
-              marker.setPosition(new google.maps.LatLng(lat, lng));
-              mapController.addMarker(marker);
-            });
-
-        } else { //assuming it is address
-
-          GeoCoder.geocode({address: markerOptions.position})
-            .then(function(results) {
-              var marker = getMarker(markerOptions, markerEvents);
-              marker.setPosition(results[0].geometry.location);
-              mapController.addMarker(marker);
-            });
-
-        } 
-      } else {
-        console.error('invalid marker position', markerOptions.position);
+      /**
+       * set observers
+       */
+      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
+      console.log('marker attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        parser.observeAndSet(attrs, attrsToObserve[i], marker);
       }
+
     } //link
   }; // return
 };// function
-ngMap.directives.marker.$inject  = ['Attr2Options', 'GeoCoder', 'NavigatorGeolocation'];
-
-/**
- * @ngdoc directive
- * @name marker-clusterer
- * @requires Attr2Options 
- * @description 
- *   Initialize a Google map with marker-clusterer
- *   
- *   Requires:  map directive
- *
- *   Restrict To:  Element Or Attribute
- *
- * @param {Array} markers The initial markers for this marker clusterer  
- *   The options of each marker must be exactly the same as options of marker directive.  
- *   The markers are also will be set to $scope.markers
- * @param {String} &lt;MarkerClustererOption> Any MarkerClusterer options,  
- *   http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclustererplus/docs/reference.html#MarkerClustererOptions
- *
- * @example
- * Usage: 
- *   <map MAP_ATTRIBUTES>
- *    <marker-clusterer markers="DATA" ANY_MARKER_CLUSTERER_OPTIONS"></marker-clusterer>
- *   </map>
- *
- * Example: 
- *   <map zoom="1" center="[43.6650000, -79.4103000]">
- *      <marker-clusterer markers="markersData" max-zoom="2">
- *   </marker-clusterer>
- *
- *   For full working example, please visit https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_clusterer.html
- */
-ngMap.directives.markerClusterer  = function(Attr2Options) {
-  //var parser = new Attr2Options();
-  var parser = Attr2Options;
-
-  return {
-    restrict: 'AE',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
-      var markersData = scope.$eval(attrs.markers);
-      delete attrs.markers;
-      //var options = new parser.filter(attrs);
-      var options = parser.filter(attrs);
-
-      var markers = [];
-      for (var i=0; i< markersData.length; i++) {
-        var data = markersData[i];
-
-        var lat = data.position[0], lng = data.position[1];
-        data.position = new google.maps.LatLng(lat,lng);
-        var marker = new google.maps.Marker(data);
-        
-        var markerEvents = parser.getEvents(scope, data);
-        for (var eventName in markerEvents) {
-          if (eventName) {
-            google.maps.event.addListener(marker, eventName, markerEvents[eventName]);
-          }
-        }
-        markers.push(marker);
-      } // for (var i=0;..
-      mapController.markers = markers;
-      mapController.markerClusterer =  { data: markers, options:options };
-      console.log('markerClusterer', mapController.markerClusterer);
-    } //link
-  }; // return
-};// function
-ngMap.directives.markerClusterer.$inject  = ['Attr2Options'];
+ngMap.directives.marker.$inject  = ['Attr2Options'];
 
 /**
  * @ngdoc directive
@@ -956,32 +846,56 @@ ngMap.directives.markerClusterer.$inject  = ['Attr2Options'];
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
 ngMap.directives.shape = function(Attr2Options) {
-  //var parser = new Attr2Options();
   var parser = Attr2Options;
   
   var getBounds = function(points) {
     return new google.maps.LatLngBounds(points[0], points[1]);
   };
   
-  var getShape = function(shapeName, options) {
+  var getShape = function(options, events) {
+    var shape;
+
+    var shapeName = options.name;
+    delete options.name;  //remove name bcoz it's not for options
+
+    /**
+     * set options
+     */
+    console.log("shape", shapeName, "options", options);
     switch(shapeName) {
-    case "circle":
-      return new google.maps.Circle(options);
-    case "polygon":
-      return new google.maps.Polygon(options);
-    case "polyline": 
-      return new google.maps.Polyline(options);
-    case "rectangle": 
-      options.bounds = getBounds(options.bounds);
-      return new google.maps.Rectangle(options);
-    case "groundOverlay":
-    case "image":
-      var url = options.url;
-      var bounds = getBounds(options.bounds);
-      var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
-      return new google.maps.GroundOverlay(url, bounds, opts);
+      case "circle":
+        shape = new google.maps.Circle(options);
+        break;
+      case "polygon":
+        shape = new google.maps.Polygon(options);
+        break;
+      case "polyline": 
+        shape = new google.maps.Polyline(options);
+        break;
+      case "rectangle": 
+        options.bounds = getBounds(options.bounds);
+        shape = new google.maps.Rectangle(options);
+        break;
+      case "groundOverlay":
+      case "image":
+        var url = options.url;
+        var bounds = getBounds(options.bounds);
+        var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
+        shape = new google.maps.GroundOverlay(url, bounds, opts);
+        break;
     }
-    return null;
+
+    /**
+     * set events
+     */
+    console.log("shape", shapeName, "events", events);
+    for (var eventName in events) {
+      if (events[eventName]) {
+        console.log(eventName, events[eventName]);
+        google.maps.event.addListener(shape, eventName, events[eventName]);
+      }
+    }
+    return shape;
   };
   
   return {
@@ -993,29 +907,25 @@ ngMap.directives.shape = function(Attr2Options) {
      */
     link: function(scope, element, attrs, mapController) {
       var filtered = parser.filter(attrs);
-      var shapeName = filtered.name;
-      delete filtered.name;  //remove name bcoz it's not for options
-      
       var shapeOptions = parser.getOptions(filtered);
-      console.log('shape', shapeName, 'options', shapeOptions);
-      var shape = getShape(shapeName, shapeOptions);
+      var shapeEvents = parser.getEvents(scope, filtered);
 
-      if (shapeOptions.ngRepeat) { 
-        mapController.addShape(shape);
-      } else if (shape) {
-        mapController.shapes.push(shape);
-      } else {
-        console.error("shape", shapeName, "is not defined");
+      var shape = getShape(shapeOptions, shapeEvents);
+      mapController.addShape(shape);
+
+      var orgAttributes = {};
+      for (var i=0; i<element[0].attributes.length; i++) {
+        var attr = element[0].attributes[i];
+        orgAttributes[attr.name] = attr.value;
       }
-      
-      //shape events
-      var events = parser.getEvents(scope, filtered);
-      console.log("shape", shapeName, "events", events);
-      for (var eventName in events) {
-        if (events[eventName]) {
-          console.log(eventName, events[eventName]);
-          google.maps.event.addListener(shape, eventName, events[eventName]);
-        }
+
+      /**
+       * set observers
+       */
+      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
+      console.log('shape attrs to observe', attrsToObserve);
+      for (var i=0; i<attrsToObserve.length; i++) {
+        parser.observeAndSet(attrs, attrsToObserve[i], shape);
       }
     }
    }; // return

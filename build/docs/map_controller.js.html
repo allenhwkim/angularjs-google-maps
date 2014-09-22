@@ -29,96 +29,38 @@
  * @ngdoc directive
  * @name MapController
  * @requires $scope
- * @requires NavigatorGeolocation
- * @requires GeoCoder
  * @property {Hash} controls collection of Controls initiated within `map` directive
  * @property {Hash} markersi collection of Markers initiated within `map` directive
  * @property {Hash} shapes collection of shapes initiated within `map` directive
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
-ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder) { 
+ngMap.directives.MapController = function($scope) { 
 
   this.map = null;
-  this.controls = {};
-  this.markers = [];
-  this.shapes = [];
-  this.markerClusterer = null;
-
-  /**
-   * Initialize map with options, center and events
-   * @memberof MapController
-   * @name initMap
-   * @param {HtmlElement} el element that a map is drawn
-   * @param {MapOptions} options google map options
-   * @param {Hash} events google map events. The key is the name of the event
-   */
-  this.initMap = function(el, options, events) {
-    this.map = new google.maps.Map(el, {});
-    var center = options.center;
-    if (!(center instanceof google.maps.LatLng)) {
-      delete options.center;
-    }
-    var _this = this;
-    if (typeof center == 'string') { // address
-      GeoCoder.geocode({address: center})
-        .then(function(results) {
-          _this.map.setCenter(results[0].geometry.location);
-        });
-    } else if (!center) { //no center given, use current location
-      NavigatorGeolocation.getCurrentPosition()
-        .then(
-          function(position) {
-            var lat = position.coords.latitude, 
-                lng = position.coords.longitude;
-            _this.map.setCenter(new google.maps.LatLng(lat,lng));
-          },
-          function() { //current location failed, use fallback
-            if(options.geoFallbackCenter instanceof Array) {
-              var lat = options.geoFallbackCenter[0],
-                  lng = options.geoFallbackCenter[1];
-              _this.map.setCenter(new google.maps.LatLng(lat,lng));
-            } else {
-              this.map.setCenter(new google.maps.LatLng(0,0)); //default lat, lng
-            }
-          }
-        ); // then
-    }
-
-    this.map.setOptions(options);
-    for (var eventName in events) {
-      if (eventName) {
-        google.maps.event.addListener(this.map, eventName, events[eventName]);
-      }
-    }
-  };
+  this._objects = [];
 
   /**
    * Add a marker to map and $scope.markers
    * @memberof MapController
    * @name addMarker
    * @param {Marker} marker google map marker
-   *    if marker has centered attribute with the key of the value,
-   *    the map will be centered with the marker
    */
   this.addMarker = function(marker) {
-    marker.setMap(this.map);
-    if (marker.centered) {
-      this.map.setCenter(marker.position);
-    }
-    var len = Object.keys(this.map.markers).length;
-    this.map.markers[marker.id || len] = marker;
-  };
-
-  /**
-   * Initialize markers
-   * @memberof MapController
-   * @name initMarkers
-   */
-  this.initMarkers = function() {
-    this.map.markers = {};
-    for (var i=0; i&lt;this.markers.length; i++) {
-      var marker = this.markers[i];
-      this.addMarker(marker);  //set this.map.markers
+    /**
+     * marker and shape are initialized before map is initialized
+     * so, collect _objects then will init. those when map is initialized
+     * However the case as in ng-repeat, we can directly add to map
+     */
+    if (this.map) {
+      this.map.markers = this.map.markers || {};
+      marker.setMap(this.map);
+      if (marker.centered) {
+        this.map.setCenter(marker.position);
+      }
+      var len = Object.keys(this.map.markers).length;
+      this.map.markers[marker.id || len] = marker;
+    } else {
+      this._objects.push(marker);
     }
   };
 
@@ -129,40 +71,39 @@ ngMap.directives.MapController = function($scope, NavigatorGeolocation, GeoCoder
    * @param {Shape} shape google map shape
    */
   this.addShape = function(shape) {
-    shape.setMap(this.map);
-    var len = Object.keys(this.map.shapes).length;
-    this.map.shapes[shape.id || len] = shape;
-  };
-
-  /**
-   * Initialize shapes
-   * @memberof MapController
-   * @name initShapes
-   */
-  this.initShapes = function() {
-    this.map.shapes = {};
-    for (var i=0; i&lt;this.shapes.length; i++) {
-      var shape = this.shapes[i];
-      this.addShape(shape);
+    if (this.map) {
+      this.map.shapes = this.map.shapes || {};
+      shape.setMap(this.map);
+      var len = Object.keys(this.map.shapes).length;
+      this.map.shapes[shape.id || len] = shape;
+    } else {
+      this._objects.push(shape);
     }
   };
 
   /**
-   * Initialize markerClusterere for this map
+   * Add a shape to map and $scope.shapes
    * @memberof MapController
-   * @name initMarkerClusterer
+   * @name addShape
+   * @param {Shape} shape google map shape
    */
-  this.initMarkerClusterer = function() {
-    if (this.markerClusterer) {
-      this.map.markerClusterer = new MarkerClusterer(
-        this.map, 
-        this.markerClusterer.data, 
-        this.markerClusterer.options
-      );
+  this.addObjects = function(objects) {
+    for (var i=0; i&lt;objects.length; i++) {
+      var obj=objects[i];
+      if (obj instanceof google.maps.Marker) {
+        this.addMarker(obj);
+      } else if (obj instanceof google.maps.Circle ||
+        obj instanceof google.maps.Polygon ||
+        obj instanceof google.maps.Polyline ||
+        obj instanceof google.maps.Rectangle ||
+        obj instanceof google.maps.GroundOverlay) {
+        this.addShape(obj);
+      }
     }
   };
+
 };
-ngMap.directives.MapController.$inject = ['$scope', 'NavigatorGeolocation', 'GeoCoder'];
+ngMap.directives.MapController.$inject = ['$scope'];
 </code></pre>
         </article>
     </section>
@@ -173,30 +114,24 @@ ngMap.directives.MapController.$inject = ['$scope', 'NavigatorGeolocation', 'Geo
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="marker-clusterer.html">marker-clusterer</a></li><li><a href="shape.html">shape</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="shape.html">shape</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> 
-    using <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template </a> 
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> 
+    using <a href="https://github.com/allenhwkim/angularjs-google-maps/tree/master/config/jsdoc/template">custom template </a> and 
+    <a href="https://raw.githubusercontent.com/allenhwkim/angularjs-google-maps/master/config/jsdoc/plugins/angular.js">custom tag @ngdoc</a>
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
 <script>
-  // scroll to the current document navigation
   var href=window.location.href.match(/\/([^\/]+$)/)[1];
-  if (currentNav = document.querySelector("nav a[href='"+href+"']"))
-    currentNav.scrollIntoView(true);
-  // scroll to the top of the document
+  document.querySelector("nav a[href='"+href+"']").scrollIntoView(true);
   if (window.location.hash == "")
     document.querySelector("body").scrollIntoView(true);
-  // adjust the width of main section by navigation width
-  var navWidth = document.querySelector('nav').getBoundingClientRect().width;
-  var mainWidth = document.querySelector('#main').getBoundingClientRect().width;
-  document.querySelector('#main').style.width = (mainWidth - navWidth)+'px';
 </script>
 </body>
 </html>
