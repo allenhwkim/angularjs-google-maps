@@ -18,7 +18,7 @@ describe('Attr2Options', function() {
     });
   });
 
-  describe("filter", function() {
+  describe("#filter", function() {
     it('should filter all angularjs methods', function() {
       var attrs ={a:1, $a:1, $$a:1};
       expect(parser.filter(attrs).a).toEqual(1);
@@ -27,7 +27,7 @@ describe('Attr2Options', function() {
     });
   });
 
-  describe("getOptions", function() {
+  describe("#getOptions", function() {
     it('should filter out ControlOptions', function() {
       var attrs ={a:1, aControlOptions:1};
       expect(parser.getOptions(attrs).aControlOptions).toEqual(undefined);
@@ -56,7 +56,7 @@ describe('Attr2Options', function() {
     });
   });
 
-  describe("getControlOptions", function() {
+  describe("#getControlOptions", function() {
     it('should filter out non control options', function() {
       var attrs ={a:1};
       expect(parser.getControlOptions(attrs).a).toEqual(undefined);
@@ -83,7 +83,7 @@ describe('Attr2Options', function() {
     });
   });
 
-  describe("getEvents", function() {
+  describe("#getEvents", function() {
     it('should filter out non events', function() {
       var attrs ={a:1};
       expect(parser.getEvents(scope, attrs).a).toEqual(undefined);
@@ -95,4 +95,31 @@ describe('Attr2Options', function() {
       expect(typeof events.click).toEqual('function');
     });
   });
+
+  describe("#getAttrsToObserve", function() {
+    it('should return no attributes to observe with ng-repeat', function() {
+      var attrs ={a:"1", b:"{{foo}}", 'ng-repeat': "bar"};
+      expect([]).toEqual(parser.getAttrsToObserve(attrs));
+    });
+    it('should return attributes to observe', function() {
+      var attrs ={a:"1", b:"{{foo}}", c:"{{bar}}"};
+      expect(['b', 'c']).toEqual(parser.getAttrsToObserve(attrs));
+    });
+  });
+
+  describe("#camelCase", function() {
+    it('should return camelcase', function() {
+      expect("thisIsCamelCase").toEqual(parser.camelCase("this:is_camel-case"));
+      expect("MozCamelCase").toEqual(parser.camelCase("moz-camel-case"));
+    });
+  });
+
+  describe("#setDelayedGeoLocation", function() {
+    //TODO: need some mock jobs for object, NavigatorGeolocation and GeoCoder
+  });
+
+  describe("#observeAndSet", function() {
+    //TODO: needs some mock jobs for object and attrs
+  });
+
 });
