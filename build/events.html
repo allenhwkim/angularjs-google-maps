@@ -14,8 +14,8 @@
   var app = angular.module('myApp', ['ngMap', 'plunkr']); 
   app.controller('MyController', ['$scope', function($scope) {
     var map;
-    $scope.$on('mapsInitialized', function(evt, maps) {
-      map = maps[0];
+    $scope.$on('mapInitialized', function(evt, evtMap) {
+      map = evtMap;
     });
     $scope.latlng = [40.741, -74.181];
     $scope.radius = 3500;

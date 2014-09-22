@@ -77,12 +77,12 @@
 </ul>
 <p>In case your map directive scope is different from your controller scope, there is an event emitted when a map is initialized.</p>
 <ul>
-<li><code>mapsInitialized</code></li>
+<li><code>mapInitialized</code></li>
 </ul>
 <p>Example Usage:</p>
 <pre class="prettyprint source"><code>app.controller('parentParentController', function($scope) {
-  $scope.$on('mapsInitialized', function(event, maps) {
-    maps[0].setCenter( .... )
+  $scope.$on('mapInitialized', function(event, map) {
+    map.setCenter( .... )
     ..
   });
 });</code></pre><h2>Advanced Examples</h2><ul>

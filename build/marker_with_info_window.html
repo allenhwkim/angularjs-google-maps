@@ -19,8 +19,8 @@
     var infoWindow = new google.maps.InfoWindow({
       content:'Hi<br/>I am an infowindow'
     });
-    $scope.$on('mapsInitialized', function(event, maps) {
-      map = maps[0], marker = map.markers[0];
+    $scope.$on('mapInitialized', function(event, evtMap) {
+      map = evtMap, marker = map.markers[0];
     });
     $scope.showInfoWindow = function() {
       infoWindow.open(map, marker);
