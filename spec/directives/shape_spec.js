@@ -44,6 +44,10 @@ describe('shape', function() {
   });
 
   it('should set shape events', function() {
-    //TODO: don't know how to get events of an infoWindow
+    //TODO: should test events, but don't know how to get events of a shape
+  });
+
+  it('should set shape observers', function() {
+    //TODO: need to test observers
   });
 });

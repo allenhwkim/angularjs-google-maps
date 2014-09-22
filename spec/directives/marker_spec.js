@@ -52,6 +52,10 @@ describe('marker', function() {
   });
 
   it('should set marker events', function() {
-    //TODO: don't know how to get events of an infoWindow
+    //TODO:  need to test marker events, but don't know don't know how to get events of a marker
+  });
+
+  it('should set marker observers', function() {
+    //TODO: need to test marker observers
   });
 });

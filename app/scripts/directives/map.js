@@ -90,9 +90,9 @@ ngMap.directives.map = function(Attr2Options) {
       }
       console.log('orgAttributes', orgAttributes);
 
-      ctrl.map = new google.maps.Map(el, {});
-      ctrl.map.markers = {};
-      ctrl.map.shapes = {};
+      var map = new google.maps.Map(el, {});
+      map.markers = {};
+      map.shapes = {};
 
       /**
        * set options
@@ -101,13 +101,13 @@ ngMap.directives.map = function(Attr2Options) {
       if (!(center instanceof google.maps.LatLng)) {
         delete options.center;
         Attr2Options.setDelayedGeoLocation(
-          ctrl.map, 
+          map, 
           'setCenter', 
           center, 
           options.geoFallbackCenter
         );
       }
-      ctrl.map.setOptions(options);
+      map.setOptions(options);
 
       /**
        * set events
@@ -115,7 +115,7 @@ ngMap.directives.map = function(Attr2Options) {
       var mapEvents = parser.getEvents(scope, filtered);
       for (var eventName in mapEvents) {
         if (eventName) {
-          google.maps.event.addListener(ctrl.map, eventName, mapEvents[eventName]);
+          google.maps.event.addListener(map, eventName, mapEvents[eventName]);
         }
       }
 
@@ -125,34 +125,26 @@ ngMap.directives.map = function(Attr2Options) {
       var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
       console.log('map attrs to observe', attrsToObserve);
       for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], ctrl.map);
+        parser.observeAndSet(attrs, attrsToObserve[i], map);
       }
 
       /**
-       * set map objects, i.e. marker, shape
+       * set controller and set objects
+       * so that map can be used by other directives; marker or shape 
+       * ctrl._objects are gathered when marker and shape are initialized before map is set
        */
-      for (var i=0; i<ctrl._objects.length; i++) {
-        var obj=ctrl._objects[i];
-        if (obj instanceof google.maps.Marker) {
-          ctrl.addMarker(obj);
-        } else if (obj instanceof google.maps.Circle ||
-          obj instanceof google.maps.Polygon ||
-          obj instanceof google.maps.Polyline ||
-          obj instanceof google.maps.Rectangle ||
-          obj instanceof google.maps.GroundOverlay) {
-          ctrl.addShape(obj);
-        }
-      }
+      ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
+      ctrl.addObjects(ctrl._objects);
 
       /**
-       * broadcast map event
+       * set map for scope and controller and broadcast map event
        */
-      scope.map = ctrl.map;
+      scope.map = map;
       scope.$emit('mapInitialized', scope.map);  
 
       // the following lines will be deprecated on behalf of mapInitialized
       scope.maps = scope.maps || {}; 
-      scope.maps[options.id||Object.keys(scope.maps).length] = ctrl.map;
+      scope.maps[options.id||Object.keys(scope.maps).length] = map;
       scope.$emit('mapsInitialized', scope.maps);  
     }
   }; 

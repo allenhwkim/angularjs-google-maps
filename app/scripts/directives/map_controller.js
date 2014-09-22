@@ -25,6 +25,7 @@ ngMap.directives.MapController = function($scope) {
      * However the case as in ng-repeat, we can directly add to map
      */
     if (this.map) {
+      this.map.markers = this.map.markers || {};
       marker.setMap(this.map);
       if (marker.centered) {
         this.map.setCenter(marker.position);
@@ -44,11 +45,33 @@ ngMap.directives.MapController = function($scope) {
    */
   this.addShape = function(shape) {
     if (this.map) {
+      this.map.shapes = this.map.shapes || {};
       shape.setMap(this.map);
       var len = Object.keys(this.map.shapes).length;
       this.map.shapes[shape.id || len] = shape;
     } else {
       this._objects.push(shape);
+    }
+  };
+
+  /**
+   * Add a shape to map and $scope.shapes
+   * @memberof MapController
+   * @name addShape
+   * @param {Shape} shape google map shape
+   */
+  this.addObjects = function(objects) {
+    for (var i=0; i<objects.length; i++) {
+      var obj=objects[i];
+      if (obj instanceof google.maps.Marker) {
+        this.addMarker(obj);
+      } else if (obj instanceof google.maps.Circle ||
+        obj instanceof google.maps.Polygon ||
+        obj instanceof google.maps.Polyline ||
+        obj instanceof google.maps.Rectangle ||
+        obj instanceof google.maps.GroundOverlay) {
+        this.addShape(obj);
+      }
     }
   };
 
