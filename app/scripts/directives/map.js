@@ -9,7 +9,7 @@
  *
  *   It initialize map, children tags, then emits message as soon as the action is done
  *   The message emitted from this directive is;
- *     . mapsInitialized
+ *     . mapInitialized
  *
  *   Restrict To:
  *     Element Or Attribute
@@ -138,11 +138,15 @@ ngMap.directives.map = function(Attr2Options) {
 
       /**
        * set map for scope and controller and broadcast map event
+       * scope.map will be overwritten if user have multiple maps in a scope,
+       * thus the last map will be set as scope.map.
+       * however an `mapInitialized` event will be emitted every time.
        */
       scope.map = map;
       scope.$emit('mapInitialized', scope.map);  
 
       // the following lines will be deprecated on behalf of mapInitialized
+      // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
       scope.maps = scope.maps || {}; 
       scope.maps[options.id||Object.keys(scope.maps).length] = map;
       scope.$emit('mapsInitialized', scope.maps);  

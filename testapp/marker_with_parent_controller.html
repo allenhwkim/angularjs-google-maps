@@ -25,8 +25,8 @@
     app.controller('childController', function() {});
     app.controller('parentController', function() {});
     app.controller('parentParentController', function($scope, $http) {
-      $scope.$on('mapsInitialized', function(event, maps) {
-        var map = maps[0];
+      $scope.$on('mapInitialized', function(event, evtMap) {
+        var map = evtMap;
         var markers = [];
         for (var i = 0; i < 8; i++) {
           markers[i] = new google.maps.Marker({ title: "Marker: " + i });

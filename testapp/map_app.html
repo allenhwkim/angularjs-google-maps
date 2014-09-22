@@ -12,7 +12,6 @@
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
   <script src="../app/scripts/directives/shape.js"></script>
-  <script src="../app/scripts/directives/marker_clusterer.js"></script>
   <script src="../app/scripts/services/geo_coder.js"></script>
   <script src="../app/scripts/services/navigator_geolocation.js"></script>
   <script src="../app/scripts/services/street_view.js"></script>
@@ -28,8 +27,8 @@
   app.controller('mapController', function($scope, $http, StreetView) {
     $scope.map;
     $scope.stores = [];
-    $scope.$on('mapsInitialized', function(event, maps) {
-      map = maps[0];
+    $scope.$on('mapInitialized', function(event, evtMap) {
+      map = evtMap;
       $scope.map = map;
       console.log('loading scripts/starbucks.json');
       $http.get('scripts/starbucks.json').success( function(stores) {

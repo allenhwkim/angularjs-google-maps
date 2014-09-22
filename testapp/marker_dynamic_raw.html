@@ -24,8 +24,8 @@
 
     app.controller('mapController', function($scope, $http, $interval) {
       var map;
-      $scope.$on('mapsInitialized', function(e, maps) {
-        map = maps[0];
+      $scope.$on('mapInitialized', function(e, evtMap) {
+        map = evtMap;
       });
 
       $scope.dynMarkers = [];

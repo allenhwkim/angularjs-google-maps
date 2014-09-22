@@ -50,13 +50,13 @@ You will also have these three scope variables after these directives are initia
 
 In case your map directive scope is different from your controller scope, there is an event emitted when a map is initialized.
 
-- `mapsInitialized`
+- `mapInitialized`
 
 Example Usage:
 
     app.controller('parentParentController', function($scope) {
-      $scope.$on('mapsInitialized', function(event, maps) {
-        maps[0].setCenter( .... )
+      $scope.$on('mapInitialized', function(event, map) {
+        map.setCenter( .... )
         ..
       });
     });

@@ -75,29 +75,37 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
     return output;
   };
 
-  var setDelayedGeoLocation = function(object, method, param, fallbackLocation) {
+  var setDelayedGeoLocation = function(object, method, param, options) {
+    var centered = object.centered || (options && options.centered);
+    var errorFunc = function() {
+      console.log('error occurred while', object, method, param, options);
+      var fallbackLocation = options.fallbackLocation || new google.maps.LatLng(0,0);
+      object[method](fallbackLocation);
+    };
     if (!param || param.match(/^current/i)) { // sensored position
       NavigatorGeolocation.getCurrentPosition().then(
-        function(position) {
+        function(position) { // success
           var lat = position.coords.latitude;
           var lng = position.coords.longitude;
           var latLng = new google.maps.LatLng(lat,lng);
           object[method](latLng);
-          if (object.centered) {
+          if (centered) {
             object.map.setCenter(latLng);
           }
         },
-        function() {
-          object[method](fallbackLocation);
-        });
+        errorFunc
+      );
     } else { //assuming it is address
-      GeoCoder.geocode({address: param}).then(function(results) {
-        object[method](results[0].geometry.location);
-        if (object.centered) {
-          object.map.setCenter(results[0].geometry.location);
-        }
-      });
-    } 
+      GeoCoder.geocode({address: param}).then(
+        function(results) { // success
+          object[method](results[0].geometry.location);
+          if (centered) {
+            object.map.setCenter(results[0].geometry.location);
+          }
+        },
+        errorFunc
+      );
+    }
   };
 
   var observeAndSet = function(attrs, attrName, object) {
@@ -864,7 +872,14 @@ ngMap.directives.shape = function(Attr2Options) {
     console.log("shape", shapeName, "options", options);
     switch(shapeName) {
       case "circle":
-        shape = new google.maps.Circle(options);
+        if (options.center instanceof google.maps.LatLng) {
+          shape = new google.maps.Circle(options);
+        } else {
+          var orgCenter = options.center;
+          options.center = new google.maps.LatLng(0,0);
+          shape = new google.maps.Circle(options);
+          parser.setDelayedGeoLocation(shape, 'setCenter', orgCenter);
+        }
         break;
       case "polygon":
         shape = new google.maps.Polygon(options);

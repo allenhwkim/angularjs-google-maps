@@ -78,7 +78,14 @@ ngMap.directives.shape = function(Attr2Options) {
     console.log("shape", shapeName, "options", options);
     switch(shapeName) {
       case "circle":
-        shape = new google.maps.Circle(options);
+        if (options.center instanceof google.maps.LatLng) {
+          shape = new google.maps.Circle(options);
+        } else {
+          var orgCenter = options.center;
+          options.center = new google.maps.LatLng(0,0);
+          shape = new google.maps.Circle(options);
+          parser.setDelayedGeoLocation(shape, 'setCenter', orgCenter);
+        }
         break;
       case "polygon":
         shape = new google.maps.Polygon(options);
