@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "dependencies": {
     "gulp": "~3.7.0",
     "glob": "~4.0.2"
