@@ -70,7 +70,8 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
   };
 
   var setDelayedGeoLocation = function(object, method, param, options) {
-    var centered = object.centered || (options && options.centered);
+    options = options || {};
+    var centered = object.centered || options.centered;
     var errorFunc = function() {
       console.log('error occurred while', object, method, param, options);
       var fallbackLocation = options.fallbackLocation || new google.maps.LatLng(0,0);
