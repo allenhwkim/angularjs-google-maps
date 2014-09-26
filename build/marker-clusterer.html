@@ -9,9 +9,9 @@
   <script src="scripts/ng-map.min.js"></script>
   <script src="scripts/plunkr.js"></script>
   <link rel="stylesheet" href="css/styles.css"></script>
-  <script src="scripts/markers.js"></script>
-  <script src="scripts/markerclusterer.js"></script>
-  <script id="my-js">
+  <script plnkr-lib src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markers.js"></script>
+  <script plnkr-lib src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markerclusterer.js"></script>
+  <script plnkr-code="js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']);
 
   app.controller('mapController', function($scope, $http, $interval) {
@@ -27,7 +27,7 @@
     });
   });
   </script>
-  <style id="my-css">
+  <style plnkr-code="css">
     map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
@@ -36,12 +36,12 @@
   <h1>Marker Cluster</h1>
   <hr />
   
-  <div id="my-html">
+  <div plnkr-code="html">
     <div ng-controller="mapController">
       <map zoom="2" center="[43.6650000, -79.4103000]"></map>
     </div>
   </div>
 
-  <div ng-include="'source_code.html'" plunkr module-name="myApp"></div>
+  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

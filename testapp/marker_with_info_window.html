@@ -2,7 +2,7 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<style id="my-css">
+<style plnkr-code="css">
   map, div[map] {display:block; width:600px; height:400px;}
   pre {margin:0px} h3{margin-bottom:0px}
 </style>
@@ -22,7 +22,7 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <script src="../app/scripts/app.js"></script>
 <!-- endbuild -->
-<script id="my-js">
+<script plnkr-code="js">
   var app = angular.module('myApp', ['ngMap', 'plunkr']); 
   app.controller('MyController', ['$scope', function($scope) {
     var map, marker;
@@ -40,12 +40,14 @@
 </head>
 
 <body>
-  <div id="my-html" style="height:100%" ng-controller="MyController">
-    <map zoom="11" center="[40.74, -74.18]">
-      <marker position="[40.71, -74.21]" on-click="showInfoWindow()"></marker>
-    </map>
+  <div plnkr-code="html">
+    <div ng-controller="MyController" style="height:100%">
+      <map zoom="11" center="[40.74, -74.18]">
+        <marker position="[40.71, -74.21]" on-click="showInfoWindow()"></marker>
+      </map>
+    </div>
   </div>
 
-  <div ng-include="'source_code.html'" plunkr></div>
+  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<style id="my-css">
+<style plnkr-code="css">
   map, div[map] {display:block; width:600px; height:400px;}
 </style>
 <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
@@ -11,7 +11,7 @@
 <script src="scripts/app.js"></script>
 <link rel="stylesheet" href="css/styles.css"></script>
 <script src="scripts/ng-map.min.js"></script>
-<script id="my-js">
+<script plnkr-code="js">
   function MyCtrl($scope) {
     $scope.positions =[ [40.71, -74.21], [40.72, -74.20], [40.73, -74.19],
       [40.74, -74.18], [40.75, -74.17], [40.76, -74.16], [40.77, -74.15]];
@@ -20,7 +20,7 @@
 </head>
 
 <body>
-  <div id="my-html" style="height:100%">
+  <div plnkr-code="html" style="height:100%">
     <div ng-controller="MyCtrl">
       <map zoom="11" center="[40.74, -74.18]">
         <marker ng-repeat="p in positions" position="{{p}}" title="{{p.toString()}}"></marker>
@@ -28,6 +28,6 @@
     </div>
   </div>
 
-  <div ng-include="'source_code.html'" plunkr></div>
+  <div plnkr-show></div>
 </body>
 </html>

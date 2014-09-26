@@ -10,7 +10,7 @@
   <script src="scripts/ng-map.min.js"></script>
   <script src="scripts/plunkr.js"></script>
   <link rel="stylesheet" href="css/styles.css"></script>
-  <script id="my-js">
+  <script plnkr-code="js">
     var app = angular.module('myApp', ['ngMap', 'plunkr']);
     app.controller('childController', function() {});
     app.controller('parentController', function() {});
@@ -29,7 +29,7 @@
       }, 1000);
     });
   </script>
-  <style id="my-css">
+  <style plnkr-code="css">
     map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
@@ -37,7 +37,7 @@
 <body>
   <h1>Markers with parent controller(scope)</h1>
   
-  <div id="my-html">
+  <div plnkr-code="html">
     <div ng-controller="parentParentController">
       <div ng-controller="parentController">
         <div ng-controller="childController">
@@ -47,6 +47,6 @@
     </div>
   </div>
 
-  <div ng-include="'source_code.html'" plunkr module-name="myApp"></div>
+  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

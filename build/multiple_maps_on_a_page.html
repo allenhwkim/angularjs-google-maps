@@ -2,7 +2,7 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<style id="my-css">
+<style plnkr-code="css">
   map, div[map] {display:block; width:600px; height:400px;}
 </style>
 <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
@@ -14,13 +14,13 @@
 </head>
 
 <body>
-  <div id="my-html" style="height:100%">
+  <div plnkr-code="html">
     <map style="width:30%; height:300px; float:left"></map>
     <map center="toronto, canada" style="width:30%; height:300px; float:left"></map>
     <map zoom="11" center="[40.74, -74.18]" style="width:30%; height:300px; float:left"></map>
   </div>
 
   <br style="clear:both"/>
-  <div ng-include="'source_code.html'" plunkr></div>
+  <div plnkr-show></div>
 </body>
 </html>

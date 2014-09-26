@@ -9,7 +9,7 @@
   <script src="scripts/ng-map.min.js"></script>
   <script src="scripts/plunkr.js"></script>
   <link rel="stylesheet" href="css/styles.css"></script>
-  <script id="my-js">
+  <script plnkr-code="js">
     var app = angular.module('myApp', ['ngMap', 'plunkr']);
 
     app.controller('mapController', function($scope, $http, $interval) {
@@ -28,7 +28,7 @@
       }, 2000);
     });
   </script>
-  <style id="my-css">
+  <style plnkr-code="css">
     map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
@@ -37,7 +37,7 @@
   <h1>Dynamic Markers With ng-repeat</h1>
   <hr />
   
-  <div id="my-html">
+  <div plnkr-code="html">
     <div ng-controller="mapController">
       <map zoom="14" center="[40.71, -74.21]">
         <marker ng-repeat="p in positions" position="{{p}}" title="{{p.toString()}}"></marker>
@@ -45,6 +45,6 @@
     </div>
   </div>
 
-  <div ng-include="'source_code.html'" plunkr module-name="myApp"></div>
+  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>
