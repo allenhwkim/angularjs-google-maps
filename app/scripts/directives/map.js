@@ -39,7 +39,7 @@
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options) {
+ngMap.directives.map = function(Attr2Options, $timeout) {
   var parser = Attr2Options;
 
   return {
@@ -67,6 +67,7 @@ ngMap.directives.map = function(Attr2Options) {
       var el = document.createElement("div");
       el.style.width = "100%";
       el.style.height = "100%";
+      element.css({display:'block','height':'300px'});
       element.prepend(el);
 
       /**
@@ -93,6 +94,13 @@ ngMap.directives.map = function(Attr2Options) {
       var map = new google.maps.Map(el, {});
       map.markers = {};
       map.shapes = {};
+     
+      /**
+       * resize the map to prevent showing partially, in case intialized too early
+       */
+      $timeout(function() {
+        google.maps.event.trigger(map, "resize");
+      });
 
       /**
        * set options
@@ -143,6 +151,7 @@ ngMap.directives.map = function(Attr2Options) {
        * however an `mapInitialized` event will be emitted every time.
        */
       scope.map = map;
+      scope.map.scope = scope;
       scope.$emit('mapInitialized', scope.map);  
 
       // the following lines will be deprecated on behalf of mapInitialized
@@ -153,4 +162,4 @@ ngMap.directives.map = function(Attr2Options) {
     }
   }; 
 }; // function
-ngMap.directives.map.$inject = ['Attr2Options'];
+ngMap.directives.map.$inject = ['Attr2Options', '$timeout'];

@@ -1,4 +1,6 @@
 *.swp
 nohup.out
-/node_modules/
-/tmp/
+node_modules
+tmp
+*.log
+gh-pages

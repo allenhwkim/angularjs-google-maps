@@ -53,9 +53,10 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
             output = input;
           } 
         // 4. Object Expression. i.e. MayTypeId.HYBRID 
-        } else if (input.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
+        } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
           try {
-            output = scope.$eval("google.maps."+input);
+            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
+            output = google.maps[matches[1]][matches[2]];
           } catch(e) {
             output = input;
           } 
@@ -63,7 +64,7 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
         } else if (input.match(/^[A-Z]+$/)) {
           try {
             var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
-            output = scope.$eval("google.maps."+capitializedKey+"."+input);
+            output = google.maps[capitializedKey][input];
           } catch(e) {
             output = input;
           } 
@@ -485,7 +486,7 @@ ngMap.services.StreetView.$inject =  ['$q'];
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options) {
+ngMap.directives.map = function(Attr2Options, $timeout) {
   var parser = Attr2Options;
 
   return {
@@ -513,6 +514,7 @@ ngMap.directives.map = function(Attr2Options) {
       var el = document.createElement("div");
       el.style.width = "100%";
       el.style.height = "100%";
+      element.css({display:'block','height':'300px'});
       element.prepend(el);
 
       /**
@@ -539,6 +541,13 @@ ngMap.directives.map = function(Attr2Options) {
       var map = new google.maps.Map(el, {});
       map.markers = {};
       map.shapes = {};
+     
+      /**
+       * resize the map to prevent showing partially, in case intialized too early
+       */
+      $timeout(function() {
+        google.maps.event.trigger(map, "resize");
+      });
 
       /**
        * set options
@@ -589,6 +598,7 @@ ngMap.directives.map = function(Attr2Options) {
        * however an `mapInitialized` event will be emitted every time.
        */
       scope.map = map;
+      scope.map.scope = scope;
       scope.$emit('mapInitialized', scope.map);  
 
       // the following lines will be deprecated on behalf of mapInitialized
@@ -599,7 +609,7 @@ ngMap.directives.map = function(Attr2Options) {
     }
   }; 
 }; // function
-ngMap.directives.map.$inject = ['Attr2Options'];
+ngMap.directives.map.$inject = ['Attr2Options', '$timeout'];
 
 /**
  * @ngdoc directive

@@ -47,9 +47,10 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
             output = input;
           } 
         // 4. Object Expression. i.e. MayTypeId.HYBRID 
-        } else if (input.match(/^[A-Z][a-zA-Z0-9]+\.[A-Z]+$/)) {
+        } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
           try {
-            output = scope.$eval("google.maps."+input);
+            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
+            output = google.maps[matches[1]][matches[2]];
           } catch(e) {
             output = input;
           } 
@@ -57,7 +58,7 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
         } else if (input.match(/^[A-Z]+$/)) {
           try {
             var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
-            output = scope.$eval("google.maps."+capitializedKey+"."+input);
+            output = google.maps[capitializedKey][input];
           } catch(e) {
             output = input;
           } 
