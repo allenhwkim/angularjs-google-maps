@@ -488,6 +488,15 @@ ngMap.services.StreetView.$inject =  ['$q'];
  */
 ngMap.directives.map = function(Attr2Options, $timeout) {
   var parser = Attr2Options;
+  function getStyle(el,styleProp)
+  {
+    if (el.currentStyle) {
+      var y = el.currentStyle[styleProp];
+    } else if (window.getComputedStyle) {
+      var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+    }
+    return y;
+  }
 
   return {
     restrict: 'AE',
@@ -514,8 +523,17 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       var el = document.createElement("div");
       el.style.width = "100%";
       el.style.height = "100%";
-      element.css({display:'block','height':'300px'});
       element.prepend(el);
+
+      /**
+       * if style is not given to the map element, set display and height
+       */
+      if (getStyle(element[0], 'display') != "block") {
+        element.css('display','block');
+      }
+      if (!getStyle(element[0], 'height').match(/px/)) {
+        element.css('height','300px');
+      }
 
       /**
        * get map optoins
