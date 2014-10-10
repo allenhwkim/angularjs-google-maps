@@ -44,6 +44,12 @@ describe('Attr2Options', function() {
       var attrs = {a:'{"foo":123}'};
       expect(parser.getOptions(attrs).a.foo).toEqual(123);
     });
+    it('should convert object-like JSON string to an object', function() {
+      var attrs = {a:"{ hello: 'world',foo:1,  bar  : '2', foo1: 1, _bar : 2, $2: 3,"+
+        " 'xxx': 5, \"fuz\": 4, places: ['Africa', 'America', 'Asia', 'Australia'] }"
+      };
+      expect(parser.getOptions(attrs).a.hello).toEqual("world");
+    });
     it('should convert Class name to google object', function() {
       var attrs = {a:'Marker()'};
       expect(typeof parser.getOptions(attrs, scope).a).toEqual('object');

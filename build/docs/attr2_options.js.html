@@ -43,6 +43,14 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
       replace(MOZ_HACK_REGEXP, 'Moz$1');
   }
 
+  var JSONize = function(str) {
+    return str
+      // wrap keys without quote with valid double quote
+      .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})    
+      // replacing single quote wrapped ones to double quote 
+      .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})         
+  }
+
   var toOptionValue = function(input, options) {
     var output, key=options.key, scope=options.scope;
     try { // 1. Number?
@@ -54,14 +62,16 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
       }
     } catch(err) { 
       try { // 2.JSON?
-        output = JSON.parse(input);
+        output = JSON.parse(JSONize(input));
         if (output instanceof Array) {
-          if (output[0] instanceof Array) { // [[1,2],[3,4]] 
+          var t1stEl = output[0];
+          if (t1stEl.constructor == Object) { // [{a:1}] : not lat/lng ones
+          } else if (t1stEl.constructor == Array) { // [[1,2],[3,4]] 
             output =  output.map(function(el) {
               return new google.maps.LatLng(el[0], el[1]);
             });
-          } else {
-            return new google.maps.LatLng(output[0], output[1]);
+          } else if(!isNaN(parseFloat(t1stEl)) &amp;&amp; isFinite(t1stEl)) {
+            return new google.maps.LatLng(t1stEl, t1stEl);
           }
         }
       } catch(err2) {
