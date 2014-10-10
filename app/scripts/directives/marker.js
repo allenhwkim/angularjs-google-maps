@@ -33,7 +33,7 @@
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
-ngMap.directives.marker  = function(Attr2Options)  {
+ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   var parser = Attr2Options;
 
   var getMarker = function(options, events) {
@@ -70,7 +70,7 @@ ngMap.directives.marker  = function(Attr2Options)  {
     restrict: 'AE',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      //var filtered = new parser.filter(attrs);
+      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
@@ -91,25 +91,14 @@ ngMap.directives.marker  = function(Attr2Options)  {
         });
       }
 
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
-
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addMarker(marker);
 
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('marker attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], marker);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
 
     } //link
   }; // return
-};// function
-ngMap.directives.marker.$inject  = ['Attr2Options'];
+}]);// 

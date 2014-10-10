@@ -7,7 +7,7 @@
  * @property {Hash} shapes collection of shapes initiated within `map` directive
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
-ngMap.directives.MapController = function($scope) { 
+ngMap.MapController = function($scope) { 
 
   this.map = null;
   this._objects = [];
@@ -54,6 +54,18 @@ ngMap.directives.MapController = function($scope) {
     }
   };
 
+  this.addObject = function(groupName, obj) {
+    if (this.map) {
+      console.log('fooooooooooo', groupName);
+      this.map[groupName] = this.map[groupName] || {};
+      var len = Object.keys(this.map[groupName]).length;
+      this.map[groupName][obj.id || len] = obj;
+    } else {
+      obj.groupName = groupName;
+      this._objects.push(obj);
+    }
+  }
+
   /**
    * Add a shape to map and $scope.shapes
    * @memberof MapController
@@ -71,9 +83,10 @@ ngMap.directives.MapController = function($scope) {
         obj instanceof google.maps.Rectangle ||
         obj instanceof google.maps.GroundOverlay) {
         this.addShape(obj);
+      } else {
+        this.addObject(obj.groupName, obj);
       }
     }
   };
 
 };
-ngMap.directives.MapController.$inject = ['$scope'];

@@ -59,7 +59,7 @@
  *  For full-working example, please visit 
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
-ngMap.directives.shape = function(Attr2Options) {
+ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
   var parser = Attr2Options;
   
   var getBounds = function(points) {
@@ -150,5 +150,4 @@ ngMap.directives.shape = function(Attr2Options) {
       }
     }
    }; // return
-}; // function
-ngMap.directives.shape.$inject  = ['Attr2Options'];
+}]);

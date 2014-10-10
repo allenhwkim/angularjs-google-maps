@@ -42,10 +42,9 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build-js', function() {
-  return gulp.src(['app/scripts/namespace.js',
+  return gulp.src(['app/scripts/app.js',
     'app/scripts/services/*.js',
-    'app/scripts/directives/*.js',
-    'app/scripts/app.js'])
+    'app/scripts/directives/*.js'])
     .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
     .pipe(filesize())
