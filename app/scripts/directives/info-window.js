@@ -9,9 +9,10 @@
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element
  *
  * @param {Boolean} visible Indicates to show it when map is initialized
+ * @param {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
  * @param {String} &lt;InfoWindowOption> Any InfoWindow options,
  *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions  
  * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
@@ -68,7 +69,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
   };
 
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
       element.css('display','none');
@@ -76,30 +77,52 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
       var events = parser.getEvents(scope, filtered);
+      console.log('infoWindow', 'options', options, 'events', events);
+
+      /**
+       * it must have a container element with ng-non-bindable
+       */
+      var template = element.html();
+      if (angular.element(template).length != 1) {
+        throw "info-window working as a template must have a container";
+      }
 
       var infoWindow = getInfoWindow(options, events);
-      infoWindow.template = element.html().replace(/ng-non-/,"");
+      infoWindow.template = template.replace(/ng-non-/,"");
       mapController.addObject('infoWindows', infoWindow);
       parser.observeAttrSetObj(orgAttrs, attrs, infoWindow); /* observers */
 
       /**
-       * set method for a infoWindow
+       * provide showInfoWindow method to scope
        */
-      infoWindow.compile = function(sc) {      /* compile template within scope */
-        var iwScope = sc || scope;
-        var compiledEl = $compile(infoWindow.template)(iwScope);
-        iwScope.$apply();
+      scope.showInfoWindow  = scope.showInfoWindow || function(event, id, anchor) {
+        var infoWindow = mapController.map.infoWindows[id];
+        var compiledEl = $compile(infoWindow.template)(scope);
         infoWindow.setContent(compiledEl.html());
+        if (anchor) {
+          infoWindow.setPosition(anchor);
+          infoWindow.open(mapController.map);
+        } else if (this.getPosition) {
+          infoWindow.open(mapController.map, this);
+        } 
       }
-      infoWindow.show = function(sc, anchor) { /* show infowindow */
-        anchor = anchor || infoWindow.getPosition();
-        infoWindow.compile(sc);
-        infoWindow.open(mapController.map, anchor);
-      }
-      // show when initialized
-      if (infoWindow.visible && infoWindow.position.lat()) {
+
+      // show InfoWindow when initialized
+      if (infoWindow.visible) {
         scope.$on('mapInitialized', function(evt, map) {
-          infoWindow.show(scope);
+          var compiledEl = $compile(infoWindow.template)(scope);
+          infoWindow.setContent(compiledEl.html());
+          infoWindow.open(mapController.map);
+        });
+      }
+      // show InfoWindow on a marker  when initialized
+      if (infoWindow.visibleOnMarker) {
+        scope.$on('mapInitialized', function(evt, map) {
+          var marker = mapController.map.markers[infoWindow.visibleOnMarker];
+          if (!marker) throw "Invalid marker id";
+          var compiledEl = $compile(infoWindow.template)(scope);
+          infoWindow.setContent(compiledEl.html());
+          infoWindow.open(mapController.map, marker);
         });
       }
     } //link

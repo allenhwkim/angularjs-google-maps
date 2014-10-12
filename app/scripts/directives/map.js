@@ -97,9 +97,6 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
       console.log('filtered', filtered);
       var options = parser.getOptions(filtered, scope);
       var controlOptions = parser.getControlOptions(filtered);
-      var mapOptions = angular.extend(options, controlOptions);
-      mapOptions.zoom = mapOptions.zoom || 15;
-      console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
 
       var map = new google.maps.Map(el, {});
       map.markers = {};
@@ -115,17 +112,16 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
       /**
        * set options
        */
+      var mapOptions = angular.extend(options, controlOptions);
+      mapOptions.zoom = mapOptions.zoom || 15;
+      console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
       var center = mapOptions.center;
       if (!(center instanceof google.maps.LatLng)) {
-        delete options.center;
-        Attr2Options.setDelayedGeoLocation(
-          map, 
-          'setCenter', 
-          center, 
-          options.geoFallbackCenter
-        );
+        delete mapOptions.center;
+        Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+            center, options.geoFallbackCenter);
       }
-      map.setOptions(options);
+      map.setOptions(mapOptions);
 
       /**
        * set events
@@ -149,6 +145,9 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
        */
       ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
       ctrl.addObjects(ctrl._objects);
+
+      // /* providing method to add a marker used by user scope */
+      // map.addMarker = ctrl.addMarker;
 
       /**
        * set map for scope and controller and broadcast map event

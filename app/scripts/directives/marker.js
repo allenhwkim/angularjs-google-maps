@@ -8,7 +8,7 @@
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element 
  *
  * @param {String} position address, 'current', or [latitude, longitude]  
  *    example:  
@@ -67,13 +67,15 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   };
 
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+      console.log('markerOptions', markerOptions);
+      console.log('markerEvents', markerEvents);
 
       /**
        * set event to clean up removed marker

@@ -9,7 +9,7 @@
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element
  *
  * @param {String} position position of this control
  *        i.e. TOP_RIGHT
@@ -30,7 +30,7 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
   var parser = Attr2Options;
 
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
       element.css('display','none');

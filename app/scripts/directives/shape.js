@@ -13,7 +13,7 @@
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element
  *
  * @param {Boolean} centered if set, map will be centered with this marker
  * @param {String} &lt;OPTIONS>
@@ -71,11 +71,11 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
 
     var shapeName = options.name;
     delete options.name;  //remove name bcoz it's not for options
+    console.log("shape", shapeName, "options", options, 'events', events);
 
     /**
      * set options
      */
-    console.log("shape", shapeName, "options", options);
     switch(shapeName) {
       case "circle":
         if (options.center instanceof google.maps.LatLng) {
@@ -94,7 +94,9 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
         shape = new google.maps.Polyline(options);
         break;
       case "rectangle": 
-        options.bounds = getBounds(options.bounds);
+        if (options.bounds) {
+          options.bounds = getBounds(options.bounds);
+        }
         shape = new google.maps.Rectangle(options);
         break;
       case "groundOverlay":
@@ -109,10 +111,8 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
     /**
      * set events
      */
-    console.log("shape", shapeName, "events", events);
     for (var eventName in events) {
       if (events[eventName]) {
-        console.log(eventName, events[eventName]);
         google.maps.event.addListener(shape, eventName, events[eventName]);
       }
     }
@@ -120,13 +120,14 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
   };
   
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     /**
      * link function
      * @private
      */
     link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var shapeOptions = parser.getOptions(filtered);
       var shapeEvents = parser.getEvents(scope, filtered);
@@ -134,20 +135,10 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
       var shape = getShape(shapeOptions, shapeEvents);
       mapController.addShape(shape);
 
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
-
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('shape attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], shape);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, shape); 
     }
    }; // return
 }]);

@@ -46,6 +46,9 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
       }
     } catch(err) { 
       try { // 2.JSON?
+        if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) {
+          input = "["+input+"]";
+        }
         output = JSON.parse(JSONize(input));
         if (output instanceof Array) {
           var t1stEl = output[0];
@@ -55,7 +58,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
               return new google.maps.LatLng(el[0], el[1]);
             });
           } else if(!isNaN(parseFloat(t1stEl)) && isFinite(t1stEl)) {
-            return new google.maps.LatLng(t1stEl, t1stEl);
+            return new google.maps.LatLng(output[0], output[1]);
           }
         }
       } catch(err2) {
@@ -181,7 +184,8 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
     filter: function(attrs) {
       var options = {};
       for(var key in attrs) {
-        if (!key.match(/^\$/)) {
+        if (key.match(/^\$/) || key.match(/^ng[A-Z]/)) {
+        } else {
           options[key] = attrs[key];
         }
       }
@@ -240,6 +244,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
           scope[funcName].apply(this, [event].concat(args));
+          scope.$apply();
         }
       }
 
