@@ -50,7 +50,7 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
               return new google.maps.LatLng(el[0], el[1]);
             });
           } else if(!isNaN(parseFloat(t1stEl)) && isFinite(t1stEl)) {
-            return new google.maps.LatLng(t1stEl, t1stEl);
+            return new google.maps.LatLng(output[0], output[1]);
           }
         }
       } catch(err2) {
