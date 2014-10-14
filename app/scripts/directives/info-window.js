@@ -82,7 +82,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
       /**
        * it must have a container element with ng-non-bindable
        */
-      var template = element.html();
+      var template = element.html().trim();
       if (angular.element(template).length != 1) {
         throw "info-window working as a template must have a container";
       }
@@ -97,7 +97,8 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
        */
       scope.showInfoWindow  = scope.showInfoWindow || function(event, id, anchor) {
         var infoWindow = mapController.map.infoWindows[id];
-        var compiledEl = $compile(infoWindow.template)(scope);
+        var html = infoWindow.template.trim();
+        var compiledEl = $compile(html)(scope);
         infoWindow.setContent(compiledEl.html());
         if (anchor) {
           infoWindow.setPosition(anchor);

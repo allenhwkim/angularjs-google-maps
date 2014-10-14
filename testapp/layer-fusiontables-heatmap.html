@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html ng-app="myApp">
+<html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
 <script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
 <link rel="stylesheet" href="css/styles.css"></script>
@@ -13,32 +13,25 @@
 <script src="../app/scripts/directives/map.js"></script>
 <script src="../app/scripts/directives/marker.js"></script>
 <script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/fusion-tables-layer.js"></script>
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
-<script src="USGSOverlay.js"></script>
-<script plnkr-code="js">
-  var app = angular.module('myApp', ['ngMap']);
-  app.controller('GroundoverlayCustomCtrl', function($scope) {
-    $scope.$on('mapInitialized', function(evt, map) {
-      var swBound = new google.maps.LatLng(62.281819, -150.287132);
-      var neBound = new google.maps.LatLng(62.400471, -150.005608);
-      var bounds = new google.maps.LatLngBounds(swBound, neBound);
-      var srcImage = 'https://developers.google.com/maps/documentation/javascript/';
-      srcImage += 'examples/full/images/talkeetna.png';
-      new USGSOverlay(bounds, srcImage, map);
-    });
-  });
-</script>
 </head>
 
 <body>
-  <div plnkr-code="html" ng-controller="GroundoverlayCustomCtrl">
-    <map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
-   </map>
+  <div plnkr-code="html">
+    <div>
+      <map zoom="3" center="10, -140">
+        <fusion-tables-layer 
+          query= "{ select: 'location',
+            from: '1xWyeuAhIFK_aED1ikkQEGmR8mINSCJO9Vq-BPQ'}",
+          heatmap = "{enabled: true}"
+        </fusion-tables-layer>
+      </map>
+    </div>
   </div>
-
   <div plnkr-show></div>
 </body>
 </html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,panoramio"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="scripts/plunkr.js"></script>
+<script src="scripts/app.js"></script>
+<link rel="stylesheet" href="css/styles.css"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/panoramio-layer.js"></script>
+<script src="../app/scripts/directives/custom-control.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+var app = app || angular.module('myApp', ['ngMap']);
+app.controller('LayerPanoramioTagsCtrl', function($scope) {
+  $scope.tag ="Statue of Liberty";
+  $scope.filter = function() {
+    $scope.map.panoramioLayers[0].setTag($scope.tag)
+  };
+});
+</script>
+</head>
+
+<body>
+  <div class="warning"><strong>Note:</strong> The Panoramio library
+    <a href="http://googlegeodevelopers.blogspot.com.au/2014/06/sunsetting-javascript-api-weather-panoramio.html">has
+    been deprecated</a> as of June 4, 2014. This
+    library will continue to work until June 4, 2015. After that date, the library
+    will no longer be available.</div>
+  <div plnkr-code="html">
+    <div ng-controller="LayerPanoramioTagsCtrl">
+      <map zoom="15" center="40.693134, -74.03102">
+        <panoramio-layer></panoramio-layer>
+        <custom-control id="filter" position="TOP_CENTER">
+          <div style="background:#fff">
+            <input ng-model="tag">
+            <button id="filter-button" ng-click="filter()">Filter on Tag</button>
+          </div>
+        </custom-control>
+      </map>
+
+    </div>
+  </div>
+  <div plnkr-show></div>
+</body>
+</html>

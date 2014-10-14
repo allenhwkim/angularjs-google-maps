@@ -17,25 +17,37 @@
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
-<script src="USGSOverlay.js"></script>
 <script plnkr-code="js">
   var app = angular.module('myApp', ['ngMap']);
-  app.controller('GroundoverlayCustomCtrl', function($scope) {
+  app.controller('OverlaySymbolAnimateCtrl', function($scope, $interval) {
     $scope.$on('mapInitialized', function(evt, map) {
-      var swBound = new google.maps.LatLng(62.281819, -150.287132);
-      var neBound = new google.maps.LatLng(62.400471, -150.005608);
-      var bounds = new google.maps.LatLngBounds(swBound, neBound);
-      var srcImage = 'https://developers.google.com/maps/documentation/javascript/';
-      srcImage += 'examples/full/images/talkeetna.png';
-      new USGSOverlay(bounds, srcImage, map);
+      var count = 0;
+      var line = $scope.map.shapes.foo;
+      $interval(function() {
+        count = (count + 1) % 200;
+        var icons = line.get('icons');
+        icons[0].offset = (count / 2) + '%';
+        line.set('icons', icons);
+      }, 20);
     });
   });
 </script>
 </head>
 
 <body>
-  <div plnkr-code="html" ng-controller="GroundoverlayCustomCtrl">
-    <map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
+  <div plnkr-code="html" ng-controller="OverlaySymbolAnimateCtrl">
+   <map zoom="5" center="20.291, 153.027" map-type-id="TERRAIN">
+     <shape name="polyline" id="foo"
+       icons="[{
+         icon: {
+           path: 'CIRCLE',
+           scale: 8,
+           strokeColor: '#393'
+         },
+         offset: '100%'
+       }]"
+       path="[[22.291, 153.027], [18.291, 153.027]]">
+     </shape>
    </map>
   </div>
 

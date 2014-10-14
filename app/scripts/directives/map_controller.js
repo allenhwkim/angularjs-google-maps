@@ -7,6 +7,7 @@
  * @property {Hash} shapes collection of shapes initiated within `map` directive
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
+/*jshint -W089*/
 ngMap.MapController = function($scope) { 
 
   this.map = null;
@@ -56,10 +57,12 @@ ngMap.MapController = function($scope) {
 
   this.addObject = function(groupName, obj) {
     if (this.map) {
-      console.log('fooooooooooo', groupName);
       this.map[groupName] = this.map[groupName] || {};
       var len = Object.keys(this.map[groupName]).length;
       this.map[groupName][obj.id || len] = obj;
+      if (groupName != "infoWindows" && obj.setMap) { //infoWindow.setMap works like infoWindow.open
+        obj.setMap(this.map);
+      }
     } else {
       obj.groupName = groupName;
       this._objects.push(obj);

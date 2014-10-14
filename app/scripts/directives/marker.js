@@ -42,6 +42,10 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
     /**
      * set options
      */
+    if (options.icon && options.icon.path &&
+      options.icon.path.match(/^[A-Z_]+$/)) {
+      options.icon.path =  google.maps.SymbolPath[options.icon.path];
+    }
     if (!(options.position instanceof google.maps.LatLng)) {
       var orgPosition = options.position;
       options.position = new google.maps.LatLng(0,0);
@@ -74,24 +78,21 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
-      console.log('markerOptions', markerOptions);
-      console.log('markerEvents', markerEvents);
+      console.log('marker options', markerOptions, 'events', markerEvents);
 
       /**
        * set event to clean up removed marker
        * useful with ng-repeat
        */
-      if (markerOptions.ngRepeat) {
-        element.bind('$destroy', function() {
-          var markers = marker.map.markers;
-          for (var name in markers) {
-            if (markers[name] == marker) {
-              delete markers[name];
-            }
+      element.bind('$destroy', function() {
+        var markers = marker.map.markers;
+        for (var name in markers) {
+          if (markers[name] == marker) {
+            delete markers[name];
           }
-          marker.setMap(null);          
-        });
-      }
+        }
+        marker.setMap(null);          
+      });
 
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addMarker(marker);

@@ -157,9 +157,9 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
        */
       scope.map = map;
       scope.map.scope = scope;
-      google.maps.event.addListenerOnce(map, "idle", function() {
-        scope.$emit('mapInitialized', map);  
-      });
+      //google.maps.event.addListenerOnce(map, "idle", function() {
+      scope.$emit('mapInitialized', map);  
+      //});
 
       // the following lines will be deprecated on behalf of mapInitialized
       // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl

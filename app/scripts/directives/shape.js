@@ -76,6 +76,14 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
     /**
      * set options
      */
+    if (options.icons) {
+      for (var i=0; i<options.icons.length; i++) {
+        var el = options.icons[i];
+        if (el.icon.path.match(/^[A-Z_]+$/)) {
+          el.icon.path =  google.maps.SymbolPath[el.icon.path];
+        }
+      }
+    }
     switch(shapeName) {
       case "circle":
         if (options.center instanceof google.maps.LatLng) {

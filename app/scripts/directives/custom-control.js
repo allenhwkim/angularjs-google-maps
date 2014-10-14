@@ -26,6 +26,7 @@
  *  </map>
  *
  */
+/*jshint -W089*/
 ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
   var parser = Attr2Options;
 
@@ -38,21 +39,19 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
       var events = parser.getEvents(scope, filtered);
+      console.log("custom-control options", options, "events", events);
 
       /**
        * build a custom control element
        */
-      var compiled = $compile(element.html())(scope);
+      var compiled = $compile(element.html().trim())(scope);
       var customControlEl = compiled[0];
 
       /**
        * set events
        */
-      (Object.keys(events).length > 0) && console.log("customControl events", events);
       for (var eventName in events) {
-        if (eventName) {
-          google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
-        }
+        google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
       }
 
       mapController.addObject('customControls', customControlEl);

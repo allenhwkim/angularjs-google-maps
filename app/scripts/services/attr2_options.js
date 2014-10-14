@@ -28,11 +28,16 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
   }
 
   var JSONize = function(str) {
-    return str
-      // wrap keys without quote with valid double quote
-      .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
-      // replacing single quote wrapped ones to double quote 
-      .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+    try {       // if parsable already, return as it is
+      JSON.parse(str);
+      return str;
+    } catch(e) { // if not parsable, change little
+      return str
+        // wrap keys without quote with valid double quote
+        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
+        // replacing single quote wrapped ones to double quote 
+        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+    }
   }
 
   var toOptionValue = function(input, options) {
@@ -46,7 +51,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
       }
     } catch(err) { 
       try { // 2.JSON?
-        if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) {
+        if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) { // i.e "-1.0, 89.89"
           input = "["+input+"]";
         }
         output = JSON.parse(JSONize(input));
@@ -81,8 +86,13 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         // 5. Object Expression. i.e. HYBRID 
         } else if (input.match(/^[A-Z]+$/)) {
           try {
-            var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
-            output = google.maps[capitializedKey][input];
+            var capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+            if (key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
+              capitalizedKey = capitalizedKey.replace(/s$/,"");
+              output = google.maps.weather[capitalizedKey][input];
+            } else {
+              output = google.maps[capitalizedKey][input];
+            }
           } catch(e) {
             output = input;
           } 
@@ -302,7 +312,11 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
                   value = value.toUpperCase();
                 } else if (key === "mapTypeIds") {
                   value = value.map( function(str) {
-                    return google.maps.MapTypeId[str.toUpperCase()];
+                    if (str.match(/^[A-Z]+$/)) { // if constant
+                      return google.maps.MapTypeId[str.toUpperCase()];
+                    } else { // else, custom map-type
+                      return str;
+                    }
                   });
                 } 
                 
