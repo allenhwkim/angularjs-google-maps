@@ -42,13 +42,12 @@
 
     <section>
         <article><h1>GoogleMap AngularJS Directive</h1><p><a href="https://travis-ci.org/allenhwkim/angularjs-google-maps"><img src="https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master" alt="Build Status"></a></p>
-<p><img src="http://i.imgur.com/tVEUg88.png" alt="Marker Cluster"></p>
 <p><a href="http://allenhwkim.github.io/angularjs-google-maps">Demo</a> &nbsp; &nbsp;
 <a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html">Documentation</a></p>
 <p>There is already <a href="https://github.com/nlaplante/angular-google-maps">one</a> for this. However, I found myself doing totally different approach for this purpose than the existing one, such as;</p>
 <ol>
-<li>Everything in tag and attributes.<br>Basic users don't even have to know what Javascript is. Tag and attribute does it all.</li>
-<li>Expose all original Google Maps V3 api to the user.<br>No hiding, no wraping, or whatsoever. 
+<li><strong>Everything in tag and attributes.</strong><br>Thus, basic users don't even have to know what Javascript is. </li>
+<li><strong>Expose all original Google Maps V3 api to the user.</strong><br>No hiding, no wraping, or whatsoever. 
 By doing so, programmers don't need to learn how to use this module.
 You only need to know Google Maps V3 API.</li>
 </ol>
@@ -68,22 +67,25 @@ You only need to know Google Maps V3 API.</li>
 <li><p><code>mapInitialized</code> with parameter with map</p>
 <p>In case your map directive scope is different from your controller scope,
 use this event to get the map instance.</p>
-<p>Example Usage:</p>
-<p>app.controller('parentParentController', function($scope) {
-  $scope.$on('mapInitialized', function(event, map) {</p>
-<pre class="prettyprint source"><code>map.setCenter( .... )
-..</code></pre><p>  });
-});</p>
+<pre>
+  app.controller('parentParentController', function($scope) {
+    $scope.$on('mapInitialized', function(event, map) {
+      map.setCenter( .... )
+      ..
+    });
+  });
+</pre>
+
 </li>
 </ul>
 <p>Instances:</p>
 <ul>
-<li>$scope.map</li>
-<li>$scope.map.markers</li>
-<li>$scope.map.shapes</li>
+<li><code>$scope.map</code></li>
+<li><code>$scope.map.markers</code></li>
+<li><code>$scope.map.shapes</code></li>
 <li>etc</li>
 </ul>
-<h2>Directives</h2><h4><strong>map</strong> Directive</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">MapOptions</a>, you can add any attributes, and events starting witn <code>on-</code>. Please note that event value must be a function.</p>
+<h2>Directives</h2><h4>&lt;map .. &gt;</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">MapOptions</a>, you can add any attributes, and events starting witn <code>on-</code>. Please note that event value must be a function.</p>
 <p>  Example: </p>
 <pre class="prettyprint source"><code>&lt;map zoom=&quot;11&quot; 
   center=&quot;[40.74, -74.18]&quot; 
@@ -98,7 +100,7 @@ use this event to get the map instance.</p>
   tilt=&quot;45&quot;
   map-type-id=&quot;TERRAIN&quot;>
 &lt;/map></code></pre><p>  i.e. &lt; zoom=&quot;11&quot; center=&quot;[40.74, -74.18]&quot;</p>
-<h4><strong>marker</strong> Directive</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">MarkerOptions</a>, you can add any attributes, and events starting witn <code>on-</code>.</p>
+<h4>&lt;marker .. &gt;</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">MarkerOptions</a>, you can add any attributes, and events starting witn <code>on-</code>.</p>
 <pre class="prettyprint source"><code>&lt;map center=&quot;[40.74, -74.18]&quot;>
   &lt;marker
       position=&quot;[40.76, -74.16]&quot;
@@ -107,7 +109,7 @@ use this event to get the map instance.</p>
       draggable=&quot;true&quot;
       visible=&quot;true&quot;
       icon=&quot;beachflag.png&quot;>&lt;/marker>
-&lt;/map></code></pre><h4><strong>shape</strong> Directive</h4><p>It is used as a tag or an attribute.</p>
+&lt;/map></code></pre><h4>&lt;shape .. &gt;</h4><p>  Polyline, Circle, Polygon, Rectangle, and Images</p>
 <pre class="prettyprint source"><code> &lt;map zoom=&quot;11&quot; center=&quot;[40.74, -74.18]&quot;>
     &lt;shape id=&quot;polyline&quot; name=&quot;polyline&quot; 
       geodesic=&quot;true&quot; stroke-color=&quot;#FF0000&quot; stroke-opacity=&quot;1.0&quot; stroke-weight=&quot;2&quot;
@@ -124,43 +126,43 @@ use this event to get the map instance.</p>
     &lt;shape id=&quot;image&quot; name=&quot;image&quot; 
       url=&quot;https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg&quot;
       bounds=&quot;[[40.71,-74.22],[40.77,-74.12]]&quot; opacity=&quot;0.7&quot; clickable=&quot;true&quot; >&lt;/shape>
- &lt;/map></code></pre><h4><strong>info-window</strong> Directive</h4><p>Example:</p>
+ &lt;/map></code></pre><h4>&lt;info-window .. &gt;</h4><p>Example:</p>
 <pre class="prettyprint source"><code>&lt;map center=&quot;-25.363882,131.044922&quot; zoom=&quot;4&quot;>
   &lt;info-window id=&quot;bar&quot; position=&quot;-25.363882,131.044922&quot; visible=&quot;true&quot;>
     &lt;div ng-non-bindable>
       &lt;div id=&quot;siteNotice&quot;>&lt;/div>
     &lt;/div>
   &lt;/info-window>
-&lt;/map></code></pre><h4><strong>custom-control</strong> Directive</h4><p>Example:</p>
+&lt;/map></code></pre><h4>&lt;custom-control .. &gt;</h4><p>Example:</p>
 <pre class="prettyprint source"><code>  &lt;map center=&quot;41.850033, -87.6500523&quot; zoom=&quot;6&quot;>
     &lt;custom-control id=&quot;home&quot; position=&quot;TOP_RIGHT&quot; index=&quot;1&quot; on-click=&quot;click()&quot;>
       &lt;div style=&quot;background-color: black; color:#fff;cursor:pointer&quot;>Home1&lt;/div>
     &lt;/custom-control>
-  &lt;/map></code></pre><h4><strong>map-data</strong> Directive</h4><p>Example:</p>
+  &lt;/map></code></pre><h4>&lt;map-data .. &gt;</h4><p>Example:</p>
 <pre class="prettyprint source"><code>  &lt;map zoom=&quot;4&quot; center=&quot;-28, 137.883&quot;>
     &lt;map-data 
       load-geo-json=&quot;https://storage.googleapis.com/maps-devrel/google.json&quot;>&lt;/map-data>
-  &lt;/map></code></pre><h3>Layer Directives</h3><h4><strong>bicycling-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;14&quot; center=&quot;42.3726399, -71.1096528&quot;>
+  &lt;/map></code></pre><h3>Layer Directives</h3><h4>&lt;bicycling-layer .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;14&quot; center=&quot;42.3726399, -71.1096528&quot;>
     &lt;bicycling-layer>&lt;/bicycling-layer>
-  &lt;/map></code></pre><h4><strong>weather-layer</strong> Directive(deprecated) and <strong>cloud-layer</strong> Directive(deprecated)</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;6&quot; center=&quot;49.265984,-123.127491&quot;>
+  &lt;/map></code></pre><h4>&lt;weather-layer .. &gt; (deprecated) and &lt;cloud-layer .. &gt; (deprecated)</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;6&quot; center=&quot;49.265984,-123.127491&quot;>
     &lt;weather-layer temperature-units=&quot;FAHRENHEIT&quot;>&lt;/weather-layer>
     &lt;cloud-layer>&lt;/cloud-layer>
-  &lt;/map></code></pre><h4><strong>fusion-tables-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;11&quot; center=&quot;41.850033, -87.6500523&quot;>
+  &lt;/map></code></pre><h4>&lt;fusion-tables-layer .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;11&quot; center=&quot;41.850033, -87.6500523&quot;>
     &lt;fusion-tables-layer query=&quot;{
       select: 'Geocodable address',
       from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}&quot;>
     &lt;/fusion-tables-layer>
-  &lt;/map></code></pre><h4><strong>heatmap-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;13&quot; center=&quot;37.774546, -122.433523&quot; map-type-id=&quot;SATELLITE&quot;>
+  &lt;/map></code></pre><h4>&lt;heatmap-layer .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;13&quot; center=&quot;37.774546, -122.433523&quot; map-type-id=&quot;SATELLITE&quot;>
     &lt;heatmap-layer id=&quot;foo&quot; data=&quot;taxiData&quot;>&lt;/heatmap>
-  &lt;/map></code></pre><h4><strong>maps-engine-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map center=&quot;59.322506, 18.010025&quot; zoom=&quot;14&quot;>
+  &lt;/map></code></pre><h4>&lt;maps-engine-layer .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map center=&quot;59.322506, 18.010025&quot; zoom=&quot;14&quot;>
     &lt;maps-engine-layer
       layer-id=&quot;06673056454046135537-08896501997766553811&quot;>
     &lt;/maps-engine-layer>
-  &lt;/map></code></pre><h4><strong>traffic-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;13&quot; center=&quot;34.04924594193164, -118.24104309082031&quot;>
+  &lt;/map></code></pre><h4>&lt;traffic-layer&gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;13&quot; center=&quot;34.04924594193164, -118.24104309082031&quot;>
     &lt;traffic-layer>&lt;/traffic-layer>
-  &lt;/map></code></pre><h4><strong>transit-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;13&quot; center=&quot;51.501904,-0.115871&quot;>
+  &lt;/map></code></pre><h4>&lt;transit-layer&gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;13&quot; center=&quot;51.501904,-0.115871&quot;>
     &lt;transit-layer>&lt;/transit-layer>
-  &lt;/map></code></pre><h4><strong>dynamic-maps-engine-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map center=&quot;59.322506, 18.010025&quot; zoom=&quot;14&quot;>
+  &lt;/map></code></pre><h4>&lt;dynamic-maps-engine-layer .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map center=&quot;59.322506, 18.010025&quot; zoom=&quot;14&quot;>
     &lt;dynamic-maps-engine-layer
       suppress-info-windows=&quot;true&quot;
       clickable=&quot;true&quot;
@@ -168,12 +170,12 @@ use this event to get the map instance.</p>
       on-mouseout=&quot;onMouseout()&quot;
       layer-id=&quot;06673056454046135537-08896501997766553811&quot;>
     &lt;/dynamic-maps-engine-layer>
-  &lt;/map></code></pre><h4><strong>kml-layer</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;11&quot; center=&quot;41.875696,-87.624207&quot;>
+  &lt;/map></code></pre><h4>&lt;kml-layer .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;11&quot; center=&quot;41.875696,-87.624207&quot;>
     &lt;kml-layer url=&quot;http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml&quot;>&lt;/kml-layer>
-  &lt;/map></code></pre><h3>MapType Directives</h3><h4><strong>map-type</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;10&quot; center=&quot;41.850033,-87.6500523&quot;
+  &lt;/map></code></pre><h3>MapType Directives</h3><h4>&lt;map-type .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;10&quot; center=&quot;41.850033,-87.6500523&quot;
     &lt;map-type name=&quot;coordinate&quot; object=&quot;CoordMapType&quot;>
     &lt;/map-type>
-  &lt;/map></code></pre><h4><strong>overlay-map-type</strong> Directive</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;10&quot; center=&quot;41.850033,-87.6500523&quot;>
+  &lt;/map></code></pre><h4>&lt;overlay-map-type .. &gt;</h4><pre class="prettyprint source"><code>  &lt;map zoom=&quot;10&quot; center=&quot;41.850033,-87.6500523&quot;>
     &lt;overlay-map-type object=&quot;CoordMapType&quot; index=&quot;0&quot;>
     &lt;/overlay-map-type>
   &lt;/map></code></pre><h2>Advanced Examples</h2><ul>

@@ -3,16 +3,14 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
-![Marker Cluster](http://i.imgur.com/tVEUg88.png)
-
 [Demo](http://allenhwkim.github.io/angularjs-google-maps) &nbsp; &nbsp;
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)
 
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach for this purpose than the existing one, such as;
 
-1. Everything in tag and attributes.   
-   Basic users don't even have to know what Javascript is. Tag and attribute does it all.
-2. Expose all original Google Maps V3 api to the user.  
+1. **Everything in tag and attributes.**   
+   Thus, basic users don't even have to know what Javascript is. 
+2. **Expose all original Google Maps V3 api to the user.**   
    No hiding, no wraping, or whatsoever. 
    By doing so, programmers don't need to learn how to use this module.
    You only need to know Google Maps V3 API.
@@ -42,26 +40,26 @@ Event:
     In case your map directive scope is different from your controller scope,
     use this event to get the map instance.
 
-    Example Usage:
-
-    app.controller('parentParentController', function($scope) {
-      $scope.$on('mapInitialized', function(event, map) {
-        map.setCenter( .... )
-        ..
+    <pre>
+      app.controller('parentParentController', function($scope) {
+        $scope.$on('mapInitialized', function(event, map) {
+          map.setCenter( .... )
+          ..
+        });
       });
-    });
-    
+    </pre>
+      
 Instances:
 
-  * $scope.map
-  * $scope.map.markers
-  * $scope.map.shapes
+  * `$scope.map`
+  * `$scope.map.markers`
+  * `$scope.map.shapes`
   * etc
 
 Directives
 ----------
 
-#### **map** Directive
+#### &lt;map .. > 
 
   As defined on [MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions), you can add any attributes, and events starting witn `on-`. Please note that event value must be a function.
 
@@ -82,7 +80,7 @@ Directives
     </map>
   i.e. < zoom="11" center="[40.74, -74.18]"
 
-#### **marker** Directive
+#### &lt;marker .. > 
 
   As defined on [MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions), you can add any attributes, and events starting witn `on-`.
 
@@ -96,8 +94,8 @@ Directives
           icon="beachflag.png"></marker>
     </map>
 
-#### **shape** Directive
-It is used as a tag or an attribute.
+#### &lt;shape .. >
+  Polyline, Circle, Polygon, Rectangle, and Images
 
      <map zoom="11" center="[40.74, -74.18]">
         <shape id="polyline" name="polyline" 
@@ -117,7 +115,7 @@ It is used as a tag or an attribute.
           bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" ></shape>
      </map>
 
-#### **info-window** Directive
+#### &lt;info-window .. >
 Example:
 
     <map center="-25.363882,131.044922" zoom="4">
@@ -128,7 +126,7 @@ Example:
       </info-window>
     </map>
 
-#### **custom-control** Directive
+#### &lt;custom-control .. > 
 Example:
 
       <map center="41.850033, -87.6500523" zoom="6">
@@ -137,7 +135,7 @@ Example:
         </custom-control>
       </map>
 
-#### **map-data** Directive
+#### &lt;map-data .. > 
 Example:
 
       <map zoom="4" center="-28, 137.883">
@@ -147,20 +145,20 @@ Example:
 
 ### Layer Directives 
 
-#### **bicycling-layer** Directive
+#### &lt;bicycling-layer .. > 
 
       <map zoom="14" center="42.3726399, -71.1096528">
         <bicycling-layer></bicycling-layer>
       </map>
 
-#### **weather-layer** Directive(deprecated) and **cloud-layer** Directive(deprecated)
+#### &lt;weather-layer .. > (deprecated) and &lt;cloud-layer .. > (deprecated)
 
       <map zoom="6" center="49.265984,-123.127491">
         <weather-layer temperature-units="FAHRENHEIT"></weather-layer>
         <cloud-layer></cloud-layer>
       </map>
 
-#### **fusion-tables-layer** Directive
+#### &lt;fusion-tables-layer .. > 
 
       <map zoom="11" center="41.850033, -87.6500523">
         <fusion-tables-layer query="{
@@ -169,13 +167,13 @@ Example:
         </fusion-tables-layer>
       </map>
 
-#### **heatmap-layer** Directive
+#### &lt;heatmap-layer .. > 
 
       <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
         <heatmap-layer id="foo" data="taxiData"></heatmap>
       </map>
 
-#### **maps-engine-layer** Directive
+#### &lt;maps-engine-layer .. > 
 
       <map center="59.322506, 18.010025" zoom="14">
         <maps-engine-layer
@@ -183,19 +181,19 @@ Example:
         </maps-engine-layer>
       </map>
 
-#### **traffic-layer** Directive
+#### &lt;traffic-layer> 
 
       <map zoom="13" center="34.04924594193164, -118.24104309082031">
         <traffic-layer></traffic-layer>
       </map>
 
-#### **transit-layer** Directive
+#### &lt;transit-layer> 
 
       <map zoom="13" center="51.501904,-0.115871">
         <transit-layer></transit-layer>
       </map>
 
-#### **dynamic-maps-engine-layer** Directive
+#### &lt;dynamic-maps-engine-layer .. > 
 
       <map center="59.322506, 18.010025" zoom="14">
         <dynamic-maps-engine-layer
@@ -207,7 +205,7 @@ Example:
         </dynamic-maps-engine-layer>
       </map>
 
-#### **kml-layer** Directive
+#### &lt;kml-layer .. > 
 
       <map zoom="11" center="41.875696,-87.624207">
         <kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml"></kml-layer>
@@ -215,14 +213,14 @@ Example:
 
 ### MapType Directives 
 
-#### **map-type** Directive
+#### &lt;map-type .. >
 
       <map zoom="10" center="41.850033,-87.6500523"
         <map-type name="coordinate" object="CoordMapType">
         </map-type>
       </map>
 
-#### **overlay-map-type** Directive
+#### &lt;overlay-map-type .. >
 
       <map zoom="10" center="41.850033,-87.6500523">
         <overlay-map-type object="CoordMapType" index="0">
