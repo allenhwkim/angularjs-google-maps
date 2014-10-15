@@ -120,6 +120,23 @@ describe('Attr2Options', function() {
     });
   });
 
+  describe("#observeAndSet", function() {
+    //TODO
+    // var observeAndSet = function(attrs, attrName, object) {
+    // check object[setMethod] is called when attribute value is changed
+  });
+
+  describe("#observeAttrSetSet", function() {
+    //TODO
+    // var observeAttrSetObj = function(orgAttrs, attrs, obj) {}
+    // check if observeAndSet is called
+  });
+
+  describe("#orgAttributes", function() {
+    //TODO
+    //var orgAttributes = function(el) { return orgAttributes }
+  });
+
   describe("#setDelayedGeoLocation", function() {
     //TODO: need some mock jobs for object, NavigatorGeolocation and GeoCoder
   });

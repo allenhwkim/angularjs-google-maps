@@ -7,7 +7,7 @@ describe('MapController', function() {
   beforeEach( function() {
     inject( function($controller, $rootScope){
       scope = $rootScope;
-      ctrl = $controller(ngMap.directives.MapController, {$scope: scope, 'NavigatorGeolocation': {}, 'GeoCoder': {} });
+      ctrl = $controller(ngMap.MapController, {$scope: scope, 'NavigatorGeolocation': {}, 'GeoCoder': {} });
     });
   });
 

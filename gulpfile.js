@@ -56,24 +56,6 @@ gulp.task('build-js', function() {
     .on('error', gutil.log);
 });
 
-gulp.task('copy', function() {
-  return gulp.src('./testapp/scripts/*')
-    .pipe(gulp.dest('./build/scripts'))
-    .pipe(gulp.src('./testapp/css/*'))
-    .pipe(gulp.dest('./build/css'))
-});
-
-gulp.task('build-html', function() {
-  return gulp.src('./testapp/*.html')
-    .pipe(replace(
-      /<!-- build:js ([^ ]+) -->[^\!]+<!-- endbuild -->/gm, 
-      function(natch, $1) {
-        {return '<script src="' + $1+'"></script>';}
-      }
-    ))
-    .pipe(gulp.dest('./build'));
-});
-
 gulp.task('docs', shell.task([
   'node_modules/jsdoc/jsdoc.js '+
     '-c node_modules/angular-jsdoc/conf.json '+
@@ -89,7 +71,7 @@ gulp.task('bump:minor', ['build'], function() { bumpVersion('minor'); });
 gulp.task('bump:major', ['build'], function() { bumpVersion('major'); });
 
 gulp.task('build', function(callback) {
-  runSequence('clean', 'build-js', 'copy', 'build-html', 'test', 'docs', callback);
+  runSequence('clean', 'build-js', 'test', 'docs', callback);
 });
 
 gulp.task('test', shell.task([

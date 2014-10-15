@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: services/street_view.js</title>
+    <title>JSDoc: Source: directives/traffic-layer.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: services/street_view.js</h1>
+    <h1 class="page-title">Source: directives/traffic-layer.js</h1>
 
     
 
@@ -26,55 +26,48 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @ngdoc service
- * @name StreetView
- * @description
- *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
- *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
+ * @ngdoc directive
+ * @name traffic-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   &lt;map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     &lt;traffic-layer>&lt;/traffic-layer>
+ *    &lt;/map>
  */
-ngMap.service('StreetView', ['$q', function($q) {
-  return {
-    /**
-     * Retrieves panorama id from the given map (and or position)
-     * @memberof StreetView
-     * @param {map} map Google map instance
-     * @param {LatLng} latlng Google LatLng instance  
-     *   default: the center of the map
-     * @example
-     *   StreetView.getPanorama(map).then(function(panoId) {
-     *     $scope.panoId = panoId;
-     *   });
-     * @returns {HttpPromise} Future object
-     */
-    getPanorama : function(map, latlng) {
-      latlng = latlng || map.getCenter();
-      var deferred = $q.defer();
-      var svs = new google.maps.StreetViewService();
-      svs.getPanoramaByLocation( (latlng||map.getCenter), 100, function (data, status) {
-        // if streetView available
-        if (status === google.maps.StreetViewStatus.OK) {
-          deferred.resolve(data.location.pano);
-        } else {
-          // no street view available in this range, or some error occurred
-          deferred.resolve(false);
-          //deferred.reject('Geocoder failed due to: '+ status);
-        }
-      });
-      return deferred.promise;
-    },
-    /**
-     * Set panorama view on the given map with the panorama id
-     * @memberof StreetView
-     * @param {map} map Google map instance
-     * @param {String} panoId Panorama id fro getPanorama method
-     * @example
-     *   StreetView.setPanorama(map, panoId);
-     */
-    setPanorama : function(map, panoId) {
-      var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
-      svp.setPano(panoId);
+/*jshint -W089*/
+ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getLayer = function(options, events) {
+    var layer = new google.maps.TrafficLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
     }
-  }; // return
+    return layer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+      console.log('traffic-layer options', options, 'events', events);
+
+      var layer = getLayer(options, events);
+      mapController.addObject('trafficLayers', layer);
+      parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+    }
+   }; // return
 }]);
 </code></pre>
         </article>

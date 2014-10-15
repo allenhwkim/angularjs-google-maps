@@ -79,11 +79,6 @@
         $scope.tileCoordinate = new google.maps.Point(
             Math.floor($scope.pixelCoordinate.x / TILE_SIZE),
             Math.floor($scope.pixelCoordinate.y / TILE_SIZE));
-
-        var infoWindow = map.infoWindows[1];
-        var el = $compile(infoWindow.template)($scope);
-        infoWindow.setContent(el.html());
-        infoWindow.open(map);
       });
     });
 </script>
@@ -93,7 +88,7 @@
     <div ng-controller="BasicCtrl1">
       Showing static coordinates of Chicago
       <br/>
-      <map center="41.850033,-87.6500523" zoom="3">
+      <map center="41.850033,-87.6500523" zoom="3" on-idle="showInfoWindow(1)">
         <info-window id="1" position="41.850033,-87.6500523" >
           <div ng-non-bindable>
             Chicago, IL<br/>

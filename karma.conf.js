@@ -22,10 +22,9 @@ module.exports = function(config) {
       'spec/lib/markerclusterer.js',
 
       // our app
-      'app/scripts/namespace.js',
+      'app/scripts/app.js',
       'app/scripts/directives/*.js',
       'app/scripts/services/*.js',
-      'app/scripts/app.js',
 
       // tests
       'spec/directives/*_spec.js',

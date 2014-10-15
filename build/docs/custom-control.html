@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: directive: shape</title>
+    <title>JSDoc: directive: custom-control</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">directive: shape</h1>
+    <h1 class="page-title">directive: custom-control</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    shape
+    custom-control
     </h2>
     
 </header>
@@ -42,7 +42,7 @@
 
     
     
-      <a href="shape.js.html#line1" class="name-link"><h4 class="name" id="shape"><span class="type-signature"></span>shape<span class="signature">(centered, &lt;OPTIONS>, &lt;MapEvent>)</span><span class="type-signature"></span></h4></a>
+      <a href="custom-control.js.html#line2" class="name-link"><h4 class="name" id="custom-control"><span class="type-signature"></span>custom-control<span class="signature">(position, index)</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -51,12 +51,7 @@
 
     
     <div class="description">
-        <p>Initialize a Google map shape in map with given options and register events<br>  The shapes are:
-    . circle
-    . polygon
-    . polyline
-    . rectangle
-    . groundOverlay(or image)</p>
+        <p>Build custom control and set to the map with position</p>
 <p>  Requires:  map directive</p>
 <p>  Restrict To:  Element</p>
     </div>
@@ -92,30 +87,7 @@
 
         <tr>
             
-                <td class="name"><code>centered</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>if set, map will be centered with this marker</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>&lt;OPTIONS></code></td>
+                <td class="name"><code>position</code></td>
             
 
             <td class="type">
@@ -131,20 +103,21 @@
 
             
 
-            <td class="description last"><p>For circle, <a href="https://developers.google.com/maps/documentation/javascript/reference#CircleOptions">any circle options</a><br>  For polygon, <a href="https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions">any polygon options</a><br>  For polyline, <a href="https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions">any polyline options</a><br>  For rectangle, <a href="https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions">any rectangle options</a><br>  For image, <a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions">any groundOverlay options</a></p></td>
+            <td class="description last"><p>position of this control
+       i.e. TOP_RIGHT</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>&lt;MapEvent></code></td>
+                <td class="name"><code>index</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Number</span>
 
 
             
@@ -154,7 +127,7 @@
 
             
 
-            <td class="description last"><p>Any Shape events, https://developers.google.com/maps/documentation/javascript/reference</p></td>
+            <td class="description last"><p>index of the control</p></td>
         </tr>
 
     
@@ -185,7 +158,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="shape.js.html">directives/shape.js</a>, <a href="shape.js.html#line1">line 1</a>
+        <a href="custom-control.js.html">directives/custom-control.js</a>, <a href="custom-control.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -201,6 +174,8 @@
     <h5>Requires:</h5>
     <ul>
         <li>module:Attr2Options</li>
+    
+        <li>module:$compile</li>
     </ul>
     
 
@@ -217,40 +192,14 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>Usage: 
-  &lt;map MAP_ATTRIBUTES>
-   &lt;shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS">&lt;/MARKER>
-  &lt;/map>
-
-Example: 
-
-  &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
-     path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" >&lt;/shape>
-   &lt;/map>
-
-  &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
-     paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" >&lt;/shape>
-  &lt;/map>
-  
-  &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="rectangle" name="rectangle" stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2"
-     bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" >&lt;/shape>
-  &lt;/map>
-
-  &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="circle" name="circle" stroke-color='#FF0000' stroke-opacity="0.8"stroke-weight="2" 
-     center="[40.70,-74.14]" radius="4000" editable="true" >&lt;/shape>
-  &lt;/map>
-
-  &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
-     bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" >&lt;/shape>
-  &lt;/map>
-
- For full-working example, please visit 
-   [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)</code></pre>
+    <pre class="prettyprint"><code>Example: 
+ &lt;map center="41.850033,-87.6500523" zoom="3">
+   &lt;custom-control id="home" position="TOP_LEFT" index="1">
+     &lt;div style="background-color: white;">
+       &lt;b>Home&lt;/b>
+     &lt;/div>
+   &lt;/custom-control>
+ &lt;/map></code></pre>
 
     
 </dd>
@@ -267,6 +216,8 @@ Example:
 
         <ul>
             <li>module:Attr2Options</li>
+        
+            <li>module:$compile</li>
         </ul>
     
 

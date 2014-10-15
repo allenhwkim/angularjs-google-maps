@@ -113,8 +113,8 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
        * set options
        */
       var mapOptions = angular.extend(options, controlOptions);
+      console.log("mapOptions", mapOptions);
       mapOptions.zoom = mapOptions.zoom || 15;
-      console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
       var center = mapOptions.center;
       if (!(center instanceof google.maps.LatLng)) {
         delete mapOptions.center;

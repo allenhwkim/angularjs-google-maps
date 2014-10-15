@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: directive: MapController</title>
+    <title>JSDoc: directive: kml-layer</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">directive: MapController</h1>
+    <h1 class="page-title">directive: kml-layer</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    MapController
+    kml-layer
     </h2>
     
 </header>
@@ -42,7 +42,7 @@
 
     
     
-      <a href="map_controller.js.html#line1" class="name-link"><h4 class="name" id="MapController"><span class="type-signature"></span>MapController<span class="signature">()</span><span class="type-signature"></span></h4></a>
+      <a href="kml-layer.js.html#line1" class="name-link"><h4 class="name" id="kml-layer"><span class="type-signature"></span>kml-layer<span class="signature">(url, KmlLayerOptions, &lt;KmlLayerEvent>)</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -50,7 +50,11 @@
 <dd>
 
     
-
+    <div class="description">
+        <p>renders Kml layer on a map
+  Requires:  map directive
+  Restrict To:  Element</p>
+    </div>
     
 
     
@@ -58,14 +62,10 @@
     
 
     
-<dl class="details">
-    
+        <h5>Parameters:</h5>
+        
 
-        <h5 class="subsection-title">Properties:</h5>
-
-        <dl>
-
-<table class="props">
+<table class="params">
     <thead>
     <tr>
         
@@ -87,13 +87,13 @@
 
         <tr>
             
-                <td class="name"><code>controls</code></td>
+                <td class="name"><code>url</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Hash</span>
+<span class="param-type">Url</span>
 
 
             
@@ -103,20 +103,20 @@
 
             
 
-            <td class="description last"><p>collection of Controls initiated within <code>map</code> directive</p></td>
+            <td class="description last"><p>url of the kml layer</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>markersi</code></td>
+                <td class="name"><code>KmlLayerOptions</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Hash</span>
+<span class="param-type">KmlLayerOptions</span>
 
 
             
@@ -126,20 +126,20 @@
 
             
 
-            <td class="description last"><p>collection of Markers initiated within <code>map</code> directive</p></td>
+            <td class="description last"><p>(https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions)</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>shapes</code></td>
+                <td class="name"><code>&lt;KmlLayerEvent></code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Hash</span>
+<span class="param-type">String</span>
 
 
             
@@ -149,36 +149,16 @@
 
             
 
-            <td class="description last"><p>collection of shapes initiated within <code>map</code> directive</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>markerClusterer</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">MarkerClusterer</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>MarkerClusterer initiated within <code>map</code> directive</p></td>
+            <td class="description last"><p>Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference</p></td>
         </tr>
 
     
     </tbody>
-</table></dl>
+</table>
+    
 
+    
+<dl class="details">
     
 
     
@@ -200,7 +180,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map_controller.js.html">directives/map_controller.js</a>, <a href="map_controller.js.html#line1">line 1</a>
+        <a href="kml-layer.js.html">directives/kml-layer.js</a>, <a href="kml-layer.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -215,7 +195,7 @@
     
     <h5>Requires:</h5>
     <ul>
-        <li>module:$scope</li>
+        <li>module:Attr2Options</li>
     </ul>
     
 
@@ -228,6 +208,20 @@
     
 
     
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>Usage: 
+  &lt;map MAP_ATTRIBUTES>
+   &lt;kml-layer ANY_KML_LAYER ANY_KML_LAYER_EVENTS">&lt;/kml-layer>
+  &lt;/map>
+
+Example: 
+
+  &lt;map zoom="11" center="[41.875696,-87.624207]">
+    &lt;kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" >&lt;/kml-layer>
+   &lt;/map></code></pre>
 
     
 </dd>
@@ -243,7 +237,7 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul>
-            <li>module:$scope</li>
+            <li>module:Attr2Options</li>
         </ul>
     
 
@@ -253,178 +247,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<dt>
-    <h4 class="name" id="addMarker"><span class="type-signature">(static) </span>addMarker<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Add a marker to map and $scope.markers</p>
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map_controller.js.html">directives/map_controller.js</a>, <a href="map_controller.js.html#line16">line 16</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="addShape"><span class="type-signature">(static) </span>addShape<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Add a shape to map and $scope.shapes</p>
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map_controller.js.html">directives/map_controller.js</a>, <a href="map_controller.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="addShape"><span class="type-signature">(static) </span>addShape<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Add a shape to map and $scope.shapes</p>
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map_controller.js.html">directives/map_controller.js</a>, <a href="map_controller.js.html#line72">line 72</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-</dd>
-
-        </dl>
     
 
     

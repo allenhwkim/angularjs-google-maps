@@ -31,7 +31,7 @@
  * @description
  *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
  */
-ngMap.services.GeoCoder = function($q) {
+ngMap.service('GeoCoder', ['$q', function($q) {
   return {
     /**
      * @memberof GeoCoder
@@ -57,9 +57,7 @@ ngMap.services.GeoCoder = function($q) {
       return deferred.promise;
     }
   }
-};
-ngMap.services.GeoCoder.$inject = ['$q'];
-
+}]);
 </code></pre>
         </article>
     </section>
@@ -70,7 +68,7 @@ ngMap.services.GeoCoder.$inject = ['$q'];
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="shape.html">shape</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="map.html">map</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-type.html">map-type</a></li><li><a href="MapController.html">MapController</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="shape.html">shape</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul>
 </nav>
 
 <br clear="both">

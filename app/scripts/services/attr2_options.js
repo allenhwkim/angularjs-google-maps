@@ -344,6 +344,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
     toOptionValue: toOptionValue,
     camelCase: camelCase,
     setDelayedGeoLocation: setDelayedGeoLocation,
+    getAttrsToObserve: getAttrsToObserve,
     observeAndSet: observeAndSet,
     observeAttrSetObj: observeAttrSetObj,
     orgAttributes: orgAttributes

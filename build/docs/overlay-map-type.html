@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: services/street_view.js</title>
+    <title>JSDoc: directive: overlay-map-type</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,68 +17,146 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: services/street_view.js</h1>
+    <h1 class="page-title">directive: overlay-map-type</h1>
 
     
 
 
+
+<section>
+
+<header>
+    <h2>
+    overlay-map-type
+    </h2>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * @ngdoc service
- * @name StreetView
- * @description
- *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
- *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
- */
-ngMap.service('StreetView', ['$q', function($q) {
-  return {
-    /**
-     * Retrieves panorama id from the given map (and or position)
-     * @memberof StreetView
-     * @param {map} map Google map instance
-     * @param {LatLng} latlng Google LatLng instance  
-     *   default: the center of the map
-     * @example
-     *   StreetView.getPanorama(map).then(function(panoId) {
-     *     $scope.panoId = panoId;
-     *   });
-     * @returns {HttpPromise} Future object
-     */
-    getPanorama : function(map, latlng) {
-      latlng = latlng || map.getCenter();
-      var deferred = $q.defer();
-      var svs = new google.maps.StreetViewService();
-      svs.getPanoramaByLocation( (latlng||map.getCenter), 100, function (data, status) {
-        // if streetView available
-        if (status === google.maps.StreetViewStatus.OK) {
-          deferred.resolve(data.location.pano);
-        } else {
-          // no street view available in this range, or some error occurred
-          deferred.resolve(false);
-          //deferred.reject('Geocoder failed due to: '+ status);
-        }
-      });
-      return deferred.promise;
-    },
-    /**
-     * Set panorama view on the given map with the panorama id
-     * @memberof StreetView
-     * @param {map} map Google map instance
-     * @param {String} panoId Panorama id fro getPanorama method
-     * @example
-     *   StreetView.setPanorama(map, panoId);
-     */
-    setPanorama : function(map, panoId) {
-      var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
-      svp.setPano(panoId);
-    }
-  }; // return
-}]);
-</code></pre>
-        </article>
-    </section>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+
+    
+    
+      <a href="overlay-map-type.js.html#line1" class="name-link"><h4 class="name" id="overlay-map-type"><span class="type-signature"></span>overlay-map-type<span class="signature">()</span><span class="type-signature"></span></h4></a>
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Requires:  map directive
+  Restrict To:  Element</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="overlay-map-type.js.html">directives/overlay-map-type.js</a>, <a href="overlay-map-type.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+    <h5>Requires:</h5>
+    <ul>
+        <li>module:Attr2Options</li>
+    </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>Example: 
+
+  &lt;map zoom="13" center="34.04924594193164, -118.24104309082031">
+    &lt;overlay-map-type index="0" object="coordinateMapType">&lt;/map-type>
+  &lt;/map></code></pre>
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:Attr2Options</li>
+        </ul>
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
