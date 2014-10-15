@@ -39,7 +39,7 @@
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options, $timeout) {
+ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $timeout) {
   var parser = Attr2Options;
   function getStyle(el,styleProp)
   {
@@ -53,7 +53,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
 
   return {
     restrict: 'AE',
-    controller: ngMap.directives.MapController,
+    controller: ngMap.MapController,
     /**
      * Initialize map and events
      * @memberof map
@@ -63,6 +63,8 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
      * @ctrl {MapController} ctrl
      */
     link: function (scope, element, attrs, ctrl) {
+      var orgAttrs = parser.orgAttributes(element);
+
       /*
        * without this, bird_eyes_and_street_view.html and map_options does not work.
        * I don't know why
@@ -84,7 +86,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       if (getStyle(element[0], 'display') != "block") {
         element.css('display','block');
       }
-      if (!getStyle(element[0], 'height').match(/px/)) {
+      if (getStyle(element[0], 'height').match(/^0/)) {
         element.css('height','300px');
       }
 
@@ -95,19 +97,6 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       console.log('filtered', filtered);
       var options = parser.getOptions(filtered, scope);
       var controlOptions = parser.getControlOptions(filtered);
-      var mapOptions = angular.extend(options, controlOptions);
-      mapOptions.zoom = mapOptions.zoom || 15;
-      console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
-
-      /**
-       * get original attributes, so that we can use it for observers
-       */
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
-      console.log('orgAttributes', orgAttributes);
 
       var map = new google.maps.Map(el, {});
       map.markers = {};
@@ -123,17 +112,16 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       /**
        * set options
        */
+      var mapOptions = angular.extend(options, controlOptions);
+      console.log("mapOptions", mapOptions);
+      mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
       if (!(center instanceof google.maps.LatLng)) {
-        delete options.center;
-        Attr2Options.setDelayedGeoLocation(
-          map, 
-          'setCenter', 
-          center, 
-          options.geoFallbackCenter
-        );
+        delete mapOptions.center;
+        Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+            center, options.geoFallbackCenter);
       }
-      map.setOptions(options);
+      map.setOptions(mapOptions);
 
       /**
        * set events
@@ -148,11 +136,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('map attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], map);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, map);
 
       /**
        * set controller and set objects
@@ -162,6 +146,9 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
       ctrl.addObjects(ctrl._objects);
 
+      // /* providing method to add a marker used by user scope */
+      // map.addMarker = ctrl.addMarker;
+
       /**
        * set map for scope and controller and broadcast map event
        * scope.map will be overwritten if user have multiple maps in a scope,
@@ -170,7 +157,9 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
        */
       scope.map = map;
       scope.map.scope = scope;
-      scope.$emit('mapInitialized', scope.map);  
+      //google.maps.event.addListenerOnce(map, "idle", function() {
+      scope.$emit('mapInitialized', map);  
+      //});
 
       // the following lines will be deprecated on behalf of mapInitialized
       // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
@@ -179,5 +168,4 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       scope.$emit('mapsInitialized', scope.maps);  
     }
   }; 
-}; // function
-ngMap.directives.map.$inject = ['Attr2Options', '$timeout'];
+}]);

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('CircleSimpleCtrl', function($scope) {
+    $scope.cities = {
+      chicago: {population:2714856, position: [41.878113, -87.629798]},
+      newyork: {population:8405837, position: [40.714352, -74.005973]},
+      losangeles: {population:3857799, position: [34.052234, -118.243684]},
+      vancouver: {population:603502, position: [49.25, -123.1]},
+    }
+    $scope.getRadius = function(num) {
+      return Math.sqrt(num) * 100;
+    }
+  });
+</script>
+</head>
+
+<body>
+    <div ng-controller="CircleSimpleCtrl">
+      <map center="37.09024, -95.712891" zoom="4" mayTypeId="TERRAIN">
+        <shape name="circle" ng-repeat="city in cities"
+          stroke-color="#FF0000"
+          stroke-opacity="0.8"
+          stroke-weight="2"
+          fill-color="#FF0000"
+          fill-opacity="0.35"
+          center="{{city.position}}"
+          radius="{{getRadius(city.population)}}">
+        </shape>
+      </map>
+    </div>
+</body>
+</html>

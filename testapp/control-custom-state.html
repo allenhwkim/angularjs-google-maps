@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/custom-control.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+    var app = angular.module('myApp', ['ngMap']);
+    app.controller('CustomControlCtrl', function($scope) {
+      $scope.home = new google.maps.LatLng(41.850033, -87.6500523);
+      $scope.goHome = function() {
+        $scope.map.setCenter($scope.home);
+      }
+      $scope.setHome = function() {
+        $scope.home = $scope.map.getCenter();
+      }
+    });
+</script>
+</head>
+
+<body>
+    <div ng-controller="CustomControlCtrl">
+      Adding state to controls<br/>
+      Adds a control to the map that returns the user to the control's defined home
+      <br/>
+      <map center="41.850033, -87.6500523" zoom="6">
+        <custom-control id="go-home" position="TOP_RIGHT" index="1" on-click="goHome()">
+          <div style="background-color: black; color:#fff;cursor:pointer; margin:10px">Go Home</div>
+        </custom-control>
+        <custom-control id="set-home" position="TOP_RIGHT" index="1" on-click="setHome()">
+          <div style="background-color: black; color:#fff;cursor:pointer; margin:10px">Set Home</div>
+        </custom-control>
+      </map>
+    </div>
+  </div>
+
+</body>
+</html>

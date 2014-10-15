@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/map-type.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+// Normalizes the coords that tiles repeat across the x axis (horizontally)
+// like the standard Google map tiles.
+function getNormalizedCoord(coord, zoom) {
+  var y = coord.y;
+  var x = coord.x;
+
+  // tile range in one direction range is dependent on zoom level
+  // 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
+  var tileRange = 1 << zoom;
+
+  // don't repeat across y-axis (vertically)
+  if (y < 0 || y >= tileRange) {
+    return null;
+  }
+
+  // repeat across x-axis
+  if (x < 0 || x >= tileRange) {
+    x = (x % tileRange + tileRange) % tileRange;
+  }
+
+  return {
+    x: x,
+    y: y
+  };
+}
+var moonTypeOptions = {
+  getTileUrl: function(coord, zoom) {
+      var normalizedCoord = getNormalizedCoord(coord, zoom);
+      if (!normalizedCoord) {
+        return null;
+      }
+      var bound = Math.pow(2, zoom);
+      return 'http://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw' +
+          '/' + zoom + '/' + normalizedCoord.x + '/' +
+          (bound - normalizedCoord.y - 1) + '.jpg';
+  },
+  tileSize: new google.maps.Size(256, 256),
+  maxZoom: 9,
+  minZoom: 0,
+  radius: 1738000,
+  name: 'Moon'
+};
+
+var moonMapType = new google.maps.ImageMapType(moonTypeOptions);
+</script>
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('MapTypeImageCtrl', function($scope) {
+    $scope.mapTypeChanged = function() {
+      var showStreetViewControl = this.getMapTypeId() != 'coordinate';
+      this.setOptions({'streetViewControl': showStreetViewControl});
+    };
+  });
+</script>
+</head>
+<body>
+    <div ng-controller="MapTypeImageCtrl">
+      <map zoom="1" center="0,0"
+        street-view-control="false"
+        map-type-id="moon"
+        map-type-control-options="{
+          mapTypeIds: ['moon']
+        }">
+        <map-type name="moon" object="moonMapType">
+        </map-type>
+      </map>
+    </div>
+</body>
+</html>

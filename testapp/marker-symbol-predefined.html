@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+</head>
+
+<body>
+  Marker Symbol Predefined<br/>
+  This example uses a symbol to add a vector-based icon to a marker.
+  The symbol uses one of the predefined vector paths ('CIRCLE') supplied by the
+  Google Maps JavaScript API.
+    <map center="-25.363882,131.044922" zoom="4">
+      <marker position="-25.363882,131.044922" 
+        icon="{path:'CIRCLE', scale: 10}"
+        dragglele="true"></marker>
+    </map>
+</body>
+</html>

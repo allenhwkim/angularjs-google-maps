@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/info-window.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+    var app = angular.module('myApp', ['ngMap']);
+    app.controller('MarkerRemoveCtrl', function($scope) {
+      $scope.positions = [{lat:37.7699298,lng:-122.4469157}];
+      $scope.addMarker = function(event) {
+        var ll = event.latLng;
+        $scope.positions.push({lat:ll.lat(), lng: ll.lng()});
+      }
+      $scope.deleteMarkers = function() {
+        $scope.positions = [];
+      };
+      $scope.showMarkers = function() {
+        for (var key in $scope.map.markers) {
+          $scope.map.markers[key].setMap($scope.map);
+        };
+      };
+      $scope.hideMarkers = function() {
+        for (var key in $scope.map.markers) {
+          $scope.map.markers[key].setMap(null);
+        };
+      };
+    });
+</script>
+</head>
+
+<body>
+  <style>
+    div[ng-controller] {
+      position: relative;
+    }
+    #panel {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      margin-left: -180px;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+    }
+  </style>
+    <div ng-controller="MarkerRemoveCtrl">
+      Remove Markers<br/>
+      Click on map to add a marker. Click button to show, hide, or remove markers<br/>
+      <div id="panel">
+        <input ng-click="hideMarkers()" type=button value="Hide Markers">
+        <input ng-click="showMarkers()" type=button value="Show All Markers">
+        <input ng-click="deleteMarkers()" type=button value="Delete Markers">
+      </div>
+      <map center="37.7699298, -122.4469157" zoom="12" on-click="addMarker()">
+        <marker ng-repeat="pos in positions" position="{{pos.lat}}, {{pos.lng}}"></marker>
+      </map>
+    </div>
+</body>
+</html>

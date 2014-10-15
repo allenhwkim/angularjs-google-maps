@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']); 
+  app.controller('EventSimpleController', ['$scope', '$timeout', function($scope, $timeout) {
+    var marker, map;
+    $scope.$on('mapInitialized', function(evt, evtMap) {
+      map = evtMap;
+      marker = map.markers[0];
+    });
+    $scope.centerChanged = function(event) {
+      $timeout(function() {
+        map.panTo(marker.getPosition());
+      }, 3000);
+    }
+    $scope.click = function(event) {
+      map.setZoom(8);
+      map.setCenter(marker.getPosition());
+    }
+  }]);
+</script>
+</head>
+
+<body>
+    <div ng-controller="EventSimpleController">
+      Simple Click Event
+      <br/>
+      Click the marker to zoom and drag and watch it comes back after 3 seconds.
+      <map zoom="4" center="-25.363882, 131.044922" on-center-changed="centerChanged()">
+        <marker position="-25.363882, 131.044922" on-click="click()" title="Click to zoom"></marker> 
+      </map>
+    </div>
+</body>
+</html>

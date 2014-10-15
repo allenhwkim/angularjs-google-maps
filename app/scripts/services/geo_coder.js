@@ -4,7 +4,7 @@
  * @description
  *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
  */
-ngMap.services.GeoCoder = function($q) {
+ngMap.service('GeoCoder', ['$q', function($q) {
   return {
     /**
      * @memberof GeoCoder
@@ -30,6 +30,4 @@ ngMap.services.GeoCoder = function($q) {
       return deferred.promise;
     }
   }
-};
-ngMap.services.GeoCoder.$inject = ['$q'];
-
+}]);

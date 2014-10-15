@@ -6,9 +6,8 @@
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
-  <link rel="stylesheet" href="css/styles.css"></script>
   <!-- build:js scripts/ng-map.min.js -->
-  <script src="../app/scripts/namespace.js"></script>
+  <script src="../app/scripts/app.js"></script>
   <script src="../app/scripts/directives/map_controller.js"></script>
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
@@ -16,12 +15,9 @@
   <script src="../app/scripts/services/geo_coder.js"></script>
   <script src="../app/scripts/services/navigator_geolocation.js"></script>
   <script src="../app/scripts/services/attr2_options.js"></script>
-  <script src="../app/scripts/app.js"></script>
   <!-- endbuild -->
-  <script src="scripts/plunkr.js"></script>
-  <link rel="stylesheet" href="css/styles.css"></script>
-  <script plnkr-code="js">
-    var app = angular.module('myApp', ['ngMap', 'plunkr']);
+  <script>
+    var app = angular.module('myApp', ['ngMap']);
     app.controller('childController', function() {});
     app.controller('parentController', function() {});
     app.controller('parentParentController', function($scope, $http) {
@@ -39,7 +35,7 @@
       }, 1000);
     });
   </script>
-  <style plnkr-code="css">
+  <style>
     map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
@@ -47,7 +43,6 @@
 <body>
   <h1>Markers with parent controller(scope)</h1>
   
-  <div plnkr-code="html">
     <div ng-controller="parentParentController">
       <div ng-controller="parentController">
         <div ng-controller="childController">
@@ -55,8 +50,5 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

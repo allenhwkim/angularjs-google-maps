@@ -35,7 +35,7 @@
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element 
  *
  * @param {String} position address, 'current', or [latitude, longitude]  
  *    example:  
@@ -60,7 +60,7 @@
  *    &lt;marker position="the cn tower" on-click="myfunc()">&lt;/div>
  *   &lt;/map>
  */
-ngMap.directives.marker  = function(Attr2Options)  {
+ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   var parser = Attr2Options;
 
   var getMarker = function(options, events) {
@@ -69,6 +69,10 @@ ngMap.directives.marker  = function(Attr2Options)  {
     /**
      * set options
      */
+    if (options.icon &amp;&amp; options.icon.path &amp;&amp;
+      options.icon.path.match(/^[A-Z_]+$/)) {
+      options.icon.path =  google.maps.SymbolPath[options.icon.path];
+    }
     if (!(options.position instanceof google.maps.LatLng)) {
       var orgPosition = options.position;
       options.position = new google.maps.LatLng(0,0);
@@ -94,35 +98,28 @@ ngMap.directives.marker  = function(Attr2Options)  {
   };
 
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      //var filtered = new parser.filter(attrs);
+      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+      console.log('marker options', markerOptions, 'events', markerEvents);
 
       /**
        * set event to clean up removed marker
        * useful with ng-repeat
        */
-      if (markerOptions.ngRepeat) {
-        element.bind('$destroy', function() {
-          var markers = marker.map.markers;
-          for (var name in markers) {
-            if (markers[name] == marker) {
-              delete markers[name];
-            }
+      element.bind('$destroy', function() {
+        var markers = marker.map.markers;
+        for (var name in markers) {
+          if (markers[name] == marker) {
+            delete markers[name];
           }
-          marker.setMap(null);          
-        });
-      }
-
-      var orgAttributes = {};
-      for (var i=0; i&lt;element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
+        }
+        marker.setMap(null);          
+      });
 
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addMarker(marker);
@@ -130,16 +127,11 @@ ngMap.directives.marker  = function(Attr2Options)  {
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('marker attrs to observe', attrsToObserve);
-      for (var i=0; i&lt;attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], marker);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
 
     } //link
   }; // return
-};// function
-ngMap.directives.marker.$inject  = ['Attr2Options'];
+}]);// 
 </code></pre>
         </article>
     </section>
@@ -150,7 +142,7 @@ ngMap.directives.marker.$inject  = ['Attr2Options'];
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="shape.html">shape</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="map.html">map</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-type.html">map-type</a></li><li><a href="MapController.html">MapController</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="shape.html">shape</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul>
 </nav>
 
 <br clear="both">

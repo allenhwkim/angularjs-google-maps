@@ -7,7 +7,7 @@
   <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
   <!-- build:js scripts/ng-map.min.js -->
-  <script src="../app/scripts/namespace.js"></script>
+  <script src="../app/scripts/app.js"></script>
   <script src="../app/scripts/directives/map_controller.js"></script>
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
@@ -16,13 +16,10 @@
   <script src="../app/scripts/services/navigator_geolocation.js"></script>
   <script src="../app/scripts/services/street_view.js"></script>
   <script src="../app/scripts/services/attr2_options.js"></script>
-  <script src="../app/scripts/app.js"></script>
   <!-- endbuild -->
-  <script src="scripts/plunkr.js"></script>
-  <link rel="stylesheet" href="css/styles.css"></script>
   <script src="scripts/markerclusterer.js"></script>
-  <script plnkr-code="js">
-  var app = angular.module('myApp', ['ngMap', 'plunkr']);
+  <script>
+  var app = angular.module('myApp', ['ngMap']);
 
   app.controller('mapController', function($scope, $http, StreetView) {
     $scope.map;
@@ -104,7 +101,7 @@
     }
   });
   </script>
-  <style plnkr-code="css">
+  <style>
     html, body {width:100%; height: 100%; margin: 0}
     div#map-container {width: 600px; height: 400px; position: relative; color: rgb(86, 86, 86); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; }
     div#map-container div.custom-control { z-index: 1; direction: ltr; overflow: hidden; text-align: center; padding: 1px 6px; border-bottom-right-radius: 2px; border-top-right-radius: 2px; -webkit-background-clip: padding-box; border-width: 1px 1px 1px 0px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-top-color: rgba(0, 0, 0, 0.14902); border-right-color: rgba(0, 0, 0, 0.14902); border-bottom-color: rgba(0, 0, 0, 0.14902); -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; min-width: 41px; background-color: rgb(255, 255, 255); background-clip: padding-box; }
@@ -145,13 +142,11 @@
   <h1>GoogleMap-Based App</h1>
   <hr />
   
-  <div plnkr-code="html">
     <div id="map-container" ng-controller="mapController">
       <map zoom="2" center="[45.518970, -122.672899]"></map>
       <div full-screen-toggle class="custom-control">Full Screen</div>
       <div store-info class="custom-control">Store Info</div>
     </div>
-  </div>
 
 </body>
 </html>

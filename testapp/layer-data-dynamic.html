@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/map-data.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('LayerDataEventCtrl', function($scope) {
+    $scope.styleFunc = function(feature) {
+      var color = 'gray';
+      if (feature.getProperty('isColorful')) {
+        color = feature.getProperty('color');
+      }
+      return /** @type {google.maps.Data.StyleOptions} */({
+        fillColor: color,
+        strokeColor: color,
+        strokeWeight: 2
+      });
+    };
+
+    $scope.onClick= function(event) {
+      event.feature.setProperty('isColorful', true);
+    };
+
+    $scope.onMouseover = function(event) {
+      $scope.map.data.revertStyle();
+      $scope.map.data.overrideStyle(event.feature, {strokeWeight: 8});
+    };
+
+    $scope.onMouseout = function(event) {
+      $scope.map.data.revertStyle();
+    };
+  });
+</script>
+</head>
+<body>
+    <div ng-controller="LayerDataEventCtrl">
+      <map zoom="4" center="-28, 137.883">
+        <map-data 
+          set-style="styleFunc"
+          on-click="onClick()"
+          on-mouseover="onMouseover()"
+          on-mouseout="onMouseout()"
+          load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
+      </map>
+      <h1>{{letter}}</h1>
+    </div>
+</body>
+</html>

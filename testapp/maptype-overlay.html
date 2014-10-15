@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/overlay-map-type.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  /** @constructor */
+  function CoordMapType() {
+    this.tileSize = new google.maps.Size(256, 256);
+  }
+
+  CoordMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
+    var div = ownerDocument.createElement('div');
+    div.innerHTML = coord;
+    div.style.width = this.tileSize.width + 'px';
+    div.style.height = this.tileSize.height + 'px';
+    div.style.fontSize = '10';
+    div.style.borderStyle = 'solid';
+    div.style.borderWidth = '1px';
+    div.style.borderColor = '#AAAAAA';
+    return div;
+  };
+</script>
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('MapTypeOverlayCtrl', function($scope) {
+  });
+</script>
+</head>
+<body>
+    <div ng-controller="MapTypeOverlayCtrl">
+      <map zoom="10" center="41.850033,-87.6500523">
+        <overlay-map-type object="CoordMapType" index="0">
+        </overlay-map-type>
+      </map>
+    </div>
+</body>
+</html>

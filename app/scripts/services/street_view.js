@@ -5,7 +5,7 @@
  *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
  *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
  */
-ngMap.services.StreetView = function($q) {
+ngMap.service('StreetView', ['$q', function($q) {
   return {
     /**
      * Retrieves panorama id from the given map (and or position)
@@ -48,5 +48,4 @@ ngMap.services.StreetView = function($q) {
       svp.setPano(panoId);
     }
   }; // return
-} // func
-ngMap.services.StreetView.$inject =  ['$q'];
+}]);

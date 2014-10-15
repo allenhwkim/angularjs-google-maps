@@ -4,9 +4,20 @@
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
-ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) { 
+/*jshint -W030*/
+ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', function($parse, NavigatorGeolocation, GeoCoder) { 
   var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
   var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
+
+  var orgAttributes = function(el) {
+    (el.length > 0) && (el = el[0]);
+    var orgAttributes = {};
+    for (var i=0; i<el.attributes.length; i++) {
+      var attr = el.attributes[i];
+      orgAttributes[attr.name] = attr.value;
+    }
+    return orgAttributes;
+  }
 
   var camelCase = function(name) {
     return name.
@@ -17,11 +28,16 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
   }
 
   var JSONize = function(str) {
-    return str
-      // wrap keys without quote with valid double quote
-      .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})    
-      // replacing single quote wrapped ones to double quote 
-      .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})         
+    try {       // if parsable already, return as it is
+      JSON.parse(str);
+      return str;
+    } catch(e) { // if not parsable, change little
+      return str
+        // wrap keys without quote with valid double quote
+        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
+        // replacing single quote wrapped ones to double quote 
+        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+    }
   }
 
   var toOptionValue = function(input, options) {
@@ -35,6 +51,9 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
       }
     } catch(err) { 
       try { // 2.JSON?
+        if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) { // i.e "-1.0, 89.89"
+          input = "["+input+"]";
+        }
         output = JSON.parse(JSONize(input));
         if (output instanceof Array) {
           var t1stEl = output[0];
@@ -67,8 +86,13 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
         // 5. Object Expression. i.e. HYBRID 
         } else if (input.match(/^[A-Z]+$/)) {
           try {
-            var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
-            output = google.maps[capitializedKey][input];
+            var capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+            if (key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
+              capitalizedKey = capitalizedKey.replace(/s$/,"");
+              output = google.maps.weather[capitalizedKey][input];
+            } else {
+              output = google.maps[capitalizedKey][input];
+            }
           } catch(e) {
             output = input;
           } 
@@ -114,6 +138,32 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
     }
   };
 
+
+  var getAttrsToObserve = function(attrs) {
+    var attrsToObserve = [];
+    if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
+    } else {
+      for (var attrName in attrs) {
+        var attrValue = attrs[attrName];
+        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+          attrsToObserve.push(camelCase(attrName));
+        }
+      }
+    }
+    return attrsToObserve;
+  };
+
+  var observeAttrSetObj = function(orgAttrs, attrs, obj) {
+    var attrsToObserve = getAttrsToObserve(orgAttrs);
+    if (Object.keys(attrsToObserve).length) {
+      console.log(obj, "attributes to observe", attrsToObserve);
+    }
+    for (var i=0; i<attrsToObserve.length; i++) {
+      observeAndSet(attrs, attrsToObserve[i], obj);
+    }
+  }
+
   var observeAndSet = function(attrs, attrName, object) {
     attrs.$observe(attrName, function(val) {
       if (val) {
@@ -144,7 +194,8 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
     filter: function(attrs) {
       var options = {};
       for(var key in attrs) {
-        if (!key.match(/^\$/)) {
+        if (key.match(/^\$/) || key.match(/^ng[A-Z]/)) {
+        } else {
           options[key] = attrs[key];
         }
       }
@@ -203,6 +254,7 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
           scope[funcName].apply(this, [event].concat(args));
+          scope.$apply();
         }
       }
 
@@ -260,7 +312,11 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
                   value = value.toUpperCase();
                 } else if (key === "mapTypeIds") {
                   value = value.map( function(str) {
-                    return google.maps.MapTypeId[str.toUpperCase()];
+                    if (str.match(/^[A-Z]+$/)) { // if constant
+                      return google.maps.MapTypeId[str.toUpperCase()];
+                    } else { // else, custom map-type
+                      return str;
+                    }
                   });
                 } 
                 
@@ -285,26 +341,13 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
       return controlOptions;
     }, // function
 
-    getAttrsToObserve : function(attrs) {
-      var attrsToObserve = [];
-      if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-      } else {
-        for (var attrName in attrs) {
-          var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
-            attrsToObserve.push(camelCase(attrName));
-          }
-        }
-      }
-      return attrsToObserve;
-    },
-
     toOptionValue: toOptionValue,
     camelCase: camelCase,
     setDelayedGeoLocation: setDelayedGeoLocation,
-    observeAndSet: observeAndSet
+    getAttrsToObserve: getAttrsToObserve,
+    observeAndSet: observeAndSet,
+    observeAttrSetObj: observeAttrSetObj,
+    orgAttributes: orgAttributes
 
   }; // return
-}; // function
-ngMap.services.Attr2Options.$inject = ['$parse', 'NavigatorGeolocation', 'GeoCoder']; 
+}]); 

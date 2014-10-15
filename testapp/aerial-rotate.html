@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app= angular.module('myApp', ['ngMap']);
+  app.controller('AerialRotateCtrl', function($scope, $interval) {
+    $scope.autoRotate = function() {
+      var map = $scope.map;
+      if (map.getTilt() != 0) {
+        $interval(function() {
+          var heading = map.getHeading() || 0;
+          map.setHeading(heading + 90);
+        }, 3000);
+      }
+    }
+  });
+</script>
+</head>
+
+<body>
+    <div ng-controller="AerialRotateCtrl">
+      <input type="button" value="Auto Rotate" ng-click="autoRotate();">
+      <map center="45.518970, -122.672899"
+        zoom="18"
+        map-type-id="SATELLITE"
+        tilt="45"
+        heading="90">
+      </map>
+    </div>
+  </div>
+</body>
+</html>

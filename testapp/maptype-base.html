@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/map-type.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+/**
+ * @constructor
+ * @implements {google.maps.MapType}
+ */
+function CoordMapType() {
+}
+
+CoordMapType.prototype.tileSize = new google.maps.Size(256,256);
+CoordMapType.prototype.maxZoom = 19;
+
+CoordMapType.prototype.getTile = function(coord, zoom, ownerDocument) {
+  var div = ownerDocument.createElement('div');
+  div.innerHTML = coord;
+  div.style.width = this.tileSize.width + 'px';
+  div.style.height = this.tileSize.height + 'px';
+  div.style.fontSize = '10';
+  div.style.borderStyle = 'solid';
+  div.style.borderWidth = '1px';
+  div.style.borderColor = '#AAAAAA';
+  div.style.backgroundColor = '#E5E3DF';
+  return div;
+};
+
+CoordMapType.prototype.name = 'Tile #s';
+CoordMapType.prototype.alt = 'Tile Coordinate Map Type';
+</script>
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('MapTypeBaseCtrl', function($scope) {
+    $scope.mapTypeChanged = function() {
+      var showStreetViewControl = this.getMapTypeId() != 'coordinate';
+      this.setOptions({'streetViewControl': showStreetViewControl});
+    };
+  });
+</script>
+</head>
+<body>
+    <div ng-controller="MapTypeBaseCtrl">
+      <map zoom="10" center="41.850033,-87.6500523"
+        on-maptypeid_changed="mapTypeChanged()"
+        street-view-control="false"
+        map-type-id="coordinate"
+        map-type-control-options="{
+          mapTypeIds: ['coordinate', 'ROADMAP'],
+          style: 'DROPDOWN_MENU'
+        }">
+        <map-type name="coordinate" object="CoordMapType">
+        </map-type>
+      </map>
+    </div>
+</body>
+</html>

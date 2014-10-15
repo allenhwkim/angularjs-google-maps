@@ -8,7 +8,7 @@
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element 
  *
  * @param {String} position address, 'current', or [latitude, longitude]  
  *    example:  
@@ -33,7 +33,7 @@
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
-ngMap.directives.marker  = function(Attr2Options)  {
+ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   var parser = Attr2Options;
 
   var getMarker = function(options, events) {
@@ -42,6 +42,10 @@ ngMap.directives.marker  = function(Attr2Options)  {
     /**
      * set options
      */
+    if (options.icon && options.icon.path &&
+      options.icon.path.match(/^[A-Z_]+$/)) {
+      options.icon.path =  google.maps.SymbolPath[options.icon.path];
+    }
     if (!(options.position instanceof google.maps.LatLng)) {
       var orgPosition = options.position;
       options.position = new google.maps.LatLng(0,0);
@@ -67,35 +71,28 @@ ngMap.directives.marker  = function(Attr2Options)  {
   };
 
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      //var filtered = new parser.filter(attrs);
+      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+      console.log('marker options', markerOptions, 'events', markerEvents);
 
       /**
        * set event to clean up removed marker
        * useful with ng-repeat
        */
-      if (markerOptions.ngRepeat) {
-        element.bind('$destroy', function() {
-          var markers = marker.map.markers;
-          for (var name in markers) {
-            if (markers[name] == marker) {
-              delete markers[name];
-            }
+      element.bind('$destroy', function() {
+        var markers = marker.map.markers;
+        for (var name in markers) {
+          if (markers[name] == marker) {
+            delete markers[name];
           }
-          marker.setMap(null);          
-        });
-      }
-
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
+        }
+        marker.setMap(null);          
+      });
 
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addMarker(marker);
@@ -103,13 +100,8 @@ ngMap.directives.marker  = function(Attr2Options)  {
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('marker attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], marker);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
 
     } //link
   }; // return
-};// function
-ngMap.directives.marker.$inject  = ['Attr2Options'];
+}]);// 

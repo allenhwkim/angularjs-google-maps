@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/info-window.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+    var app = angular.module('myApp', ['ngMap']);
+    app.controller('MapGeolocationCtrl', function($scope) {
+      $scope.$on('mapInitialized', function(event, map) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = new google.maps.LatLng(position.coords.latitude,
+                                           position.coords.longitude);
+          var infowindow = new google.maps.InfoWindow({
+            map: map,
+            position: pos,
+            content: 'Location found using HTML5.'
+          });
+
+          map.setCenter(pos);
+        });
+      });
+    });
+</script>
+</head>
+
+<body>
+    <div ng-controller="MapGeolocationCtrl">
+      Showing current location with infoWindow<br/>
+      Note: This example requires that you consent to location sharing when
+      prompted by your browser. If you see a blank space instead of the map, this
+      is probably because you have denied permission for location sharing.
+      <br/>
+      <map center="0,0" zoom="6">
+      </map>
+    </div>
+</body>
+</html>

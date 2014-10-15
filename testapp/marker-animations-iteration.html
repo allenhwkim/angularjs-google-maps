@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('MarkerAnimationCtrl', function($scope, $timeout) {
+    $scope.neighborhoods = [
+      new google.maps.LatLng(52.511467, 13.447179),
+      new google.maps.LatLng(52.549061, 13.422975),
+      new google.maps.LatLng(52.497622, 13.396110),
+      new google.maps.LatLng(52.517683, 13.394393)
+    ];
+    $scope.toggleBounce = function() {
+      if (this.getAnimation() != null) {
+        this.setAnimation(null);
+      } else {
+        this.setAnimation(google.maps.Animation.BOUNCE);
+      }
+    };
+    var iterator=0;
+    $scope.addMarker = function() {
+      for (var i=0; i<$scope.neighborhoods.length; i++) {
+        $timeout(function() {
+          // add a marker this way does not sync. marker with <marker> tag
+          new google.maps.Marker({
+            position: $scope.neighborhoods[iterator++],
+            map: $scope.map,
+            draggable: false,
+            animation: google.maps.Animation.DROP
+          });
+        }, i * 200);
+      }
+    }
+  });
+</script>
+</head>
+
+<body>
+  Marker animations with setTimeout()<br/>
+   If you're adding a number of markers, you may want to
+   drop them on the map consecutively rather than all at once.
+   This example shows how to use setTimeout() to space
+   your markers' animation.
+  <style>
+    div[ng-controller] {
+      position: relative;
+    }
+    #panel {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      margin-left: -180px;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+    }
+  </style>
+    <div ng-controller="MarkerAnimationCtrl">
+      <div id="panel">
+        <button id="drop" ng-click="addMarker()">Drop Markers</button>
+       </div>
+      <map center="52.520816, 13.410186" zoom="12">
+      </map>
+    </div>
+</body>
+</html>

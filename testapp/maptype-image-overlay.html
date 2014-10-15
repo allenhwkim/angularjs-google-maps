@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/overlay-map-type.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var bounds = {
+    17: [[20969, 20970], [50657, 50658]],
+    18: [[41939, 41940], [101315, 101317]],
+    19: [[83878, 83881], [202631, 202634]],
+    20: [[167757, 167763], [405263, 405269]]
+  };
+
+  var imageMapType = new google.maps.ImageMapType({
+    getTileUrl: function(coord, zoom) {
+      if (zoom < 17 || zoom > 20 ||
+          bounds[zoom][0][0] > coord.x || coord.x > bounds[zoom][0][1] ||
+          bounds[zoom][1][0] > coord.y || coord.y > bounds[zoom][1][1]) {
+        return null;
+      }
+
+      return ['http://www.gstatic.com/io2010maps/tiles/5/L2_',
+          zoom, '_', coord.x, '_', coord.y, '.png'].join('');
+    },
+    tileSize: new google.maps.Size(256, 256)
+  });
+</script>
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('MapTypeImageOverlayCtrl', function($scope) {
+  });
+</script>
+</head>
+<body>
+    <div ng-controller="MapTypeImageOverlayCtrl">
+      <map zoom="18" center="37.78313383212, -122.4039494991302">
+        <overlay-map-type object="imageMapType" init-method="push">
+        </overlay-map-type>
+      </map>
+    </div>
+</body>
+</html>

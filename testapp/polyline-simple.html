@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+</head>
+
+<body>
+   <map zoom="3" center="0, -180" map-type-id="TERRAIN">
+     <shape name="polyline" 
+       path="[
+         [37.772323, -122.214897],
+         [21.291982, -157.821856],
+         [-18.142599, 178.431],
+         [-27.46758, 153.027892]
+       ]"
+       geodesic="true"
+       stroke-color="#FF0000"
+       stroke-opacity="1.0"
+       stroke-weight="2">
+     </shape>
+   </map>
+</body>
+</html>

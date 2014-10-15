@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script src="USGSOverlay.js"></script>
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('GroundoverlayCustomCtrl', function($scope) {
+    $scope.$on('mapInitialized', function(evt, map) {
+      var swBound = new google.maps.LatLng(62.281819, -150.287132);
+      var neBound = new google.maps.LatLng(62.400471, -150.005608);
+      var bounds = new google.maps.LatLngBounds(swBound, neBound);
+      var srcImage = 'https://developers.google.com/maps/documentation/javascript/';
+      srcImage += 'examples/full/images/talkeetna.png';
+      new USGSOverlay(bounds, srcImage, map);
+    });
+  });
+</script>
+</head>
+
+<body>
+  <div ng-controller="GroundoverlayCustomCtrl">
+    <map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
+   </map>
+  </div>
+
+</body>
+</html>

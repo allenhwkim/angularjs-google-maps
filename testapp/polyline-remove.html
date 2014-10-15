@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('PolylineRemoveCtrl', function($scope) {
+    $scope.addLine = function() {
+      $scope.map.shapes.foo.setMap($scope.map);
+    }
+    $scope.removeLine = function() {
+      $scope.map.shapes.foo.setMap(null);
+    };
+  });
+</script>
+</head>
+
+<body>
+  <style>
+    div[ng-controller] {
+      position: relative;
+    }
+    #panel {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      margin-left: -90px;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+    }
+  </style>
+  <div ng-controller="PolylineRemoveCtrl">
+    <div id="panel">
+      <input ng-click="removeLine()" type=button value="Remove Line">
+      <input ng-click="addLine()" type=button value="Restore Line">
+    </div>
+   <map zoom="3" center="0, -180" map-type-id="TERRAIN">
+     <shape name="polyline" id="foo"
+       path="[
+         [37.772323, -122.214897],
+         [21.291982, -157.821856],
+         [-18.142599, 178.431],
+         [-27.46758, 153.027892]
+       ]"
+       geodesic="true"
+       stroke-color="#FF0000"
+       stroke-opacity="1.0"
+       stroke-weight="2">
+     </shape>
+   </map>
+  </div>
+
+</body>
+</html>

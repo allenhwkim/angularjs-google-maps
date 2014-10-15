@@ -4,7 +4,7 @@
  * @description
  *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for navigator.geolocation methods
  */
-ngMap.services.NavigatorGeolocation =  function($q) {
+ngMap.service('NavigatorGeolocation', ['$q', function($q) {
   return {
     /**
      * @memberof NavigatorGeolocation
@@ -45,6 +45,5 @@ ngMap.services.NavigatorGeolocation =  function($q) {
       return "TODO";
     }
   };
-} // func
-ngMap.services.NavigatorGeolocation.$inject = ['$q'];
+}]); 
 

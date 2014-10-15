@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/map-type.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+// Note: this value is exact as the map projects a full 360 degrees of longitude
+var GALL_PETERS_RANGE_X = 800;
+
+// Note: this value is inexact as the map is cut off at ~ +/- 83 degrees.
+// However, the polar regions produce very little increase in Y range, so
+// we will use the tile size.
+var GALL_PETERS_RANGE_Y = 510;
+
+function degreesToRadians(deg) {
+  return deg * (Math.PI / 180);
+}
+
+function radiansToDegrees(rad) {
+  return rad / (Math.PI / 180);
+}
+
+/**
+ * @constructor
+ * @implements {google.maps.Projection}
+ */
+function GallPetersProjection() {
+
+  // Using the base map tile, denote the lat/lon of the equatorial origin.
+  this.worldOrigin_ = new google.maps.Point(GALL_PETERS_RANGE_X * 400 / 800,
+      GALL_PETERS_RANGE_Y / 2);
+
+  // This projection has equidistant meridians, so each longitude degree is a linear
+  // mapping.
+  this.worldCoordinatePerLonDegree_ = GALL_PETERS_RANGE_X / 360;
+
+  // This constant merely reflects that latitudes vary from +90 to -90 degrees.
+  this.worldCoordinateLatRange = GALL_PETERS_RANGE_Y / 2;
+};
+
+GallPetersProjection.prototype.fromLatLngToPoint = function(latLng) {
+
+  var origin = this.worldOrigin_;
+  var x = origin.x + this.worldCoordinatePerLonDegree_ * latLng.lng();
+
+  // Note that latitude is measured from the world coordinate origin
+  // at the top left of the map.
+  var latRadians = degreesToRadians(latLng.lat());
+  var y = origin.y - this.worldCoordinateLatRange * Math.sin(latRadians);
+
+  return new google.maps.Point(x, y);
+};
+
+GallPetersProjection.prototype.fromPointToLatLng = function(point, noWrap) {
+
+  var y = point.y;
+  var x = point.x;
+
+  if (y < 0) {
+    y = 0;
+  }
+  if (y >= GALL_PETERS_RANGE_Y) {
+    y = GALL_PETERS_RANGE_Y;
+  }
+
+  var origin = this.worldOrigin_;
+  var lng = (x - origin.x) / this.worldCoordinatePerLonDegree_;
+  var latRadians = Math.asin((origin.y - y) / this.worldCoordinateLatRange);
+  var lat = radiansToDegrees(latRadians);
+  return new google.maps.LatLng(lat, lng, noWrap);
+};
+
+var gallPetersMap;
+
+var gallPetersMapType = new google.maps.ImageMapType({
+  getTileUrl: function(coord, zoom) {
+    var numTiles = 1 << zoom;
+
+    // Don't wrap tiles vertically.
+    if (coord.y < 0 || coord.y >= numTiles) {
+      return null;
+    }
+
+    // Wrap tiles horizontally.
+    var x = ((coord.x % numTiles) + numTiles) % numTiles;
+
+    // For simplicity, we use a tileset consisting of 1 tile at zoom level 0
+    // and 4 tiles at zoom level 1. Note that we set the base URL to a
+    // relative directory.
+    var baseURL = 'https://google-developers.appspot.com/maps/documentation/javascript/examples/full/images/';
+    baseURL += 'gall-peters_' + zoom + '_' + x + '_' + coord.y + '.png';
+    return baseURL;
+  },
+  tileSize: new google.maps.Size(800, 512),
+  isPng: true,
+  minZoom: 0,
+  maxZoom: 1,
+  name: 'Gall-Peters'
+});
+
+gallPetersMapType.projection = new GallPetersProjection();
+</script>
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('MapProjectionSimpleCtrl', function($scope, $window) {
+    $scope.alertLocation = function(event) {
+      $window.alert('Point.X.Y: ' + event.latLng);
+    };
+  });
+</script>
+</head>
+<body>
+    <div ng-controller="MapProjectionSimpleCtrl">
+      <map zoom="0" center="0,0"
+        on-click="alertLocation()"
+        street-view-control="false"
+        map-type-id="gallPetersMap"
+        map-type-control-options="{
+          mapTypeIds: ['ROADMAP', 'gallPetersMap']
+        }">
+        <map-type name="gallPetersMap" object="gallPetersMapType">
+        </map-type>
+      </map>
+    </div>
+</body>
+</html>

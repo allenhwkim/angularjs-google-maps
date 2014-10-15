@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('GroundoverlayRemoveCtrl', function($scope) {
+    $scope.add = function() {
+      $scope.map.shapes.foo.setMap($scope.map);
+    }
+    $scope.remove = function() {
+      $scope.map.shapes.foo.setMap(null);
+    };
+  });
+</script>
+</head>
+
+<body>
+  <style>
+    div[ng-controller] {
+      position: relative;
+    }
+    #panel {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      margin-left: -90px;
+      z-index: 5;
+      background-color: #fff;
+      padding: 5px;
+      border: 1px solid #999;
+    }
+  </style>
+  <div ng-controller="GroundoverlayRemoveCtrl">
+    <div id="panel">
+      <input ng-click="remove()" type=button value="Remove overlay">
+      <input ng-click="add()" type=button value="Restore overlay">
+    </div>
+    <map zoom="13" center="40.740, -74.18">
+     <shape name="image" id="foo"
+       url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
+       bounds="[[40.712216, -74.22655], [40.773941, -74.12544]]">
+     </shape>
+   </map>
+  </div>
+
+</body>
+</html>

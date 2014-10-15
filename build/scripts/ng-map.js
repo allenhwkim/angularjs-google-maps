@@ -1,8 +1,4 @@
-/** @module ngMap */
-var ngMap = {
-  services: {},
-  directives: {}
-};
+var ngMap = angular.module('ngMap', []);
 
 /**
  * @ngdoc service
@@ -10,9 +6,20 @@ var ngMap = {
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
  */
-ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) { 
+/*jshint -W030*/
+ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', function($parse, NavigatorGeolocation, GeoCoder) { 
   var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
   var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
+
+  var orgAttributes = function(el) {
+    (el.length > 0) && (el = el[0]);
+    var orgAttributes = {};
+    for (var i=0; i<el.attributes.length; i++) {
+      var attr = el.attributes[i];
+      orgAttributes[attr.name] = attr.value;
+    }
+    return orgAttributes;
+  }
 
   var camelCase = function(name) {
     return name.
@@ -23,11 +30,16 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
   }
 
   var JSONize = function(str) {
-    return str
-      // wrap keys without quote with valid double quote
-      .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})    
-      // replacing single quote wrapped ones to double quote 
-      .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})         
+    try {       // if parsable already, return as it is
+      JSON.parse(str);
+      return str;
+    } catch(e) { // if not parsable, change little
+      return str
+        // wrap keys without quote with valid double quote
+        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
+        // replacing single quote wrapped ones to double quote 
+        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+    }
   }
 
   var toOptionValue = function(input, options) {
@@ -41,6 +53,9 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
       }
     } catch(err) { 
       try { // 2.JSON?
+        if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) { // i.e "-1.0, 89.89"
+          input = "["+input+"]";
+        }
         output = JSON.parse(JSONize(input));
         if (output instanceof Array) {
           var t1stEl = output[0];
@@ -73,8 +88,13 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
         // 5. Object Expression. i.e. HYBRID 
         } else if (input.match(/^[A-Z]+$/)) {
           try {
-            var capitializedKey = key.charAt(0).toUpperCase() + key.slice(1);
-            output = google.maps[capitializedKey][input];
+            var capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+            if (key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
+              capitalizedKey = capitalizedKey.replace(/s$/,"");
+              output = google.maps.weather[capitalizedKey][input];
+            } else {
+              output = google.maps[capitalizedKey][input];
+            }
           } catch(e) {
             output = input;
           } 
@@ -120,6 +140,32 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
     }
   };
 
+
+  var getAttrsToObserve = function(attrs) {
+    var attrsToObserve = [];
+    if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
+    } else {
+      for (var attrName in attrs) {
+        var attrValue = attrs[attrName];
+        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+          attrsToObserve.push(camelCase(attrName));
+        }
+      }
+    }
+    return attrsToObserve;
+  };
+
+  var observeAttrSetObj = function(orgAttrs, attrs, obj) {
+    var attrsToObserve = getAttrsToObserve(orgAttrs);
+    if (Object.keys(attrsToObserve).length) {
+      console.log(obj, "attributes to observe", attrsToObserve);
+    }
+    for (var i=0; i<attrsToObserve.length; i++) {
+      observeAndSet(attrs, attrsToObserve[i], obj);
+    }
+  }
+
   var observeAndSet = function(attrs, attrName, object) {
     attrs.$observe(attrName, function(val) {
       if (val) {
@@ -150,7 +196,8 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
     filter: function(attrs) {
       var options = {};
       for(var key in attrs) {
-        if (!key.match(/^\$/)) {
+        if (key.match(/^\$/) || key.match(/^ng[A-Z]/)) {
+        } else {
           options[key] = attrs[key];
         }
       }
@@ -209,6 +256,7 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
           scope[funcName].apply(this, [event].concat(args));
+          scope.$apply();
         }
       }
 
@@ -266,7 +314,11 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
                   value = value.toUpperCase();
                 } else if (key === "mapTypeIds") {
                   value = value.map( function(str) {
-                    return google.maps.MapTypeId[str.toUpperCase()];
+                    if (str.match(/^[A-Z]+$/)) { // if constant
+                      return google.maps.MapTypeId[str.toUpperCase()];
+                    } else { // else, custom map-type
+                      return str;
+                    }
                   });
                 } 
                 
@@ -291,29 +343,16 @@ ngMap.services.Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) {
       return controlOptions;
     }, // function
 
-    getAttrsToObserve : function(attrs) {
-      var attrsToObserve = [];
-      if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-      } else {
-        for (var attrName in attrs) {
-          var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
-            attrsToObserve.push(camelCase(attrName));
-          }
-        }
-      }
-      return attrsToObserve;
-    },
-
     toOptionValue: toOptionValue,
     camelCase: camelCase,
     setDelayedGeoLocation: setDelayedGeoLocation,
-    observeAndSet: observeAndSet
+    getAttrsToObserve: getAttrsToObserve,
+    observeAndSet: observeAndSet,
+    observeAttrSetObj: observeAttrSetObj,
+    orgAttributes: orgAttributes
 
   }; // return
-}; // function
-ngMap.services.Attr2Options.$inject = ['$parse', 'NavigatorGeolocation', 'GeoCoder']; 
+}]); 
 
 /**
  * @ngdoc service
@@ -321,7 +360,7 @@ ngMap.services.Attr2Options.$inject = ['$parse', 'NavigatorGeolocation', 'GeoCod
  * @description
  *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
  */
-ngMap.services.GeoCoder = function($q) {
+ngMap.service('GeoCoder', ['$q', function($q) {
   return {
     /**
      * @memberof GeoCoder
@@ -347,9 +386,7 @@ ngMap.services.GeoCoder = function($q) {
       return deferred.promise;
     }
   }
-};
-ngMap.services.GeoCoder.$inject = ['$q'];
-
+}]);
 
 /**
  * @ngdoc service
@@ -357,7 +394,7 @@ ngMap.services.GeoCoder.$inject = ['$q'];
  * @description
  *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for navigator.geolocation methods
  */
-ngMap.services.NavigatorGeolocation =  function($q) {
+ngMap.service('NavigatorGeolocation', ['$q', function($q) {
   return {
     /**
      * @memberof NavigatorGeolocation
@@ -398,8 +435,7 @@ ngMap.services.NavigatorGeolocation =  function($q) {
       return "TODO";
     }
   };
-} // func
-ngMap.services.NavigatorGeolocation.$inject = ['$q'];
+}]); 
 
 
 /**
@@ -409,7 +445,7 @@ ngMap.services.NavigatorGeolocation.$inject = ['$q'];
  *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
  *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
  */
-ngMap.services.StreetView = function($q) {
+ngMap.service('StreetView', ['$q', function($q) {
   return {
     /**
      * Retrieves panorama id from the given map (and or position)
@@ -452,8 +488,601 @@ ngMap.services.StreetView = function($q) {
       svp.setPano(panoId);
     }
   }; // return
-} // func
-ngMap.services.StreetView.$inject =  ['$q'];
+}]);
+
+/**
+ * @ngdoc directive
+ * @name bicycling-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <bicycling-layer></bicycling-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getLayer = function(options, events) {
+    var layer = new google.maps.BicyclingLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+    return layer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+
+      console.log('bicycling-layer options', options, 'events', events);
+
+      var layer = getLayer(options, events);
+      mapController.addObject('bicyclingLayers', layer);
+      parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name cloud-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <cloud-layer></cloud-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getLayer = function(options, events) {
+    var layer = new google.maps.weather.CloudLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+    return layer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+      console.log('cloud-layer options', options, 'events', events);
+
+      var layer = getLayer(options, events);
+      mapController.addObject('cloudLayers', layer);
+      parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+    }
+   }; // return
+}]);
+
+/*jshint -W030*/
+/**
+ * @ngdoc directive
+ * @name custom-control
+ * @requires Attr2Options 
+ * @requires $compile
+ * @description 
+ *   Build custom control and set to the map with position
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element
+ *
+ * @param {String} position position of this control
+ *        i.e. TOP_RIGHT
+ * @param {Number} index index of the control
+ * @example
+ *
+ * Example: 
+ *  <map center="41.850033,-87.6500523" zoom="3">
+ *    <custom-control id="home" position="TOP_LEFT" index="1">
+ *      <div style="background-color: white;">
+ *        <b>Home</b>
+ *      </div>
+ *    </custom-control>
+ *  </map>
+ *
+ */
+/*jshint -W089*/
+ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+  var parser = Attr2Options;
+
+  return {
+    restrict: 'E',
+    require: '^map',
+    link: function(scope, element, attrs, mapController) {
+      element.css('display','none');
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered, scope);
+      var events = parser.getEvents(scope, filtered);
+      console.log("custom-control options", options, "events", events);
+
+      /**
+       * build a custom control element
+       */
+      var compiled = $compile(element.html().trim())(scope);
+      var customControlEl = compiled[0];
+
+      /**
+       * set events
+       */
+      for (var eventName in events) {
+        google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
+      }
+
+      mapController.addObject('customControls', customControlEl);
+      scope.$on('mapInitialized', function(evt, map) {
+        var position = options.position;
+        map.controls[google.maps.ControlPosition[position]].push(customControlEl);
+      });
+
+    } //link
+  }; // return
+}]);// function
+
+/**
+ * @ngdoc directive
+ * @name dynamic-maps-engine-layer
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *   <map zoom="14" center="[59.322506, 18.010025]">
+ *     <dynamic-maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></dynamic-maps-engine-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+
+  var getDynamicMapsEngineLayer = function(options, events) {
+    var layer = new google.maps.visualization.DynamicMapsEngineLayer(options);
+
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+
+    return layer;
+  };
+
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered, events);
+      console.log('dynamic-maps-engine-layer options', options, 'events', events);
+
+      var layer = getDynamicMapsEngineLayer(options, events);
+      mapController.addObject('mapsEngineLayers', layer);
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name fusion-tables-layer
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *   <map zoom="11" center="41.850033, -87.6500523">
+ *     <fusion-tables-layer query="{
+ *       select: 'Geocodable address',
+ *       from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
+ *     </fusion-tables-layer>
+ *   </map>
+ */
+/*jshint -W089*/
+ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+
+  var getLayer = function(options, events) {
+    var layer = new google.maps.FusionTablesLayer(options);
+
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+
+    return layer;
+  };
+
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered, events);
+      console.log('fusion-tables-layer options', options, 'events', events);
+
+      var layer = getLayer(options, events);
+      mapController.addObject('fusionTablesLayers', layer);
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name heatmap-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="11" center="[41.875696,-87.624207]">
+ *     <heatmap-layer data="taxiData"></heatmap-layer>
+ *   </map>
+ */
+/*jshint -W089*/
+ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Options, $window) {
+  var parser = Attr2Options;
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var filtered = parser.filter(attrs);
+
+      /**
+       * set options 
+       */
+      var options = parser.getOptions(filtered);
+      options.data = $window[attrs.data] || scope[attrs.data];
+      if (options.data instanceof Array) {
+        options.data = new google.maps.MVCArray(options.data);
+      } else {
+        throw "invalid heatmap data";
+      }
+      var layer = new google.maps.visualization.HeatmapLayer(options);
+
+      /**
+       * set events 
+       */
+      var events = parser.getEvents(scope, filtered);
+      console.log('heatmap-layer options', layer, 'events', events);
+
+      mapController.addObject('heatmapLayers', layer);
+    }
+   }; // return
+}]);
+
+/*jshint -W030*/
+/**
+ * @ngdoc directive
+ * @name info-window 
+ * @requires Attr2Options 
+ * @requires $compile
+ * @description 
+ *   Defines infoWindow and provides compile method
+ *   
+ *   Requires:  map directive
+ *
+ *   Restrict To:  Element
+ *
+ * @param {Boolean} visible Indicates to show it when map is initialized
+ * @param {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
+ * @param {String} &lt;InfoWindowOption> Any InfoWindow options,
+ *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions  
+ * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+ * @example
+ * Usage: 
+ *   <map MAP_ATTRIBUTES>
+ *    <info-window id="foo" ANY_OPTIONS ANY_EVENTS"></info-window>
+ *   </map>
+ *
+ * Example: 
+ *  <map center="41.850033,-87.6500523" zoom="3">
+ *    <info-window id="1" position="41.850033,-87.6500523" >
+ *      <div ng-non-bindable>
+ *        Chicago, IL<br/>
+ *        LatLng: {{chicago.lat()}}, {{chicago.lng()}}, <br/>
+ *        World Coordinate: {{worldCoordinate.x}}, {{worldCoordinate.y}}, <br/>
+ *        Pixel Coordinate: {{pixelCoordinate.x}}, {{pixelCoordinate.y}}, <br/>
+ *        Tile Coordinate: {{tileCoordinate.x}}, {{tileCoordinate.y}} at Zoom Level {{map.getZoom()}}
+ *      </div>
+ *    </info-window>
+ *  </map>
+ */
+ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+  var parser = Attr2Options;
+
+  var getInfoWindow = function(options, events) {
+    var infoWindow;
+
+    /**
+     * set options
+     */
+    if (!(options.position instanceof google.maps.LatLng)) {
+      var address = options.position;
+      options.position = new google.maps.LatLng(0,0);
+      infoWindow = new google.maps.InfoWindow(options);
+      parser.setDelayedGeoLocation(infoWindow, 'setPosition', address);
+    } else {
+      infoWindow = new google.maps.InfoWindow(options);
+    }
+
+    /**
+     * set events
+     */
+    if (Object.keys(events).length > 0) {
+      console.log("infoWindow events", events);
+    }
+    for (var eventName in events) {
+      if (eventName) {
+        google.maps.event.addListener(infoWindow, eventName, events[eventName]);
+      }
+    }
+
+    return infoWindow;
+  };
+
+  return {
+    restrict: 'E',
+    require: '^map',
+    link: function(scope, element, attrs, mapController) {
+      element.css('display','none');
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered, scope);
+      var events = parser.getEvents(scope, filtered);
+      console.log('infoWindow', 'options', options, 'events', events);
+
+      /**
+       * it must have a container element with ng-non-bindable
+       */
+      var template = element.html().trim();
+      if (angular.element(template).length != 1) {
+        throw "info-window working as a template must have a container";
+      }
+
+      var infoWindow = getInfoWindow(options, events);
+      infoWindow.template = template.replace(/ng-non-/,"");
+      mapController.addObject('infoWindows', infoWindow);
+      parser.observeAttrSetObj(orgAttrs, attrs, infoWindow); /* observers */
+
+      /**
+       * provide showInfoWindow method to scope
+       */
+      scope.showInfoWindow  = scope.showInfoWindow || function(event, id, anchor) {
+        var infoWindow = mapController.map.infoWindows[id];
+        var html = infoWindow.template.trim();
+        var compiledHtml = html.replace(/{{([^}]+)}}/g, function(_,$1) {
+          return scope.$eval($1);
+        });
+        //var compiledEl = $compile(html)(scope);
+        console.log(compiledHtml);
+        infoWindow.setContent(compiledHtml);
+        if (anchor) {
+          infoWindow.setPosition(anchor);
+          infoWindow.open(mapController.map);
+        } else if (this.getPosition) {
+          infoWindow.open(mapController.map, this);
+        } else {
+          infoWindow.open(mapController.map);
+        }
+      }
+
+      // show InfoWindow when initialized
+      if (infoWindow.visible) {
+        scope.$on('mapInitialized', function(evt, map) {
+          var compiledEl = $compile(infoWindow.template)(scope);
+          infoWindow.setContent(compiledEl.html());
+          infoWindow.open(mapController.map);
+        });
+      }
+      // show InfoWindow on a marker  when initialized
+      if (infoWindow.visibleOnMarker) {
+        scope.$on('mapInitialized', function(evt, map) {
+          var marker = mapController.map.markers[infoWindow.visibleOnMarker];
+          if (!marker) throw "Invalid marker id";
+          var compiledEl = $compile(infoWindow.template)(scope);
+          infoWindow.setContent(compiledEl.html());
+          infoWindow.open(mapController.map, marker);
+        });
+      }
+    } //link
+  }; // return
+}]);// function
+
+/**
+ * @ngdoc directive
+ * @name kml-layer
+ * @requires Attr2Options 
+ * @description 
+ *   renders Kml layer on a map
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @param {Url} url url of the kml layer
+ * @param {KmlLayerOptions} KmlLayerOptions
+ *   (https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions)  
+ * @param {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
+ * @example
+ * Usage: 
+ *   <map MAP_ATTRIBUTES>
+ *    <kml-layer ANY_KML_LAYER ANY_KML_LAYER_EVENTS"></kml-layer>
+ *   </map>
+ *
+ * Example: 
+ *
+ *   <map zoom="11" center="[41.875696,-87.624207]">
+ *     <kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" ></kml-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getKmlLayer = function(options, events) {
+    var kmlLayer = new google.maps.KmlLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(kmlLayer, eventName, events[eventName]);
+    }
+    return kmlLayer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+      console.log('kml-layer options', kmlLayer, 'events', events);
+
+      var kmlLayer = getKmlLayer(options, events);
+      mapController.addObject('kmlLayers', kmlLayer);
+      parser.observeAttrSetObj(orgAttrs, attrs, kmlLayer);  //observers
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name map-data
+ * @description 
+ *   set map data
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @param {String} method-name, run map.data[method-name] with attribute value
+ * @example
+ * Example: 
+ *
+ *   <map zoom="11" center="[41.875696,-87.624207]">
+ *     <map-data load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
+ *    </map>
+ */
+ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered, events);
+
+      console.log('map-data options', options);
+      scope.$on('mapInitialized', function(event, map) {
+        /**
+         * options
+         */
+        for (var key in options) {
+          if (key) {
+            var val = options[key];
+            if (typeof scope[val] === "function") {
+              map.data[key](scope[val]);
+            } else {
+              map.data[key](val);
+            }
+          } // if (key)
+        }
+
+        /**
+         * events
+         */
+        for (var eventName in events) {
+          if (events[eventName]) {
+            map.data.addListener(eventName, events[eventName]);
+          }
+        }
+      });
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name map-type
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <map-type name="coordinate" object="coordinateMapType"></map-type>
+ *   </map>
+ */
+/*jshint -W089*/
+ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
+  var parser = Attr2Options;
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var mapTypeName = attrs.name, mapTypeObject;
+      if (!mapTypeName) {
+        throw "invalid map-type name";
+      }
+      if (attrs.object) {
+        var __scope = scope[attrs.object] ? scope : $window;
+        mapTypeObject = __scope[attrs.object];
+        if (typeof mapTypeObject == "function") {
+          mapTypeObject = new mapTypeObject();
+        }
+      }
+      if (!mapTypeObject) {
+        throw "invalid map-type object";
+      }
+
+      scope.$on('mapInitialized', function(evt, map) {
+        map.mapTypes.set(mapTypeName, mapTypeObject);
+      });
+      mapController.addObject('mapTypes', mapTypeObject);
+    }
+   }; // return
+}]);
 
 /**
  * @ngdoc directive
@@ -496,7 +1125,7 @@ ngMap.services.StreetView.$inject =  ['$q'];
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
-ngMap.directives.map = function(Attr2Options, $timeout) {
+ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $timeout) {
   var parser = Attr2Options;
   function getStyle(el,styleProp)
   {
@@ -510,7 +1139,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
 
   return {
     restrict: 'AE',
-    controller: ngMap.directives.MapController,
+    controller: ngMap.MapController,
     /**
      * Initialize map and events
      * @memberof map
@@ -520,6 +1149,8 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
      * @ctrl {MapController} ctrl
      */
     link: function (scope, element, attrs, ctrl) {
+      var orgAttrs = parser.orgAttributes(element);
+
       /*
        * without this, bird_eyes_and_street_view.html and map_options does not work.
        * I don't know why
@@ -541,7 +1172,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       if (getStyle(element[0], 'display') != "block") {
         element.css('display','block');
       }
-      if (!getStyle(element[0], 'height').match(/px/)) {
+      if (getStyle(element[0], 'height').match(/^0/)) {
         element.css('height','300px');
       }
 
@@ -552,19 +1183,6 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       console.log('filtered', filtered);
       var options = parser.getOptions(filtered, scope);
       var controlOptions = parser.getControlOptions(filtered);
-      var mapOptions = angular.extend(options, controlOptions);
-      mapOptions.zoom = mapOptions.zoom || 15;
-      console.log("mapOptions", mapOptions, "mapEvents", mapEvents);
-
-      /**
-       * get original attributes, so that we can use it for observers
-       */
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
-      console.log('orgAttributes', orgAttributes);
 
       var map = new google.maps.Map(el, {});
       map.markers = {};
@@ -580,17 +1198,16 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       /**
        * set options
        */
+      var mapOptions = angular.extend(options, controlOptions);
+      console.log("mapOptions", mapOptions);
+      mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
       if (!(center instanceof google.maps.LatLng)) {
-        delete options.center;
-        Attr2Options.setDelayedGeoLocation(
-          map, 
-          'setCenter', 
-          center, 
-          options.geoFallbackCenter
-        );
+        delete mapOptions.center;
+        Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+            center, options.geoFallbackCenter);
       }
-      map.setOptions(options);
+      map.setOptions(mapOptions);
 
       /**
        * set events
@@ -605,11 +1222,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('map attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], map);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, map);
 
       /**
        * set controller and set objects
@@ -619,6 +1232,9 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
       ctrl.addObjects(ctrl._objects);
 
+      // /* providing method to add a marker used by user scope */
+      // map.addMarker = ctrl.addMarker;
+
       /**
        * set map for scope and controller and broadcast map event
        * scope.map will be overwritten if user have multiple maps in a scope,
@@ -627,7 +1243,9 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
        */
       scope.map = map;
       scope.map.scope = scope;
-      scope.$emit('mapInitialized', scope.map);  
+      //google.maps.event.addListenerOnce(map, "idle", function() {
+      scope.$emit('mapInitialized', map);  
+      //});
 
       // the following lines will be deprecated on behalf of mapInitialized
       // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
@@ -636,8 +1254,7 @@ ngMap.directives.map = function(Attr2Options, $timeout) {
       scope.$emit('mapsInitialized', scope.maps);  
     }
   }; 
-}; // function
-ngMap.directives.map.$inject = ['Attr2Options', '$timeout'];
+}]);
 
 /**
  * @ngdoc directive
@@ -648,7 +1265,8 @@ ngMap.directives.map.$inject = ['Attr2Options', '$timeout'];
  * @property {Hash} shapes collection of shapes initiated within `map` directive
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
-ngMap.directives.MapController = function($scope) { 
+/*jshint -W089*/
+ngMap.MapController = function($scope) { 
 
   this.map = null;
   this._objects = [];
@@ -695,6 +1313,20 @@ ngMap.directives.MapController = function($scope) {
     }
   };
 
+  this.addObject = function(groupName, obj) {
+    if (this.map) {
+      this.map[groupName] = this.map[groupName] || {};
+      var len = Object.keys(this.map[groupName]).length;
+      this.map[groupName][obj.id || len] = obj;
+      if (groupName != "infoWindows" && obj.setMap) { //infoWindow.setMap works like infoWindow.open
+        obj.setMap(this.map);
+      }
+    } else {
+      obj.groupName = groupName;
+      this._objects.push(obj);
+    }
+  }
+
   /**
    * Add a shape to map and $scope.shapes
    * @memberof MapController
@@ -712,12 +1344,57 @@ ngMap.directives.MapController = function($scope) {
         obj instanceof google.maps.Rectangle ||
         obj instanceof google.maps.GroundOverlay) {
         this.addShape(obj);
+      } else {
+        this.addObject(obj.groupName, obj);
       }
     }
   };
 
 };
-ngMap.directives.MapController.$inject = ['$scope'];
+
+/**
+ * @ngdoc directive
+ * @name maps-engine-layer
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *   <map zoom="14" center="[59.322506, 18.010025]">
+ *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+
+  var getMapsEngineLayer = function(options, events) {
+    var layer = new google.maps.visualization.MapsEngineLayer(options);
+
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+
+    return layer;
+  };
+
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered, events);
+      console.log('maps-engine-layer options', options, 'events', events);
+
+      var layer = getMapsEngineLayer(options, events);
+      mapController.addObject('mapsEngineLayers', layer);
+    }
+   }; // return
+}]);
 
 /**
  * @ngdoc directive
@@ -729,7 +1406,7 @@ ngMap.directives.MapController.$inject = ['$scope'];
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element 
  *
  * @param {String} position address, 'current', or [latitude, longitude]  
  *    example:  
@@ -754,7 +1431,7 @@ ngMap.directives.MapController.$inject = ['$scope'];
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
-ngMap.directives.marker  = function(Attr2Options)  {
+ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   var parser = Attr2Options;
 
   var getMarker = function(options, events) {
@@ -763,6 +1440,10 @@ ngMap.directives.marker  = function(Attr2Options)  {
     /**
      * set options
      */
+    if (options.icon && options.icon.path &&
+      options.icon.path.match(/^[A-Z_]+$/)) {
+      options.icon.path =  google.maps.SymbolPath[options.icon.path];
+    }
     if (!(options.position instanceof google.maps.LatLng)) {
       var orgPosition = options.position;
       options.position = new google.maps.LatLng(0,0);
@@ -788,35 +1469,28 @@ ngMap.directives.marker  = function(Attr2Options)  {
   };
 
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      //var filtered = new parser.filter(attrs);
+      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
+      console.log('marker options', markerOptions, 'events', markerEvents);
 
       /**
        * set event to clean up removed marker
        * useful with ng-repeat
        */
-      if (markerOptions.ngRepeat) {
-        element.bind('$destroy', function() {
-          var markers = marker.map.markers;
-          for (var name in markers) {
-            if (markers[name] == marker) {
-              delete markers[name];
-            }
+      element.bind('$destroy', function() {
+        var markers = marker.map.markers;
+        for (var name in markers) {
+          if (markers[name] == marker) {
+            delete markers[name];
           }
-          marker.setMap(null);          
-        });
-      }
-
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
+        }
+        marker.setMap(null);          
+      });
 
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addMarker(marker);
@@ -824,16 +1498,61 @@ ngMap.directives.marker  = function(Attr2Options)  {
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('marker attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], marker);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
 
     } //link
   }; // return
-};// function
-ngMap.directives.marker.$inject  = ['Attr2Options'];
+}]);// 
+
+/**
+ * @ngdoc directive
+ * @name overlay-map-type
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <overlay-map-type index="0" object="coordinateMapType"></map-type>
+ *   </map>
+ */
+/*jshint -W089*/
+ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
+  var parser = Attr2Options;
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var overlayMapTypeObject;
+      var initMethod = attrs.initMethod || "insertAt";
+      if (attrs.object) {
+        var __scope = scope[attrs.object] ? scope : $window;
+        overlayMapTypeObject = __scope[attrs.object];
+        if (typeof overlayMapTypeObject == "function") {
+          overlayMapTypeObject = new overlayMapTypeObject();
+        }
+      }
+      if (!overlayMapTypeObject) {
+        throw "invalid map-type object";
+      }
+
+      scope.$on('mapInitialized', function(evt, map) {
+        if (initMethod == "insertAt") {
+          var index = parseInt(attrs.index, 10);
+          map.overlayMapTypes.insertAt(index, overlayMapTypeObject);
+        } else if (initMethod == "push") {
+          map.overlayMapTypes.push(overlayMapTypeObject);
+        }
+      });
+      mapController.addObject('overlayMapTypes', overlayMapTypeObject);
+    }
+   }; // return
+}]);
 
 /**
  * @ngdoc directive
@@ -850,7 +1569,7 @@ ngMap.directives.marker.$inject  = ['Attr2Options'];
  *   
  *   Requires:  map directive
  *
- *   Restrict To:  Element Or Attribute
+ *   Restrict To:  Element
  *
  * @param {Boolean} centered if set, map will be centered with this marker
  * @param {String} &lt;OPTIONS>
@@ -896,7 +1615,7 @@ ngMap.directives.marker.$inject  = ['Attr2Options'];
  *  For full-working example, please visit 
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
-ngMap.directives.shape = function(Attr2Options) {
+ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
   var parser = Attr2Options;
   
   var getBounds = function(points) {
@@ -908,11 +1627,19 @@ ngMap.directives.shape = function(Attr2Options) {
 
     var shapeName = options.name;
     delete options.name;  //remove name bcoz it's not for options
+    console.log("shape", shapeName, "options", options, 'events', events);
 
     /**
      * set options
      */
-    console.log("shape", shapeName, "options", options);
+    if (options.icons) {
+      for (var i=0; i<options.icons.length; i++) {
+        var el = options.icons[i];
+        if (el.icon.path.match(/^[A-Z_]+$/)) {
+          el.icon.path =  google.maps.SymbolPath[el.icon.path];
+        }
+      }
+    }
     switch(shapeName) {
       case "circle":
         if (options.center instanceof google.maps.LatLng) {
@@ -931,7 +1658,9 @@ ngMap.directives.shape = function(Attr2Options) {
         shape = new google.maps.Polyline(options);
         break;
       case "rectangle": 
-        options.bounds = getBounds(options.bounds);
+        if (options.bounds) {
+          options.bounds = getBounds(options.bounds);
+        }
         shape = new google.maps.Rectangle(options);
         break;
       case "groundOverlay":
@@ -946,10 +1675,8 @@ ngMap.directives.shape = function(Attr2Options) {
     /**
      * set events
      */
-    console.log("shape", shapeName, "events", events);
     for (var eventName in events) {
       if (events[eventName]) {
-        console.log(eventName, events[eventName]);
         google.maps.event.addListener(shape, eventName, events[eventName]);
       }
     }
@@ -957,13 +1684,14 @@ ngMap.directives.shape = function(Attr2Options) {
   };
   
   return {
-    restrict: 'AE',
+    restrict: 'E',
     require: '^map',
     /**
      * link function
      * @private
      */
     link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var shapeOptions = parser.getOptions(filtered);
       var shapeEvents = parser.getEvents(scope, filtered);
@@ -971,33 +1699,146 @@ ngMap.directives.shape = function(Attr2Options) {
       var shape = getShape(shapeOptions, shapeEvents);
       mapController.addShape(shape);
 
-      var orgAttributes = {};
-      for (var i=0; i<element[0].attributes.length; i++) {
-        var attr = element[0].attributes[i];
-        orgAttributes[attr.name] = attr.value;
-      }
-
       /**
        * set observers
        */
-      var attrsToObserve = parser.getAttrsToObserve(orgAttributes);
-      console.log('shape attrs to observe', attrsToObserve);
-      for (var i=0; i<attrsToObserve.length; i++) {
-        parser.observeAndSet(attrs, attrsToObserve[i], shape);
-      }
+      parser.observeAttrSetObj(orgAttrs, attrs, shape); 
     }
    }; // return
-}; // function
-ngMap.directives.shape.$inject  = ['Attr2Options'];
+}]);
 
-var ngMapModule = angular.module('ngMap', []);
+/**
+ * @ngdoc directive
+ * @name traffic-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <traffic-layer></traffic-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getLayer = function(options, events) {
+    var layer = new google.maps.TrafficLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+    return layer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
 
-for (var key in ngMap.services) {
-  ngMapModule.service(key, ngMap.services[key]);
-}
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+      console.log('traffic-layer options', options, 'events', events);
 
-for (var key in ngMap.directives) {
-  if(key != "MapController") {   // MapController is a controller for directives
-    ngMapModule.directive(key, ngMap.directives[key]);
-  }
-}
+      var layer = getLayer(options, events);
+      mapController.addObject('trafficLayers', layer);
+      parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name transit-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <transit-layer></transit-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getLayer = function(options, events) {
+    var layer = new google.maps.TransitLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+    return layer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+      console.log('transit-layer options', options, 'events', events);
+
+      var layer = getLayer(options, events);
+      mapController.addObject('transitLayers', layer);
+      parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+    }
+   }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name weather-layer
+ * @requires Attr2Options 
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *
+ *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *     <weather-layer></weather-layer>
+ *    </map>
+ */
+/*jshint -W089*/
+ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
+  var parser = Attr2Options;
+  
+  var getLayer = function(options, events) {
+    var layer = new google.maps.weather.WeatherLayer(options);
+    for (var eventName in events) {
+      google.maps.event.addListener(layer, eventName, events[eventName]);
+    }
+    return layer;
+  };
+  
+  return {
+    restrict: 'E',
+    require: '^map',
+
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
+
+      console.log('weather-layer options', options, 'events', events);
+
+      var layer = getLayer(options, events);
+      mapController.addObject('weatherLayers', layer);
+      parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+    }
+   }; // return
+}]);

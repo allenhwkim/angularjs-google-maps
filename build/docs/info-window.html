@@ -39,8 +39,10 @@
     
         
 <dt>
+
     
     
+      <a href="info-window.js.html#line2" class="name-link"><h4 class="name" id="info-window"><span class="type-signature"></span>info-window<span class="signature">(visible, visible-on-marker, &lt;InfoWindowOption>, &lt;InfoWindowEvent>)</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -49,9 +51,9 @@
 
     
     <div class="description">
-        <p>Initialize a Google map InfoWindow and set a scope method <code>showInfoWindow</code> </p>
+        <p>Defines infoWindow and provides compile method</p>
 <p>  Requires:  map directive</p>
-<p>  Restrict To:  Element Or Attribute</p>
+<p>  Restrict To:  Element</p>
     </div>
     
 
@@ -60,7 +62,7 @@
     
 
     
-        <h5>Attributes:</h5>
+        <h5>Parameters:</h5>
         
 
 <table class="params">
@@ -85,6 +87,52 @@
 
         <tr>
             
+                <td class="name"><code>visible</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Indicates to show it when map is initialized</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>visible-on-marker</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Indicates to show it on a marker when map is initialized</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>&lt;InfoWindowOption></code></td>
             
 
@@ -101,7 +149,8 @@
 
             
 
-            <td class="description last"><p>Any InfoWindow options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</p></td>
+            <td class="description last"><p>Any InfoWindow options,
+       https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</p></td>
         </tr>
 
     
@@ -155,7 +204,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="info_window.js.html">directives/info_window.js</a>, <a href="info_window.js.html#line1">line 1</a>
+        <a href="info-window.js.html">directives/info-window.js</a>, <a href="info-window.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -168,10 +217,11 @@
 
 
     
-    <h5>Dependencies:</h5>
+    <h5>Requires:</h5>
     <ul>
-        
-        <li><a href="Attr2Options.html">Attr2Options servivce</a></li>
+        <li>module:Attr2Options</li>
+    
+        <li>module:$compile</li>
     </ul>
     
 
@@ -188,17 +238,23 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>Example: 
-  &lt;map center="[40.74, -74.18]">
-    &lt;marker position="the cn tower" on-click="showInfoWindow(event, 'marker-info'">&lt;/marker>
-    &lt;info-window id="marker-info" style="display: none;">
-      &lt;h1> I am an InfoWindow &lt;/h1>
-      I am here at [[this.getPosition()]]
-    &lt;/info-window>
+    <pre class="prettyprint"><code>Usage: 
+  &lt;map MAP_ATTRIBUTES>
+   &lt;info-window id="foo" ANY_OPTIONS ANY_EVENTS">&lt;/info-window>
   &lt;/map>
 
-For working example, please visit:  
-  https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/marker_with_info_window.html</code></pre>
+Example: 
+ &lt;map center="41.850033,-87.6500523" zoom="3">
+   &lt;info-window id="1" position="41.850033,-87.6500523" >
+     &lt;div ng-non-bindable>
+       Chicago, IL&lt;br/>
+       LatLng: {{chicago.lat()}}, {{chicago.lng()}}, &lt;br/>
+       World Coordinate: {{worldCoordinate.x}}, {{worldCoordinate.y}}, &lt;br/>
+       Pixel Coordinate: {{pixelCoordinate.x}}, {{pixelCoordinate.y}}, &lt;br/>
+       Tile Coordinate: {{tileCoordinate.x}}, {{tileCoordinate.y}} at Zoom Level {{map.getZoom()}}
+     &lt;/div>
+   &lt;/info-window>
+ &lt;/map></code></pre>
 
     
 </dd>
@@ -210,15 +266,15 @@ For working example, please visit:
 
     
 
-    <!--
     
         <h3 class="subsection-title">Requires</h3>
 
         <ul>
             <li>module:Attr2Options</li>
+        
+            <li>module:$compile</li>
         </ul>
     
-    -->
 
     
 
@@ -243,30 +299,24 @@ For working example, please visit:
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-ngMap.html">ngMap</a></li></ul><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="info-window.html">info-window</a></li><li><a href="map.html">map</a></li><li><a href="MapController.html">MapController</a></li><li><a href="marker.html">marker</a></li><li><a href="marker-clusterer.html">marker-clusterer</a></li><li><a href="shape.html">shape</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="map.html">map</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-type.html">map-type</a></li><li><a href="MapController.html">MapController</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="shape.html">shape</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> 
-    using <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template </a> 
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> 
+    using <a href="https://github.com/allenhwkim/angularjs-google-maps/tree/master/config/jsdoc/template">custom template </a> and 
+    <a href="https://raw.githubusercontent.com/allenhwkim/angularjs-google-maps/master/config/jsdoc/plugins/angular.js">custom tag @ngdoc</a>
 </footer>
 
 <script> prettyPrint(); </script>
 <script src="scripts/linenumber.js"> </script>
 <script>
-  // scroll to the current document navigation
   var href=window.location.href.match(/\/([^\/]+$)/)[1];
-  if (currentNav = document.querySelector("nav a[href='"+href+"']"))
-    currentNav.scrollIntoView(true);
-  // scroll to the top of the document
+  document.querySelector("nav a[href='"+href+"']").scrollIntoView(true);
   if (window.location.hash == "")
     document.querySelector("body").scrollIntoView(true);
-  // adjust the width of main section by navigation width
-  var navWidth = document.querySelector('nav').getBoundingClientRect().width;
-  var mainWidth = document.querySelector('#main').getBoundingClientRect().width;
-  document.querySelector('#main').style.width = (mainWidth - navWidth)+'px';
 </script>
 </body>
 </html>
