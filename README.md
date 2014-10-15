@@ -3,6 +3,17 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
+**NOTE: 1.0.0 is released.**  
+  Now, it covers all official google examples using new directives. The new directives are;
+
+  * Layer Directives  
+    traffic-layer, transit-layer, weather-layer, bicycling-layer, cloud-layer, dynamic-maps-engine-layer, fusion-tables-layer, heatmap-layer, kml-layer, maps-engine-layer
+ custom-control
+  * info-window
+  * map-data
+  * map-type
+  * overlay-map-type
+
 [Demo](http://allenhwkim.github.io/angularjs-google-maps) &nbsp; &nbsp;
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)
 
