@@ -4,9 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -18,7 +16,7 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
 <script src="USGSOverlay.js"></script>
-<script plnkr-code="js">
+<script>
   var app = angular.module('myApp', ['ngMap']);
   app.controller('GroundoverlayCustomCtrl', function($scope) {
     $scope.overlay;
@@ -35,11 +33,10 @@
 </head>
 
 <body>
-  <div plnkr-code="html" ng-controller="GroundoverlayCustomCtrl">
+  <div ng-controller="GroundoverlayCustomCtrl">
     <map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
    </map>
   </div>
 
-  <div plnkr-show></div>
 </body>
 </html>

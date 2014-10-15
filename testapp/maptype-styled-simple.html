@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html ng-app="myApp">
+<html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -20,10 +18,7 @@
 </head>
 
 <body>
-  <div plnkr-code="html">
-    <map center="40.6743890, -73.9455" zoom="12" styles="[{stylers:[{hue:'#890000'},{visibility:'simplified'},{gamma:0.5},{weight:0.5}]},{elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'water',stylers:[{color:'#890000'}]}]"></div>
-  </div>
-  <div plnkr-show></div>
+    <map center="40.6743890, -73.9455" zoom="12" styles="[{stylers:[{hue:'#890000'},{visibility:'simplified'},{gamma:0.5},{weight:0.5}]},{elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'water',stylers:[{color:'#890000'}]}]"></map>
 </body>
 </html>
 

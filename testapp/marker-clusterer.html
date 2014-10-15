@@ -7,7 +7,7 @@
   <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
   <!-- build:js scripts/ng-map.min.js -->
-  <script src="../app/scripts/namespace.js"></script>
+  <script src="../app/scripts/app.js"></script>
   <script src="../app/scripts/directives/map_controller.js"></script>
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
@@ -15,14 +15,11 @@
   <script src="../app/scripts/services/geo_coder.js"></script>
   <script src="../app/scripts/services/navigator_geolocation.js"></script>
   <script src="../app/scripts/services/attr2_options.js"></script>
-  <script src="../app/scripts/app.js"></script>
   <!-- endbuild -->
-  <script src="scripts/plunkr.js"></script>
-  <link rel="stylesheet" href="css/styles.css"></script>
-  <script plnkr-lib src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markers.js"></script>
-  <script plnkr-lib src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markerclusterer.js"></script>
-  <script plnkr-code="js">
-  var app = angular.module('myApp', ['ngMap', 'plunkr']);
+  <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markers.js"></script>
+  <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markerclusterer.js"></script>
+  <script>
+  var app = angular.module('myApp', ['ngMap']);
 
   app.controller('mapController', function($scope, $http, $interval) {
     var map;
@@ -37,7 +34,7 @@
     });
   });
   </script>
-  <style plnkr-code="css">
+  <style>
     map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
@@ -46,12 +43,8 @@
   <h1>Marker Cluster</h1>
   <hr />
   
-  <div plnkr-code="html">
     <div ng-controller="mapController">
       <map zoom="2" center="[43.6650000, -79.4103000]"></map>
     </div>
-  </div>
-
-  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

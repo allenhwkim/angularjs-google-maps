@@ -3,8 +3,6 @@
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<script src="scripts/plunkr.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -45,15 +43,11 @@
 </script>
 </head>
 <body>
-  <div plnkr-code="html">
     <div ng-controller="MapTypeImageOverlayCtrl">
       <map zoom="18" center="37.78313383212, -122.4039494991302">
         <overlay-map-type object="imageMapType" init-method="push">
         </overlay-map-type>
       </map>
     </div>
-  </div>
-
-  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

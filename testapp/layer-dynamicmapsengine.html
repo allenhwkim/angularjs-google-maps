@@ -4,9 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -19,6 +17,7 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
 <script>
+  var app = angular.module('myApp', ['ngMap']);
   app.controller('LayerDynamicMapsEngineCtrl', function($scope) {
     $scope.onMouseover = function(event) {
       var fillArray = ['red', 'blue', 'yellow', 'green'];
@@ -37,7 +36,6 @@
   Circle Simple<br/>
    This example creates circles on the map, representing
    populations in North America.
-  <div plnkr-code="html">
     <div ng-controller="LayerDynamicMapsEngineCtrl">
       <map center="59.322506, 18.010025" zoom="14">
         <dynamic-maps-engine-layer
@@ -49,7 +47,5 @@
         </dynamic-maps-engine-layer>
       </map>
     </div>
-  </div>
-  <div plnkr-show></div>
 </body>
 </html>

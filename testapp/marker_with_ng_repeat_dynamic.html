@@ -7,7 +7,7 @@
   <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
   <!-- build:js scripts/ng-map.min.js -->
-  <script src="../app/scripts/namespace.js"></script>
+  <script src="../app/scripts/app.js"></script>
   <script src="../app/scripts/directives/map_controller.js"></script>
   <script src="../app/scripts/directives/map.js"></script>
   <script src="../app/scripts/directives/marker.js"></script>
@@ -15,12 +15,9 @@
   <script src="../app/scripts/services/geo_coder.js"></script>
   <script src="../app/scripts/services/navigator_geolocation.js"></script>
   <script src="../app/scripts/services/attr2_options.js"></script>
-  <script src="../app/scripts/app.js"></script>
   <!-- endbuild -->
-  <script src="scripts/plunkr.js"></script>
-  <link rel="stylesheet" href="css/styles.css"></script>
-  <script plnkr-code="js">
-    var app = angular.module('myApp', ['ngMap', 'plunkr']);
+  <script>
+    var app = angular.module('myApp', ['ngMap']);
 
     app.controller('mapController', function($scope, $http, $interval) {
       $scope.positions =[ [40.71, -74.21], [40.72, -74.20], [40.73, -74.19],
@@ -38,7 +35,7 @@
       }, 2000);
     });
   </script>
-  <style plnkr-code="css">
+  <style>
     map, div[map] {display:block; width:600px; height:400px;}
   </style>
 </head>
@@ -47,14 +44,10 @@
   <h1>Dynamic Markers With ng-repeat</h1>
   <hr />
   
-  <div plnkr-code="html">
     <div ng-controller="mapController">
       <map zoom="14" center="[40.71, -74.21]">
         <marker ng-repeat="p in positions" position="{{p}}" title="{{p.toString()}}"></marker>
       </map>
     </div>
-  </div>
-
-  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

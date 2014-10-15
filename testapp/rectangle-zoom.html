@@ -4,9 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -18,7 +16,7 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
 <script>
-  var app = app || angular.module('myApp', ['ngMap']);
+  var app = angular.module('myApp', ['ngMap']);
   app.controller("RectangleZoomCtrl", function($scope) {
     $scope.zoomChanged= function(event) {
       $scope.map.shapes.foo.setBounds($scope.map.getBounds());
@@ -28,7 +26,6 @@
 </head>
 
 <body>
-  <div plnkr-code="html">
     <div ng-controller="RectangleZoomCtrl">
       <map zoom="11" 
         center="33.6803003, -116.173894" 
@@ -43,8 +40,5 @@
         </shape>
       </map>
     </div>
-  </div>
-
-  <div plnkr-show></div>
 </body>
 </html>

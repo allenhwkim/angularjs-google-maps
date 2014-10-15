@@ -4,9 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -18,7 +16,7 @@
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
-<script plnkr-code="js">
+<script>
   var app = angular.module('myApp', ['ngMap']);
   app.controller('LayerKmlFeatureCtrl', function($scope) {
     $scope.showInContextWindow = function(event) {
@@ -28,7 +26,6 @@
 </script>
 </head>
 <body>
-  <div plnkr-code="html">
     <div ng-controller="LayerKmlFeatureCtrl">
       <map zoom="12" center="37.06, -95.68">
         <kml-layer on-click="showInContextWindow()"
@@ -36,8 +33,5 @@
       </map>
       {{description}}
     </div>
-  </div>
-
-  <div plnkr-show module-name="myApp"></div>
 </body>
 </html>

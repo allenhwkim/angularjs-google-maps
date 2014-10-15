@@ -4,9 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -18,6 +16,7 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
 <script>
+  var app = angular.module('myApp', ['ngMap']);
   app.controller('CircleSimpleCtrl', function($scope) {
     $scope.cities = {
       chicago: {population:2714856, position: [41.878113, -87.629798]},
@@ -33,10 +32,6 @@
 </head>
 
 <body>
-  Circle Simple<br/>
-   This example creates circles on the map, representing
-   populations in North America.
-  <div plnkr-code="html">
     <div ng-controller="CircleSimpleCtrl">
       <map center="37.09024, -95.712891" zoom="4" mayTypeId="TERRAIN">
         <shape name="circle" ng-repeat="city in cities"
@@ -50,7 +45,5 @@
         </shape>
       </map>
     </div>
-  </div>
-  <div plnkr-show></div>
 </body>
 </html>

@@ -4,9 +4,7 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<script src="scripts/plunkr.js"></script>
 <script src="scripts/app.js"></script>
-<link rel="stylesheet" href="css/styles.css"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -18,7 +16,7 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <script src="USGSOverlay.js"></script>
 <!-- endbuild -->
-<script plnkr-code="js">
+<script>
   var app = angular.module('myApp', ['ngMap']);
   app.controller('OverlayHideshowCtrl', function($scope) {
     $scope.overlay;
@@ -56,7 +54,7 @@
       border: 1px solid #999;
     }
   </style>
-  <div plnkr-code="html" ng-controller="OverlayHideshowCtrl">
+  <div ng-controller="OverlayHideshowCtrl">
     <div id="panel">
       <input ng-click="toggleVisibility()" type=button value="Toggle Visibility">
       <input ng-click="toggleDOMAttachment()" type=button value="Toggle DOM Attachment">
@@ -65,6 +63,5 @@
     </map>
   </div>
 
-  <div plnkr-show></div>
 </body>
 </html>
