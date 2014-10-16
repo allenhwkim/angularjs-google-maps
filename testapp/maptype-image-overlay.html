@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="myApp">
+<html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
@@ -36,18 +36,11 @@
     tileSize: new google.maps.Size(256, 256)
   });
 </script>
-<script>
-  var app = angular.module('myApp', ['ngMap']);
-  app.controller('MapTypeImageOverlayCtrl', function($scope) {
-  });
-</script>
 </head>
 <body>
-    <div ng-controller="MapTypeImageOverlayCtrl">
       <map zoom="18" center="37.78313383212, -122.4039494991302">
         <overlay-map-type object="imageMapType" init-method="push">
         </overlay-map-type>
       </map>
-    </div>
 </body>
 </html>

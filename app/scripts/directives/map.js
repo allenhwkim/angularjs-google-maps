@@ -39,6 +39,7 @@
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
+/*jshint -W030*/
 ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $timeout) {
   var parser = Attr2Options;
   function getStyle(el,styleProp)
@@ -65,11 +66,7 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
     link: function (scope, element, attrs, ctrl) {
       var orgAttrs = parser.orgAttributes(element);
 
-      /*
-       * without this, bird_eyes_and_street_view.html and map_options does not work.
-       * I don't know why
-       */
-      scope.google = google; 
+      scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
 
       /**
        * create a new `div` inside map tag, so that it does not touch map element
@@ -91,81 +88,93 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
       }
 
       /**
-       * get map optoins
+       * initialize function
+       */
+      var initializeMap = function(mapOptions, mapEvents) {
+        var map = new google.maps.Map(el, {});
+        map.markers = {};
+        map.shapes = {};
+       
+        /**
+         * resize the map to prevent showing partially, in case intialized too early
+         */
+        $timeout(function() {
+          google.maps.event.trigger(map, "resize");
+        });
+
+        /**
+         * set options
+         */
+        mapOptions.zoom = mapOptions.zoom || 15;
+        var center = mapOptions.center;
+        if (!(center instanceof google.maps.LatLng)) {
+          delete mapOptions.center;
+          Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+              center, options.geoFallbackCenter);
+        }
+        map.setOptions(mapOptions);
+
+        /**
+         * set events
+         */
+        for (var eventName in mapEvents) {
+          if (eventName) {
+            google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+          }
+        }
+
+        /**
+         * set observers
+         */
+        parser.observeAttrSetObj(orgAttrs, attrs, map);
+
+        /**
+         * set controller and set objects
+         * so that map can be used by other directives; marker or shape 
+         * ctrl._objects are gathered when marker and shape are initialized before map is set
+         */
+        ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
+        ctrl.addObjects(ctrl._objects);
+
+        // /* providing method to add a marker used by user scope */
+        // map.addMarker = ctrl.addMarker;
+
+        /**
+         * set map for scope and controller and broadcast map event
+         * scope.map will be overwritten if user have multiple maps in a scope,
+         * thus the last map will be set as scope.map.
+         * however an `mapInitialized` event will be emitted every time.
+         */
+        scope.map = map;
+        scope.map.scope = scope;
+        //google.maps.event.addListenerOnce(map, "idle", function() {
+        scope.$emit('mapInitialized', map);  
+        //});
+
+        // the following lines will be deprecated on behalf of mapInitialized
+        // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
+        scope.maps = scope.maps || {}; 
+        scope.maps[options.id||Object.keys(scope.maps).length] = map;
+        scope.$emit('mapsInitialized', scope.maps);  
+      }; // function initializeMap()
+
+      /**
+       * get map options and events
        */
       var filtered = parser.filter(attrs);
-      console.log('filtered', filtered);
       var options = parser.getOptions(filtered, scope);
       var controlOptions = parser.getControlOptions(filtered);
-
-      var map = new google.maps.Map(el, {});
-      map.markers = {};
-      map.shapes = {};
-     
-      /**
-       * resize the map to prevent showing partially, in case intialized too early
-       */
-      $timeout(function() {
-        google.maps.event.trigger(map, "resize");
-      });
-
-      /**
-       * set options
-       */
       var mapOptions = angular.extend(options, controlOptions);
-      console.log("mapOptions", mapOptions);
-      mapOptions.zoom = mapOptions.zoom || 15;
-      var center = mapOptions.center;
-      if (!(center instanceof google.maps.LatLng)) {
-        delete mapOptions.center;
-        Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
-            center, options.geoFallbackCenter);
-      }
-      map.setOptions(mapOptions);
-
-      /**
-       * set events
-       */
       var mapEvents = parser.getEvents(scope, filtered);
-      for (var eventName in mapEvents) {
-        if (eventName) {
-          google.maps.event.addListener(map, eventName, mapEvents[eventName]);
-        }
-      }
+      console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
 
-      /**
-       * set observers
-       */
-      parser.observeAttrSetObj(orgAttrs, attrs, map);
-
-      /**
-       * set controller and set objects
-       * so that map can be used by other directives; marker or shape 
-       * ctrl._objects are gathered when marker and shape are initialized before map is set
-       */
-      ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
-      ctrl.addObjects(ctrl._objects);
-
-      // /* providing method to add a marker used by user scope */
-      // map.addMarker = ctrl.addMarker;
-
-      /**
-       * set map for scope and controller and broadcast map event
-       * scope.map will be overwritten if user have multiple maps in a scope,
-       * thus the last map will be set as scope.map.
-       * however an `mapInitialized` event will be emitted every time.
-       */
-      scope.map = map;
-      scope.map.scope = scope;
-      //google.maps.event.addListenerOnce(map, "idle", function() {
-      scope.$emit('mapInitialized', map);  
-      //});
-
-      // the following lines will be deprecated on behalf of mapInitialized
-      // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
-      scope.maps = scope.maps || {}; 
-      scope.maps[options.id||Object.keys(scope.maps).length] = map;
-      scope.$emit('mapsInitialized', scope.maps);  
+      if (attrs.initEvent) { // allows controlled initialization
+        scope.$on(attrs.initEvent, function() {
+          !ctrl.map && initializeMap(mapOptions, mapEvents); // init if not done
+        });
+      } else {
+        initializeMap(mapOptions, mapEvents);
+      } // if
     }
   }; 
 }]);

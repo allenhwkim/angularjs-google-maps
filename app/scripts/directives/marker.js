@@ -42,9 +42,18 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
     /**
      * set options
      */
-    if (options.icon && options.icon.path &&
-      options.icon.path.match(/^[A-Z_]+$/)) {
-      options.icon.path =  google.maps.SymbolPath[options.icon.path];
+    if (options.icon instanceof Object) {
+      if ((""+options.icon.path).match(/^[A-Z_]+$/)) {
+        options.icon.path =  google.maps.SymbolPath[options.icon.path];
+      }
+      for (var key in options.icon) {
+        var arr = options.icon[key];
+        if (key == "anchor" || key == "origin") {
+          options.icon[key] = new google.maps.Point(arr[0], arr[1]);
+        } else if (key == "size" || key == "scaledSize") {
+          options.icon[key] = new google.maps.Size(arr[0], arr[1]);
+        } 
+      }
     }
     if (!(options.position instanceof google.maps.LatLng)) {
       var orgPosition = options.position;

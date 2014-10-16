@@ -102,7 +102,6 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
           return scope.$eval($1);
         });
         //var compiledEl = $compile(html)(scope);
-        console.log(compiledHtml);
         infoWindow.setContent(compiledHtml);
         if (anchor) {
           infoWindow.setPosition(anchor);
