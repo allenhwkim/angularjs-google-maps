@@ -34,9 +34,6 @@
  *   <map center="[40.74, -74.18]" on-click="doThat()">
  *   </map>
  *
- *   <div map center="[40.74, -74.18]" on-click="doThat()">
- *   </div>
- *
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </div>
  */
