@@ -35,7 +35,7 @@
  *   </map>
  *
  *   <map geo-fallback-center="[40.74, -74.18]">
- *   </div>
+ *   </map>
  */
 /*jshint -W030*/
 ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $timeout) {
