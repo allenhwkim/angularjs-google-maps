@@ -4,7 +4,7 @@ GoogleMap AngularJS Directive
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
 **NOTE: 1.1.0 is released.**
-  * marker directive can have icon as JSON
+  * marker directive can have icon attribute as JSON
   * map with init-event attribute for initialization by an event
   
 **NOTE: 1.0.0 is released.**  
