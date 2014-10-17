@@ -12,23 +12,24 @@
  *     . mapInitialized
  *
  *   Restrict To:
- *     Element Or Attribute
+ *     Element
  *
  * @param {Array} geo-fallback-center 
- *    The center of map incase geo location failed. 
- *    This should not be used with `center`, since `center` overrides `geo-fallback-center`
- * @param {String} &lt;MapOption> Any Google map options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
- * @param {String} &lt;MapEvent> Any Google map events, https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ *    The center of map incase geolocation failed. i.e. [0,0]
+ * @param {String} init-event The name of event to initialize this map. 
+ *        If this option is given, the map won't be initialized until the event is received.
+ *        To invoke the event, use $scope.$emit or $scope.$broacast. 
+ *        i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
+ * @param {String} &lt;MapOption> Any Google map options, 
+ *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
+ * @param {String} &lt;MapEvent> Any Google map events, 
+ *        https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
  *     ... Any children directives
  *   </map>
- *   Or,
- *   <ANY map MAP_OPTIONS_OR_MAP_EVENTS ..>
- *     ... Any children directives
- *   </ANY>
- *
+ * 
  * Example:
  *   <map center="[40.74, -74.18]" on-click="doThat()">
  *   </map>
