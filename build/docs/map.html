@@ -42,7 +42,7 @@
 
     
     
-      <a href="map.js.html#line1" class="name-link"><h4 class="name" id="map"><span class="type-signature"></span>map<span class="signature">(geo-fallback-center, &lt;MapOption>, &lt;MapEvent>)</span><span class="type-signature"></span></h4></a>
+      <a href="map.js.html#line1" class="name-link"><h4 class="name" id="map"><span class="type-signature"></span>map<span class="signature">(geo-fallback-center, init-event, &lt;MapOption>, &lt;MapEvent>)</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -58,7 +58,7 @@
   The message emitted from this directive is;
     . mapInitialized</p>
 <p>  Restrict To:
-    Element Or Attribute</p>
+    Element</p>
     </div>
     
 
@@ -108,8 +108,33 @@
 
             
 
-            <td class="description last"><p>The center of map incase geo location failed. 
-   This should not be used with <code>center</code>, since <code>center</code> overrides <code>geo-fallback-center</code></p></td>
+            <td class="description last"><p>The center of map incase geolocation failed. i.e. [0,0]</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>init-event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The name of event to initialize this map. 
+       If this option is given, the map won't be initialized until the event is received.
+       To invoke the event, use $scope.$emit or $scope.$broacast. 
+       i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map></p></td>
         </tr>
 
     
@@ -132,7 +157,8 @@
 
             
 
-            <td class="description last"><p>Any Google map options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions</p></td>
+            <td class="description last"><p>Any Google map options, 
+       https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions</p></td>
         </tr>
 
     
@@ -155,7 +181,8 @@
 
             
 
-            <td class="description last"><p>Any Google map events, https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html</p></td>
+            <td class="description last"><p>Any Google map events, 
+       https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html</p></td>
         </tr>
 
     
@@ -222,20 +249,13 @@
   &lt;map MAP_OPTIONS_OR_MAP_EVENTS ..>
     ... Any children directives
   &lt;/map>
-  Or,
-  &lt;ANY map MAP_OPTIONS_OR_MAP_EVENTS ..>
-    ... Any children directives
-  &lt;/ANY>
 
 Example:
   &lt;map center="[40.74, -74.18]" on-click="doThat()">
   &lt;/map>
 
-  &lt;div map center="[40.74, -74.18]" on-click="doThat()">
-  &lt;/div>
-
   &lt;map geo-fallback-center="[40.74, -74.18]">
-  &lt;/div></code></pre>
+  &lt;/map></code></pre>
 
     
 </dd>
@@ -272,7 +292,7 @@ Example:
 
     
     
-      <a href="map.js.html#line66" class="name-link"><h4 class="name" id="link"><span class="type-signature">(static) </span>link<span class="signature">(scope, element, attrs)</span><span class="type-signature"></span></h4></a>
+      <a href="map.js.html#line64" class="name-link"><h4 class="name" id="link"><span class="type-signature">(static) </span>link<span class="signature">(scope, element, attrs)</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -408,7 +428,7 @@ Example:
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line66">line 66</a>
+        <a href="map.js.html">directives/map.js</a>, <a href="map.js.html#line64">line 64</a>
     </li></ul></dd>
     
 
