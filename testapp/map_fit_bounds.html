@@ -1,0 +1,31 @@
+<!doctype html>
+<html ng-app="myapp">
+  <head>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="http://code.angularjs.org/1.2.25/angular.js"></script>
+    <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
+    <script>
+      var app = angular.module('myapp', ['ngMap']);
+      app.controller('MyCtrl', function($scope) {
+        $scope.positions = [ [-24,132] ,[-25,131] ,[-26,130] ];
+        var bounds = new google.maps.LatLngBounds();
+        for (var i=0; i<$scope.positions.length; i++) {
+          var latlng = new google.maps.LatLng($scope.positions[i][0], $scope.positions[i][1]);
+          bounds.extend(latlng);
+        }
+    
+        $scope.$on('mapInitialized', function(event, map) {
+          map.setCenter(bounds.getCenter());
+          map.fitBounds(bounds);
+        });
+      });
+    </script>
+    <link rel="stylesheet" href="style.css"/>
+  </head>
+  <body ng-controller="MyCtrl">
+    <map center="-25,131">
+      <marker ng-repeat="pos in positions" position="{{pos}}"></marker>
+    </map>
+  </body>
+</html>
+

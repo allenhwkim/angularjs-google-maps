@@ -824,16 +824,17 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
  *    </info-window>
  *  </map>
  */
-ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(Attr2Options, $compile, $timeout)  {
   var parser = Attr2Options;
 
-  var getInfoWindow = function(options, events) {
+  var getInfoWindow = function(options, events, element) {
     var infoWindow;
 
     /**
      * set options
      */
-    if (!(options.position instanceof google.maps.LatLng)) {
+    if (options.position && 
+      !(options.position instanceof google.maps.LatLng)) {
       var address = options.position;
       options.position = new google.maps.LatLng(0,0);
       infoWindow = new google.maps.InfoWindow(options);
@@ -854,6 +855,22 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
       }
     }
 
+    /**
+     * set template ane template-relate functions
+     * it must have a container element with ng-non-bindable
+     */
+    var template = element.html().trim();
+    if (angular.element(template).length != 1) {
+      throw "info-window working as a template must have a container";
+    }
+    infoWindow.__template = template.replace(/\s?ng-non-bindable[='"]+/,"");
+
+    infoWindow.__compile = function(scope) {
+      var el = $compile(infoWindow.__template)(scope);
+      scope.$apply();
+      infoWindow.setContent(el.html());
+    };
+
     return infoWindow;
   };
 
@@ -868,58 +885,51 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', function(Attr2Options
       var events = parser.getEvents(scope, filtered);
       console.log('infoWindow', 'options', options, 'events', events);
 
-      /**
-       * it must have a container element with ng-non-bindable
-       */
-      var template = element.html().trim();
-      if (angular.element(template).length != 1) {
-        throw "info-window working as a template must have a container";
-      }
+      var infoWindow = getInfoWindow(options, events, element);
 
-      var infoWindow = getInfoWindow(options, events);
-      infoWindow.template = template.replace(/ng-non-/,"");
       mapController.addObject('infoWindows', infoWindow);
       parser.observeAttrSetObj(orgAttrs, attrs, infoWindow); /* observers */
+
+      // show InfoWindow when initialized
+      if (infoWindow.visible) {
+        if (!infoWindow.position) { throw "Invalid position"; }
+        scope.$on('mapInitialized', function(evt, map) {
+          $timeout(function() {
+            infoWindow.__compile(scope);
+            infoWindow.open(map);
+          });
+        });
+      }
+
+      // show InfoWindow on a marker  when initialized
+      if (infoWindow.visibleOnMarker) {
+        scope.$on('mapInitialized', function(evt, map) {
+          $timeout(function() {
+            var markerId = infoWindow.visibleOnMarker;
+            var marker = map.markers[markerId];
+            if (!marker) throw "Invalid marker id";
+            infoWindow.__compile(scope);
+            infoWindow.open(map, marker);
+          });
+        });
+      }
 
       /**
        * provide showInfoWindow method to scope
        */
-      scope.showInfoWindow  = scope.showInfoWindow || function(event, id, anchor) {
-        var infoWindow = mapController.map.infoWindows[id];
-        var html = infoWindow.template.trim();
-        var compiledHtml = html.replace(/{{([^}]+)}}/g, function(_,$1) {
-          return scope.$eval($1);
-        });
-        //var compiledEl = $compile(html)(scope);
-        infoWindow.setContent(compiledHtml);
-        if (anchor) {
-          infoWindow.setPosition(anchor);
-          infoWindow.open(mapController.map);
-        } else if (this.getPosition) {
-          infoWindow.open(mapController.map, this);
-        } else {
-          infoWindow.open(mapController.map);
-        }
-      }
+      scope.showInfoWindow  = scope.showInfoWindow ||
+        function(event, id, anchor) {
+          var infoWindow = mapController.map.infoWindows[id];
+          infoWindow.__compile(scope);
+          if (anchor) {
+            infoWindow.open(mapController.map, anchor);
+          } else if (this.getPosition) {
+            infoWindow.open(mapController.map, this);
+          } else {
+            infoWindow.open(mapController.map);
+          }
+        };
 
-      // show InfoWindow when initialized
-      if (infoWindow.visible) {
-        scope.$on('mapInitialized', function(evt, map) {
-          var compiledEl = $compile(infoWindow.template)(scope);
-          infoWindow.setContent(compiledEl.html());
-          infoWindow.open(mapController.map);
-        });
-      }
-      // show InfoWindow on a marker  when initialized
-      if (infoWindow.visibleOnMarker) {
-        scope.$on('mapInitialized', function(evt, map) {
-          var marker = mapController.map.markers[infoWindow.visibleOnMarker];
-          if (!marker) throw "Invalid marker id";
-          var compiledEl = $compile(infoWindow.template)(scope);
-          infoWindow.setContent(compiledEl.html());
-          infoWindow.open(mapController.map, marker);
-        });
-      }
     } //link
   }; // return
 }]);// function
