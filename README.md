@@ -18,7 +18,7 @@ GoogleMap AngularJS Directive
   * map-type
   * overlay-map-type
 
-[Demo](http://allenhwkim.github.io/angularjs-google-maps) &nbsp; &nbsp;
+[Demo](http://ngmap.github.io)  
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)
 
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach for this purpose than the existing one, such as;
