@@ -1295,7 +1295,7 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
 /*jshint -W089*/
-ngMap.MapController = function($scope) { 
+ngMap.MapController = function() { 
 
   this.map = null;
   this._objects = [];
