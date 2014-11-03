@@ -1,8 +1,8 @@
 <!doctype html>
 <html ng-app="myapp">
   <head>
-<script src="//maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,visualization,panoramio"></script>
-<script src="//code.angularjs.org/1.2.25/angular.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,visualization,panoramio"></script>
+<script src="https://code.angularjs.org/1.2.25/angular.js"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -23,7 +23,7 @@ app.controller('MyCtrl', function($scope, $compile) {
   };
   $scope.showStore = function(evt, id) {
     $scope.store = $scope.stores[id];
-    $scope.showInfoWindow(evt, 'foo', this);
+    $scope.showInfoWindow.apply(this, [evt, 'foo']);
   };
 });  
 </script>
@@ -37,7 +37,7 @@ app.controller('MyCtrl', function($scope, $compile) {
       
         <info-window id="foo">
           <div ng-non-bindable="">
-            {{store.position}}<br/>
+            Lat/Lng: {{this.getPosition()}}<br/>
             <ul>
               <li ng-repeat='item in store.items'>{{item}}</li>
             </ul>
@@ -49,6 +49,14 @@ app.controller('MyCtrl', function($scope, $compile) {
           on-click="showStore(event, id)"
         ></marker>
         
+        <info-window id="bar">
+          <div ng-non-bindable="">
+            Lat: {{this.getPosition().lat()}}<br/>
+            Lng: {{this.getPosition().lng()}}<br/>
+          </div>
+        </info-window>
+
+        <marker position="41, -79" on-click="showInfoWindow('bar')" />
       </map>
     </div>
   

@@ -82,6 +82,16 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
       infoWindow.setContent(el.html());
     };
 
+    infoWindow.__eval = function(event) {
+      var template = infoWindow.__template;
+      var _this = this;
+      template = template.replace(/{{(event|this)[^;\}]+}}/g, function(match) {
+        var expression = match.replace(/[{}]/g, "").replace("this.", "_this.");
+        return eval(expression);
+      });
+      return template;
+    };
+
     return infoWindow;
   };
 
@@ -106,6 +116,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
         if (!infoWindow.position) { throw "Invalid position"; }
         scope.$on('mapInitialized', function(evt, map) {
           $timeout(function() {
+            infoWindow.__template = infoWindow.__eval.apply(this, [evt]);
             infoWindow.__compile(scope);
             infoWindow.open(map);
           });
@@ -119,6 +130,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
             var markerId = infoWindow.visibleOnMarker;
             var marker = map.markers[markerId];
             if (!marker) throw "Invalid marker id";
+            infoWindow.__template = infoWindow.__eval.apply(this, [evt]);
             infoWindow.__compile(scope);
             infoWindow.open(map, marker);
           });
@@ -131,6 +143,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
       scope.showInfoWindow  = scope.showInfoWindow ||
         function(event, id, anchor) {
           var infoWindow = mapController.map.infoWindows[id];
+          infoWindow.__template = infoWindow.__eval.apply(this, [event]);
           infoWindow.__compile(scope);
           if (anchor) {
             infoWindow.open(mapController.map, anchor);

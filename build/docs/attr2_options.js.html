@@ -280,6 +280,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
+console.log('args', args);
           scope[funcName].apply(this, [event].concat(args));
           scope.$apply();
         }
