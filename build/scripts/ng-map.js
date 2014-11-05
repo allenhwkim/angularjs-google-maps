@@ -868,7 +868,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
     infoWindow.__compile = function(scope) {
       var el = $compile(infoWindow.__template)(scope);
       scope.$apply();
-      infoWindow.setContent(el.html());
+      infoWindow.setContent(el[0]);
     };
 
     infoWindow.__eval = function(event) {

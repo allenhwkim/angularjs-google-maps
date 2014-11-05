@@ -20,9 +20,9 @@
   app.controller('IconComplexCtrl', function($scope) {
     $scope.image = {
       url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',        
-      size: new google.maps.Size(20, 32), 
-      origin: new google.maps.Point(0,0),
-      anchor: new google.maps.Point(0, 32)
+      size: [20, 32], 
+      origin: [0,0],
+      anchor: [0, 32]
     };
     $scope.shape = {
       coords: [1, 1, 1, 20, 18, 20, 18 , 1],

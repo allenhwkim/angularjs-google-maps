@@ -1,0 +1,44 @@
+<!doctype html>
+<html ng-app="myapp">
+  <head>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,visualization,panoramio"></script>
+<script src="https://code.angularjs.org/1.2.25/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/info-window.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+var app = app || angular.module('myapp', ['ngMap']);
+app.controller('MyCtrl', function($scope) {
+  $scope.clicked = function() {
+    alert('Clicked a link inside infoWindow');
+  };
+});  
+</script>
+<script src="script.js"></script>
+<link rel="stylesheet" href="style.css"/>
+  </head>
+  <body>
+    <div ng-controller="MyCtrl">
+      <map center="41,-87" zoom="3">
+      
+        <marker position="41, -87" on-click="showInfoWindow('foo')"></marker>
+        <info-window id="foo">
+          <div ng-non-bindable="">
+            Lat/Lng: {{this.getPosition()}}<br/>
+            <a href="#" ng-click="clicked()">Click Here</a>
+          </div>
+        </info-window>
+        
+      </map>
+    </div>
+  
+  </body>
+</html>
