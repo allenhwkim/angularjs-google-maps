@@ -108,7 +108,7 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
         if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
           Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
-              center, options.geoFallbackCenter);
+              center, {fallbackLocation: options.geoFallbackCenter});
         }
         map.setOptions(mapOptions);
 
