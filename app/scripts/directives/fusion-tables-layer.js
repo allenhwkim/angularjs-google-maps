@@ -2,17 +2,17 @@
  * @ngdoc directive
  * @name fusion-tables-layer
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
- *   <map zoom="11" center="41.850033, -87.6500523">
+ *   <ng-map zoom="11" center="41.850033, -87.6500523">
  *     <fusion-tables-layer query="{
  *       select: 'Geocodable address',
  *       from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
  *     </fusion-tables-layer>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
@@ -31,9 +31,11 @@ ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);

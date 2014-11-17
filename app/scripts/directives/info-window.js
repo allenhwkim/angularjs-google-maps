@@ -7,7 +7,7 @@
  * @description 
  *   Defines infoWindow and provides compile method
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element
  *
@@ -18,12 +18,12 @@
  * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <info-window id="foo" ANY_OPTIONS ANY_EVENTS"></info-window>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
- *  <map center="41.850033,-87.6500523" zoom="3">
+ *  <ng-map center="41.850033,-87.6500523" zoom="3">
  *    <info-window id="1" position="41.850033,-87.6500523" >
  *      <div ng-non-bindable>
  *        Chicago, IL<br/>
@@ -33,7 +33,7 @@
  *        Tile Coordinate: {{tileCoordinate.x}}, {{tileCoordinate.y}} at Zoom Level {{map.getZoom()}}
  *      </div>
  *    </info-window>
- *  </map>
+ *  </ng-map>
  */
 ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(Attr2Options, $compile, $timeout)  {
   var parser = Attr2Options;
@@ -97,8 +97,11 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
 
   return {
     restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       element.css('display','none');
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);

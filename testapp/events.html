@@ -54,7 +54,7 @@
       All event-related attributes are preceded by 'on-', i.e. on-click, on-mouseover, etc
       <br/>
       <br/>
-      <map zoom="11" center="{{latlng}}" 
+      <ng-map zoom="11" center="{{latlng}}" 
           on-click="setCenter(event)"
 	  tilt="0">
         <marker position="[40.79, -74.20]" 
@@ -67,7 +67,7 @@
           on-drag="drag()"
           on-dragend="dragEnd()"
           />
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

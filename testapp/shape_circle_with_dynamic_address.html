@@ -24,7 +24,7 @@ function MyCtrl($scope) {
 
 <body>
     <div ng-controller="MyCtrl">
-       <map zoom="10" center="[0,0]">
+       <ng-map zoom="10" center="[0,0]">
          <shape id="circle" name="circle" centered="true" 
             center="{{address}}"
             stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2" 
@@ -33,7 +33,7 @@ function MyCtrl($scope) {
             center="current-position"
             stroke-color='#0000FF' stroke-opacity="0.8" stroke-weight="2" 
             radius="4000" editable="true" ></shape>
-      </map>
+      </ng-map>
 
       <br/>Address : <input ng-model="address" />
     </div>

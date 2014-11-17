@@ -7,7 +7,7 @@
  * @description 
  *   Build custom control and set to the map with position
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element
  *
@@ -17,13 +17,13 @@
  * @example
  *
  * Example: 
- *  <map center="41.850033,-87.6500523" zoom="3">
+ *  <ng-map center="41.850033,-87.6500523" zoom="3">
  *    <custom-control id="home" position="TOP_LEFT" index="1">
  *      <div style="background-color: white;">
  *        <b>Home</b>
  *      </div>
  *    </custom-control>
- *  </map>
+ *  </ng-map>
  *
  */
 /*jshint -W089*/
@@ -32,8 +32,11 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
 
   return {
     restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       element.css('display','none');
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);

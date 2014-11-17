@@ -64,9 +64,9 @@
         <input ng-click="showMarkers()" type=button value="Show All Markers">
         <input ng-click="deleteMarkers()" type=button value="Delete Markers">
       </div>
-      <map center="37.7699298, -122.4469157" zoom="12" on-click="addMarker()">
+      <ng-map center="37.7699298, -122.4469157" zoom="12" on-click="addMarker()">
         <marker ng-repeat="pos in positions" position="{{pos.lat}}, {{pos.lng}}"></marker>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

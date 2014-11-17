@@ -49,7 +49,7 @@
       <input ng-click="removeLine()" type=button value="Remove Line">
       <input ng-click="addLine()" type=button value="Restore Line">
     </div>
-   <map zoom="3" center="0, -180" map-type-id="TERRAIN">
+   <ng-map zoom="3" center="0, -180" map-type-id="TERRAIN">
      <shape name="polyline" id="foo"
        path="[
          [37.772323, -122.214897],
@@ -62,7 +62,7 @@
        stroke-opacity="1.0"
        stroke-weight="2">
      </shape>
-   </map>
+   </ng-map>
   </div>
 
 </body>

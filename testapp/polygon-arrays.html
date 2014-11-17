@@ -48,7 +48,7 @@ app.controller('PolygonArraysCtrl', function($scope) {
 
 <body>
   <div ng-controller="PolygonArraysCtrl">
-    <map zoom="5" 
+    <ng-map zoom="5" 
       center="24.886436490787712, -70.2685546875" 
       map-type-id="TERRAIN">
      <shape name="polygon" 
@@ -64,7 +64,7 @@ app.controller('PolygonArraysCtrl', function($scope) {
        fill-color="#FF0000"
        fill-opacity="0.35">
      </shape>
-   </map>
+   </ng-map>
   </div>
 
 </body>

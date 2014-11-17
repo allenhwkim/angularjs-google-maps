@@ -36,7 +36,7 @@ console.log('$scope', $scope);
    When the user changes the bounds of the rectangle,
    an info window pops up displaying the new bounds.
     <div ng-controller="RectangleEventCtrl">
-      <map zoom="9" center="44.5452, -78.5389">
+      <ng-map zoom="9" center="44.5452, -78.5389">
         <shape name="rectangle" 
           editable="true"
           draggable="true"
@@ -50,7 +50,7 @@ console.log('$scope', $scope);
             New south-west corner: {{sw.lat()}}, {{sw.lng()}}
           </div>
         </info-window>
-      </map>
+      </ng-map>
             <b>Rectangle moved.</b><br/>
             New north-east corner: {{ne.lat()}}, {{ne.lng()}}<br/>
             New south-west corner: {{sw.lat()}}, {{sw.lng()}}

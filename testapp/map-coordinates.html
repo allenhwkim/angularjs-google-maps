@@ -88,7 +88,7 @@
     <div ng-controller="BasicCtrl1">
       Showing static coordinates of Chicago
       <br/>
-      <map center="41.850033,-87.6500523" zoom="3">
+      <ng-map center="41.850033,-87.6500523" zoom="3">
         <info-window id="1" position="41.850033,-87.6500523" visible="true">
           <div ng-non-bindable>
             Chicago, IL<br/>
@@ -98,7 +98,7 @@
             Tile Coordinate: {{tileCoordinate.x}}, {{tileCoordinate.y}} at Zoom Level {{map.getZoom()}}
           </div>
         </info-window>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

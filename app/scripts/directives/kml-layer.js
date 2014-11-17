@@ -4,7 +4,7 @@
  * @requires Attr2Options 
  * @description 
  *   renders Kml layer on a map
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @param {Url} url url of the kml layer
@@ -13,15 +13,15 @@
  * @param {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <kml-layer ANY_KML_LAYER ANY_KML_LAYER_EVENTS"></kml-layer>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
  *
- *   <map zoom="11" center="[41.875696,-87.624207]">
+ *   <ng-map zoom="11" center="[41.875696,-87.624207]">
  *     <kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" ></kml-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
@@ -37,9 +37,12 @@ ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);

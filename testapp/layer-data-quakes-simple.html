@@ -35,11 +35,11 @@
 </head>
 <body>
     <div ng-controller="LayerDataQuakesSimpleCtrl">
-      <map zoom="3" center="20, -160">
+      <ng-map zoom="3" center="20, -160">
         <map-data 
           set-style="styleFunc"
           load-geo-json="scripts/quakes.geo.json"></map-data>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

@@ -30,10 +30,10 @@ describe('marker', function() {
     module('ngMap');
     inject(function($rootScope, $compile) {
       elm = angular.element(
-        '<map center="[40.74, -74.18]">'+ 
+        '<ng-map center="[40.74, -74.18]">'+ 
         '  <marker position="[40.74, -74.18]" draggable="true"></marker>'+
         '  <marker position="[40.74, -74.18]" on-click="alert(1)"></marker>'+
-        '</map>');
+        '</ng-map>');
       scope = $rootScope;
       $compile(elm)(scope);
       scope.$digest();

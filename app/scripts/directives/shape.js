@@ -11,7 +11,7 @@
  *     . rectangle
  *     . groundOverlay(or image)
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element
  *
@@ -25,36 +25,36 @@
  * @param {String} &lt;MapEvent> Any Shape events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></MARKER>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
  *      path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" ></shape>
- *    </map>
+ *    </ng-map>
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
  *      paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" ></shape>
- *   </map>
+ *   </ng-map>
  *   
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="rectangle" name="rectangle" stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2"
  *      bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" ></shape>
- *   </map>
+ *   </ng-map>
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="circle" name="circle" stroke-color='#FF0000' stroke-opacity="0.8"stroke-weight="2" 
  *      center="[40.70,-74.14]" radius="4000" editable="true" ></shape>
- *   </map>
+ *   </ng-map>
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
  *      bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" ></shape>
- *   </map>
+ *   </ng-map>
  *
  *  For full-working example, please visit 
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
@@ -129,12 +129,15 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
     /**
      * link function
      * @private
      */
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var shapeOptions = parser.getOptions(filtered);

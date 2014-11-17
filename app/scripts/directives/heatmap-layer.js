@@ -3,15 +3,15 @@
  * @name heatmap-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="11" center="[41.875696,-87.624207]">
+ *   <ng-map zoom="11" center="[41.875696,-87.624207]">
  *     <heatmap-layer data="taxiData"></heatmap-layer>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Options, $window) {
@@ -19,9 +19,11 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
 
       /**

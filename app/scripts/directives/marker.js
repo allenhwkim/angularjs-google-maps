@@ -6,7 +6,7 @@
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element 
  *
@@ -20,18 +20,18 @@
  * @param {String} &lt;MapEvent> Any Marker events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <marker ANY_MARKER_OPTIONS ANY_MARKER_EVENTS"></MARKER>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
- *   <map center="[40.74, -74.18]">
+ *   <ng-map center="[40.74, -74.18]">
  *    <marker position="[40.74, -74.18]" on-click="myfunc()"></div>
- *   </map>
+ *   </ng-map>
  *
- *   <map center="the cn tower">
+ *   <ng-map center="the cn tower">
  *    <marker position="the cn tower" on-click="myfunc()"></div>
- *   </map>
+ *   </ng-map>
  */
 ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   var parser = Attr2Options;
@@ -81,8 +81,12 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
 
   return {
     restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
+      console.log('mapController', mapController);
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);

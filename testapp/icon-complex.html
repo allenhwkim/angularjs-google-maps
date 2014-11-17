@@ -41,14 +41,14 @@
 
 <body>
     <div ng-controller="IconComplexCtrl">
-      <map zoom="10" center="-33.9, 151.2">
+      <ng-map zoom="10" center="-33.9, 151.2">
         <marker ng-repeat="beach in beaches"
           icon="{{image}}"
           shape="{{shape}}"
           title="{{beach[0]}}" 
           position="{{beach[1]}}, {{beach[2]}}" 
           z-index="{{beach[3]}}"></marker>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

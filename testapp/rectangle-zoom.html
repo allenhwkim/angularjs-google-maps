@@ -27,7 +27,7 @@
 
 <body>
     <div ng-controller="RectangleZoomCtrl">
-      <map zoom="11" 
+      <ng-map zoom="11" 
         center="33.6803003, -116.173894" 
         map-type-id="TERRAIN"
         on-zoom_changed="zoomChanged()">
@@ -38,7 +38,7 @@
           fill-color="#FF0000"
           fill-opacity="0.35">
         </shape>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

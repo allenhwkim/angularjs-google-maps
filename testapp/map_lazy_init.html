@@ -20,9 +20,9 @@
 <body>
   <div style="position:relavtive">
     <img style="position:absolute" src="https://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=600x400">
-    <map style="width:600px; height: 400px" 
+    <ng-map style="width:600px; height: 400px" 
       init-event="init-map"
-      center="[-15.800513,-47.91378]" zoom="11"></map>
+      center="[-15.800513,-47.91378]" zoom="11"></ng-map>
     <button ng-click="$broadcast('init-map')">Init Map</button>
   </div>
 </body>

@@ -27,12 +27,12 @@
 
 <body>
     <div ng-controller="MyCtrl">
-      <map zoom="11" center="[40.74, -74.18]">
+      <ng-map zoom="11" center="[40.74, -74.18]">
         <marker ng-repeat="p in positions" position="{{p}}" title="pos: {{p}}"></marker>
-      </map>
-      <map zoom="11" center="[40.74, -74.18]">
+      </ng-map>
+      <ng-map zoom="11" center="[40.74, -74.18]">
         <marker ng-repeat="p in positions2" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

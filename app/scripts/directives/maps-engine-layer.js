@@ -2,14 +2,14 @@
  * @ngdoc directive
  * @name maps-engine-layer
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
- *   <map zoom="14" center="[59.322506, 18.010025]">
+ *   <ng-map zoom="14" center="[59.322506, 18.010025]">
  *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
@@ -28,9 +28,12 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);

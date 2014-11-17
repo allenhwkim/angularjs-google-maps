@@ -3,15 +3,15 @@
  * @name weather-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <weather-layer></weather-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
@@ -27,9 +27,11 @@ ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);

@@ -30,7 +30,7 @@
 
 <body>
     <div ng-controller="MyCtrl">
-      <map zoom="11" center="[40.74, -74.18]">
+      <ng-map zoom="11" center="[40.74, -74.18]">
          <shape ng-repeat="shape in allShapes" 
            name="{{shape.name}}"
            stroke-color="#FF0000"
@@ -41,7 +41,7 @@
            center="{{shape.center}}"
            radius="{{shape.radius}}"
            stroke-weight="2"></shape>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

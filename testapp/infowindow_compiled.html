@@ -33,7 +33,7 @@ app.controller('MyCtrl', function($scope, $compile) {
   <body>
 
     <div ng-controller="MyCtrl">
-      <map center="41,-87" zoom="3">
+      <ng-map center="41,-87" zoom="3">
       
         <info-window id="foo">
           <div ng-non-bindable="">
@@ -57,7 +57,7 @@ app.controller('MyCtrl', function($scope, $compile) {
         </info-window>
 
         <marker position="41, -79" on-click="showInfoWindow('bar')" />
-      </map>
+      </ng-map>
     </div>
   
   </body>

@@ -25,7 +25,7 @@
 
 <body>
   <div ng-controller="OverlaySymbolArrowCtrl">
-    <map zoom="6" center="20.291, 153.027" map-type-id="TERRAIN">
+    <ng-map zoom="6" center="20.291, 153.027" map-type-id="TERRAIN">
       <shape name="polyline" id="foo"
         path="[[22.291, 153.027], [18.291, 153.027]]"
         icons="[{
@@ -35,7 +35,7 @@
           offset: '100%'
         }]">
       </shape>
-   </map>
+   </ng-map>
   </div>
 
 </body>

@@ -3,15 +3,15 @@
  * @name overlay-map-type
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <overlay-map-type index="0" object="coordinateMapType"></map-type>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
@@ -19,9 +19,11 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var overlayMapTypeObject;
       var initMethod = attrs.initMethod || "insertAt";
       if (attrs.object) {

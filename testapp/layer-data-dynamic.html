@@ -47,14 +47,14 @@
 </head>
 <body>
     <div ng-controller="LayerDataEventCtrl">
-      <map zoom="4" center="-28, 137.883">
+      <ng-map zoom="4" center="-28, 137.883">
         <map-data 
           set-style="styleFunc"
           on-click="onClick()"
           on-mouseover="onMouseover()"
           on-mouseout="onMouseout()"
           load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
-      </map>
+      </ng-map>
       <h1>{{letter}}</h1>
     </div>
 </body>

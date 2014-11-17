@@ -23,9 +23,9 @@
     <link rel="stylesheet" href="style.css"/>
   </head>
   <body ng-controller="MyCtrl">
-    <map center="-25,131">
+    <ng-map center="-25,131">
       <marker ng-repeat="pos in positions" position="{{pos}}"></marker>
-    </map>
+    </ng-map>
   </body>
 </html>
 

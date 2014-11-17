@@ -123,7 +123,7 @@ gallPetersMapType.projection = new GallPetersProjection();
 </head>
 <body>
     <div ng-controller="MapProjectionSimpleCtrl">
-      <map zoom="0" center="0,0"
+      <ng-map zoom="0" center="0,0"
         on-click="alertLocation()"
         street-view-control="false"
         map-type-id="gallPetersMap"
@@ -132,7 +132,7 @@ gallPetersMapType.projection = new GallPetersProjection();
         }">
         <map-type name="gallPetersMap" object="gallPetersMapType">
         </map-type>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

@@ -7,7 +7,7 @@ describe('shape', function() {
     module('ngMap');
     inject(function($rootScope, $compile) {
       elm = angular.element(
-         '<map zoom="11" center="[40.74, -74.18]">'+
+         '<ng-map zoom="11" center="[40.74, -74.18]">'+
          '   <shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"'+
          '     path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" />'+
          '   <shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"'+
@@ -18,7 +18,7 @@ describe('shape', function() {
          '     center="[40.70,-74.14]" radius="4000" editable="true" />'+
          '   <shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"'+
          '     bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" />'+
-         '</map>');
+         '</ng-map>');
       scope = $rootScope;
       $compile(elm)(scope);
       scope.$digest();

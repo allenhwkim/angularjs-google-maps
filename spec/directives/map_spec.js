@@ -8,7 +8,7 @@ describe('map', function() {
     module('ngMap');
     inject(function($rootScope, $compile) {
       elm = angular.element(
-        '<map zoom="11"'+
+        '<ng-map zoom="11"'+
           ' center="[40.74, -74.18]"'+ 
           ' disable-default-u-i="true"' +
           ' disable-double-click-zoom="true" '+ 
@@ -34,7 +34,7 @@ describe('map', function() {
           " scale-control-options='{position:\"bottom_right\", style:\"default\"}'  "+
           ' street-view-control="true"  '+
           " street-view-control-options='{position:\"right_center\"}' "+
-          '></map>');
+          '></ng-map>');
       scope = $rootScope;
       $compile(elm)(scope);
       scope.$digest();
