@@ -25,7 +25,7 @@ function MyCtrl($scope) {
 <body>
     <div ng-controller="MyCtrl">
       <ng-map zoom="11" center="[{{lat}}, {{lng}}]" style="width:600px; height:400px">
-        <marker position="[{{lat}}, {{lng}}]" title="{{lat}}, {{lng}}"></marker>
+        <marker position="[{{lat}}, {{lng}}]" title="Position: {{lat}}, {{lng}}"></marker>
       </ng-map>
       <br/>Latigude : <input type="number" ng-model="lat" />
       <br/>Longitude : <input type="number" ng-model="lng" />

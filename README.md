@@ -80,7 +80,7 @@ Directives
 
   Example: 
 
-    <map zoom="11" 
+    <ng-map zoom="11" 
       center="[40.74, -74.18]" 
       disable-default-u-i="true"
       disable-double-click-zoom="true"
@@ -92,14 +92,14 @@ Directives
       min-zoom="8"
       tilt="45"
       map-type-id="TERRAIN">
-    </map>
+    </ng-map>
   i.e. < zoom="11" center="[40.74, -74.18]"
 
 #### &lt;marker .. > 
 
   As defined on [MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions), you can add any attributes, and events starting witn `on-`.
 
-    <map center="[40.74, -74.18]">
+    <ng-map center="[40.74, -74.18]">
       <marker
           position="[40.76, -74.16]"
           title="Hello Marker"
@@ -107,12 +107,12 @@ Directives
           draggable="true"
           visible="true"
           icon="beachflag.png"></marker>
-    </map>
+    </ng-map>
 
 #### &lt;shape .. >
   Polyline, Circle, Polygon, Rectangle, and Images
 
-     <map zoom="11" center="[40.74, -74.18]">
+     <ng-map zoom="11" center="[40.74, -74.18]">
         <shape id="polyline" name="polyline" 
           geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
           path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" ></shape>
@@ -128,89 +128,89 @@ Directives
         <shape id="image" name="image" 
           url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
           bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" ></shape>
-     </map>
+     </ng-map>
 
 #### &lt;info-window .. >
 Example:
 
-    <map center="-25.363882,131.044922" zoom="4">
+    <ng-map center="-25.363882,131.044922" zoom="4">
       <info-window id="bar" position="-25.363882,131.044922" visible="true">
         <div ng-non-bindable>
           <div id="siteNotice"></div>
         </div>
       </info-window>
-    </map>
+    </ng-map>
 
 #### &lt;custom-control .. > 
 Example:
 
-      <map center="41.850033, -87.6500523" zoom="6">
+      <ng-map center="41.850033, -87.6500523" zoom="6">
         <custom-control id="home" position="TOP_RIGHT" index="1" on-click="click()">
           <div style="background-color: black; color:#fff;cursor:pointer">Home1</div>
         </custom-control>
-      </map>
+      </ng-map>
 
 #### &lt;map-data .. > 
 Example:
 
-      <map zoom="4" center="-28, 137.883">
+      <ng-map zoom="4" center="-28, 137.883">
         <map-data 
           load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
-      </map>
+      </ng-map>
 
 ### Layer Directives 
 
 #### &lt;bicycling-layer .. > 
 
-      <map zoom="14" center="42.3726399, -71.1096528">
+      <ng-map zoom="14" center="42.3726399, -71.1096528">
         <bicycling-layer></bicycling-layer>
-      </map>
+      </ng-map>
 
 #### &lt;weather-layer .. > (deprecated) and &lt;cloud-layer .. > (deprecated)
 
-      <map zoom="6" center="49.265984,-123.127491">
+      <ng-map zoom="6" center="49.265984,-123.127491">
         <weather-layer temperature-units="FAHRENHEIT"></weather-layer>
         <cloud-layer></cloud-layer>
-      </map>
+      </ng-map>
 
 #### &lt;fusion-tables-layer .. > 
 
-      <map zoom="11" center="41.850033, -87.6500523">
+      <ng-map zoom="11" center="41.850033, -87.6500523">
         <fusion-tables-layer query="{
           select: 'Geocodable address',
           from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
         </fusion-tables-layer>
-      </map>
+      </ng-map>
 
 #### &lt;heatmap-layer .. > 
 
-      <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
+      <ng-map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
         <heatmap-layer id="foo" data="taxiData"></heatmap>
-      </map>
+      </ng-map>
 
 #### &lt;maps-engine-layer .. > 
 
-      <map center="59.322506, 18.010025" zoom="14">
+      <ng-map center="59.322506, 18.010025" zoom="14">
         <maps-engine-layer
           layer-id="06673056454046135537-08896501997766553811">
         </maps-engine-layer>
-      </map>
+      </ng-map>
 
 #### &lt;traffic-layer> 
 
-      <map zoom="13" center="34.04924594193164, -118.24104309082031">
+      <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
         <traffic-layer></traffic-layer>
-      </map>
+      </ng-map>
 
 #### &lt;transit-layer> 
 
-      <map zoom="13" center="51.501904,-0.115871">
+      <ng-map zoom="13" center="51.501904,-0.115871">
         <transit-layer></transit-layer>
-      </map>
+      </ng-map>
 
 #### &lt;dynamic-maps-engine-layer .. > 
 
-      <map center="59.322506, 18.010025" zoom="14">
+      <ng-map center="59.322506, 18.010025" zoom="14">
         <dynamic-maps-engine-layer
           suppress-info-windows="true"
           clickable="true"
@@ -218,29 +218,29 @@ Example:
           on-mouseout="onMouseout()"
           layer-id="06673056454046135537-08896501997766553811">
         </dynamic-maps-engine-layer>
-      </map>
+      </ng-map>
 
 #### &lt;kml-layer .. > 
 
-      <map zoom="11" center="41.875696,-87.624207">
+      <ng-map zoom="11" center="41.875696,-87.624207">
         <kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml"></kml-layer>
-      </map>
+      </ng-map>
 
 ### MapType Directives 
 
 #### &lt;map-type .. >
 
-      <map zoom="10" center="41.850033,-87.6500523"
+      <ng-map zoom="10" center="41.850033,-87.6500523"
         <map-type name="coordinate" object="CoordMapType">
         </map-type>
-      </map>
+      </ng-map>
 
 #### &lt;overlay-map-type .. >
 
-      <map zoom="10" center="41.850033,-87.6500523">
+      <ng-map zoom="10" center="41.850033,-87.6500523">
         <overlay-map-type object="CoordMapType" index="0">
         </overlay-map-type>
-      </map>
+      </ng-map>
 
 Advanced Examples
 -------------------
