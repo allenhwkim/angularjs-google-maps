@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+var app = angular.module('myApp', ['ngMap']);
+app.controller('MyCtrl', function($scope) {
+  $scope.count = 0;
+  $scope.mousemoved = function() {
+    $scope.count++;
+    $scope.zoom = $scope.map.getZoom();
+  }
+});
+</script>
+</head>
+
+<body ng-controller="MyCtrl">
+  <ng-map center="40.74, -74.18" on-mousemove="mousemoved()"></ng-map>
+  mouse moved {{count}} times
+  zoom :  {{zoom}}
+</body>
+</html>
