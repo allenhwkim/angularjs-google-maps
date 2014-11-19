@@ -57,7 +57,7 @@
     . polyline
     . rectangle
     . groundOverlay(or image)</p>
-<p>  Requires:  map directive</p>
+<p>  Requires:  ng-map directive</p>
 <p>  Restrict To:  Element</p>
     </div>
     
@@ -218,36 +218,36 @@
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>Usage: 
-  &lt;map MAP_ATTRIBUTES>
+  &lt;ng-map MAP_ATTRIBUTES>
    &lt;shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS">&lt;/MARKER>
-  &lt;/map>
+  &lt;/ng-map>
 
 Example: 
 
-  &lt;map zoom="11" center="[40.74, -74.18]">
+  &lt;ng-map zoom="11" center="[40.74, -74.18]">
     &lt;shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
      path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" >&lt;/shape>
-   &lt;/map>
+   &lt;/ng-map>
 
-  &lt;map zoom="11" center="[40.74, -74.18]">
+  &lt;ng-map zoom="11" center="[40.74, -74.18]">
     &lt;shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
      paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" >&lt;/shape>
-  &lt;/map>
+  &lt;/ng-map>
   
-  &lt;map zoom="11" center="[40.74, -74.18]">
+  &lt;ng-map zoom="11" center="[40.74, -74.18]">
     &lt;shape id="rectangle" name="rectangle" stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2"
      bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" >&lt;/shape>
-  &lt;/map>
+  &lt;/ng-map>
 
-  &lt;map zoom="11" center="[40.74, -74.18]">
+  &lt;ng-map zoom="11" center="[40.74, -74.18]">
     &lt;shape id="circle" name="circle" stroke-color='#FF0000' stroke-opacity="0.8"stroke-weight="2" 
      center="[40.70,-74.14]" radius="4000" editable="true" >&lt;/shape>
-  &lt;/map>
+  &lt;/ng-map>
 
-  &lt;map zoom="11" center="[40.74, -74.18]">
+  &lt;ng-map zoom="11" center="[40.74, -74.18]">
     &lt;shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
      bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" >&lt;/shape>
-  &lt;/map>
+  &lt;/ng-map>
 
  For full-working example, please visit 
    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)</code></pre>
@@ -293,7 +293,7 @@ Example:
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="map.html">map</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-type.html">map-type</a></li><li><a href="MapController.html">MapController</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="shape.html">shape</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-type.html">map-type</a></li><li><a href="MapController.html">MapController</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="shape.html">shape</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul>
 </nav>
 
 <br clear="both">

@@ -124,6 +124,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
           if (centered) {
             object.map.setCenter(latLng);
           }
+          options.callback && options.callback.apply(object);
         },
         errorFunc
       );
@@ -495,15 +496,15 @@ ngMap.service('StreetView', ['$q', function($q) {
  * @name bicycling-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <bicycling-layer></bicycling-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
@@ -519,9 +520,12 @@ ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
@@ -541,15 +545,15 @@ ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
  * @name cloud-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <cloud-layer></cloud-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
@@ -565,9 +569,12 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
@@ -590,7 +597,7 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
  * @description 
  *   Build custom control and set to the map with position
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element
  *
@@ -600,13 +607,13 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
  * @example
  *
  * Example: 
- *  <map center="41.850033,-87.6500523" zoom="3">
+ *  <ng-map center="41.850033,-87.6500523" zoom="3">
  *    <custom-control id="home" position="TOP_LEFT" index="1">
  *      <div style="background-color: white;">
  *        <b>Home</b>
  *      </div>
  *    </custom-control>
- *  </map>
+ *  </ng-map>
  *
  */
 /*jshint -W089*/
@@ -615,8 +622,11 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
 
   return {
     restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       element.css('display','none');
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
@@ -651,14 +661,14 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
  * @ngdoc directive
  * @name dynamic-maps-engine-layer
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
- *   <map zoom="14" center="[59.322506, 18.010025]">
+ *   <ng-map zoom="14" center="[59.322506, 18.010025]">
  *     <dynamic-maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></dynamic-maps-engine-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options) {
@@ -677,9 +687,12 @@ ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
@@ -695,17 +708,17 @@ ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options
  * @ngdoc directive
  * @name fusion-tables-layer
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
- *   <map zoom="11" center="41.850033, -87.6500523">
+ *   <ng-map zoom="11" center="41.850033, -87.6500523">
  *     <fusion-tables-layer query="{
  *       select: 'Geocodable address',
  *       from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
  *     </fusion-tables-layer>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
@@ -724,9 +737,11 @@ ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
@@ -743,15 +758,15 @@ ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
  * @name heatmap-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="11" center="[41.875696,-87.624207]">
+ *   <ng-map zoom="11" center="[41.875696,-87.624207]">
  *     <heatmap-layer data="taxiData"></heatmap-layer>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Options, $window) {
@@ -759,9 +774,11 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
 
       /**
@@ -796,7 +813,7 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
  * @description 
  *   Defines infoWindow and provides compile method
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element
  *
@@ -807,12 +824,12 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
  * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <info-window id="foo" ANY_OPTIONS ANY_EVENTS"></info-window>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
- *  <map center="41.850033,-87.6500523" zoom="3">
+ *  <ng-map center="41.850033,-87.6500523" zoom="3">
  *    <info-window id="1" position="41.850033,-87.6500523" >
  *      <div ng-non-bindable>
  *        Chicago, IL<br/>
@@ -822,7 +839,7 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
  *        Tile Coordinate: {{tileCoordinate.x}}, {{tileCoordinate.y}} at Zoom Level {{map.getZoom()}}
  *      </div>
  *    </info-window>
- *  </map>
+ *  </ng-map>
  */
 ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(Attr2Options, $compile, $timeout)  {
   var parser = Attr2Options;
@@ -836,9 +853,12 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
     if (options.position && 
       !(options.position instanceof google.maps.LatLng)) {
       var address = options.position;
-      options.position = new google.maps.LatLng(0,0);
+      delete options.position;
       infoWindow = new google.maps.InfoWindow(options);
-      parser.setDelayedGeoLocation(infoWindow, 'setPosition', address);
+      var callback = function() {
+        infoWindow.open(infoWindow.map);
+      }
+      parser.setDelayedGeoLocation(infoWindow, 'setPosition', address, {callback: callback});
     } else {
       infoWindow = new google.maps.InfoWindow(options);
     }
@@ -886,8 +906,11 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
 
   return {
     restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       element.css('display','none');
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
@@ -902,12 +925,13 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
 
       // show InfoWindow when initialized
       if (infoWindow.visible) {
-        if (!infoWindow.position) { throw "Invalid position"; }
+        //if (!infoWindow.position) { throw "Invalid position"; }
         scope.$on('mapInitialized', function(evt, map) {
           $timeout(function() {
             infoWindow.__template = infoWindow.__eval.apply(this, [evt]);
             infoWindow.__compile(scope);
-            infoWindow.open(map);
+            infoWindow.map = map;
+            infoWindow.position && infoWindow.open(map);
           });
         });
       }
@@ -953,7 +977,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
  * @requires Attr2Options 
  * @description 
  *   renders Kml layer on a map
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @param {Url} url url of the kml layer
@@ -962,15 +986,15 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
  * @param {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <kml-layer ANY_KML_LAYER ANY_KML_LAYER_EVENTS"></kml-layer>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
  *
- *   <map zoom="11" center="[41.875696,-87.624207]">
+ *   <ng-map zoom="11" center="[41.875696,-87.624207]">
  *     <kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" ></kml-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
@@ -986,9 +1010,12 @@ ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
@@ -1007,25 +1034,27 @@ ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
  * @name map-data
  * @description 
  *   set map data
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @param {String} method-name, run map.data[method-name] with attribute value
  * @example
  * Example: 
  *
- *   <map zoom="11" center="[41.875696,-87.624207]">
+ *   <ng-map zoom="11" center="[41.875696,-87.624207]">
  *     <map-data load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
- *    </map>
+ *   </ng-map>
  */
 ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
   var parser = Attr2Options;
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
@@ -1064,15 +1093,15 @@ ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
  * @name map-type
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <map-type name="coordinate" object="coordinateMapType"></map-type>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
@@ -1080,9 +1109,11 @@ ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $w
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var mapTypeName = attrs.name, mapTypeObject;
       if (!mapTypeName) {
         throw "invalid map-type name";
@@ -1106,12 +1137,12 @@ ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $w
    }; // return
 }]);
 
-/**
+/*ng*
  * @ngdoc directive
- * @name map
+ * @name ng-map
  * @requires Attr2Options
  * @description
- *   Implementation of {@link MapController}
+ *   Implementation of {@link ngMapController}
  *   Initialize a Google map within a `<div>` tag with given options and register events
  *   It accepts children directives; marker, shape, or marker-clusterer
  *
@@ -1127,163 +1158,170 @@ ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $w
  * @param {String} init-event The name of event to initialize this map. 
  *        If this option is given, the map won't be initialized until the event is received.
  *        To invoke the event, use $scope.$emit or $scope.$broacast. 
- *        i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
+ *        i.e. <ng-map init-event="init-map" ng-click="$emit('init-map')" center=... ></ng-map>
  * @param {String} &lt;MapOption> Any Google map options, 
  *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @param {String} &lt;MapEvent> Any Google map events, 
  *        https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
  * Usage:
- *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
+ *   <ng-map MAP_OPTIONS_OR_MAP_EVENTS ..>
  *     ... Any children directives
- *   </map>
+ *   </ng-map>
  * 
  * Example:
- *   <map center="[40.74, -74.18]" on-click="doThat()">
- *   </map>
+ *   <ng-map center="[40.74, -74.18]" on-click="doThat()">
+ *   </ng-map>
  *
- *   <map geo-fallback-center="[40.74, -74.18]">
- *   </map>
+ *   <ng-map geo-fallback-center="[40.74, -74.18]">
+ *   </ng-map>
  */
 /*jshint -W030*/
-ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $timeout) {
-  var parser = Attr2Options;
-  function getStyle(el,styleProp)
-  {
-    if (el.currentStyle) {
-      var y = el.currentStyle[styleProp];
-    } else if (window.getComputedStyle) {
-      var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+
+(function(){
+  var ngMapDirective = function(Attr2Options, $timeout) {
+    var parser = Attr2Options;
+    function getStyle(el,styleProp)
+    {
+      if (el.currentStyle) {
+        var y = el.currentStyle[styleProp];
+      } else if (window.getComputedStyle) {
+        var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+      }
+      return y;
     }
-    return y;
-  }
 
-  return {
-    restrict: 'AE',
-    controller: ngMap.MapController,
-    /**
-     * Initialize map and events
-     * @memberof map
-     * @param {$scope} scope
-     * @param {angular.element} element
-     * @param {Hash} attrs
-     * @ctrl {MapController} ctrl
-     */
-    link: function (scope, element, attrs, ctrl) {
-      var orgAttrs = parser.orgAttributes(element);
-
-      scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
-
+    return {
+      restrict: 'AE',
+      controller: ngMap.MapController,
       /**
-       * create a new `div` inside map tag, so that it does not touch map element
-       * http://stackoverflow.com/questions/20955356
+       * Initialize map and events
+       * @memberof map
+       * @param {$scope} scope
+       * @param {angular.element} element
+       * @param {Hash} attrs
+       * @ctrl {MapController} ctrl
        */
-      var el = document.createElement("div");
-      el.style.width = "100%";
-      el.style.height = "100%";
-      element.prepend(el);
+      link: function (scope, element, attrs, ctrl) {
+        var orgAttrs = parser.orgAttributes(element);
 
-      /**
-       * if style is not given to the map element, set display and height
-       */
-      if (getStyle(element[0], 'display') != "block") {
-        element.css('display','block');
-      }
-      if (getStyle(element[0], 'height').match(/^0/)) {
-        element.css('height','300px');
-      }
-
-      /**
-       * initialize function
-       */
-      var initializeMap = function(mapOptions, mapEvents) {
-        var map = new google.maps.Map(el, {});
-        map.markers = {};
-        map.shapes = {};
-       
-        /**
-         * resize the map to prevent showing partially, in case intialized too early
-         */
-        $timeout(function() {
-          google.maps.event.trigger(map, "resize");
-        });
+        scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
 
         /**
-         * set options
+         * create a new `div` inside map tag, so that it does not touch map element
+         * http://stackoverflow.com/questions/20955356
          */
-        mapOptions.zoom = mapOptions.zoom || 15;
-        var center = mapOptions.center;
-        if (!(center instanceof google.maps.LatLng)) {
-          delete mapOptions.center;
-          Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
-              center, {fallbackLocation: options.geoFallbackCenter});
+        var el = document.createElement("div");
+        el.style.width = "100%";
+        el.style.height = "100%";
+        element.prepend(el);
+
+        /**
+         * if style is not given to the map element, set display and height
+         */
+        if (getStyle(element[0], 'display') != "block") {
+          element.css('display','block');
         }
-        map.setOptions(mapOptions);
+        if (getStyle(element[0], 'height').match(/^0/)) {
+          element.css('height','300px');
+        }
 
         /**
-         * set events
+         * initialize function
          */
-        for (var eventName in mapEvents) {
-          if (eventName) {
-            google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+        var initializeMap = function(mapOptions, mapEvents) {
+          var map = new google.maps.Map(el, {});
+          map.markers = {};
+          map.shapes = {};
+         
+          /**
+           * resize the map to prevent showing partially, in case intialized too early
+           */
+          $timeout(function() {
+            google.maps.event.trigger(map, "resize");
+          });
+
+          /**
+           * set options
+           */
+          mapOptions.zoom = mapOptions.zoom || 15;
+          var center = mapOptions.center;
+          if (!center) {
+            mapOptions.center = new google.maps.LatLng(0,0);
+          } else if (!(center instanceof google.maps.LatLng)) {
+            delete mapOptions.center;
+            Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+                center, {fallbackLocation: options.geoFallbackCenter});
           }
-        }
+          map.setOptions(mapOptions);
+
+          /**
+           * set events
+           */
+          for (var eventName in mapEvents) {
+            if (eventName) {
+              google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+            }
+          }
+
+          /**
+           * set observers
+           */
+          parser.observeAttrSetObj(orgAttrs, attrs, map);
+
+          /**
+           * set controller and set objects
+           * so that map can be used by other directives; marker or shape 
+           * ctrl._objects are gathered when marker and shape are initialized before map is set
+           */
+          ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
+          ctrl.addObjects(ctrl._objects);
+
+          // /* providing method to add a marker used by user scope */
+          // map.addMarker = ctrl.addMarker;
+
+          /**
+           * set map for scope and controller and broadcast map event
+           * scope.map will be overwritten if user have multiple maps in a scope,
+           * thus the last map will be set as scope.map.
+           * however an `mapInitialized` event will be emitted every time.
+           */
+          scope.map = map;
+          scope.map.scope = scope;
+          //google.maps.event.addListenerOnce(map, "idle", function() {
+          scope.$emit('mapInitialized', map);  
+          //});
+
+          // the following lines will be deprecated on behalf of mapInitialized
+          // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
+          scope.maps = scope.maps || {}; 
+          scope.maps[options.id||Object.keys(scope.maps).length] = map;
+          scope.$emit('mapsInitialized', scope.maps);  
+        }; // function initializeMap()
 
         /**
-         * set observers
+         * get map options and events
          */
-        parser.observeAttrSetObj(orgAttrs, attrs, map);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered, scope);
+        var controlOptions = parser.getControlOptions(filtered);
+        var mapOptions = angular.extend(options, controlOptions);
+        var mapEvents = parser.getEvents(scope, filtered);
+        console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
 
-        /**
-         * set controller and set objects
-         * so that map can be used by other directives; marker or shape 
-         * ctrl._objects are gathered when marker and shape are initialized before map is set
-         */
-        ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
-        ctrl.addObjects(ctrl._objects);
-
-        // /* providing method to add a marker used by user scope */
-        // map.addMarker = ctrl.addMarker;
-
-        /**
-         * set map for scope and controller and broadcast map event
-         * scope.map will be overwritten if user have multiple maps in a scope,
-         * thus the last map will be set as scope.map.
-         * however an `mapInitialized` event will be emitted every time.
-         */
-        scope.map = map;
-        scope.map.scope = scope;
-        //google.maps.event.addListenerOnce(map, "idle", function() {
-        scope.$emit('mapInitialized', map);  
-        //});
-
-        // the following lines will be deprecated on behalf of mapInitialized
-        // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
-        scope.maps = scope.maps || {}; 
-        scope.maps[options.id||Object.keys(scope.maps).length] = map;
-        scope.$emit('mapsInitialized', scope.maps);  
-      }; // function initializeMap()
-
-      /**
-       * get map options and events
-       */
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered, scope);
-      var controlOptions = parser.getControlOptions(filtered);
-      var mapOptions = angular.extend(options, controlOptions);
-      var mapEvents = parser.getEvents(scope, filtered);
-      console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
-
-      if (attrs.initEvent) { // allows controlled initialization
-        scope.$on(attrs.initEvent, function() {
-          !ctrl.map && initializeMap(mapOptions, mapEvents); // init if not done
-        });
-      } else {
-        initializeMap(mapOptions, mapEvents);
-      } // if
-    }
-  }; 
-}]);
+        if (attrs.initEvent) { // allows controlled initialization
+          scope.$on(attrs.initEvent, function() {
+            !ctrl.map && initializeMap(mapOptions, mapEvents); // init if not done
+          });
+        } else {
+          initializeMap(mapOptions, mapEvents);
+        } // if
+      }
+    }; 
+  }
+  ngMap.directive('ngMap', ['Attr2Options', '$timeout', ngMapDirective]);
+  ngMap.directive('map', ['Attr2Options', '$timeout', ngMapDirective]);
+})();
 
 /**
  * @ngdoc directive
@@ -1385,14 +1423,14 @@ ngMap.MapController = function() {
  * @ngdoc directive
  * @name maps-engine-layer
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
- *   <map zoom="14" center="[59.322506, 18.010025]">
+ *   <ng-map zoom="14" center="[59.322506, 18.010025]">
  *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
@@ -1411,9 +1449,12 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
 
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
@@ -1433,7 +1474,7 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element 
  *
@@ -1447,18 +1488,18 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
  * @param {String} &lt;MapEvent> Any Marker events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <marker ANY_MARKER_OPTIONS ANY_MARKER_EVENTS"></MARKER>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
- *   <map center="[40.74, -74.18]">
+ *   <ng-map center="[40.74, -74.18]">
  *    <marker position="[40.74, -74.18]" on-click="myfunc()"></div>
- *   </map>
+ *   </ng-map>
  *
- *   <map center="the cn tower">
+ *   <ng-map center="the cn tower">
  *    <marker position="the cn tower" on-click="myfunc()"></div>
- *   </map>
+ *   </ng-map>
  */
 ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
   var parser = Attr2Options;
@@ -1508,8 +1549,12 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
 
   return {
     restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
+      console.log('mapController', mapController);
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
@@ -1547,15 +1592,15 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
  * @name overlay-map-type
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <overlay-map-type index="0" object="coordinateMapType"></map-type>
- *   </map>
+ *   </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
@@ -1563,9 +1608,11 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var overlayMapTypeObject;
       var initMethod = attrs.initMethod || "insertAt";
       if (attrs.object) {
@@ -1605,7 +1652,7 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
  *     . rectangle
  *     . groundOverlay(or image)
  *   
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *
  *   Restrict To:  Element
  *
@@ -1619,36 +1666,36 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
  * @param {String} &lt;MapEvent> Any Shape events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
- *   <map MAP_ATTRIBUTES>
+ *   <ng-map MAP_ATTRIBUTES>
  *    <shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></MARKER>
- *   </map>
+ *   </ng-map>
  *
  * Example: 
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
  *      path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" ></shape>
- *    </map>
+ *    </ng-map>
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
  *      paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" ></shape>
- *   </map>
+ *   </ng-map>
  *   
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="rectangle" name="rectangle" stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2"
  *      bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" ></shape>
- *   </map>
+ *   </ng-map>
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="circle" name="circle" stroke-color='#FF0000' stroke-opacity="0.8"stroke-weight="2" 
  *      center="[40.70,-74.14]" radius="4000" editable="true" ></shape>
- *   </map>
+ *   </ng-map>
  *
- *   <map zoom="11" center="[40.74, -74.18]">
+ *   <ng-map zoom="11" center="[40.74, -74.18]">
  *     <shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
  *      bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" ></shape>
- *   </map>
+ *   </ng-map>
  *
  *  For full-working example, please visit 
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
@@ -1723,12 +1770,15 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
+    require: ['^?map', '?^ngMap'],
     /**
      * link function
      * @private
      */
-    link: function(scope, element, attrs, mapController) {
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var shapeOptions = parser.getOptions(filtered);
@@ -1750,15 +1800,15 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
  * @name traffic-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <traffic-layer></traffic-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
@@ -1774,9 +1824,11 @@ ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
@@ -1795,15 +1847,15 @@ ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
  * @name transit-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <transit-layer></transit-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
@@ -1819,9 +1871,11 @@ ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
@@ -1840,15 +1894,15 @@ ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
  * @name weather-layer
  * @requires Attr2Options 
  * @description 
- *   Requires:  map directive
+ *   Requires:  ng-map directive
  *   Restrict To:  Element
  *
  * @example
  * Example: 
  *
- *   <map zoom="13" center="34.04924594193164, -118.24104309082031">
+ *   <ng-map zoom="13" center="34.04924594193164, -118.24104309082031">
  *     <weather-layer></weather-layer>
- *    </map>
+ *    </ng-map>
  */
 /*jshint -W089*/
 ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
@@ -1864,9 +1918,11 @@ ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
   
   return {
     restrict: 'E',
-    require: '^map',
-
-    link: function(scope, element, attrs, mapController) {
+    require: ['^?map', '?^ngMap'],
+    link: function(scope, element, attrs, controllers) {
+      for (var i=0; i<controllers.length; i++) {
+        controllers[i] && (mapController = controllers[i]);
+      }
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
