@@ -107,7 +107,9 @@
            */
           mapOptions.zoom = mapOptions.zoom || 15;
           var center = mapOptions.center;
-          if (!(center instanceof google.maps.LatLng)) {
+          if (!center) {
+            mapOptions.center = new google.maps.LatLng(0,0);
+          } else if (!(center instanceof google.maps.LatLng)) {
             delete mapOptions.center;
             Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
                 center, {fallbackLocation: options.geoFallbackCenter});
