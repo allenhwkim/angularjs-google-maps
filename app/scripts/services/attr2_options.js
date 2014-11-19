@@ -122,6 +122,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
           if (centered) {
             object.map.setCenter(latLng);
           }
+          options.callback && options.callback.apply(object);
         },
         errorFunc
       );
