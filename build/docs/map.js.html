@@ -142,9 +142,39 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
         /**
          * set events
          */
-        for (var eventName in mapEvents) {
-          if (eventName) {
-            google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+        var initializeMap = function(mapOptions, mapEvents) {
+          var map = new google.maps.Map(el, {});
+          map.markers = {};
+          map.shapes = {};
+         
+          /**
+           * resize the map to prevent showing partially, in case intialized too early
+           */
+          $timeout(function() {
+            google.maps.event.trigger(map, "resize");
+          });
+
+          /**
+           * set options
+           */
+          mapOptions.zoom = mapOptions.zoom || 15;
+          var center = mapOptions.center;
+          if (!center) {
+            mapOptions.center = new google.maps.LatLng(0,0);
+          } else if (!(center instanceof google.maps.LatLng)) {
+            delete mapOptions.center;
+            Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+                center, {fallbackLocation: options.geoFallbackCenter});
+          }
+          map.setOptions(mapOptions);
+
+          /**
+           * set events
+           */
+          for (var eventName in mapEvents) {
+            if (eventName) {
+              google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+            }
           }
         }
 

@@ -124,6 +124,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
           if (centered) {
             object.map.setCenter(latLng);
           }
+          options.callback && options.callback.apply(object);
         },
         errorFunc
       );
@@ -836,9 +837,12 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
     if (options.position && 
       !(options.position instanceof google.maps.LatLng)) {
       var address = options.position;
-      options.position = new google.maps.LatLng(0,0);
+      delete options.position;
       infoWindow = new google.maps.InfoWindow(options);
-      parser.setDelayedGeoLocation(infoWindow, 'setPosition', address);
+      var callback = function() {
+        infoWindow.open(infoWindow.map);
+      }
+      parser.setDelayedGeoLocation(infoWindow, 'setPosition', address, {callback: callback});
     } else {
       infoWindow = new google.maps.InfoWindow(options);
     }
@@ -902,12 +906,13 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
 
       // show InfoWindow when initialized
       if (infoWindow.visible) {
-        if (!infoWindow.position) { throw "Invalid position"; }
+        //if (!infoWindow.position) { throw "Invalid position"; }
         scope.$on('mapInitialized', function(evt, map) {
           $timeout(function() {
             infoWindow.__template = infoWindow.__eval.apply(this, [evt]);
             infoWindow.__compile(scope);
-            infoWindow.open(map);
+            infoWindow.map = map;
+            infoWindow.position && infoWindow.open(map);
           });
         });
       }
@@ -1223,9 +1228,39 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
         /**
          * set events
          */
-        for (var eventName in mapEvents) {
-          if (eventName) {
-            google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+        var initializeMap = function(mapOptions, mapEvents) {
+          var map = new google.maps.Map(el, {});
+          map.markers = {};
+          map.shapes = {};
+         
+          /**
+           * resize the map to prevent showing partially, in case intialized too early
+           */
+          $timeout(function() {
+            google.maps.event.trigger(map, "resize");
+          });
+
+          /**
+           * set options
+           */
+          mapOptions.zoom = mapOptions.zoom || 15;
+          var center = mapOptions.center;
+          if (!center) {
+            mapOptions.center = new google.maps.LatLng(0,0);
+          } else if (!(center instanceof google.maps.LatLng)) {
+            delete mapOptions.center;
+            Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
+                center, {fallbackLocation: options.geoFallbackCenter});
+          }
+          map.setOptions(mapOptions);
+
+          /**
+           * set events
+           */
+          for (var eventName in mapEvents) {
+            if (eventName) {
+              google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+            }
           }
         }
 
