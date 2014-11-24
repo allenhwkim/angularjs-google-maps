@@ -158,6 +158,23 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
           }
         };
 
+      /**
+       * provide hideInfoWindow method to scope
+       */
+      scope.hideInfoWindow  = scope.hideInfoWindow ||
+        function(event, id, anchor) {
+          var infoWindow = mapController.map.infoWindows[id];
+          infoWindow.__template = infoWindow.__eval.apply(this, [event]);
+          infoWindow.__compile(scope);
+          if (anchor) {
+            infoWindow.close(mapController.map, anchor);
+          } else if (this.getPosition) {
+            infoWindow.close(mapController.map, this);
+          } else {
+            infoWindow.close(mapController.map);
+          }
+        };
+
     } //link
   }; // return
 }]);// function
