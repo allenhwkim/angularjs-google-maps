@@ -256,7 +256,9 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
-          scope[funcName].apply(this, [event].concat(args));
+          function index(obj,i) {return obj[i]}
+          f = funcName.split('.').reduce(index, scope)
+          f.apply(this, [event].concat(args));
           scope.$apply();
         }
       }
@@ -946,6 +948,17 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
           } else {
             infoWindow.open(mapController.map);
           }
+        };
+
+      /**
+       * provide hideInfoWindow method to scope
+       */
+      scope.hideInfoWindow  = scope.hideInfoWindow ||
+        function(event, id, anchor) {
+          var infoWindow = mapController.map.infoWindows[id];
+          infoWindow.__template = infoWindow.__eval.apply(this, [event]);
+          infoWindow.__compile(scope);
+          infoWindow.close();
         };
 
     } //link
