@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  var app = angular.module('myApp', ['ngMap']); 
+  app.controller('MyController', ['$scope', function($scope) {
+    var map;
+    $scope.$on('mapInitialized', function(evt, evtMap) {
+      map = evtMap;
+    });
+    this.latlng = [40.741, -74.181];
+    this.radius = 3500;
+    this.getRadius = function(event) {
+      alert('this circle has radius ' + this.getRadius());
+    }
+    this.setCenter = function(event) {
+      console.log('event', event);
+      map.setCenter(event.latLng);
+    }
+    this.foo = function(event, arg1, arg2) {
+      alert('this is at '+ this.getPosition());
+      alert(arg1+arg2);
+    }
+    this.dragStart = function(event) {
+        console.log("drag started");
+    }
+    this.drag = function(event) {
+        console.log("dragging");
+    }
+    this.dragEnd = function(event) {
+        console.log("drag ended");
+    }
+  }]);
+</script>
+</head>
+
+<body>
+    <div ng-controller="MyController as mc">
+      Events are applied to map, markers, and shapes.
+      <br/>
+      All event-related attributes are preceded by 'on-', i.e. on-click, on-mouseover, etc
+      <br/>
+      <br/>
+      <map zoom="11" center="{{mc.latlng}}" 
+          on-click="mc.setCenter(event)"
+	  tilt="0">
+        <marker position="[40.79, -74.20]" 
+          on-click="mc.foo(2,3)"></marker>
+        <shape name="circle" stroke-color='#FF0000' stroke-weight="2" 
+          center="{{mc.latlng}}" radius="{{mc.radius}}"
+          on-click="mc.getRadius()" 
+          draggable="true"
+          on-dragstart="mc.dragStart()"
+          on-drag="mc.drag()"
+          on-dragend="mc.dragEnd()"></shape>
+      </map>
+    </div>
+</body>
+</html>
