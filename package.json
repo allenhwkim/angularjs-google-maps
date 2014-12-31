@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "build/scripts/ng-map.js",
   "dependencies": {
     "gulp": "~3.7.0",
