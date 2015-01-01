@@ -1,7 +1,7 @@
 /**
  * This is to generate startbucks.json, locations of all starbucks world wide
  */
-var request = require("request")
+var request = require("request");
 
 var base = "http://opendata.socrata.com/resource/92ua-293q.json";
 var stores = [];

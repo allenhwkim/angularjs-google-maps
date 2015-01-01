@@ -4,7 +4,6 @@ var uglify = require('gulp-uglify');
 var debug = require('gulp-debug');
 var rename = require('gulp-rename');
 var stripDebug = require('gulp-strip-debug');
-var filesize = require('gulp-filesize');
 var gutil = require('gulp-util');
 var clean = require('gulp-clean');
 var runSequence = require('run-sequence');
@@ -14,6 +13,9 @@ var replace = require('gulp-replace');
 var tap = require('gulp-tap');
 var bump = require('gulp-bump');
 var shell = require('gulp-shell');
+var karma = require('karma').server;
+var connect = require('gulp-connect');
+var gulpProtractor = require("gulp-protractor").protractor;
 var bumpVersion = function(type) {
   type = type || 'patch';
   var version = '';
@@ -42,17 +44,17 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build-js', function() {
-  return gulp.src(['app/scripts/app.js',
-    'app/scripts/services/*.js',
-    'app/scripts/directives/*.js'])
+  return gulp.src([
+      'app/scripts/app.js',
+      'app/scripts/services/*.js',
+      'app/scripts/directives/*.js'
+    ])
     .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
-    .pipe(filesize())
     .pipe(stripDebug())
     .pipe(uglify())
     .pipe(rename('ng-map.min.js'))
     .pipe(gulp.dest('build/scripts'))
-    .pipe(filesize())
     .on('error', gutil.log);
 });
 
@@ -74,6 +76,37 @@ gulp.task('build', function(callback) {
   runSequence('clean', 'build-js', 'test', 'docs', callback);
 });
 
-gulp.task('test', shell.task([
-  './node_modules/karma/bin/karma start'
-]));
+gulp.task('test', function (done) {
+  karma.start({
+    configFile: __dirname + '/config/karma.conf.js',
+    singleRun: true
+  }, done);
+});
+
+gulp.task('testapp-server',  function() {
+  connect.server({
+    root: __dirname + '/testapp',
+    port: 8888
+  });
+});
+
+/**
+ * For first-time user, we need to update webdrivers
+ * $ node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update
+ */
+gulp.task('e2e-test', ['testapp-server'], function() {
+  gulp.src([__dirname + "/spec/e2e/*_spec.js"])  
+    .pipe(gulpProtractor({
+      configFile: __dirname + "/config/protractor.conf.js",
+      args: [
+        '--baseUrl', 'http://localhost:8888'
+      ]
+    })) 
+    .on('error', function(e) { 
+      throw e;
+    })
+    .on('end', function() { // when process exits:
+      connect.serverClose();
+    });
+});
+

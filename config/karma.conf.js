@@ -16,31 +16,29 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // libraries
-      'spec/lib/angular.js',
-      'spec/lib/angular-mocks.js',
+      __dirname + '/../spec/lib/angular.js',
+      __dirname + '/../spec/lib/angular-mocks.js',
       'https://maps.google.com/maps/api/js',
-      'spec/lib/markerclusterer.js',
+      __dirname + '/../spec/lib/markerclusterer.js',
 
       // our app
-      'app/scripts/app.js',
-      'app/scripts/directives/*.js',
-      'app/scripts/services/*.js',
+      __dirname + '/../app/scripts/app.js',
+      __dirname + '/../app/scripts/directives/*.js',
+      __dirname + '/../app/scripts/services/*.js',
 
       // tests
-      'spec/directives/*_spec.js',
-      'spec/services/*_spec.js'
+      __dirname + '/../spec/directives/*_spec.js',
+      __dirname + '/../spec/services/*_spec.js'
     ],
 
 
     // list of files to exclude
-    exclude: [
-    ],
+    exclude: [ ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-    },
+    preprocessors: { },
 
 
     // test results reporter to use
