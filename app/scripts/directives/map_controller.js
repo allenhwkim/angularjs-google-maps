@@ -8,10 +8,12 @@
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
 /*jshint -W089*/
-ngMap.MapController = function() { 
+ngMap.MapController = function() {
 
   this.map = null;
+  this.options = {};
   this._objects = [];
+  this._bounds = new google.maps.LatLngBounds();
 
   /**
    * Add a marker to map and $scope.markers
@@ -33,6 +35,15 @@ ngMap.MapController = function() {
       }
       var len = Object.keys(this.map.markers).length;
       this.map.markers[marker.id || len] = marker;
+
+      if (this.options.center && this.options.center === 'auto') {
+        this._bounds.extend(marker.position);
+        if (this._bounds.getNorthEast().equals(this._bounds.getSouthWest())) {
+          var extendPoint = new google.maps.LatLng(this._bounds.getNorthEast().lat() + 0.01, this._bounds.getNorthEast().lng() + 0.01);
+          this._bounds.extend(extendPoint);
+        }
+        this.map.fitBounds(this._bounds);
+      }
     } else {
       this._objects.push(marker);
     }
