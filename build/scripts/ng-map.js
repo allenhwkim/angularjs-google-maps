@@ -110,7 +110,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
     options = options || {};
     var centered = object.centered || options.centered;
     var errorFunc = function() {
-      console.log('error occurred while', object, method, param, options);
+      void 0;
       var fallbackLocation = options.fallbackLocation || new google.maps.LatLng(0,0);
       object[method](fallbackLocation);
     };
@@ -149,7 +149,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
       for (var attrName in attrs) {
         var attrValue = attrs[attrName];
         if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+          void 0;
           attrsToObserve.push(camelCase(attrName));
         }
       }
@@ -160,7 +160,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
   var observeAttrSetObj = function(orgAttrs, attrs, obj) {
     var attrsToObserve = getAttrsToObserve(orgAttrs);
     if (Object.keys(attrsToObserve).length) {
-      console.log(obj, "attributes to observe", attrsToObserve);
+      void 0;
     }
     for (var i=0; i<attrsToObserve.length; i++) {
       observeAndSet(attrs, attrsToObserve[i], obj);
@@ -170,10 +170,10 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
   var observeAndSet = function(attrs, attrName, object) {
     attrs.$observe(attrName, function(val) {
       if (val) {
-        console.log('observing ', object, attrName, val);
+        void 0;
         var setMethod = camelCase('set-'+attrName);
         var optionValue = toOptionValue(val, {key: attrName});
-        console.log('setting ', object, attrName, 'with value', optionValue);
+        void 0;
         if (object[setMethod]) { //if set method does exist
           /* if an location is being observed */
           if (attrName.match(/center|position/) && 
@@ -338,7 +338,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
             }
             controlOptions[attr] = options;
           } catch (e) {
-            console.error('invald option for', attr, newValue, e, e.stack);
+            void 0;
           }
         }
       } // for
@@ -420,7 +420,7 @@ ngMap.service('NavigatorGeolocation', ['$q', function($q) {
           function(position) {
             deferred.resolve(position);
           }, function(evt) {
-            console.error(evt);
+            void 0;
             deferred.reject(evt);
           }
         );
@@ -530,7 +530,7 @@ ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered);
 
-      console.log('bicycling-layer options', options, 'events', events);
+      void 0;
 
       var layer = getLayer(options, events);
       mapController.addObject('bicyclingLayers', layer);
@@ -575,7 +575,7 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered);
-      console.log('cloud-layer options', options, 'events', events);
+      void 0;
 
       var layer = getLayer(options, events);
       mapController.addObject('cloudLayers', layer);
@@ -625,7 +625,7 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
       var events = parser.getEvents(scope, filtered);
-      console.log("custom-control options", options, "events", events);
+      void 0;
 
       /**
        * build a custom control element
@@ -686,7 +686,7 @@ ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
-      console.log('dynamic-maps-engine-layer options', options, 'events', events);
+      void 0;
 
       var layer = getDynamicMapsEngineLayer(options, events);
       mapController.addObject('mapsEngineLayers', layer);
@@ -733,7 +733,7 @@ ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
-      console.log('fusion-tables-layer options', options, 'events', events);
+      void 0;
 
       var layer = getLayer(options, events);
       mapController.addObject('fusionTablesLayers', layer);
@@ -783,7 +783,7 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
        * set events 
        */
       var events = parser.getEvents(scope, filtered);
-      console.log('heatmap-layer options', layer, 'events', events);
+      void 0;
 
       mapController.addObject('heatmapLayers', layer);
     }
@@ -853,7 +853,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
      * set events
      */
     if (Object.keys(events).length > 0) {
-      console.log("infoWindow events", events);
+      void 0;
     }
     for (var eventName in events) {
       if (eventName) {
@@ -899,7 +899,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
       var events = parser.getEvents(scope, filtered);
-      console.log('infoWindow', 'options', options, 'events', events);
+      void 0;
 
       var infoWindow = getInfoWindow(options, events, element);
 
@@ -1011,7 +1011,7 @@ ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered);
-      console.log('kml-layer options', kmlLayer, 'events', events);
+      void 0;
 
       var kmlLayer = getKmlLayer(options, events);
       mapController.addObject('kmlLayers', kmlLayer);
@@ -1048,7 +1048,7 @@ ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
 
-      console.log('map-data options', options);
+      void 0;
       scope.$on('mapInitialized', function(event, map) {
         /**
          * options
@@ -1292,7 +1292,7 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
       var controlOptions = parser.getControlOptions(filtered);
       var mapOptions = angular.extend(options, controlOptions);
       var mapEvents = parser.getEvents(scope, filtered);
-      console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
+      void 0;
 
       if (attrs.initEvent) { // allows controlled initialization
         scope.$on(attrs.initEvent, function() {
@@ -1437,7 +1437,7 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered, events);
-      console.log('maps-engine-layer options', options, 'events', events);
+      void 0;
 
       var layer = getMapsEngineLayer(options, events);
       mapController.addObject('mapsEngineLayers', layer);
@@ -1515,7 +1515,7 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
      * set events
      */
     if (Object.keys(events).length > 0) {
-      console.log("markerEvents", events);
+      void 0;
     }
     for (var eventName in events) {
       if (eventName) {
@@ -1534,7 +1534,7 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
       var filtered = parser.filter(attrs);
       var markerOptions = parser.getOptions(filtered, scope);
       var markerEvents = parser.getEvents(scope, filtered);
-      console.log('marker options', markerOptions, 'events', markerEvents);
+      void 0;
 
       /**
        * set event to clean up removed marker
@@ -1685,7 +1685,7 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
 
     var shapeName = options.name;
     delete options.name;  //remove name bcoz it's not for options
-    console.log("shape", shapeName, "options", options, 'events', events);
+    void 0;
 
     /**
      * set options
@@ -1801,7 +1801,7 @@ ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered);
-      console.log('traffic-layer options', options, 'events', events);
+      void 0;
 
       var layer = getLayer(options, events);
       mapController.addObject('trafficLayers', layer);
@@ -1846,7 +1846,7 @@ ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered);
-      console.log('transit-layer options', options, 'events', events);
+      void 0;
 
       var layer = getLayer(options, events);
       mapController.addObject('transitLayers', layer);
@@ -1892,7 +1892,7 @@ ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
       var options = parser.getOptions(filtered);
       var events = parser.getEvents(scope, filtered);
 
-      console.log('weather-layer options', options, 'events', events);
+      void 0;
 
       var layer = getLayer(options, events);
       mapController.addObject('weatherLayers', layer);
