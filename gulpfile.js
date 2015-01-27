@@ -49,8 +49,10 @@ gulp.task('build-js', function() {
       'app/scripts/services/*.js',
       'app/scripts/directives/*.js'
     ])
-    .pipe(concat('ng-map.js'))
+    .pipe(concat('ng-map.debug.js'))
+    .pipe(gulp.dest('build/scripts'))
     .pipe(stripDebug())
+    .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
     .pipe(uglify())
     .pipe(rename('ng-map.min.js'))
