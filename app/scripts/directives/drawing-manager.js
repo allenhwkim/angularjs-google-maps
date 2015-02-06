@@ -33,20 +33,16 @@ ngMap.directive('drawingManager', ['Attr2Options', function(Attr2Options) {
             var orgAttrs = parser.orgAttributes(element);
             var filtered = parser.filter(attrs);
             var options = parser.getOptions(filtered);
+            var controlOptions = parser.getControlOptions(filtered);
             var events = parser.getEvents(scope, filtered);
-
 
             /**
              * set options
              */
-            var drawingModes = options.drawingmodes.split(',').map(function(shape){return getShape(shape);});
             var drawingManager = new google.maps.drawing.DrawingManager({
                 drawingMode: options.drawingmode,
                 drawingControl: options.drawingcontrol,
-                drawingControlOptions: {
-                    position: options.position,
-                    drawingModes: drawingModes
-                },
+                drawingControlOptions: controlOptions.drawingControlOptions,
                 circleOptions:options.circleoptions
             });
 
