@@ -78,7 +78,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         // 4. Object Expression. i.e. MayTypeId.HYBRID 
         } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
           try {
-            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z_]+)$/);
+            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
             output = google.maps[matches[1]][matches[2]];
           } catch(e) {
             output = input;
@@ -96,8 +96,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
           } catch(e) {
             output = input;
           }
-        }
-        else {
+        } else {
           output = input;
         }
       } // catch(err2)
