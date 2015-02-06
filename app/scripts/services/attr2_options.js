@@ -76,9 +76,9 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
             output = input;
           } 
         // 4. Object Expression. i.e. MayTypeId.HYBRID 
-        } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
+        } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z_]+)$/)) {
           try {
-            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
+            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z_]+)$/);
             output = google.maps[matches[1]][matches[2]];
           } catch(e) {
             output = input;
@@ -95,8 +95,27 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
             }
           } catch(e) {
             output = input;
-          } 
-        } else {
+          }
+         // 6. match style expression. ie. width:500;height:200
+        } else if (input.match(/^([a-zA-Z]+:[#\s0-9a-zA-Z\']+;)+$/)){
+            var matches = input.split(";");
+            var input_json = [];
+            angular.forEach(matches,function(match,idx){
+                if(match){
+                    var tempData = match.split(":");
+                    var num = Number(tempData[1]); //it can be a number
+                    if (!isNaN(num) || (tempData[1].trim().toLowerCase() === "true" || tempData[1].trim().toLowerCase() === "false")) {
+                        input_json.push('"'+tempData[0].trim()+'":'+tempData[1].trim())
+                    }
+                    else{
+                        input_json.push('"'+tempData[0].trim()+'":"'+tempData[1].trim().replace(/\'/gm,"")+'"')
+                    }
+                }
+            });
+            input_json = '{' + input_json.join(',') + '}';
+            output = JSON.parse(input_json);
+        }
+        else {
           output = input;
         }
       } // catch(err2)
