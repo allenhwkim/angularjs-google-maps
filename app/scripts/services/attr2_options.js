@@ -95,7 +95,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
             }
           } catch(e) {
             output = input;
-          } 
+          }
         } else {
           output = input;
         }

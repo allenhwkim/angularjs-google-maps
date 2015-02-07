@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script src="https://maps.google.com/maps/api/js?libraries=visualization,drawing"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+    <!-- build:js scripts/ng-map.min.js -->
+    <script src="../app/scripts/app.js"></script>
+    <script src="../app/scripts/directives/map_controller.js"></script>
+    <script src="../app/scripts/directives/map.js"></script>
+    <script src="../app/scripts/directives/marker.js"></script>
+    <script src="../app/scripts/directives/shape.js"></script>
+    <script src="../app/scripts/directives/drawing-manager.js"></script>
+    <script src="../app/scripts/services/geo_coder.js"></script>
+    <script src="../app/scripts/services/navigator_geolocation.js"></script>
+    <script src="../app/scripts/services/attr2_options.js"></script>
+    <!-- endbuild -->
+    <script>
+        var app = angular.module('myapp', ['ngMap']);
+        app.controller('DrawingManagerCtrl', function($scope) {
+            $scope.onMapOverlayCompleted = function(e){
+                console.log(e.type);
+            };
+        });
+    </script>
+</head>
+<body>
+<div ng-controller="DrawingManagerCtrl">
+    <map zoom="13" center="37.774546, -122.433523" map-type-id="ROADMAP" street-view-control-options="{position: 'LEFT_CENTER'}">
+        <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" drawing-control-options="{position: 'TOP_CENTER',drawingModes:['polygon','rectangle','circle']}" drawingControl="true" drawingMode="null"  markerOptions="{icon:'www.example.com/icon'}" rectangleOptions="{fillColor:'red'}" circleOptions="{fillColor: '#FFFF00',fillOpacity: 1,strokeWeight: 5,clickable: false,zIndex: 1,editable: true}" ></drawing-manager>
+    </map>
+</div>
+</body>
