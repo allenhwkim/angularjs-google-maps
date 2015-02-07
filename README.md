@@ -250,6 +250,9 @@ Advanced Examples
 - [Marker Clusterer](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/marker-clusterer.html)
 - [Starbucks World Wide](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_app.html)
 
+Contributors
+==============
+[Fangmingdu] (https://github.com/Fangmingdu) - Drawing Manager
 
 license
 =======
