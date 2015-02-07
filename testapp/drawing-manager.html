@@ -27,7 +27,7 @@
 <body>
 <div ng-controller="DrawingManagerCtrl">
     <map zoom="13" center="37.774546, -122.433523" map-type-id="ROADMAP" street-view-control-options="{position: 'LEFT_CENTER'}">
-        <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" drawing-control-options="{position: 'TOP_CENTER',drawingModes:['polygon']}" drawingControl="true" drawingMode="null"  circleOptions="{fillColor: '#FFFF00',fillOpacity: 1,strokeWeight: 5,clickable: false,zIndex: 1,editable: true}" ></drawing-manager>
+        <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" drawing-control-options="{position: 'TOP_CENTER',drawingModes:['polygon','rectangle','circle']}" drawingControl="true" drawingMode="null"  markerOptions="{icon:'www.example.com/icon'}" rectangleOptions="{fillColor:'red'}" circleOptions="{fillColor: '#FFFF00',fillOpacity: 1,strokeWeight: 5,clickable: false,zIndex: 1,editable: true}" ></drawing-manager>
     </map>
 </div>
 </body>
