@@ -146,7 +146,8 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
        */
       scope.showInfoWindow  = scope.showInfoWindow ||
         function(event, id, anchor) {
-          var infoWindow = mapController.map.infoWindows[id];
+          var infoWindow = mapController.map.infoWindows[id],
+		  tempTemplate = infoWindow.__template; // set template in a temporary variable
           infoWindow.__template = infoWindow.__eval.apply(this, [event]);
           infoWindow.__compile(scope);
           if (anchor) {
@@ -156,6 +157,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
           } else {
             infoWindow.open(mapController.map);
           }
+		  infoWindow.__template = tempTemplate; // reset template to the object
         };
 
       /**
