@@ -1,7 +1,6 @@
 <!doctype html>
 <html ng-app="myapp">
   <head>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather,visualization,panoramio"></script>
 <script src="https://code.angularjs.org/1.2.25/angular.js"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
@@ -13,6 +12,7 @@
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 <script src="../app/scripts/services/attr2_options.js"></script>
+<script src="../app/scripts/services/maps_js_loader.js"></script>
 <!-- endbuild -->
 <script>
 var app = app || angular.module('myapp', ['ngMap']);
@@ -30,7 +30,7 @@ app.controller('MyCtrl', function($scope, $compile) {
   </head>
   <body>
 
-    <div ng-controller="MyCtrl">
+    <div ng-if="mapJsLoaded" ng-controller="MyCtrl">
       <map center="41,-87" zoom="3">
       
         <info-window id="foo">
