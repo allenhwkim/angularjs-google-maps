@@ -97,7 +97,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
             }
           } catch(e) {
             output = input;
-          } 
+          }
         } else {
           output = input;
         }
@@ -652,6 +652,70 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
 
 /**
  * @ngdoc directive
+ * @name drawing-manager
+ * @requires Attr2Options
+ * @description
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example:
+ *
+ *  <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
+ *      <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" ></drawing-manager>
+ *  </map>
+ *
+ *  TODO: Add remove button.
+ *  currently, for out solution, we have the shapes/markers in our own controller, and we use some css classes to change the shape button
+ *  to a remove button (<div>X</div>) and have the remove operation in our own controller.
+ */
+/*jshint -W089*/
+ngMap.directive('drawingManager', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+
+    return {
+        restrict: 'E',
+        require: '^map',
+
+        link: function(scope, element, attrs, mapController) {
+            var orgAttrs = parser.orgAttributes(element);
+            var filtered = parser.filter(attrs);
+            var options = parser.getOptions(filtered);
+            var controlOptions = parser.getControlOptions(filtered);
+            var events = parser.getEvents(scope, filtered);
+
+            console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
+
+            /**
+             * set options
+             */
+            var drawingManager = new google.maps.drawing.DrawingManager({
+                drawingMode: options.drawingmode,
+                drawingControl: options.drawingcontrol,
+                drawingControlOptions: controlOptions.drawingControlOptions,
+                circleOptions:options.circleoptions,
+                markerOptions:options.markeroptions,
+                polygonOptions:options.polygonoptions,
+                polylineOptions:options.polylineoptions,
+                rectangleOptions:options.rectangleoptions
+            });
+
+
+            /**
+             * set events
+             */
+            var events = parser.getEvents(scope, filtered);
+            for (var eventName in events) {
+                google.maps.event.addListener(drawingManager, eventName, events[eventName]);
+            }
+
+            mapController.addObject('mapDrawingManager', drawingManager);
+        }
+    }; // return
+}]);
+
+/**
+ * @ngdoc directive
  * @name dynamic-maps-engine-layer
  * @description 
  *   Requires:  map directive
@@ -938,7 +1002,8 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
        */
       scope.showInfoWindow  = scope.showInfoWindow ||
         function(event, id, anchor) {
-          var infoWindow = mapController.map.infoWindows[id];
+          var infoWindow = mapController.map.infoWindows[id],
+		  tempTemplate = infoWindow.__template; // set template in a temporary variable
           infoWindow.__template = infoWindow.__eval.apply(this, [event]);
           infoWindow.__compile(scope);
           if (anchor) {
@@ -948,6 +1013,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
           } else {
             infoWindow.open(mapController.map);
           }
+		  infoWindow.__template = tempTemplate; // reset template to the object
         };
 
       /**
