@@ -3,7 +3,7 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
-**NOTE: 1.3.0 is released.**
+**NOTE: 1.4.0 is released.**
   * support lazy loading of maps js, which does not require to `http://maps.google.com/maps/api/js`
  
 **NOTE: 1.2.0 is released.**
