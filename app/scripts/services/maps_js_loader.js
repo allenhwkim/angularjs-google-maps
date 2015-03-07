@@ -37,9 +37,8 @@ ngMap.provider("mapsJsLoader", function() {
   }];
 });
 
-ngMap.run(function($rootScope, mapsJsLoader) {
+ngMap.run(['$rootScope', 'mapsJsLoader', function($rootScope, mapsJsLoader) {
   mapsJsLoader.then(function() {
     $rootScope.mapJsLoaded=true;
   });
-})
-
+}]);
