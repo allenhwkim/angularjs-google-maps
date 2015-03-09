@@ -391,51 +391,6 @@ ngMap.service('GeoCoder', ['$q', function($q) {
   }
 }]);
 
-ngMap.provider("mapsJsLoader", function() {
-
-  var apiKey = null, clientId = null;
-
-  this.setApiKey = function(key) {
-    apiKey = key;
-  };
-
-  this.setClientId = function(id) {
-    clientIdt = id
-  }, 
-
-  this.$get = ["$q", function($q) {
-    var deferred = $q.defer();
-    var onError = function() {
-      deferred.reject();
-    }
-
-    if (window.google && window.google.maps) {
-      deferred.resolve();
-    } else {
-      window.onGoogleScriptLoad = function() {
-        (window.google && window.google.maps) ? deferred.resolve() : deferred.reject()
-      };
-
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.async = !0;
-      script.src = "http://maps.google.com/maps/api/js?callback=onGoogleScriptLoad";
-      apiKey && (script.src += "&key=" + apiKey + "&");
-      clientId && (script.src += "&client=" + clientId + "&v=3.18");
-      script.onerror = onError;
-      document.body.appendChild(script);
-    }
-
-    return deferred.promise;
-  }];
-});
-
-ngMap.run(['$rootScope', 'mapsJsLoader', function($rootScope, mapsJsLoader) {
-  mapsJsLoader.then(function() {
-    $rootScope.mapJsLoaded=true;
-  });
-}]);
-
 /**
  * @ngdoc service
  * @name NavigatorGeolocation
@@ -1186,6 +1141,63 @@ ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
       });
     }
    }; // return
+}]);
+
+/**
+ * @ngdoc directive
+ * @name lazy-load
+ * @requires Attr2Options 
+ * @description 
+ *   Requires: Delay the initialization of directive until required .js loads
+ *   Restrict To: Attribute 
+ *
+ * @param {String} lazy-load
+      script source file location
+ *    example:  
+ *      'http://maps.googlecom/maps/api/js'   
+
+ * @example
+ * Example: 
+ *
+ *   <div lazy-load="http://maps.google.com/maps/api/js">
+ *     <map center="Brampton" zoom="10">
+ *       <marker position="Brampton"></marker>
+ *     </map>
+ *   </div>
+ */
+/*jshint -W089*/
+ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
+  'use strict';
+  var directiveDefinitionObject = {
+    compile: function(tElement, tAttrs) {
+      (!tAttrs.mapLazyLoad) && void 0;
+      var savedHtml = tElement.html(), src = tAttrs.mapLazyLoad;
+      /**
+       * if already loaded, stop processing it
+       */
+      if (document.querySelector('script[src="'+src+'"]')) {
+        return false;
+      }
+
+      tElement.html('');  // will compile again after script is loaded
+      return {
+        pre: function(scope, element, attrs) {
+          window.lazyLoadCallback = function() {
+            void 0;
+            $timeout(function() { /* give some time to load */
+              element.html(savedHtml);
+              $compile(element.contents())(scope);
+            }, 100);
+          };
+
+          var scriptEl = document.createElement('script');
+          scriptEl.src = src + '?callback=lazyLoadCallback';
+          document.body.appendChild(scriptEl);
+        }
+      };
+    }
+  };
+  return directiveDefinitionObject;
 }]);
 
 /**
