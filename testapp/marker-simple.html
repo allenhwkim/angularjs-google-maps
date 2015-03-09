@@ -2,7 +2,7 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<!-- script src="https://maps.google.com/maps/api/js?sensor=false"></script -->
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
 <script src="scripts/app.js"></script>
 <!-- build:js scripts/ng-map.min.js -->
@@ -11,18 +11,16 @@
 <script src="../app/scripts/directives/map.js"></script>
 <script src="../app/scripts/directives/marker.js"></script>
 <script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/directives/map-lazy-load.js"></script>
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 <script src="../app/scripts/services/attr2_options.js"></script>
-<script src="../app/scripts/services/maps_js_loader.js"></script>
 <!-- endbuild -->
 </head>
 
 <body>
-  <div ng-if="mapJsLoaded">
-    <map center="-25.363882,131.044922" zoom="4">
-      <marker position="-25.363882,131.044922" title="Hello World!"></marker>
-    </map>
-  </div>
+  <map center="-25.363882,131.044922" zoom="4">
+    <marker position="-25.363882,131.044922" title="Hello World!"></marker>
+  </map>
 </body>
 </html>

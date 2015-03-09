@@ -1,8 +1,9 @@
 /*global jasmine*/
 var excludes = [
     "map_events.html", 
-    "map_fit_bounds.htl",
+    "map_fit_bounds.html",
     "map_lazy_init.html", 
+    "map-lazy-load.html", 
     "marker_with_dynamic_position.html",
     "marker_with_ng_repeat_dynamic.html"
   ];

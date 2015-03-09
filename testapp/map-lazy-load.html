@@ -9,10 +9,10 @@
 <script src="../app/scripts/directives/marker.js"></script>
 <script src="../app/scripts/directives/shape.js"></script>
 <script src="../app/scripts/directives/info-window.js"></script>
+<script src="../app/scripts/directives/map-lazy-load.js"></script>
 <script src="../app/scripts/services/geo_coder.js"></script>
 <script src="../app/scripts/services/navigator_geolocation.js"></script>
 <script src="../app/scripts/services/attr2_options.js"></script>
-<script src="../app/scripts/services/maps_js_loader.js"></script>
 <!-- endbuild -->
 <script>
 var app = app || angular.module('myapp', ['ngMap']);
@@ -30,7 +30,7 @@ app.controller('MyCtrl', function($scope, $compile) {
   </head>
   <body>
 
-    <div ng-if="mapJsLoaded" ng-controller="MyCtrl">
+    <div map-lazy-load="http://maps.google.com/maps/api/js" ng-controller="MyCtrl">
       <map center="41,-87" zoom="3">
       
         <info-window id="foo">

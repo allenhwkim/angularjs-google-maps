@@ -79,9 +79,9 @@ Instances:
 
 Lazy Loading
 ------------
-  Simply wrap the map tag with `ng-if="mapJsLoaded"`.
+  Simply wrap the map tag with `map-lazy-load="http://maps.google.com/maps/api/js"`.
 
-    <div ng-if="mapJsLoaded" ng-controller="MyCtrl">
+    <div map-lazy-load="http://maps.google.com/maps/api/js">
       <map center="41,-87" zoom="3"></map>
     </div>
 
