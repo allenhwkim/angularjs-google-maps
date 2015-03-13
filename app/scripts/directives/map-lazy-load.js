@@ -23,7 +23,6 @@
 /*jshint -W089*/
 ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
   'use strict';
-  var loaded = false;
   var directiveDefinitionObject = {
     compile: function(tElement, tAttrs) {
       (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
@@ -40,13 +39,12 @@ ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $time
         pre: function(scope, element, attrs) {
           window.lazyLoadCallback = function() {
             console.log('script loaded,' + src);
-            loaded = true;
             $timeout(function() { /* give some time to load */
               element.html(savedHtml);
               $compile(element.contents())(scope);
             }, 100);
           };
-          if(loaded === false) {
+          if(window.google === undefined || window.google.maps === undefined) {
             var scriptEl = document.createElement('script');
             scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
             document.body.appendChild(scriptEl);
