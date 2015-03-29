@@ -5,23 +5,18 @@ var ngMap = angular.module('ngMap', []);
  * @name Attr2Options
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
+ *
+ *   TODO: there are some methods that must be in mapController. Those shoulb be moved for better collaboration.
+ *   i.e. setDelayedGeoLocation, observeAndSet
  */
-/*jshint -W030*/
-ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', function($parse, NavigatorGeolocation, GeoCoder) { 
+/* global ngMap, google */
+(function() {
+  'use strict';
+
   var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
   var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
 
-  var orgAttributes = function(el) {
-    (el.length > 0) && (el = el[0]);
-    var orgAttributes = {};
-    for (var i=0; i<el.attributes.length; i++) {
-      var attr = el.attributes[i];
-      orgAttributes[attr.name] = attr.value;
-    }
-    return orgAttributes;
-  }
-
-  var camelCase = function(name) {
+  function camelCase(name) {
     return name.
       replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
         return offset ? letter.toUpperCase() : letter;
@@ -29,7 +24,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
       replace(MOZ_HACK_REGEXP, 'Moz$1');
   }
 
-  var JSONize = function(str) {
+  function JSONize(str) {
     try {       // if parsable already, return as it is
       JSON.parse(str);
       return str;
@@ -42,159 +37,175 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
     }
   }
 
-  var toOptionValue = function(input, options) {
-    var output, key=options.key, scope=options.scope;
-    try { // 1. Number?
-      var num = Number(input);
-      if (isNaN(num)) {
-        throw "Not a number";
-      } else  {
-        output = num;
-      }
-    } catch(err) { 
-      try { // 2.JSON?
-        if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) { // i.e "-1.0, 89.89"
-          input = "["+input+"]";
-        }
-        output = JSON.parse(JSONize(input));
-        if (output instanceof Array) {
-          var t1stEl = output[0];
-          if (t1stEl.constructor == Object) { // [{a:1}] : not lat/lng ones
-          } else if (t1stEl.constructor == Array) { // [[1,2],[3,4]] 
-            output =  output.map(function(el) {
-              return new google.maps.LatLng(el[0], el[1]);
-            });
-          } else if(!isNaN(parseFloat(t1stEl)) && isFinite(t1stEl)) {
-            return new google.maps.LatLng(output[0], output[1]);
-          }
-        }
-      } catch(err2) {
-        // 3. Object Expression. i.e. LatLng(80,-49)
-        if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
-          try {
-            var exp = "new google.maps."+input;
-            output = eval(exp); // TODO, still eval
-          } catch(e) {
-            output = input;
-          } 
-        // 4. Object Expression. i.e. MayTypeId.HYBRID 
-        } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
-          try {
-            var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
-            output = google.maps[matches[1]][matches[2]];
-          } catch(e) {
-            output = input;
-          } 
-        // 5. Object Expression. i.e. HYBRID 
-        } else if (input.match(/^[A-Z]+$/)) {
-          try {
-            var capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-            if (key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
-              capitalizedKey = capitalizedKey.replace(/s$/,"");
-              output = google.maps.weather[capitalizedKey][input];
-            } else {
-              output = google.maps[capitalizedKey][input];
-            }
-          } catch(e) {
-            output = input;
-          }
-        } else {
-          output = input;
-        }
-      } // catch(err2)
-    } // catch(err)
-    return output;
-  };
+  var Attr2Options = function($parse, NavigatorGeolocation, GeoCoder) { 
 
-  var setDelayedGeoLocation = function(object, method, param, options) {
-    options = options || {};
-    var centered = object.centered || options.centered;
-    var errorFunc = function() {
-      console.log('error occurred while', object, method, param, options);
-      var fallbackLocation = options.fallbackLocation || new google.maps.LatLng(0,0);
-      object[method](fallbackLocation);
+    /**
+     * Returns the attributes of an element as hash
+     * @memberof Attr2Options
+     * @param {HTMLElement} el html element
+     * @returns {Hash} attributes
+     */
+    var orgAttributes = function(el) {
+      (el.length > 0) && (el = el[0]);
+      var orgAttributes = {};
+      for (var i=0; i<el.attributes.length; i++) {
+        var attr = el.attributes[i];
+        orgAttributes[attr.name] = attr.value;
+      }
+      return orgAttributes;
     };
-    if (!param || param.match(/^current/i)) { // sensored position
-      NavigatorGeolocation.getCurrentPosition().then(
-        function(position) { // success
-          var lat = position.coords.latitude;
-          var lng = position.coords.longitude;
-          var latLng = new google.maps.LatLng(lat,lng);
-          object[method](latLng);
-          if (centered) {
-            object.map.setCenter(latLng);
-          }
-          options.callback && options.callback.apply(object);
-        },
-        errorFunc
-      );
-    } else { //assuming it is address
-      GeoCoder.geocode({address: param}).then(
-        function(results) { // success
-          object[method](results[0].geometry.location);
-          if (centered) {
-            object.map.setCenter(results[0].geometry.location);
-          }
-        },
-        errorFunc
-      );
-    }
-  };
 
-
-  var getAttrsToObserve = function(attrs) {
-    var attrsToObserve = [];
-    if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-    } else {
-      for (var attrName in attrs) {
-        var attrValue = attrs[attrName];
-        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
-          attrsToObserve.push(camelCase(attrName));
+    var toOptionValue = function(input, options) {
+      var output, key=options.key, scope=options.scope;
+      try { // 1. Number?
+        var num = Number(input);
+        if (isNaN(num)) {
+          throw "Not a number";
+        } else  {
+          output = num;
         }
-      }
-    }
-    return attrsToObserve;
-  };
-
-  var observeAttrSetObj = function(orgAttrs, attrs, obj) {
-    var attrsToObserve = getAttrsToObserve(orgAttrs);
-    if (Object.keys(attrsToObserve).length) {
-      console.log(obj, "attributes to observe", attrsToObserve);
-    }
-    for (var i=0; i<attrsToObserve.length; i++) {
-      observeAndSet(attrs, attrsToObserve[i], obj);
-    }
-  }
-
-  var observeAndSet = function(attrs, attrName, object) {
-    attrs.$observe(attrName, function(val) {
-      if (val) {
-        console.log('observing ', object, attrName, val);
-        var setMethod = camelCase('set-'+attrName);
-        var optionValue = toOptionValue(val, {key: attrName});
-        console.log('setting ', object, attrName, 'with value', optionValue);
-        if (object[setMethod]) { //if set method does exist
-          /* if an location is being observed */
-          if (attrName.match(/center|position/) && 
-            typeof optionValue == 'string') {
-            setDelayedGeoLocation(object, setMethod, optionValue);
+      } catch(err) { 
+        try { // 2.JSON?
+          if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) { // i.e "-1.0, 89.89"
+            input = "["+input+"]";
+          }
+          output = JSON.parse(JSONize(input));
+          if (output instanceof Array) {
+            var t1stEl = output[0];
+            if (t1stEl.constructor == Object) { // [{a:1}] : not lat/lng ones
+            } else if (t1stEl.constructor == Array) { // [[1,2],[3,4]] 
+              output =  output.map(function(el) {
+                return new google.maps.LatLng(el[0], el[1]);
+              });
+            } else if(!isNaN(parseFloat(t1stEl)) && isFinite(t1stEl)) {
+              return new google.maps.LatLng(output[0], output[1]);
+            }
+          }
+        } catch(err2) {
+          // 3. Object Expression. i.e. LatLng(80,-49)
+          if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
+            try {
+              var exp = "new google.maps."+input;
+              output = eval(exp); // TODO, still eval
+            } catch(e) {
+              output = input;
+            } 
+          // 4. Object Expression. i.e. MayTypeId.HYBRID 
+          } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
+            try {
+              var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
+              output = google.maps[matches[1]][matches[2]];
+            } catch(e) {
+              output = input;
+            } 
+          // 5. Object Expression. i.e. HYBRID 
+          } else if (input.match(/^[A-Z]+$/)) {
+            try {
+              var capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+              if (key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
+                capitalizedKey = capitalizedKey.replace(/s$/,"");
+                output = google.maps.weather[capitalizedKey][input];
+              } else {
+                output = google.maps[capitalizedKey][input];
+              }
+            } catch(e) {
+              output = input;
+            }
           } else {
-            object[setMethod](optionValue);
+            output = input;
+          }
+        } // catch(err2)
+      } // catch(err)
+      return output;
+    };
+
+    var setDelayedGeoLocation = function(object, method, param, options) {
+      options = options || {};
+      var centered = object.centered || options.centered;
+      var errorFunc = function() {
+        console.log('error occurred while', object, method, param, options);
+        var fallbackLocation = options.fallbackLocation || new google.maps.LatLng(0,0);
+        object[method](fallbackLocation);
+      };
+      if (!param || param.match(/^current/i)) { // sensored position
+        NavigatorGeolocation.getCurrentPosition().then(
+          function(position) { // success
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var latLng = new google.maps.LatLng(lat,lng);
+            object[method](latLng);
+            if (centered) {
+              object.map.setCenter(latLng);
+            }
+            options.callback && options.callback.apply(object);
+          },
+          errorFunc
+        );
+      } else { //assuming it is address
+        GeoCoder.geocode({address: param}).then(
+          function(results) { // success
+            object[method](results[0].geometry.location);
+            if (centered) {
+              object.map.setCenter(results[0].geometry.location);
+            }
+          },
+          errorFunc
+        );
+      }
+    };
+
+    var getAttrsToObserve = function(attrs) {
+      var attrsToObserve = [];
+      if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
+      } else {
+        for (var attrName in attrs) {
+          var attrValue = attrs[attrName];
+          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+            attrsToObserve.push(camelCase(attrName));
           }
         }
       }
-    });
-  };
+      return attrsToObserve;
+    };
 
-  return {
+    var observeAttrSetObj = function(orgAttrs, attrs, obj) {
+      var attrsToObserve = getAttrsToObserve(orgAttrs);
+      if (Object.keys(attrsToObserve).length) {
+        console.log(obj, "attributes to observe", attrsToObserve);
+      }
+      for (var i=0; i<attrsToObserve.length; i++) {
+        observeAndSet(attrs, attrsToObserve[i], obj);
+      }
+    };
+
+    var observeAndSet = function(attrs, attrName, object) {
+      attrs.$observe(attrName, function(val) {
+        if (val) {
+          console.log('observing ', object, attrName, val);
+          var setMethod = camelCase('set-'+attrName);
+          var optionValue = toOptionValue(val, {key: attrName});
+          console.log('setting ', object, attrName, 'with value', optionValue);
+          if (object[setMethod]) { //if set method does exist
+            /* if an location is being observed */
+            if (attrName.match(/center|position/) && 
+              typeof optionValue == 'string') {
+              setDelayedGeoLocation(object, setMethod, optionValue);
+            } else {
+              object[setMethod](optionValue);
+            }
+          }
+        }
+      });
+    };
+
     /**
      * filters attributes by skipping angularjs methods $.. $$..
      * @memberof Attr2Options
      * @param {Hash} attrs tag attributes
      * @returns {Hash} filterd attributes
      */
-    filter: function(attrs) {
+    var filter = function(attrs) {
       var options = {};
       for(var key in attrs) {
         if (key.match(/^\$/) || key.match(/^ng[A-Z]/)) {
@@ -203,8 +214,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         }
       }
       return options;
-    },
-
+    };
 
     /**
      * converts attributes hash to Google Maps API v3 options  
@@ -221,7 +231,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
      * @param {scope} scope angularjs scope
      * @returns {Hash} options converted attributess
      */
-    getOptions: function(attrs, scope) {
+    var getOptions = function(attrs, scope) {
       var options = {};
       for(var key in attrs) {
         if (attrs[key]) {
@@ -235,7 +245,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         } // if (attrs[key])
       } // for(var key in attrs)
       return options;
-    },
+    };
 
     /**
      * converts attributes hash to scope-specific event function 
@@ -244,7 +254,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
      * @param {Hash} attrs tag attributes
      * @returns {Hash} events converted events
      */
-    getEvents: function(scope, attrs) {
+    var getEvents = function(scope, attrs) {
       var events = {};
       var toLowercaseFunc = function($1){
         return "_"+$1.toLowerCase();
@@ -279,7 +289,7 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
         }
       }
       return events;
-    },
+    };
 
     /**
      * control means map controls, i.e streetview, pan, etc, not a general control
@@ -287,10 +297,11 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
      * @param {Hash} filtered filtered tag attributes
      * @returns {Hash} Google Map options
      */
-    getControlOptions: function(filtered) {
+    var getControlOptions = function(filtered) {
       var controlOptions = {};
-      if (typeof filtered != 'object')
+      if (typeof filtered != 'object') {
         return false;
+      }
 
       for (var attr in filtered) {
         if (filtered[attr]) {
@@ -344,18 +355,25 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
       } // for
 
       return controlOptions;
-    }, // function
+    };
 
-    toOptionValue: toOptionValue,
-    camelCase: camelCase,
-    setDelayedGeoLocation: setDelayedGeoLocation,
-    getAttrsToObserve: getAttrsToObserve,
-    observeAndSet: observeAndSet,
-    observeAttrSetObj: observeAttrSetObj,
-    orgAttributes: orgAttributes
+    return {
+      filter: filter,
+      getOptions: getOptions,
+      getEvents: getEvents,
+      getControlOptions: getControlOptions,
+      toOptionValue: toOptionValue,
+      setDelayedGeoLocation: setDelayedGeoLocation,
+      getAttrsToObserve: getAttrsToObserve,
+      observeAndSet: observeAndSet,
+      observeAttrSetObj: observeAttrSetObj,
+      orgAttributes: orgAttributes
+    }; // return
 
-  }; // return
-}]); 
+  }; 
+
+  angular.module('ngMap').service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', Attr2Options]);
+})();
 
 /**
  * @ngdoc service
@@ -363,33 +381,39 @@ ngMap.service('Attr2Options', ['$parse', 'NavigatorGeolocation', 'GeoCoder', fun
  * @description
  *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
  */
-ngMap.service('GeoCoder', ['$q', function($q) {
-  return {
-    /**
-     * @memberof GeoCoder
-     * @param {Hash} options https://developers.google.com/maps/documentation/geocoding/#geocoding
-     * @example
-     * ```
-     *   GeoCoder.geocode({address: 'the cn tower'}).then(function(result) {
-     *     //... do something with result
-     *   });
-     * ```
-     * @returns {HttpPromise} Future object
-     */
-    geocode : function(options) {
-      var deferred = $q.defer();
-      var geocoder = new google.maps.Geocoder();
-      geocoder.geocode(options, function (results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          deferred.resolve(results);
-        } else {
-          deferred.reject('Geocoder failed due to: '+ status);
-        }
-      });
-      return deferred.promise;
+/* global google */
+(function() {
+  'use strict';
+  var GeoCoder = function($q) {
+    return {
+      /**
+       * @memberof GeoCoder
+       * @param {Hash} options https://developers.google.com/maps/documentation/geocoding/#geocoding
+       * @example
+       * ```
+       *   GeoCoder.geocode({address: 'the cn tower'}).then(function(result) {
+       *     //... do something with result
+       *   });
+       * ```
+       * @returns {HttpPromise} Future object
+       */
+      geocode : function(options) {
+        var deferred = $q.defer();
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode(options, function (results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            deferred.resolve(results);
+          } else {
+            deferred.reject('Geocoder failed due to: '+ status);
+          }
+        });
+        return deferred.promise;
+      }
     }
-  }
-}]);
+  };
+
+  angular.module('ngMap').service('GeoCoder', ['$q', GeoCoder]);
+})();
 
 /**
  * @ngdoc service
@@ -397,49 +421,55 @@ ngMap.service('GeoCoder', ['$q', function($q) {
  * @description
  *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for navigator.geolocation methods
  */
-ngMap.service('NavigatorGeolocation', ['$q', function($q) {
-  return {
-    /**
-     * @memberof NavigatorGeolocation
-     * @param {function} success success callback function
-     * @param {function} failure failure callback function
-     * @example
-     * ```
-     *  NavigatorGeolocation.getCurrentPosition()
-     *    .then(function(position) {
-     *      var lat = position.coords.latitude, lng = position.coords.longitude;
-     *      .. do something lat and lng
-     *    });
-     * ```
-     * @returns {HttpPromise} Future object
-     */
-    getCurrentPosition: function() {
-      var deferred = $q.defer();
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function(position) {
-            deferred.resolve(position);
-          }, function(evt) {
-            console.error(evt);
-            deferred.reject(evt);
-          }
-        );
-      } else {
-        deferred.reject("Browser Geolocation service failed.");
+/* global google */
+(function() {
+  'use strict';
+
+  var NavigatorGeolocation = function($q) {
+    return {
+      /**
+       * @memberof NavigatorGeolocation
+       * @param {function} success success callback function
+       * @param {function} failure failure callback function
+       * @example
+       * ```
+       *  NavigatorGeolocation.getCurrentPosition()
+       *    .then(function(position) {
+       *      var lat = position.coords.latitude, lng = position.coords.longitude;
+       *      .. do something lat and lng
+       *    });
+       * ```
+       * @returns {HttpPromise} Future object
+       */
+      getCurrentPosition: function() {
+        var deferred = $q.defer();
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function(position) {
+              deferred.resolve(position);
+            }, function(evt) {
+              console.error(evt);
+              deferred.reject(evt);
+            }
+          );
+        } else {
+          deferred.reject("Browser Geolocation service failed.");
+        }
+        return deferred.promise;
+      },
+
+      watchPosition: function() {
+        return "TODO";
+      },
+
+      clearWatch: function() {
+        return "TODO";
       }
-      return deferred.promise;
-    },
+    };
+  }; 
 
-    watchPosition: function() {
-      return "TODO";
-    },
-
-    clearWatch: function() {
-      return "TODO";
-    }
-  };
-}]); 
-
+  angular.module('ngMap').service('NavigatorGeolocation', ['$q', NavigatorGeolocation]);
+})();
 
 /**
  * @ngdoc service
@@ -448,8 +478,12 @@ ngMap.service('NavigatorGeolocation', ['$q', function($q) {
  *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
  *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
  */
-ngMap.service('StreetView', ['$q', function($q) {
-  return {
+/* global google */
+(function() {
+  'use strict';
+
+  var StreetView = function($q) {
+
     /**
      * Retrieves panorama id from the given map (and or position)
      * @memberof StreetView
@@ -462,7 +496,7 @@ ngMap.service('StreetView', ['$q', function($q) {
      *   });
      * @returns {HttpPromise} Future object
      */
-    getPanorama : function(map, latlng) {
+    var getPanorama = function(map, latlng) {
       latlng = latlng || map.getCenter();
       var deferred = $q.defer();
       var svs = new google.maps.StreetViewService();
@@ -477,7 +511,8 @@ ngMap.service('StreetView', ['$q', function($q) {
         }
       });
       return deferred.promise;
-    },
+    };
+
     /**
      * Set panorama view on the given map with the panorama id
      * @memberof StreetView
@@ -486,12 +521,20 @@ ngMap.service('StreetView', ['$q', function($q) {
      * @example
      *   StreetView.setPanorama(map, panoId);
      */
-    setPanorama : function(map, panoId) {
+    var setPanorama = function(map, panoId) {
       var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
       svp.setPano(panoId);
-    }
-  }; // return
-}]);
+    };
+
+    return {
+      getPanorama: getPanorama,
+      setPanorama: setPanorama
+    }; // return
+
+  };
+
+  angular.module('ngMap').service('StreetView', ['$q', StreetView]);
+})();
 
 /**
  * @ngdoc directive

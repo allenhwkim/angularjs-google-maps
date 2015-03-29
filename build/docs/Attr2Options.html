@@ -52,6 +52,8 @@
     
     <div class="description">
         <p>Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.</p>
+<p>  TODO: there are some methods that must be in mapController. Those shoulb be moved for better collaboration.
+  i.e. setDelayedGeoLocation, observeAndSet</p>
     </div>
     
 
@@ -137,7 +139,7 @@
 
     
     
-      <a href="attr2_options.js.html#line195" class="name-link"><h4 class="name" id="filter"><span class="type-signature">(static) </span>filter<span class="signature">(attrs)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
+      <a href="attr2_options.js.html#line206" class="name-link"><h4 class="name" id="filter"><span class="type-signature">(static) </span>filter<span class="signature">(attrs)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
     
 
     
@@ -227,7 +229,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line195">line 195</a>
+        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line206">line 206</a>
     </li></ul></dd>
     
 
@@ -282,7 +284,7 @@
 
     
     
-      <a href="attr2_options.js.html#line288" class="name-link"><h4 class="name" id="getControlOptions"><span class="type-signature">(static) </span>getControlOptions<span class="signature">(filtered)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
+      <a href="attr2_options.js.html#line298" class="name-link"><h4 class="name" id="getControlOptions"><span class="type-signature">(static) </span>getControlOptions<span class="signature">(filtered)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
     
 
     
@@ -372,7 +374,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line288">line 288</a>
+        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line298">line 298</a>
     </li></ul></dd>
     
 
@@ -427,7 +429,7 @@
 
     
     
-      <a href="attr2_options.js.html#line245" class="name-link"><h4 class="name" id="getEvents"><span class="type-signature">(static) </span>getEvents<span class="signature">(scope, attrs)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
+      <a href="attr2_options.js.html#line255" class="name-link"><h4 class="name" id="getEvents"><span class="type-signature">(static) </span>getEvents<span class="signature">(scope, attrs)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
     
 
     
@@ -540,7 +542,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line245">line 245</a>
+        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line255">line 255</a>
     </li></ul></dd>
     
 
@@ -595,7 +597,7 @@
 
     
     
-      <a href="attr2_options.js.html#line222" class="name-link"><h4 class="name" id="getOptions"><span class="type-signature">(static) </span>getOptions<span class="signature">(attrs, scope)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
+      <a href="attr2_options.js.html#line232" class="name-link"><h4 class="name" id="getOptions"><span class="type-signature">(static) </span>getOptions<span class="signature">(attrs, scope)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
     
 
     
@@ -714,7 +716,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line222">line 222</a>
+        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line232">line 232</a>
     </li></ul></dd>
     
 
@@ -742,6 +744,151 @@
             
 <div class="param-desc">
     <p>options converted attributess</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Hash</span>
+
+
+    </dd>
+</dl>
+
+        
+
+    
+</dd>
+
+        
+            
+<dt>
+
+    
+    
+      <a href="attr2_options.js.html#line46" class="name-link"><h4 class="name" id="orgAttributes"><span class="type-signature">(static) </span>orgAttributes<span class="signature">(el)</span><span class="type-signature"> &rarr; {Hash}</span></h4></a>
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Returns the attributes of an element as hash</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>el</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>html element</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="attr2_options.js.html">services/attr2_options.js</a>, <a href="attr2_options.js.html#line46">line 46</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>attributes</p>
 </div>
 
 

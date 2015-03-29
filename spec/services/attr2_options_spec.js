@@ -113,13 +113,6 @@ describe('Attr2Options', function() {
     });
   });
 
-  describe("#camelCase", function() {
-    it('should return camelcase', function() {
-      expect("thisIsCamelCase").toEqual(parser.camelCase("this:is_camel-case"));
-      expect("MozCamelCase").toEqual(parser.camelCase("moz-camel-case"));
-    });
-  });
-
   describe("#observeAndSet", function() {
     //TODO
     // var observeAndSet = function(attrs, attrName, object) {
