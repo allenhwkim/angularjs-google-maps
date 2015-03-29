@@ -264,20 +264,20 @@ Advanced Examples
 Contributors
 ==============
 
-   285  Allen Kim
-    13  Hamza Azeem
-     4  Fangming Du
-     3  Antonio Salumbides
-     2  Alexandre Kilian
-     2  Prem Prakash
-     2  Romain Maneschi
-     2  jpagand
-     1  martinmicunda
-     1  Simon Hampton
-     1  Will
-     1  Ishaan Puniani
-     1  Michael Liu
-     1  unknown
+    285  Allen Kim
+     13  Hamza Azeem
+      4  Fangming Du
+      3  Antonio Salumbides
+      2  Alexandre Kilian
+      2  Prem Prakash
+      2  Romain Maneschi
+      2  jpagand
+      1  martinmicunda
+      1  Simon Hampton
+      1  Will
+      1  Ishaan Puniani
+      1  Michael Liu
+      1  unknown
 
 license
 =======
