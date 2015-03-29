@@ -46,8 +46,8 @@ ngMap.MapController = function() {
 
   /**
    * Delete an object from the collection and remove from map
-   * @memgerof MapController
-   * @name deleteFromMap
+   * @memberof MapController
+   * @name deleteObject
    * @param {Array} objs the collection of objects. i.e., map.markers
    * @param {Object} obj the object to be removed. i.e., marker
    */
