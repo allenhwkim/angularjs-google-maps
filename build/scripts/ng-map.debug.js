@@ -1526,7 +1526,7 @@ ngMap.MapController = function() {
         obj instanceof google.maps.Polyline ||
         obj instanceof google.maps.Rectangle ||
         obj instanceof google.maps.GroundOverlay) {
-        this.addObjec('shapes', obj);
+        this.addObject('shapes', obj);
       } else {
         this.addObject(obj.groupName, obj);
       }
