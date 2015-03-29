@@ -33,7 +33,9 @@
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
+/* global google, ngMap */
 ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
+  'use strict';
   var parser = Attr2Options;
 
   var getMarker = function(options, events) {
@@ -89,28 +91,16 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
       var markerEvents = parser.getEvents(scope, filtered);
       console.log('marker options', markerOptions, 'events', markerEvents);
 
-      /**
-       * set event to clean up removed marker
-       * useful with ng-repeat
-       */
-      element.bind('$destroy', function() {
-        var markers = marker.map.markers;
-        for (var name in markers) {
-          if (markers[name] == marker) {
-            delete markers[name];
-          }
-        }
-        marker.setMap(null);          
-      });
-
       var marker = getMarker(markerOptions, markerEvents);
-      mapController.addMarker(marker);
+      mapController.addObject('markers', marker);
 
       /**
        * set observers
        */
       parser.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
-
+      element.bind('$destroy', function() {
+        mapController.deleteObject('markers', marker);
+      });
     } //link
   }; // return
 }]);// 

@@ -535,6 +535,9 @@ ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
       var layer = getLayer(options, events);
       mapController.addObject('bicyclingLayers', layer);
       parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('biclclingLayers', layer);
+      });
     }
    }; // return
 }]);
@@ -580,6 +583,9 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
       var layer = getLayer(options, events);
       mapController.addObject('cloudLayers', layer);
       parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('cloudLayers', layer);
+      });
     }
    }; // return
 }]);
@@ -662,7 +668,7 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
  * Example:
  *
  *  <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
- *      <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" ></drawing-manager>
+ *    <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" ></drawing-manager>
  *  </map>
  *
  *  TODO: Add remove button.
@@ -671,47 +677,47 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
  */
 /*jshint -W089*/
 ngMap.directive('drawingManager', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
+  var parser = Attr2Options;
 
-    return {
-        restrict: 'E',
-        require: '^map',
+  return {
+    restrict: 'E',
+    require: '^map',
 
-        link: function(scope, element, attrs, mapController) {
-            var orgAttrs = parser.orgAttributes(element);
-            var filtered = parser.filter(attrs);
-            var options = parser.getOptions(filtered);
-            var controlOptions = parser.getControlOptions(filtered);
-            var events = parser.getEvents(scope, filtered);
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var controlOptions = parser.getControlOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
 
-            console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
+      console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
 
-            /**
-             * set options
-             */
-            var drawingManager = new google.maps.drawing.DrawingManager({
-                drawingMode: options.drawingmode,
-                drawingControl: options.drawingcontrol,
-                drawingControlOptions: controlOptions.drawingControlOptions,
-                circleOptions:options.circleoptions,
-                markerOptions:options.markeroptions,
-                polygonOptions:options.polygonoptions,
-                polylineOptions:options.polylineoptions,
-                rectangleOptions:options.rectangleoptions
-            });
+      /**
+       * set options
+       */
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: options.drawingmode,
+        drawingControl: options.drawingcontrol,
+        drawingControlOptions: controlOptions.drawingControlOptions,
+        circleOptions:options.circleoptions,
+        markerOptions:options.markeroptions,
+        polygonOptions:options.polygonoptions,
+        polylineOptions:options.polylineoptions,
+        rectangleOptions:options.rectangleoptions
+      });
 
 
-            /**
-             * set events
-             */
-            var events = parser.getEvents(scope, filtered);
-            for (var eventName in events) {
-                google.maps.event.addListener(drawingManager, eventName, events[eventName]);
-            }
+      /**
+       * set events
+       */
+      var events = parser.getEvents(scope, filtered);
+      for (var eventName in events) {
+        google.maps.event.addListener(drawingManager, eventName, events[eventName]);
+      }
 
-            mapController.addObject('mapDrawingManager', drawingManager);
-        }
-    }; // return
+      mapController.addObject('mapDrawingManager', drawingManager);
+    }
+  }; // return
 }]);
 
 /**
@@ -969,6 +975,9 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
 
       mapController.addObject('infoWindows', infoWindow);
       parser.observeAttrSetObj(orgAttrs, attrs, infoWindow); /* observers */
+      element.bind('$destroy', function() {
+        mapController.deleteObject('infoWindows', infoWindow);
+      });
 
       // show InfoWindow when initialized
       if (infoWindow.visible) {
@@ -1084,6 +1093,9 @@ ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
       var kmlLayer = getKmlLayer(options, events);
       mapController.addObject('kmlLayers', kmlLayer);
       parser.observeAttrSetObj(orgAttrs, attrs, kmlLayer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('kmlLayers', kmlLayer);
+      });
     }
    }; // return
 }]);
@@ -1444,60 +1456,35 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
 /*jshint -W089*/
+/* global google, ngMap */
 ngMap.MapController = function() { 
+  'use strict';
 
   this.map = null;
-  this._objects = [];
+  this._objects = []; /* temporary collection of map objects */
 
   /**
-   * Add a marker to map and $scope.markers
+   * Add an object to the collection of group
    * @memberof MapController
-   * @name addMarker
-   * @param {Marker} marker google map marker
+   * @name addObject
+   * @param groupName the name of collection that object belongs to
+   * @param obj  an object to add into a collection, i.e. marker, shape
    */
-  this.addMarker = function(marker) {
+  this.addObject = function(groupName, obj) {
     /**
-     * marker and shape are initialized before map is initialized
-     * so, collect _objects then will init. those when map is initialized
+     * objects, i.e. markers and shapes, are initialized before map is initialized
+     * so, we collect those objects, then, we will add to map when map is initialized
      * However the case as in ng-repeat, we can directly add to map
      */
-    if (this.map) {
-      this.map.markers = this.map.markers || {};
-      marker.setMap(this.map);
-      if (marker.centered) {
-        this.map.setCenter(marker.position);
-      }
-      var len = Object.keys(this.map.markers).length;
-      this.map.markers[marker.id || len] = marker;
-    } else {
-      this._objects.push(marker);
-    }
-  };
-
-  /**
-   * Add a shape to map and $scope.shapes
-   * @memberof MapController
-   * @name addShape
-   * @param {Shape} shape google map shape
-   */
-  this.addShape = function(shape) {
-    if (this.map) {
-      this.map.shapes = this.map.shapes || {};
-      shape.setMap(this.map);
-      var len = Object.keys(this.map.shapes).length;
-      this.map.shapes[shape.id || len] = shape;
-    } else {
-      this._objects.push(shape);
-    }
-  };
-
-  this.addObject = function(groupName, obj) {
     if (this.map) {
       this.map[groupName] = this.map[groupName] || {};
       var len = Object.keys(this.map[groupName]).length;
       this.map[groupName][obj.id || len] = obj;
       if (groupName != "infoWindows" && obj.setMap) { //infoWindow.setMap works like infoWindow.open
         obj.setMap(this.map);
+      }
+      if (obj.centered && obj.position) {
+        this.map.setCenter(obj.position);
       }
     } else {
       obj.groupName = groupName;
@@ -1506,7 +1493,25 @@ ngMap.MapController = function() {
   }
 
   /**
-   * Add a shape to map and $scope.shapes
+   * Delete an object from the collection and remove from map
+   * @memgerof MapController
+   * @name deleteFromMap
+   * @param {Array} objs the collection of objects. i.e., map.markers
+   * @param {Object} obj the object to be removed. i.e., marker
+   */
+  this.deleteObject = function(groupName, obj) {
+    /* delete from map */
+    obj.map && obj.setMap(null);          
+
+    /* delete from group */
+    var objs = obj.map[groupName];
+    for (var name in objs) {
+      objs[name] === obj && (delete objs[name]);
+    }
+  };
+
+  /**
+   * Add collected objects to map
    * @memberof MapController
    * @name addShape
    * @param {Shape} shape google map shape
@@ -1515,13 +1520,13 @@ ngMap.MapController = function() {
     for (var i=0; i<objects.length; i++) {
       var obj=objects[i];
       if (obj instanceof google.maps.Marker) {
-        this.addMarker(obj);
+        this.addObject('markers', obj);
       } else if (obj instanceof google.maps.Circle ||
         obj instanceof google.maps.Polygon ||
         obj instanceof google.maps.Polyline ||
         obj instanceof google.maps.Rectangle ||
         obj instanceof google.maps.GroundOverlay) {
-        this.addShape(obj);
+        this.addObjec('shapes', obj);
       } else {
         this.addObject(obj.groupName, obj);
       }
@@ -1609,7 +1614,9 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
  *    <marker position="the cn tower" on-click="myfunc()"></div>
  *   </map>
  */
+/* global google, ngMap */
 ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
+  'use strict';
   var parser = Attr2Options;
 
   var getMarker = function(options, events) {
@@ -1665,28 +1672,16 @@ ngMap.directive('marker', ['Attr2Options', function(Attr2Options)  {
       var markerEvents = parser.getEvents(scope, filtered);
       console.log('marker options', markerOptions, 'events', markerEvents);
 
-      /**
-       * set event to clean up removed marker
-       * useful with ng-repeat
-       */
-      element.bind('$destroy', function() {
-        var markers = marker.map.markers;
-        for (var name in markers) {
-          if (markers[name] == marker) {
-            delete markers[name];
-          }
-        }
-        marker.setMap(null);          
-      });
-
       var marker = getMarker(markerOptions, markerEvents);
-      mapController.addMarker(marker);
+      mapController.addObject('markers', marker);
 
       /**
        * set observers
        */
       parser.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
-
+      element.bind('$destroy', function() {
+        mapController.deleteObject('markers', marker);
+      });
     } //link
   }; // return
 }]);// 
@@ -1884,12 +1879,15 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
       var shapeEvents = parser.getEvents(scope, filtered);
 
       var shape = getShape(shapeOptions, shapeEvents);
-      mapController.addShape(shape);
+      mapController.addObject('shapes', shape);
 
       /**
        * set observers
        */
       parser.observeAttrSetObj(orgAttrs, attrs, shape); 
+      element.bind('$destroy', function() {
+        mapController.deleteObject('shapes', shape);
+      });
     }
    }; // return
 }]);
@@ -1935,6 +1933,9 @@ ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
       var layer = getLayer(options, events);
       mapController.addObject('trafficLayers', layer);
       parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('trafficLayers', layer);
+      });
     }
    }; // return
 }]);
@@ -1980,6 +1981,9 @@ ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
       var layer = getLayer(options, events);
       mapController.addObject('transitLayers', layer);
       parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('transitLayers', layer);
+      });
     }
    }; // return
 }]);
@@ -2026,6 +2030,9 @@ ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
       var layer = getLayer(options, events);
       mapController.addObject('weatherLayers', layer);
       parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('weatherLayers', layer);
+      });
     }
    }; // return
 }]);

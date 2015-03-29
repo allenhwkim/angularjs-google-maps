@@ -39,6 +39,9 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
       var layer = getLayer(options, events);
       mapController.addObject('cloudLayers', layer);
       parser.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+      element.bind('$destroy', function() {
+        mapController.deleteObject('cloudLayers', layer);
+      });
     }
    }; // return
 }]);

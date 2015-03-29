@@ -113,6 +113,9 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
 
       mapController.addObject('infoWindows', infoWindow);
       parser.observeAttrSetObj(orgAttrs, attrs, infoWindow); /* observers */
+      element.bind('$destroy', function() {
+        mapController.deleteObject('infoWindows', infoWindow);
+      });
 
       // show InfoWindow when initialized
       if (infoWindow.visible) {

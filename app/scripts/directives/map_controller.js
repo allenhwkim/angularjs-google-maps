@@ -8,60 +8,35 @@
  * @property {MarkerClusterer} markerClusterer MarkerClusterer initiated within `map` directive
  */
 /*jshint -W089*/
+/* global google, ngMap */
 ngMap.MapController = function() { 
+  'use strict';
 
   this.map = null;
-  this._objects = [];
+  this._objects = []; /* temporary collection of map objects */
 
   /**
-   * Add a marker to map and $scope.markers
+   * Add an object to the collection of group
    * @memberof MapController
-   * @name addMarker
-   * @param {Marker} marker google map marker
+   * @name addObject
+   * @param groupName the name of collection that object belongs to
+   * @param obj  an object to add into a collection, i.e. marker, shape
    */
-  this.addMarker = function(marker) {
+  this.addObject = function(groupName, obj) {
     /**
-     * marker and shape are initialized before map is initialized
-     * so, collect _objects then will init. those when map is initialized
+     * objects, i.e. markers and shapes, are initialized before map is initialized
+     * so, we collect those objects, then, we will add to map when map is initialized
      * However the case as in ng-repeat, we can directly add to map
      */
-    if (this.map) {
-      this.map.markers = this.map.markers || {};
-      marker.setMap(this.map);
-      if (marker.centered) {
-        this.map.setCenter(marker.position);
-      }
-      var len = Object.keys(this.map.markers).length;
-      this.map.markers[marker.id || len] = marker;
-    } else {
-      this._objects.push(marker);
-    }
-  };
-
-  /**
-   * Add a shape to map and $scope.shapes
-   * @memberof MapController
-   * @name addShape
-   * @param {Shape} shape google map shape
-   */
-  this.addShape = function(shape) {
-    if (this.map) {
-      this.map.shapes = this.map.shapes || {};
-      shape.setMap(this.map);
-      var len = Object.keys(this.map.shapes).length;
-      this.map.shapes[shape.id || len] = shape;
-    } else {
-      this._objects.push(shape);
-    }
-  };
-
-  this.addObject = function(groupName, obj) {
     if (this.map) {
       this.map[groupName] = this.map[groupName] || {};
       var len = Object.keys(this.map[groupName]).length;
       this.map[groupName][obj.id || len] = obj;
       if (groupName != "infoWindows" && obj.setMap) { //infoWindow.setMap works like infoWindow.open
         obj.setMap(this.map);
+      }
+      if (obj.centered && obj.position) {
+        this.map.setCenter(obj.position);
       }
     } else {
       obj.groupName = groupName;
@@ -70,7 +45,25 @@ ngMap.MapController = function() {
   }
 
   /**
-   * Add a shape to map and $scope.shapes
+   * Delete an object from the collection and remove from map
+   * @memgerof MapController
+   * @name deleteFromMap
+   * @param {Array} objs the collection of objects. i.e., map.markers
+   * @param {Object} obj the object to be removed. i.e., marker
+   */
+  this.deleteObject = function(groupName, obj) {
+    /* delete from map */
+    obj.map && obj.setMap(null);          
+
+    /* delete from group */
+    var objs = obj.map[groupName];
+    for (var name in objs) {
+      objs[name] === obj && (delete objs[name]);
+    }
+  };
+
+  /**
+   * Add collected objects to map
    * @memberof MapController
    * @name addShape
    * @param {Shape} shape google map shape
@@ -79,13 +72,13 @@ ngMap.MapController = function() {
     for (var i=0; i<objects.length; i++) {
       var obj=objects[i];
       if (obj instanceof google.maps.Marker) {
-        this.addMarker(obj);
+        this.addObject('markers', obj);
       } else if (obj instanceof google.maps.Circle ||
         obj instanceof google.maps.Polygon ||
         obj instanceof google.maps.Polyline ||
         obj instanceof google.maps.Rectangle ||
         obj instanceof google.maps.GroundOverlay) {
-        this.addShape(obj);
+        this.addObject('shapes', obj);
       } else {
         this.addObject(obj.groupName, obj);
       }

@@ -141,12 +141,15 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
       var shapeEvents = parser.getEvents(scope, filtered);
 
       var shape = getShape(shapeOptions, shapeEvents);
-      mapController.addShape(shape);
+      mapController.addObject('shapes', shape);
 
       /**
        * set observers
        */
       parser.observeAttrSetObj(orgAttrs, attrs, shape); 
+      element.bind('$destroy', function() {
+        mapController.deleteObject('shapes', shape);
+      });
     }
    }; // return
 }]);

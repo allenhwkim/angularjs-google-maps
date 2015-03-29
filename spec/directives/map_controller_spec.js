@@ -11,7 +11,7 @@ describe('MapController', function() {
     });
   });
 
-  describe('addMarker', function() {
+  describe('addObject', function() {
     it('should add a marker to the existing map', function() {
       ctrl.map  = new google.maps.Map(el, {}); //each method require ctrl.map;
       ctrl.map.markers = {};
@@ -19,7 +19,7 @@ describe('MapController', function() {
         position: new google.maps.LatLng(1,1),
         centered: true
       });
-      ctrl.addMarker(marker);
+      ctrl.addObject('markers', marker);
       // set map for this marker
       expect(marker.getMap()).toBe(ctrl.map);
       // set center of the map with this marker
@@ -31,7 +31,7 @@ describe('MapController', function() {
     it('should add a marker to ctrl._objects when ctrl.map is not init', function() {
       ctrl._objects = [];
       var marker = new google.maps.Marker({position: new google.maps.LatLng(1,1)});
-      ctrl.addMarker(marker);
+      ctrl.addObject('markers', marker);
       expect(ctrl._objects[0]).toBe(marker);
     });
   });
@@ -40,7 +40,7 @@ describe('MapController', function() {
     it('should add a shape to ctrl._objects when ctrl.map is not init', function() {
       ctrl._objects = [];
       var circle = new google.maps.Circle({center: new google.maps.LatLng(1,1)});
-      ctrl.addShape(circle);
+      ctrl.addObject('shapes', circle);
       expect(ctrl._objects[0]).toBe(circle);
     });
     
@@ -48,7 +48,7 @@ describe('MapController', function() {
       ctrl.map  = new google.maps.Map(el, {}); //each method require ctrl.map;
       ctrl.map.shapes = {};
       var circle = new google.maps.Circle({center: new google.maps.LatLng(1,1)});
-      ctrl.addShape(circle);
+      ctrl.addObject('shapes', circle);
       expect(ctrl.map.shapes[0]).toBe(circle);
       expect(ctrl.map.shapes[0].getMap()).toBe(ctrl.map);
     });

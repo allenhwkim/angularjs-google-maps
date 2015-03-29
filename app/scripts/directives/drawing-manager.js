@@ -10,7 +10,7 @@
  * Example:
  *
  *  <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
- *      <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" ></drawing-manager>
+ *    <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" ></drawing-manager>
  *  </map>
  *
  *  TODO: Add remove button.
@@ -19,45 +19,45 @@
  */
 /*jshint -W089*/
 ngMap.directive('drawingManager', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
+  var parser = Attr2Options;
 
-    return {
-        restrict: 'E',
-        require: '^map',
+  return {
+    restrict: 'E',
+    require: '^map',
 
-        link: function(scope, element, attrs, mapController) {
-            var orgAttrs = parser.orgAttributes(element);
-            var filtered = parser.filter(attrs);
-            var options = parser.getOptions(filtered);
-            var controlOptions = parser.getControlOptions(filtered);
-            var events = parser.getEvents(scope, filtered);
+    link: function(scope, element, attrs, mapController) {
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered);
+      var controlOptions = parser.getControlOptions(filtered);
+      var events = parser.getEvents(scope, filtered);
 
-            console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
+      console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
 
-            /**
-             * set options
-             */
-            var drawingManager = new google.maps.drawing.DrawingManager({
-                drawingMode: options.drawingmode,
-                drawingControl: options.drawingcontrol,
-                drawingControlOptions: controlOptions.drawingControlOptions,
-                circleOptions:options.circleoptions,
-                markerOptions:options.markeroptions,
-                polygonOptions:options.polygonoptions,
-                polylineOptions:options.polylineoptions,
-                rectangleOptions:options.rectangleoptions
-            });
+      /**
+       * set options
+       */
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: options.drawingmode,
+        drawingControl: options.drawingcontrol,
+        drawingControlOptions: controlOptions.drawingControlOptions,
+        circleOptions:options.circleoptions,
+        markerOptions:options.markeroptions,
+        polygonOptions:options.polygonoptions,
+        polylineOptions:options.polylineoptions,
+        rectangleOptions:options.rectangleoptions
+      });
 
 
-            /**
-             * set events
-             */
-            var events = parser.getEvents(scope, filtered);
-            for (var eventName in events) {
-                google.maps.event.addListener(drawingManager, eventName, events[eventName]);
-            }
+      /**
+       * set events
+       */
+      var events = parser.getEvents(scope, filtered);
+      for (var eventName in events) {
+        google.maps.event.addListener(drawingManager, eventName, events[eventName]);
+      }
 
-            mapController.addObject('mapDrawingManager', drawingManager);
-        }
-    }; // return
+      mapController.addObject('mapDrawingManager', drawingManager);
+    }
+  }; // return
 }]);
