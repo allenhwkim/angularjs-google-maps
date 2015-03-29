@@ -147,9 +147,11 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
       scope.showInfoWindow  = scope.showInfoWindow ||
         function(event, id, anchor) {
           var infoWindow = mapController.map.infoWindows[id],
-		  tempTemplate = infoWindow.__template; // set template in a temporary variable
+          tempTemplate = infoWindow.__template; // set template in a temporary variable
           infoWindow.__template = infoWindow.__eval.apply(this, [event]);
-          infoWindow.__compile(scope);
+          $timeout(function(){
+            infoWindow.__compile(scope);
+          });
           if (anchor) {
             infoWindow.open(mapController.map, anchor);
           } else if (this.getPosition) {
@@ -157,7 +159,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
           } else {
             infoWindow.open(mapController.map);
           }
-		  infoWindow.__template = tempTemplate; // reset template to the object
+          infoWindow.__template = tempTemplate; // reset template to the object
         };
 
       /**
@@ -167,7 +169,7 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
         function(event, id, anchor) {
           var infoWindow = mapController.map.infoWindows[id];
           infoWindow.__template = infoWindow.__eval.apply(this, [event]);
-          infoWindow.__compile(scope);
+          //infoWindow.__compile(scope); don't need to compile when hide it
           infoWindow.close();
         };
 
