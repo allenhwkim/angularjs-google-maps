@@ -30,7 +30,7 @@ ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $time
       /**
        * if already loaded, stop processing it
        */
-      if (document.querySelector('script[src="'+src+'"]')) {
+      if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
         return false;
       }
 
