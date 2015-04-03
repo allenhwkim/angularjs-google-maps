@@ -266,8 +266,8 @@ var ngMap = angular.module('ngMap', []);
         
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
-          function index(obj,i) {return obj[i]}
-          f = funcName.split('.').reduce(index, scope)
+          function index(obj,i) {return obj[i];}
+          var f = funcName.split('.').reduce(index, scope);
           f.apply(this, [event].concat(args));
           scope.$apply();
         }
@@ -990,14 +990,33 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
       infoWindow.setContent(el[0]);
     };
 
-    infoWindow.__eval = function(event) {
+    infoWindow.__eval = function() {
       var template = infoWindow.__template;
       var _this = this;
       template = template.replace(/{{(event|this)[^;\}]+}}/g, function(match) {
         var expression = match.replace(/[{}]/g, "").replace("this.", "_this.");
+        console.log('expression', expression);
         return eval(expression);
       });
+      console.log('template', template);
       return template;
+    };
+
+    infoWindow.__open = function(scope, anchor) {
+      var _this = this;
+      $timeout(function() {
+        var tempTemplate = infoWindow.__template; // set template in a temporary variable
+        infoWindow.__template = infoWindow.__eval.apply(_this);
+        infoWindow.__compile(scope);
+        if (anchor && anchor.getPosition) {
+      console.log('anchor', anchor);
+      console.log('map', infoWindow.map);
+          infoWindow.open(infoWindow.map, anchor);
+        } else {
+          infoWindow.open(infoWindow.map);
+        }
+        infoWindow.__template = tempTemplate; // reset template to the object
+      });
     };
 
     return infoWindow;
@@ -1022,62 +1041,32 @@ ngMap.directive('infoWindow', ['Attr2Options', '$compile', '$timeout', function(
         mapController.deleteObject('infoWindows', infoWindow);
       });
 
-      // show InfoWindow when initialized
-      if (infoWindow.visible) {
-        //if (!infoWindow.position) { throw "Invalid position"; }
-        scope.$on('mapInitialized', function(evt, map) {
-          $timeout(function() {
-            infoWindow.__template = infoWindow.__eval.apply(this, [evt]);
-            infoWindow.__compile(scope);
-            infoWindow.map = map;
-            infoWindow.position && infoWindow.open(map);
-          });
-        });
-      }
-
-      // show InfoWindow on a marker  when initialized
-      if (infoWindow.visibleOnMarker) {
-        scope.$on('mapInitialized', function(evt, map) {
-          $timeout(function() {
-            var markerId = infoWindow.visibleOnMarker;
-            var marker = map.markers[markerId];
-            if (!marker) throw "Invalid marker id";
-            infoWindow.__template = infoWindow.__eval.apply(this, [evt]);
-            infoWindow.__compile(scope);
-            infoWindow.open(map, marker);
-          });
-        });
-      }
+      scope.$on('mapInitialized', function(evt, map) {
+        infoWindow.map = map;
+        infoWindow.visible && infoWindow.__open(scope);
+        if (infoWindow.visibleOnMarker) {
+          var markerId = infoWindow.visibleOnMarker;
+          infoWindow.__open(scope, map.markers[markerId]);
+        }
+      });
 
       /**
        * provide showInfoWindow method to scope
        */
       scope.showInfoWindow  = scope.showInfoWindow ||
-        function(event, id, anchor) {
-          var infoWindow = mapController.map.infoWindows[id],
-          tempTemplate = infoWindow.__template; // set template in a temporary variable
-          infoWindow.__template = infoWindow.__eval.apply(this, [event]);
-          $timeout(function(){
-            infoWindow.__compile(scope);
-          });
-          if (anchor) {
-            infoWindow.open(mapController.map, anchor);
-          } else if (this.getPosition) {
-            infoWindow.open(mapController.map, this);
-          } else {
-            infoWindow.open(mapController.map);
-          }
-          infoWindow.__template = tempTemplate; // reset template to the object
+        function(event, id, marker) {
+          var infoWindow = mapController.map.infoWindows[id];
+          var anchor = marker ? marker :
+            this.getPosition ? this : null;
+          infoWindow.__open.apply(this, [scope, anchor]);
         };
 
       /**
        * provide hideInfoWindow method to scope
        */
       scope.hideInfoWindow  = scope.hideInfoWindow ||
-        function(event, id, anchor) {
+        function(event, id) {
           var infoWindow = mapController.map.infoWindows[id];
-          infoWindow.__template = infoWindow.__eval.apply(this, [event]);
-          //infoWindow.__compile(scope); don't need to compile when hide it
           infoWindow.close();
         };
 
@@ -1543,14 +1532,14 @@ ngMap.MapController = function() {
    * @param {Object} obj the object to be removed. i.e., marker
    */
   this.deleteObject = function(groupName, obj) {
-    /* delete from map */
-    obj.map && obj.setMap(null);          
-
     /* delete from group */
     var objs = obj.map[groupName];
     for (var name in objs) {
       objs[name] === obj && (delete objs[name]);
     }
+
+    /* delete from map */
+    obj.map && obj.setMap(null);          
   };
 
   /**

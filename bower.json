@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "main": "./build/scripts/ng-map.js",
   "homepage": "https://github.com/allenhwkim/angularjs-google-maps",
   "authors": [
