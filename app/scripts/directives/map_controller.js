@@ -52,14 +52,14 @@ ngMap.MapController = function() {
    * @param {Object} obj the object to be removed. i.e., marker
    */
   this.deleteObject = function(groupName, obj) {
-    /* delete from map */
-    obj.map && obj.setMap(null);          
-
     /* delete from group */
     var objs = obj.map[groupName];
     for (var name in objs) {
       objs[name] === obj && (delete objs[name]);
     }
+
+    /* delete from map */
+    obj.map && obj.setMap(null);          
   };
 
   /**

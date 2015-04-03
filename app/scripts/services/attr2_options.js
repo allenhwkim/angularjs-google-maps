@@ -264,8 +264,8 @@
         
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
-          function index(obj,i) {return obj[i]}
-          f = funcName.split('.').reduce(index, scope)
+          function index(obj,i) {return obj[i];}
+          var f = funcName.split('.').reduce(index, scope);
           f.apply(this, [event].concat(args));
           scope.$apply();
         }
