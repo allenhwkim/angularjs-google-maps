@@ -17,9 +17,9 @@
 <!-- endbuild -->
 <script>
   angular.module('myApp',['ngMap']).controller('MyCtrl', function($scope) {
-    $scope.foo = 'scope';
+    $scope.message = 'You can not hide. :)';
     $scope.callbackFunc = function(param) {
-      window.alert(param + ' ' + $scope.foo);
+      window.alert('I know where '+ param +' are.' + $scope.message);
     };
   });
 </script>
@@ -28,7 +28,7 @@
 <body ng-app="myApp" ng-controller="MyCtrl">
   <map center='current-position' 
     geo-fallback-center="[40.74, -74.18]" 
-    geo-callback="callbackFunc('hi')"
+    geo-callback="callbackFunc('you')"
     ></map>
 </body>
 </html>
