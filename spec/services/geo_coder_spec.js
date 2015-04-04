@@ -1,5 +1,6 @@
-/* global google, jasmine */
+/* global jasmine */
 describe('GeoCoder', function () {
+  'use strict';
   var scope, geoCoder;
 
   beforeEach(module('ngMap'));

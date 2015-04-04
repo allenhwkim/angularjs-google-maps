@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "main": "build/scripts/ng-map.js",
   "dependencies": {
     "glob": "~4.0.2",
@@ -13,7 +13,7 @@
     "test": "gulp test"
   },
   "devDependencies": {
-    "angular-jsdoc": "^0.1.0",
+    "angular-jsdoc": "^0.3.3",
     "compression": "~1.0.6",
     "express": "~4.4.1",
     "gulp-bump": "~0.1.9",
@@ -32,13 +32,12 @@
     "gulp-uglify": "~0.3.0",
     "gulp-util": "~2.2.16",
     "jsdoc": "~3.3.0-alpha8",
-    "karma": "~0.12.16",
     "karma-chrome-launcher": "~0.1.4",
     "karma-jasmine": "~0.1.5",
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.4",
     "run-sequence": "~0.3.6",
-    "selenium-webdriver": "^2.44.0",
+    "selenium-webdriver": "^2.45.1",
     "through2": "~0.5.1",
     "zeparser": "0.0.7"
   }

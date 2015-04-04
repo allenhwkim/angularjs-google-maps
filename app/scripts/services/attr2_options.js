@@ -3,11 +3,8 @@
  * @name Attr2Options
  * @description 
  *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
- *
- *   TODO: there are some methods that must be in mapController. Those shoulb be moved for better collaboration.
- *   i.e. setDelayedGeoLocation, observeAndSet
  */
-/* global ngMap, google */
+/* global google */
 (function() {
   'use strict';
 
@@ -117,44 +114,10 @@
       return output;
     };
 
-    var setDelayedGeoLocation = function(object, method, param, options) {
-      options = options || {};
-      var centered = object.centered || options.centered;
-      var errorFunc = function() {
-        console.log('error occurred while', object, method, param, options);
-        var fallbackLocation = options.fallbackLocation || new google.maps.LatLng(0,0);
-        object[method](fallbackLocation);
-      };
-      if (!param || param.match(/^current/i)) { // sensored position
-        NavigatorGeolocation.getCurrentPosition().then(
-          function(position) { // success
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-            var latLng = new google.maps.LatLng(lat,lng);
-            object[method](latLng);
-            if (centered) {
-              object.map.setCenter(latLng);
-            }
-            options.callback && options.callback.apply(object);
-          },
-          errorFunc
-        );
-      } else { //assuming it is address
-        GeoCoder.geocode({address: param}).then(
-          function(results) { // success
-            object[method](results[0].geometry.location);
-            if (centered) {
-              object.map.setCenter(results[0].geometry.location);
-            }
-          },
-          errorFunc
-        );
-      }
-    };
-
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
       if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
+        void(0);
       } else {
         for (var attrName in attrs) {
           var attrValue = attrs[attrName];
@@ -167,36 +130,6 @@
       return attrsToObserve;
     };
 
-    var observeAttrSetObj = function(orgAttrs, attrs, obj) {
-      var attrsToObserve = getAttrsToObserve(orgAttrs);
-      if (Object.keys(attrsToObserve).length) {
-        console.log(obj, "attributes to observe", attrsToObserve);
-      }
-      for (var i=0; i<attrsToObserve.length; i++) {
-        observeAndSet(attrs, attrsToObserve[i], obj);
-      }
-    };
-
-    var observeAndSet = function(attrs, attrName, object) {
-      attrs.$observe(attrName, function(val) {
-        if (val) {
-          console.log('observing ', object, attrName, val);
-          var setMethod = camelCase('set-'+attrName);
-          var optionValue = toOptionValue(val, {key: attrName});
-          console.log('setting ', object, attrName, 'with value', optionValue);
-          if (object[setMethod]) { //if set method does exist
-            /* if an location is being observed */
-            if (attrName.match(/center|position/) && 
-              typeof optionValue == 'string') {
-              setDelayedGeoLocation(object, setMethod, optionValue);
-            } else {
-              object[setMethod](optionValue);
-            }
-          }
-        }
-      });
-    };
-
     /**
      * filters attributes by skipping angularjs methods $.. $$..
      * @memberof Attr2Options
@@ -207,6 +140,7 @@
       var options = {};
       for(var key in attrs) {
         if (key.match(/^\$/) || key.match(/^ng[A-Z]/)) {
+          void(0);
         } else {
           options[key] = attrs[key];
         }
@@ -356,15 +290,13 @@
     };
 
     return {
+      camelCase: camelCase,
       filter: filter,
       getOptions: getOptions,
       getEvents: getEvents,
       getControlOptions: getControlOptions,
       toOptionValue: toOptionValue,
-      setDelayedGeoLocation: setDelayedGeoLocation,
       getAttrsToObserve: getAttrsToObserve,
-      observeAndSet: observeAndSet,
-      observeAttrSetObj: observeAttrSetObj,
       orgAttributes: orgAttributes
     }; // return
 

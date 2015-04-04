@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="ngMap">
+<html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
@@ -16,19 +16,19 @@
 <script src="../app/scripts/services/attr2_options.js"></script>
 <!-- endbuild -->
 <script>
-function MyCtrl($scope) {
-  $scope.lat = 40.74, $scope.lng = -74.18;
-};
+  angular.module('myApp', ['ngMap']).controller('MyCtrl', function($scope) {
+    $scope.lat = 40.74, $scope.lng = -74.18;
+  });
 </script>
 </head>
 
-<body>
-    <div ng-controller="MyCtrl">
-      <map zoom="11" center="[{{lat}}, {{lng}}]" style="width:600px; height:400px">
-        <marker position="[{{lat}}, {{lng}}]" title="{{lat}}, {{lng}}"></marker>
-      </map>
-      <br/>Latigude : <input type="number" ng-model="lat" />
-      <br/>Longitude : <input type="number" ng-model="lng" />
-    </div>
+<body ng-app="myApp">
+  <div ng-controller="MyCtrl">
+    <map zoom="11" center="[{{lat}}, {{lng}}]" style="width:600px; height:400px">
+      <marker position="[{{lat}}, {{lng}}]" title="position: {{lat}}, {{lng}}"></marker>
+    </map>
+    <br/>Latigude : <input type="number" ng-model="lat" />
+    <br/>Longitude : <input type="number" ng-model="lng" />
+  </div>
 </body>
 </html>

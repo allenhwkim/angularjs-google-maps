@@ -16,6 +16,7 @@
  *   Restrict To:  Element
  *
  * @param {Boolean} centered if set, map will be centered with this marker
+ * @param {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
  * @param {String} &lt;OPTIONS>
  *   For circle, [any circle options](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)  
  *   For polygon, [any polygon options](https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions)  
@@ -59,9 +60,10 @@
  *  For full-working example, please visit 
  *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
-ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
+/* global google */
+(function() {
+  'use strict';
+
   var getBounds = function(points) {
     return new google.maps.LatLngBounds(points[0], points[1]);
   };
@@ -86,14 +88,10 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
     }
     switch(shapeName) {
       case "circle":
-        if (options.center instanceof google.maps.LatLng) {
-          shape = new google.maps.Circle(options);
-        } else {
-          var orgCenter = options.center;
+        if (!(options.center instanceof google.maps.LatLng)) {
           options.center = new google.maps.LatLng(0,0);
-          shape = new google.maps.Circle(options);
-          parser.setDelayedGeoLocation(shape, 'setCenter', orgCenter);
-        }
+        } 
+        shape = new google.maps.Circle(options);
         break;
       case "polygon":
         shape = new google.maps.Polygon(options);
@@ -126,30 +124,50 @@ ngMap.directive('shape', ['Attr2Options', function(Attr2Options) {
     }
     return shape;
   };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
-    /**
-     * link function
-     * @private
-     */
-    link: function(scope, element, attrs, mapController) {
+
+  var shape = function(Attr2Options, $parse) {
+    var parser = Attr2Options;
+
+    var linkFunc = function(scope, element, attrs, mapController) {
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var shapeOptions = parser.getOptions(filtered);
       var shapeEvents = parser.getEvents(scope, filtered);
 
+      var address, shapeType;
+      shapeType = shapeOptions.name;
+      if (!(shapeOptions.center instanceof google.maps.LatLng)) {
+        address = shapeOptions.center;
+      }
       var shape = getShape(shapeOptions, shapeEvents);
       mapController.addObject('shapes', shape);
+
+      if (address && shapeType == 'circle') {
+        mapController.getGeoLocation(address).then(function(latlng) {
+          shape.setCenter(latlng);
+          shape.centered && shape.map.setCenter(latlng);
+          var geoCallback = attrs.geoCallback;
+          geoCallback && $parse(geoCallback)(scope);
+        });
+      }
 
       /**
        * set observers
        */
-      parser.observeAttrSetObj(orgAttrs, attrs, shape); 
+      mapController.observeAttrSetObj(orgAttrs, attrs, shape); 
       element.bind('$destroy', function() {
         mapController.deleteObject('shapes', shape);
       });
-    }
-   }; // return
-}]);
+    };
+
+    return {
+      restrict: 'E',
+      require: '^map',
+      link: linkFunc
+     }; // return
+  };
+  shape.$inject = ['Attr2Options', '$parse'];
+
+  angular.module('ngMap').directive('shape', shape);
+
+})();

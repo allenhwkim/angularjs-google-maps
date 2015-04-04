@@ -14,6 +14,7 @@
  *   Restrict To:
  *     Element
  *
+ * @param {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
  * @param {Array} geo-fallback-center 
  *    The center of map incase geolocation failed. i.e. [0,0]
  * @param {String} init-event The name of event to initialize this map. 
@@ -37,22 +38,23 @@
  *   <map geo-fallback-center="[40.74, -74.18]">
  *   </map>
  */
-/*jshint -W030*/
-ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $timeout) {
-  var parser = Attr2Options;
-  function getStyle(el,styleProp)
-  {
+/* global google */
+(function() {
+  'use strict';
+
+  function getStyle(el,styleProp) {
+    var y;
     if (el.currentStyle) {
-      var y = el.currentStyle[styleProp];
+      y = el.currentStyle[styleProp];
     } else if (window.getComputedStyle) {
-      var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+      y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
     }
     return y;
   }
 
-  return {
-    restrict: 'AE',
-    controller: ngMap.MapController,
+  var mapDirective = function(Attr2Options, $timeout, $parse) {
+    var parser = Attr2Options;
+
     /**
      * Initialize map and events
      * @memberof map
@@ -61,7 +63,7 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
      * @param {Hash} attrs
      * @ctrl {MapController} ctrl
      */
-    link: function (scope, element, attrs, ctrl) {
+    var linkFunc = function(scope, element, attrs, ctrl) {
       var orgAttrs = parser.orgAttributes(element);
 
       scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
@@ -109,8 +111,13 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
           mapOptions.center = new google.maps.LatLng(0,0);
         } else if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
-          Attr2Options.setDelayedGeoLocation(map, 'setCenter', 
-              center, {fallbackLocation: options.geoFallbackCenter});
+          ctrl.getGeoLocation(center).then(function(latlng) {
+            map.setCenter(latlng);
+            var geoCallback = attrs.geoCallback;
+            geoCallback && $parse(geoCallback)(scope);
+          }, function(error) {
+            map.setCenter(options.geoFallbackCenter);
+          });
         }
         map.setOptions(mapOptions);
 
@@ -126,7 +133,7 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
         /**
          * set observers
          */
-        parser.observeAttrSetObj(orgAttrs, attrs, map);
+        ctrl.observeAttrSetObj(orgAttrs, attrs, map);
 
         /**
          * set controller and set objects
@@ -175,6 +182,14 @@ ngMap.directive('map', ['Attr2Options', '$timeout', function(Attr2Options, $time
       } else {
         initializeMap(mapOptions, mapEvents);
       } // if
-    }
-  }; 
-}]);
+    };
+
+    return {
+      restrict: 'AE',
+      controller: 'MapController',
+      link: linkFunc
+    }; 
+  };
+
+  angular.module('ngMap').directive('map', ['Attr2Options', '$timeout', '$parse', mapDirective]);
+})();
