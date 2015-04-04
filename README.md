@@ -3,27 +3,6 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
-**NOTE: 1.4.0 is released.**
-  * support lazy loading of maps js, which does not require to `http://maps.google.com/maps/api/js`
- 
-**NOTE: 1.2.0 is released.**
-  * events with `controller as` syntax, thanks to Simon
- 
-**NOTE: 1.1.0 is released.**
-  * marker directive can have icon attribute as JSON
-  * map with init-event attribute for initialization by an event
-  
-**NOTE: 1.0.0 is released.**  
-  Now, it covers all official google examples using new directives. The new directives are;
-
-  * Layer Directives  
-    traffic-layer, transit-layer, weather-layer, bicycling-layer, cloud-layer, dynamic-maps-engine-layer, fusion-tables-layer, heatmap-layer, kml-layer, maps-engine-layer
- custom-control
-  * info-window
-  * map-data
-  * map-type
-  * overlay-map-type
-
 [Demo](http://ngmap.github.io)  
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)
 
@@ -84,6 +63,33 @@ Lazy Loading
     <div map-lazy-load="http://maps.google.com/maps/api/js">
       <map center="41,-87" zoom="3"></map>
     </div>
+
+Release Notes
+---------------
+
+  **NOTE: 1.5.0 is released.**
+    * added geo-callback for map, marker, shape, and info-window. e.g., center="current-location" geo-callback="myFunc('foo')"
+
+  **NOTE: 1.4.0 is released.**
+    * support lazy loading of maps js, which does not require to `http://maps.google.com/maps/api/js`
+   
+  **NOTE: 1.2.0 is released.**
+    * events with `controller as` syntax, thanks to Simon
+   
+  **NOTE: 1.1.0 is released.**
+    * marker directive can have icon attribute as JSON
+    * map with init-event attribute for initialization by an event
+    
+  **NOTE: 1.0.0 is released.**  
+    Now, it covers all official google examples using new directives. The new directives are;
+
+    * Layer Directives  
+      traffic-layer, transit-layer, weather-layer, bicycling-layer, cloud-layer, dynamic-maps-engine-layer, fusion-tables-layer, heatmap-layer, kml-layer, maps-engine-layer
+   custom-control
+    * info-window
+    * map-data
+    * map-type
+    * overlay-map-type
 
 Directives
 ----------
