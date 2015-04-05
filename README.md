@@ -67,6 +67,11 @@ Lazy Loading
 Release Notes
 ---------------
 
+  **NOTE: 1.6.0 is released.**
+    * added street-view-panorams directive with its examples;
+      [street view with marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama.html) and
+      [street view in its own container](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama_container.html)
+
   **NOTE: 1.5.0 is released.**
     * added geo-callback for map, marker, shape, and info-window. e.g., center="current-location" geo-callback="myFunc('foo')"
 
