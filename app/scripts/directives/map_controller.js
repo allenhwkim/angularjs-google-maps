@@ -57,7 +57,7 @@
         var len = Object.keys(this.map[groupName]).length;
         this.map[groupName][obj.id || len] = obj;
         if (groupName != "infoWindows" && obj.setMap) { //infoWindow.setMap works like infoWindow.open
-          obj.setMap(this.map);
+          obj.setMap && obj.setMap(this.map);
         }
         if (obj.centered && obj.position) {
           this.map.setCenter(obj.position);
@@ -66,7 +66,7 @@
         obj.groupName = groupName;
         this._objects.push(obj);
       }
-    }
+    };
 
     /**
      * Delete an object from the collection and remove from map
@@ -83,7 +83,7 @@
       }
 
       /* delete from map */
-      obj.map && obj.setMap(null);          
+      obj.map && obj.setMap && obj.setMap(null);
     };
 
     /**
