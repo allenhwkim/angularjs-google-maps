@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "main": "build/scripts/ng-map.js",
   "dependencies": {
     "glob": "~4.0.2",
