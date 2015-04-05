@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Place Autocomplete Address Form</title>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <!-- build:js scripts/ng-map.min.js -->
+    <script src="../app/scripts/app.js"></script>
+    <script src="../app/scripts/services/navigator_geolocation.js"></script>
+    <script src="../app/scripts/services/geo_coder.js"></script>
+    <script src="../app/scripts/services/attr2_options.js"></script>
+    <script src="../app/scripts/directives/places-auto-complete.js"></script>
+    <!-- endbuild -->
+    <script>
+      angular.module('myApp', ['ngMap'])
+       .controller('MyCtrl', function($scope) {
+         $scope.placeChanged = function(place) {
+           console.log(place);
+           $scope.place = place;
+           $scope.$apply();
+         }
+       });
+    </script>
+  </head>
+
+  <body ng-app="myApp" ng-controller="MyCtrl">
+    <input places-auto-complete on-place-changed="placeChanged(place)" size=80 />
+    <div ng-show="place">
+      Address = {{place.formatted_address}} <br/>
+      Location: {{place.geometry.location}}<br/>
+    </div>
+  </body>
+</html>
+

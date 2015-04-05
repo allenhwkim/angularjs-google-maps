@@ -4,7 +4,8 @@ var excludes = [
     "map_lazy_init.html", 
     "map-lazy-load.html", 
     "marker_with_dynamic_position.html",
-    "marker_with_dynamic_address.html"
+    "marker_with_dynamic_address.html",
+    "marker_with_info_window.html"
   ];
 
 function using(values, func){
