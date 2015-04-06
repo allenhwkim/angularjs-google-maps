@@ -67,40 +67,67 @@ Lazy Loading
 Release Notes
 ---------------
 
-  **1.7.0**
-    * added places-auto-complete for input field.
-      [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/places-auto-complete.html)
-    * added directions directive
-      [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions.html)
+**1.7.0**
 
-  **1.6.0**
-    * added street-view-panorams directive with its examples;
-      [street view with marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama.html) and
-      [street view in its own container](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama_container.html)
+  * added **directions** directive
+    [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions.html)
+  * added **places-auto-complete** for input tag.
+    [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/places-auto-complete.html)
 
-  **1.5.0**
-    * added geo-callback for map, marker, shape, and info-window. e.g., center="current-location" geo-callback="myFunc('foo')"
+**1.6.0**  
 
-  **1.4.0**
-    * support lazy loading of maps js, which does not require to `http://maps.google.com/maps/api/js`
-   
-  **1.2.0**
-    * events with `controller as` syntax, thanks to Simon
-   
-  **1.1.0**
-    * marker directive can have icon attribute as JSON
-    * map with init-event attribute for initialization by an event
-    
-  **1.0.0**  
-    Now, it covers all official google examples using directives. The directives are;
+  * added **street-view-panorama** directive with its examples;
+    [street view with marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama.html) and
+    [street view in its own container](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama_container.html)
 
-    * Layer Directives  
-      traffic-layer, transit-layer, weather-layer, bicycling-layer, cloud-layer, dynamic-maps-engine-layer, fusion-tables-layer, heatmap-layer, kml-layer, maps-engine-layer
-   custom-control
-    * info-window
-    * map-data
-    * map-type
-    * overlay-map-type
+**1.5.0**
+
+  * added geo-callback for map, marker, shape, and info-window. e.g., center="current-location" geo-callback="myFunc('foo')"
+
+**1.4.0**
+
+  * support lazy loading of maps js with directive, **map-lazy-load**, which does not require to `http://maps.google.com/maps/api/js`
+
+**1.3.0**
+
+  * added **drawing-manager** directive. Thanks to Fangming Du
+ 
+**1.2.0**
+
+  * events with `controller as` syntax, thanks to Simon
+ 
+**1.1.0**
+
+  * marker directive can have icon attribute as JSON
+  * map with init-event attribute for initialization by an event
+  
+**1.0.0 (covers all official google examples using directives).**  
+
+  * marker
+  * shapes
+     
+    * circle
+    * polyline
+    * polygon
+    * rectangle
+    * image 
+
+  * layers
+
+    * traffic-layer 
+    * transit-layer
+    * bicycling-layer
+    * dynamic-maps-engine-layer
+    * fusion-tables-layer
+    * heatmap-layer
+    * kml-layer
+    * maps-engine-layer
+
+  * custom-control
+  * info-window
+  * map-data
+  * map-type
+  * overlay-map-type
 
 Directives
 ----------
