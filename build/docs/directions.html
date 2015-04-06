@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: service: NavigatorGeolocation</title>
+    <title>JSDoc: directive: directions</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">service: NavigatorGeolocation</h1>
+    <h1 class="page-title">directive: directions</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    NavigatorGeolocation
+    directions
     </h2>
     
 </header>
@@ -41,7 +41,6 @@
 <dt>
     
     
-      <a href="services_navigator_geolocation.js.html#line1" class="name-link"><h4 class="name" id="NavigatorGeolocation">NavigatorGeolocation<span class="signature">()</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -50,7 +49,9 @@
 
     
     <div class="description">
-        <p>Provides <a href="https://docs.angularjs.org/api/ng/service/$q">defered/promise API</a> service for navigator.geolocation methods</p>
+        <p>Enable directions on map. e.g., origin, destination, draggable, waypoints, etc</p>
+<p>  Requires:  map directive</p>
+<p>  Restrict To:  Element</p>
     </div>
     
 
@@ -59,101 +60,7 @@
     
 
     
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <!-- commented out by Allen Kim
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_navigator_geolocation.js.html">services/navigator_geolocation.js</a>, <a href="services_navigator_geolocation.js.html#line1">line 1</a>
-    </li></ul></dd>
-    -->
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    <!--
-    
-    -->
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
-<dt>
-    
-    
-      <a href="services_navigator_geolocation.js.html#line27" class="name-link"><h4 class="name" id=".getCurrentPosition">getCurrentPosition<span class="signature">(success, failure)</span><span class="type-signature"> &rarr; {HttpPromise}</span></h4></a>
-    
-
-    
-</dt>
-<dd>
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
+        <h5>Attributes:</h5>
         
 
 <table class="params">
@@ -178,13 +85,13 @@
 
         <tr>
             
-                <td class="name"><code>success</code></td>
+                <td class="name"><code>&lt;DirectionsRendererOptions></code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">String</span>
 
 
             
@@ -194,20 +101,21 @@
 
             
 
-            <td class="description last"><p>success callback function</p></td>
+            <td class="description last"><p>Any DirectionsRendererOptions, 
+  https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>failure</code></td>
+                <td class="name"><code>&lt;DirectionsRequest</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">String</span>
 
 
             
@@ -217,7 +125,8 @@
 
             
 
-            <td class="description last"><p>failure callback function</p></td>
+            <td class="description last"><p>Options&gt; Any DirectionsRequest options, 
+  https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest</p></td>
         </tr>
 
     
@@ -249,7 +158,7 @@
     <!-- commented out by Allen Kim
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_navigator_geolocation.js.html">services/navigator_geolocation.js</a>, <a href="services_navigator_geolocation.js.html#line27">line 27</a>
+        <a href="directives_directions.js.html">directives/directions.js</a>, <a href="directives_directions.js.html#line1">line 1</a>
     </li></ul></dd>
     -->
     
@@ -273,44 +182,44 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Future object</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">HttpPromise</span>
-
-
-    </dd>
-</dl>
-
-        
 
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>```
- NavigatorGeolocation.getCurrentPosition()
-   .then(function(position) {
-     var lat = position.coords.latitude, lng = position.coords.longitude;
-     .. do something lat and lng
-   });
-```</code></pre>
+    <pre class="prettyprint"><code>Example: 
+  &lt;map zoom="14" center="37.7699298, -122.4469157">
+    &lt;directions 
+      draggable="true"
+      panel="directions-panel"
+      travel-mode="{{travelMode}}"
+      waypoints="[{location:'kingston', stopover:true}]"
+      origin="{{origin}}"
+      destination="{{destination}}">
+    &lt;/directions>
+  &lt;/map> </code></pre>
 
     
 </dd>
 
-        </dl>
+    
+    </div>
+
+    
+
+    
+
+    <!--
+    
+    -->
+
+    
+
+     
+
+    
+
+    
+
     
 
     

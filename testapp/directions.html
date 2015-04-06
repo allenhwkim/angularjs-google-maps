@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Travel modes in directions</title>
+    <style>
+      #map-canvas { width: 100%; height: 300px; }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <!-- build:js scripts/ng-map.min.js -->
+    <script src="../app/scripts/app.js"></script>
+    <script src="../app/scripts/services/navigator_geolocation.js"></script>
+    <script src="../app/scripts/services/geo_coder.js"></script>
+    <script src="../app/scripts/services/attr2_options.js"></script>
+    <script src="../app/scripts/directives/map_controller.js"></script>
+    <script src="../app/scripts/directives/map.js"></script>
+    <script src="../app/scripts/directives/directions.js"></script>
+    <!-- endbuild -->
+  </head>
+  <body ng-app="ngMap">
+
+    <div style="width: 68%; display:inline-block; vertical-align:top">
+      <b>Origin </b>
+      <select ng-model="origin" ng-init="origin='toronto'">
+        <option value="toronto">Toronto</option>
+        <option value="ottawa">Ottawa</option>
+        <option value="montreal">Montreal</option>
+      </select>
+
+      <b>Destionation </b>
+      <select ng-model="destination" ng-init="destination='ottawa'">
+        <option value="toronto">Toronto</option>
+        <option value="ottawa">Ottawa</option>
+        <option value="montreal">Montreal</option>
+      </select>
+
+      <b>Mode of Travel: </b>
+      <select ng-model="travelMode" ng-init="travelMode='DRIVING'">
+        <option value="DRIVING">Driving</option>
+        <option value="WALKING">Walking</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Transit</option>
+      </select>
+
+      <map zoom="14" center="37.7699298, -122.4469157">
+        <directions 
+          draggable="true"
+          panel="directions-panel"
+          travel-mode="{{travelMode}}"
+          waypoints="[{location:'kingston', stopover:true}]"
+          origin="{{origin}}"
+          destination="{{destination}}">
+        </directions>
+      </map> 
+      Directions path length:
+        {{map.directionsRenderers[0].directions.routes[0].overview_path.length}}
+    </div>
+
+    <div id="directions-panel" style="width: 28%; display: inline-block">
+    </div>
+
+  </body>
+</html>

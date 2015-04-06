@@ -67,26 +67,32 @@ Lazy Loading
 Release Notes
 ---------------
 
-  **NOTE: 1.6.0 is released.**
+  **1.7.0**
+    * added places-auto-complete for input field.
+      [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/places-auto-complete.html)
+    * added directions directive
+      [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions.html)
+
+  **1.6.0**
     * added street-view-panorams directive with its examples;
       [street view with marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama.html) and
       [street view in its own container](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view-panorama_container.html)
 
-  **NOTE: 1.5.0 is released.**
+  **1.5.0**
     * added geo-callback for map, marker, shape, and info-window. e.g., center="current-location" geo-callback="myFunc('foo')"
 
-  **NOTE: 1.4.0 is released.**
+  **1.4.0**
     * support lazy loading of maps js, which does not require to `http://maps.google.com/maps/api/js`
    
-  **NOTE: 1.2.0 is released.**
+  **1.2.0**
     * events with `controller as` syntax, thanks to Simon
    
-  **NOTE: 1.1.0 is released.**
+  **1.1.0**
     * marker directive can have icon attribute as JSON
     * map with init-event attribute for initialization by an event
     
-  **NOTE: 1.0.0 is released.**  
-    Now, it covers all official google examples using new directives. The new directives are;
+  **1.0.0**  
+    Now, it covers all official google examples using directives. The directives are;
 
     * Layer Directives  
       traffic-layer, transit-layer, weather-layer, bicycling-layer, cloud-layer, dynamic-maps-engine-layer, fusion-tables-layer, heatmap-layer, kml-layer, maps-engine-layer

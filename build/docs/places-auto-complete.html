@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: service: NavigatorGeolocation</title>
+    <title>JSDoc: directive: places-auto-complete</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">service: NavigatorGeolocation</h1>
+    <h1 class="page-title">directive: places-auto-complete</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    NavigatorGeolocation
+    places-auto-complete
     </h2>
     
 </header>
@@ -41,7 +41,6 @@
 <dt>
     
     
-      <a href="services_navigator_geolocation.js.html#line1" class="name-link"><h4 class="name" id="NavigatorGeolocation">NavigatorGeolocation<span class="signature">()</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -50,7 +49,9 @@
 
     
     <div class="description">
-        <p>Provides <a href="https://docs.angularjs.org/api/ng/service/$q">defered/promise API</a> service for navigator.geolocation methods</p>
+        <p>Provides address auto complete feature to an input element</p>
+<p>  Requires: input tag</p>
+<p>  Restrict To: Attribute</p>
     </div>
     
 
@@ -59,101 +60,7 @@
     
 
     
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <!-- commented out by Allen Kim
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_navigator_geolocation.js.html">services/navigator_geolocation.js</a>, <a href="services_navigator_geolocation.js.html#line1">line 1</a>
-    </li></ul></dd>
-    -->
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    <!--
-    
-    -->
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
-<dt>
-    
-    
-      <a href="services_navigator_geolocation.js.html#line27" class="name-link"><h4 class="name" id=".getCurrentPosition">getCurrentPosition<span class="signature">(success, failure)</span><span class="type-signature"> &rarr; {HttpPromise}</span></h4></a>
-    
-
-    
-</dt>
-<dd>
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
+        <h5>Attributes:</h5>
         
 
 <table class="params">
@@ -178,13 +85,13 @@
 
         <tr>
             
-                <td class="name"><code>success</code></td>
+                <td class="name"><code>Any</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">AutoCompleteOptions</span>
 
 
             
@@ -194,22 +101,18 @@
 
             
 
-            <td class="description last"><p>success callback function</p></td>
+            <td class="description last"><p>AutocompleteOptions
+   https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>failure</code></td>
+                <td class="name"><code>on-place_changed</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
             
             </td>
 
@@ -217,7 +120,7 @@
 
             
 
-            <td class="description last"><p>failure callback function</p></td>
+            <td class="description last"><p>Callback function when a place is selected</p></td>
         </tr>
 
     
@@ -249,7 +152,7 @@
     <!-- commented out by Allen Kim
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="services_navigator_geolocation.js.html">services/navigator_geolocation.js</a>, <a href="services_navigator_geolocation.js.html#line27">line 27</a>
+        <a href="directives_places-auto-complete.js.html">directives/places-auto-complete.js</a>, <a href="directives_places-auto-complete.js.html#line1">line 1</a>
     </li></ul></dd>
     -->
     
@@ -263,54 +166,58 @@
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Future object</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+    <h5>Dependencies:</h5>
+    <ul>
         
-<span class="param-type">HttpPromise</span>
+        <li><a href="Attr2Options.html">Attr2Options service</a></li>
+    </ul>
+    
 
+    
 
-    </dd>
-</dl>
+    
 
-        
+    
+
+    
+
+    
 
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>```
- NavigatorGeolocation.getCurrentPosition()
-   .then(function(position) {
-     var lat = position.coords.latitude, lng = position.coords.longitude;
-     .. do something lat and lng
-   });
-```</code></pre>
+    <pre class="prettyprint"><code>Example: 
+  &lt;script src="https://maps.googleapis.com/maps/api/js?libraries=places">&lt;/script>
+  &lt;input places-auto-complete types="['geocode']" /></code></pre>
 
     
 </dd>
 
-        </dl>
+    
+    </div>
+
+    
+
+    
+
+    <!--
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:Attr2Options</li>
+        </ul>
+    
+    -->
+
+    
+
+     
+
+    
+
+    
+
     
 
     
