@@ -2,9 +2,6 @@
 <html>
   <head>
     <title>Travel modes in directions</title>
-    <style>
-      #map-canvas { width: 100%; height: 300px; }
-    </style>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
     <!-- build:js scripts/ng-map.min.js -->
@@ -16,10 +13,14 @@
     <script src="../app/scripts/directives/map.js"></script>
     <script src="../app/scripts/directives/directions.js"></script>
     <!-- endbuild -->
+    <style>
+      html, body {width:100%; height: 100%; padding:0; margin: 0}
+      body {padding: 5px}
+      * { box-sizing: border-box; }
+    </style>
   </head>
   <body ng-app="ngMap">
-
-    <div style="width: 68%; display:inline-block; vertical-align:top">
+    <div style="width: 68%; float:left; height: 100%">
       <b>Origin </b>
       <select ng-model="origin" ng-init="origin='toronto'">
         <option value="toronto">Toronto</option>
@@ -42,7 +43,7 @@
         <option value="TRANSIT">Transit</option>
       </select>
 
-      <map zoom="14" center="37.7699298, -122.4469157">
+      <map zoom="14" center="37.7699298, -122.4469157" style="height:90%" >
         <directions 
           draggable="true"
           panel="directions-panel"
@@ -56,8 +57,7 @@
         {{map.directionsRenderers[0].directions.routes[0].overview_path.length}}
     </div>
 
-    <div id="directions-panel" style="width: 28%; display: inline-block">
+    <div id="directions-panel" style="width: 28%; float:left; height: 100%; overflow: auto; padding: 0px 5px">
     </div>
-
   </body>
 </html>

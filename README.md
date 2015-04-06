@@ -82,15 +82,18 @@ Release Notes
 
 **1.5.0**
 
-  * added geo-callback for map, marker, shape, and info-window. e.g., center="current-location" geo-callback="myFunc('foo')"
+  * added **geo-callback attribute** for map, marker, shape, and info-window. 
+    [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_with_current_position.html)
 
 **1.4.0**
 
-  * support lazy loading of maps js with directive, **map-lazy-load**, which does not require to `http://maps.google.com/maps/api/js`
+  * support lazy loading of maps js with directive, **map-lazy-load**, which does not require to `https://maps.google.com/maps/api/js`
+    [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map-lazy-load.html)
 
 **1.3.0**
 
   * added **drawing-manager** directive. Thanks to Fangming Du
+    [Example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/drawing-manager.html)
  
 **1.2.0**
 
