@@ -76,6 +76,7 @@
     var updateRoute = function(renderer, options) {
       /* filter out valid keys only for DirectionsRequest object*/
       var request = options;
+      request.travelMode = request.travelMode || 'DRIVING';
       var validKeys = [
         'origin', 'destination', 'travelMode', 'transitOptions', 'unitSystem',
         'durationInTraffic', 'waypoints', 'optimizeWaypoints', 

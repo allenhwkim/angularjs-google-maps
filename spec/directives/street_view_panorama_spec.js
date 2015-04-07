@@ -31,14 +31,14 @@ describe('street-view-panorama', function() {
     inject(function($rootScope, $compile) {
       elm = angular.element(
         '<map zoom="11" center="[40.688738,-74.043871]">' +
-        '  <street-view-panorama container="streetview">' + 
+        '  <street-view-panorama>' + 
         '  </street-view-panorama>' +
         '</map>');
       scope = $rootScope;
       $compile(elm)(scope);
       scope.$digest();
       waitsFor(function() { 
-        return scope.map; 
+        return scope.map.getStreetView().getPosition(); 
       });
     });
   });

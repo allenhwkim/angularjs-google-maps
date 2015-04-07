@@ -67,12 +67,18 @@
  
       scope.$on('mapInitialized', function(evt, map) {
         var svp = getStreetViewPanorama(map, svpOptions, svpEvents);
-        console.log('svp', svp);
 
         map.setStreetView(svp);
         (!svp.getPosition()) && svp.setPosition(map.getCenter());
         google.maps.event.addListener(svp, 'position_changed', function() {
-          map.setCenter(svp.getPosition());
+          if (svp.getPosition() !== map.getCenter()) {
+            map.setCenter(svp.getPosition());
+          }
+        });
+        //needed for geo-callback
+        var listener = google.maps.event.addListener(map, 'center_changed', function() {
+          svp.setPosition(map.getCenter());
+          google.maps.event.removeListener(listener);
         });
       });
 

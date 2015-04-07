@@ -51,17 +51,26 @@
 
   var placesAutoComplete = function(Attr2Options, $parse) {
     var parser = Attr2Options;
-    var autocomplete;
 
     var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
      
-      autocomplete = new google.maps.places.Autocomplete(element[0]);
+      var autocomplete = new google.maps.places.Autocomplete(element[0]);
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        console.log('autocomplete ----', autocomplete);
         var place = autocomplete.getPlace();
-        var onPlaceChanged = $parse(attrs.onPlaceChanged);
-        onPlaceChanged(scope, {place: place});
+        console.log('place ----', place);
+        if (attrs.onPlaceChanged) {
+          var onPlaceChanged = $parse(attrs.onPlaceChanged);
+          onPlaceChanged(scope, {place: place});
+        }
+        if (attrs.ngModel) {
+          var model = $parse(attrs.ngModel);
+          //console.log('place', place);
+          model.assign(scope, place.formatted_address);
+        }
+        scope.$apply();
       });
     };
 

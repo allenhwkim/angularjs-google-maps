@@ -14,21 +14,25 @@
     <script>
       angular.module('myApp', ['ngMap'])
        .controller('MyCtrl', function($scope) {
+         $scope.foo = {}
          $scope.placeChanged = function(place) {
            console.log(place);
            $scope.place = place;
-           $scope.$apply();
          }
        });
     </script>
   </head>
 
   <body ng-app="myApp" ng-controller="MyCtrl">
-    <input places-auto-complete on-place-changed="placeChanged(place)" size=80 />
+    Enter an address: <br/>
+    <input places-auto-complete size=80 
+      ng-model="foo.place"
+      on-place-changed="placeChanged(place)" /> <br/>
     <div ng-show="place">
       Address = {{place.formatted_address}} <br/>
       Location: {{place.geometry.location}}<br/>
     </div>
+    myPlace : {{foo.place}}
   </body>
 </html>
 

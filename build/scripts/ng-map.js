@@ -682,6 +682,7 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
     var updateRoute = function(renderer, options) {
       /* filter out valid keys only for DirectionsRequest object*/
       var request = options;
+      request.travelMode = request.travelMode || 'DRIVING';
       var validKeys = [
         'origin', 'destination', 'travelMode', 'transitOptions', 'unitSystem',
         'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
@@ -1510,9 +1511,9 @@ ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $w
          */
         scope.map = map;
         scope.map.scope = scope;
-        //google.maps.event.addListenerOnce(map, "idle", function() {
-        scope.$emit('mapInitialized', map);  
-        //});
+        google.maps.event.addListenerOnce(map, "idle", function() {
+          scope.$emit('mapInitialized', map);  
+        });
 
         // the following lines will be deprecated on behalf of mapInitialized
         // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
@@ -1965,17 +1966,26 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
 
   var placesAutoComplete = function(Attr2Options, $parse) {
     var parser = Attr2Options;
-    var autocomplete;
 
     var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
      
-      autocomplete = new google.maps.places.Autocomplete(element[0]);
+      var autocomplete = new google.maps.places.Autocomplete(element[0]);
       google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        void 0;
         var place = autocomplete.getPlace();
-        var onPlaceChanged = $parse(attrs.onPlaceChanged);
-        onPlaceChanged(scope, {place: place});
+        void 0;
+        if (attrs.onPlaceChanged) {
+          var onPlaceChanged = $parse(attrs.onPlaceChanged);
+          onPlaceChanged(scope, {place: place});
+        }
+        if (attrs.ngModel) {
+          var model = $parse(attrs.ngModel);
+          //console.log('place', place);
+          model.assign(scope, place.formatted_address);
+        }
+        scope.$apply();
       });
     };
 
@@ -2232,12 +2242,18 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
  
       scope.$on('mapInitialized', function(evt, map) {
         var svp = getStreetViewPanorama(map, svpOptions, svpEvents);
-        void 0;
 
         map.setStreetView(svp);
         (!svp.getPosition()) && svp.setPosition(map.getCenter());
         google.maps.event.addListener(svp, 'position_changed', function() {
-          map.setCenter(svp.getPosition());
+          if (svp.getPosition() !== map.getCenter()) {
+            map.setCenter(svp.getPosition());
+          }
+        });
+        //needed for geo-callback
+        var listener = google.maps.event.addListener(map, 'center_changed', function() {
+          svp.setPosition(map.getCenter());
+          google.maps.event.removeListener(listener);
         });
       });
 
