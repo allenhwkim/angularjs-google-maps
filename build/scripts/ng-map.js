@@ -661,8 +661,6 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
 /* global google */
 (function() {
   'use strict';
-  var parser;
-  var directionsService = new google.maps.DirectionsService();
 
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
@@ -676,8 +674,8 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
   };
 
   var directions = function(Attr2Options, $timeout) {
-    parser = Attr2Options;
-    directionsService = new google.maps.DirectionsService();
+    var parser = Attr2Options;
+    var directionsService = new google.maps.DirectionsService();
 
     var updateRoute = function(renderer, options) {
       /* filter out valid keys only for DirectionsRequest object*/
