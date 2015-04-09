@@ -1041,16 +1041,15 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
          return template;
        };
 
-       infoWindow.__open = function(scope, anchor) {
-         var _this = this;
+       infoWindow.__open = function(map, scope, anchor) {
          $timeout(function() {
            var tempTemplate = infoWindow.__template; // set template in a temporary variable
-           infoWindow.__template = infoWindow.__eval.apply(_this);
+           anchor && (infoWindow.__template = infoWindow.__eval.apply(anchor));
            infoWindow.__compile(scope);
            if (anchor && anchor.getPosition) {
-             infoWindow.open(infoWindow.map, anchor);
+             infoWindow.open(map, anchor);
            } else {
-             infoWindow.open(infoWindow.map);
+             infoWindow.open(map);
            }
            infoWindow.__template = tempTemplate; // reset template to the object
          });
@@ -1075,7 +1074,7 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
        if (address) {
          mapController.getGeoLocation(address).then(function(latlng) {
            infoWindow.setPosition(latlng);
-           infoWindow.__open(scope, latlng);
+           infoWindow.__open(mapController.map, scope, latlng);
            var geoCallback = attrs.geoCallback;
            geoCallback && $parse(geoCallback)(scope);
          });
@@ -1088,24 +1087,22 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
        });
 
        scope.$on('mapInitialized', function(evt, map) {
-         infoWindow.map = map;
-         infoWindow.visible && infoWindow.__open(scope);
+         infoWindow.visible && infoWindow.__open(map, scope);
          if (infoWindow.visibleOnMarker) {
            var markerId = infoWindow.visibleOnMarker;
-           infoWindow.__open(scope, map.markers[markerId]);
+           infoWindow.__open(map, scope, map.markers[markerId]);
          }
        });
 
        /**
         * provide showInfoWindow method to scope
         */
-       scope.showInfoWindow  = scope.showInfoWindow ||
-         function(event, id, marker) {
-           var infoWindow = mapController.map.infoWindows[id];
-           var anchor = marker ? marker :
-             this.getPosition ? this : null;
-           infoWindow.__open.apply(this, [scope, anchor]);
-         };
+
+       scope.showInfoWindow  = function(e, id, marker) {
+         var infoWindow = mapController.map.infoWindows[id];
+         var anchor = marker ? marker : (this.getPosition ? this : null);
+         infoWindow.__open(mapController.map, scope, anchor);
+       };
 
        /**
         * provide hideInfoWindow method to scope
