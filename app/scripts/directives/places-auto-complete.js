@@ -4,14 +4,11 @@
  * @requires Attr2Options 
  * @description 
  *   Provides address auto complete feature to an input element
- *   
  *   Requires: input tag
- *
  *   Restrict To: Attribute
  *
  * @param {AutoCompleteOptions} Any AutocompleteOptions
  *    https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions
- * @param on-place_changed Callback function when a place is selected
  *
  * @example
  * Example: 
@@ -22,29 +19,17 @@
 (function() {
   'use strict';
 
-  var placesAutoComplete = function(Attr2Options, $parse) {
+  var placesAutoComplete = function(Attr2Options) {
     var parser = Attr2Options;
 
     var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
-     
-      var autocomplete = new google.maps.places.Autocomplete(element[0]);
-      google.maps.event.addListener(autocomplete, 'place_changed', function() {
-        console.log('autocomplete ----', autocomplete);
-        var place = autocomplete.getPlace();
-        console.log('place ----', place);
-        if (attrs.onPlaceChanged) {
-          var onPlaceChanged = $parse(attrs.onPlaceChanged);
-          onPlaceChanged(scope, {place: place});
-        }
-        if (attrs.ngModel) {
-          var model = $parse(attrs.ngModel);
-          //console.log('place', place);
-          model.assign(scope, place.formatted_address);
-        }
-        scope.$apply();
-      });
+      var events = parser.getEvents(scope, filtered);
+      var autocomplete = new google.maps.places.Autocomplete(element[0], options);
+      for (var eventName in events) {
+        google.maps.event.addListener(autocomplete, eventName, events[eventName]);
+      }
     };
 
     return {
@@ -53,7 +38,7 @@
     };
   };
 
-  placesAutoComplete.$inject = ['Attr2Options', '$parse'];
+  placesAutoComplete.$inject = ['Attr2Options'];
   angular.module('ngMap').directive('placesAutoComplete', placesAutoComplete); 
 
 })();

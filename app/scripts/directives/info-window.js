@@ -134,9 +134,6 @@
 
        mapController.addObject('infoWindows', infoWindow);
        mapController.observeAttrSetObj(orgAttrs, attrs, infoWindow); /* observers */
-       element.bind('$destroy', function() {
-         mapController.deleteObject('infoWindows', infoWindow);
-       });
 
        scope.$on('mapInitialized', function(evt, map) {
          infoWindow.visible && infoWindow.__open(map, scope);
