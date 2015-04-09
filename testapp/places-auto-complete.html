@@ -14,25 +14,33 @@
     <script>
       angular.module('myApp', ['ngMap'])
        .controller('MyCtrl', function($scope) {
-         $scope.foo = {}
-         $scope.placeChanged = function(place) {
-           console.log(place);
-           $scope.place = place;
+         $scope.types = "['establishment']";
+         $scope.placeChanged = function() {
+           $scope.place = this.getPlace();
          }
        });
     </script>
   </head>
 
   <body ng-app="myApp" ng-controller="MyCtrl">
+    Auto Complete Type: 
+    <select ng-model="types">
+      <option value="['geocode']">Geodode</option>
+      <option value="['establishment']">Establishment</option>
+      <option value="['address']">Address</option>
+    </select><br/>
+
     Enter an address: <br/>
     <input places-auto-complete size=80 
-      ng-model="foo.place"
+      ng-model="address" 
+      component-restrictions="{country:'us'}"
+      types="{{types}}"
       on-place-changed="placeChanged(place)" /> <br/>
     <div ng-show="place">
       Address = {{place.formatted_address}} <br/>
       Location: {{place.geometry.location}}<br/>
     </div>
-    myPlace : {{foo.place}}
+    address : {{address}}
   </body>
 </html>
 
