@@ -4,7 +4,6 @@ html
     background-color: #fff;
     width: 100%;
     height: 100%;
-    margin: 0px;
 }
 
 body
@@ -16,8 +15,6 @@ body
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    margin: 0px;
-    padding: 10px;
 }
 
 a {
@@ -47,6 +44,11 @@ header
     margin-top: 1em;
 }
 
+#main {
+    float: left;
+    width: 69%;
+}
+
 section
 {
     display: block;
@@ -70,12 +72,14 @@ nav
 {
     display: block;
     top: 28px;
-    bottom: 28px;
+    bottom: 10px;
+    width: 29%;
     border-left: 1px solid #ccc;
+    padding-left: 9px;
+    height: 100%;
     overflow-y: auto;
     position: fixed;
-    right: 0px;
-    padding: 10px;
+    left: 70%;
 }
 
 nav ul {
@@ -336,8 +340,4 @@ a.name-link {
 
 .disabled {
     color: #454545;
-}
-
-.section-readme {
-    padding-top: 10px;
 }
