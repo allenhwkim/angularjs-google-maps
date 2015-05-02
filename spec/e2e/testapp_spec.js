@@ -6,10 +6,12 @@ var excludes = [
     "marker_with_dynamic_position.html",
     "marker_with_dynamic_address.html",
     "marker_with_info_window.html",
-    "places-auto-complete.html"
+    "places-auto-complete.html",
+    "street-view_road_trip.html"
   ];
 
 function using(values, func){
+  'use strict';
   for (var i = 0, count = values.length; i < count; i++) {
     if (Object.prototype.toString.call(values[i]) !== '[object Array]') {
       values[i] = [values[i]];
