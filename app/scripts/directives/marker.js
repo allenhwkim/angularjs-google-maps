@@ -88,7 +88,7 @@
 
       var address;
       if (!(markerOptions.position instanceof google.maps.LatLng)) {
-        address = markerOptions.position.position;
+        address = markerOptions.position;
       }
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addObject('markers', marker);

@@ -102,31 +102,22 @@
        }
        infoWindow.__template = template.replace(/\s?ng-non-bindable[='"]+/,"");
 
-       infoWindow.__compile = function(scope) {
+       infoWindow.__compile = function(scope, anchor) {
+         anchor &amp;&amp; (scope['this'] = anchor);
          var el = $compile(infoWindow.__template)(scope);
-         scope.$apply();
          infoWindow.setContent(el[0]);
-       };
-
-       infoWindow.__eval = function() {
-         var template = infoWindow.__template;
-         var _this = this;
-         template = template.replace(/{{(event|this)[^;\}]+}}/g, function(match) {
-           var expression = match.replace(/[{}]/g, "").replace("this.", "_this.");
-           console.log('expression', expression);
-           return eval(expression);
-         });
-         console.log('template', template);
-         return template;
+         scope.$apply();
        };
 
        infoWindow.__open = function(map, scope, anchor) {
          $timeout(function() {
            var tempTemplate = infoWindow.__template; // set template in a temporary variable
-           anchor &amp;&amp; (infoWindow.__template = infoWindow.__eval.apply(anchor));
-           infoWindow.__compile(scope);
+           infoWindow.__compile(scope, anchor);
            if (anchor &amp;&amp; anchor.getPosition) {
              infoWindow.open(map, anchor);
+           } else if (anchor &amp;&amp; anchor instanceof google.maps.LatLng) {
+             infoWindow.open(map);
+             infoWindow.setPosition(anchor);
            } else {
              infoWindow.open(map);
            }

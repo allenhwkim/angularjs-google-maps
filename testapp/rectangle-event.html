@@ -23,7 +23,6 @@
     $scope.boundsChanged = function(event) {
       $scope.ne = this.getBounds().getNorthEast();
       $scope.sw = this.getBounds().getSouthWest();
-console.log('$scope', $scope);
       $scope.showInfoWindow(event, 'foo', $scope.ne);
     };
   });
@@ -51,9 +50,10 @@ console.log('$scope', $scope);
           </div>
         </info-window>
       </map>
-            <b>Rectangle moved.</b><br/>
-            New north-east corner: {{ne.lat()}}, {{ne.lng()}}<br/>
-            New south-west corner: {{sw.lat()}}, {{sw.lng()}}
+
+      <b>Rectangle moved.</b><br/>
+      New north-east corner: {{ne.lat()}}, {{ne.lng()}}<br/>
+      New south-west corner: {{sw.lat()}}, {{sw.lng()}}
     </div>
 </body>
 </html>

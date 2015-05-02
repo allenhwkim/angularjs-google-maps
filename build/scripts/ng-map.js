@@ -1024,31 +1024,22 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
        }
        infoWindow.__template = template.replace(/\s?ng-non-bindable[='"]+/,"");
 
-       infoWindow.__compile = function(scope) {
+       infoWindow.__compile = function(scope, anchor) {
+         anchor && (scope['this'] = anchor);
          var el = $compile(infoWindow.__template)(scope);
-         scope.$apply();
          infoWindow.setContent(el[0]);
-       };
-
-       infoWindow.__eval = function() {
-         var template = infoWindow.__template;
-         var _this = this;
-         template = template.replace(/{{(event|this)[^;\}]+}}/g, function(match) {
-           var expression = match.replace(/[{}]/g, "").replace("this.", "_this.");
-           void 0;
-           return eval(expression);
-         });
-         void 0;
-         return template;
+         scope.$apply();
        };
 
        infoWindow.__open = function(map, scope, anchor) {
          $timeout(function() {
            var tempTemplate = infoWindow.__template; // set template in a temporary variable
-           anchor && (infoWindow.__template = infoWindow.__eval.apply(anchor));
-           infoWindow.__compile(scope);
+           infoWindow.__compile(scope, anchor);
            if (anchor && anchor.getPosition) {
              infoWindow.open(map, anchor);
+           } else if (anchor && anchor instanceof google.maps.LatLng) {
+             infoWindow.open(map);
+             infoWindow.setPosition(anchor);
            } else {
              infoWindow.open(map);
            }
@@ -1849,7 +1840,7 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
 
       var address;
       if (!(markerOptions.position instanceof google.maps.LatLng)) {
-        address = markerOptions.position.position;
+        address = markerOptions.position;
       }
       var marker = getMarker(markerOptions, markerEvents);
       mapController.addObject('markers', marker);
