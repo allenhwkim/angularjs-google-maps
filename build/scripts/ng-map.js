@@ -200,10 +200,11 @@ var ngMap = angular.module('ngMap', []);
         
         var args = scope.$eval("["+argsStr+"]");
         return function(event) {
-          $timeout(function(){
-            function index(obj,i) {return obj[i];}
-            var f = funcName.split('.').reduce(index, scope);
-            f.apply(this, [event].concat(args));
+          function index(obj,i) {return obj[i];}
+          var f = funcName.split('.').reduce(index, scope);
+          f && f.apply(this, [event].concat(args));
+          $timeout( function() {
+            scope.$apply();
           });
         };
       };
