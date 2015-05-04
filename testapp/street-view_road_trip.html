@@ -18,112 +18,207 @@
 <!-- endbuild -->
 <style>
   html, body {height: 100%}
-  map, #streetview {display:block; float:left; width: 45%; height: 80%}
   button {background-color: grey}
 </style>
 <script>
-  angular.module('myApp', ['ngMap'])
-    .controller('MyCtrl', function($scope, $timeout) {
+var MyCtrl = function($scope, $timeout) {
 
-      var stop;
-      var overviewPath=[], detailedPath=[], overviewPathIndex=0, detailedPathIndex=0;
-      var directionsService = new google.maps.DirectionsService();
+  $scope.drivingMode = false; // indicates streetview should be on driving mode
+  $scope.drivingSpeed = 40; // 100 km per hour
+  $scope.driverMode = false;
 
-      $scope.meter = 7;
-      $scope.travelMode='DRIVING';
-      $scope.origin = "toronto on, canada";
-      $scope.destination = "ottawa on, canada";
-      $scope.directionsChanged = function() {
-        overviewPath = this.directions.routes[0].overview_path; //this overview_path is not working
-        $scope.map.getStreetView().setPosition(overviewPath[0]);
+  $scope.origin = "1136 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman";
+  $scope.destination = "Pier St, Jackson Bay, West Coast, New Zeland";
+
+  var map;
+  var updateFrequency = 1*1000; // half a second
+  var savedPath = null;  // position and count to restart from pause mode
+
+  // Overview path between orign and destination. 
+  // This does NOT exactly follow the path of a road. It is used to draw path on the map.
+  var overviewPath=[]; 
+  var overviewPathIndex=0;  // current index points of overview path
+
+  // Detailed path between overview path points
+  // This does exactly follow the path of a road. 
+  var detailedPath=[];
+  var detailedPathIndex=0;  // current index points of detailed path
+
+  var directionsService = new google.maps.DirectionsService();
+
+  //
+  // At google's mercy, we get points to drive
+  //
+  var driveOverviewPaths = function() {
+    var op1, op2;
+    // drive detailed path because we have not drove through all 
+    if (detailedPath.length > detailedPathIndex) { 
+      driveDetailedPaths(); //SHOW TIME !!!!
+    }
+    // drove all detailed path, get a new detailed path from overview paths
+    else { 
+      op1 = overviewPath[overviewPathIndex];
+      op2 = overviewPath[overviewPathIndex+1];
+      overviewPathIndex += 1;
+      if (op1 && op2) {
+        var request ={origin:op1, destination:op2, travelMode: 'DRIVING'};
+        directionsService.route(request, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            detailedPath = response.routes[0].overview_path;
+            console.log('Updated detailedPath for overviewpath between',
+              overviewPathIndex, 'and', overviewPathIndex+1,
+              'with', detailedPath.length, 'geo points');
+            detailedPathIndex = 0;
+            driveOverviewPaths();
+          } 
+        });
       }
+    } 
+  };
 
+  //
+  // drive between two points by meter by meter and show it.
+  //
+  var driveDetailedPaths = function() {
+    var meter = Math.floor(
+      (parseInt($scope.drivingSpeed, 10) * 1000) / 3600  // how far we deive every second
+      * (updateFrequency/1000));                         // how often do we see streetview
+    var point1 = detailedPath[detailedPathIndex];
+    var point2 = detailedPath[detailedPathIndex+1];
 
-      var playBetweenPoints = function(point1, point2, meter) {
-        console.log('point1', point1, 'point2', point2, 'meter', meter);
-        if (point1 && point2) {
-          var distance = google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
-          var count = parseInt(distance / meter, 10);
-          var heading = google.maps.geometry.spherical.computeHeading(point1, point2);
-          var pov = $scope.map.getStreetView().getPov();
-          pov.heading = heading;
-          var play = function(count, position) {
-            if (count) {
-              $timeout( function() {
-                console.log('count', count, 'position', position, 'meter', meter, 'heading', heading);
-                $scope.map.getStreetView().setPosition(position);
-                $scope.map.getStreetView().setPov(pov);
-                $scope.map.setHeading(heading);
-                position = google.maps.geometry.spherical.computeOffset(position, meter, heading);
-                !stop && play(--count, position);
-              }, 1000);
+    if (point1 && point2) {
+      //calculate where to look from two points
+      var heading = google.maps.geometry.spherical.computeHeading(point1, point2);
+      var distance = google.maps.geometry.spherical.computeDistanceBetween(point1, point2);
+      var totalCount = parseInt(distance / meter, 10) || 1;
+
+      var drive = function(count, position) {
+        console.log(overviewPathIndex + '/' + overviewPath.length, 
+          detailedPathIndex + '/' + detailedPath.length, 
+          count + '/' + totalCount, 'distance', meter);
+        if (totalCount >= count) {
+          $timeout( function() {
+            var pov = map.getStreetView().getPov();
+            if ($scope.driverMode) {
+              map.setHeading(heading); // map heading is different from pov heading
+              pov.heading = heading;
+            }
+
+            map.getStreetView().setPosition(position);
+            map.getStreetView().setPov(pov);
+            map.getStreetView().setVisible(true);
+
+            var distanceToPoint2 = google.maps.geometry.spherical.computeDistanceBetween(position, point2);
+            var nextPosition = distanceToPoint2 < meter ? 
+              point2 : google.maps.geometry.spherical.computeOffset(position, meter, heading);
+            if ($scope.drivingMode) {
+              drive(++count, nextPosition);
             } else {
-              $scope.$emit('playMore');
-            } 
-          };
-          play(count, point1);
+              savedPath = {count: count, position: position};
+              return false;
+            }
+          }, updateFrequency);
         } else {
-          $scope.$emit('playMore');
-        }
-      };
-
-      $scope.$on('playMore', function(evt) {
-        var op1, op2, dp1, dp2;
-        console.log('overviewPathIndex', overviewPathIndex, 'detailedPath.length', detailedPath.length, 'detailedPathIndex', detailedPathIndex);
-        if (detailedPath.length <= detailedPathIndex) {
-          op1 = overviewPath[overviewPathIndex];
-          op2 = overviewPath[overviewPathIndex+1];
-          overviewPathIndex += 1;
-          if (op1 && op2) {
-            var request ={origin:op1, destination:op2, travelMode: $scope.travelMode};
-            directionsService.route(request, function(response, status) {
-              if (status == google.maps.DirectionsStatus.OK) {
-                detailedPath = response.routes[0].overview_path;
-                detailedPathIndex = 0;
-                dp1 = detailedPath[detailedPathIndex];
-                dp2 = detailedPath[detailedPathIndex+1];
-                detailedPathIndex += 1;
-                playBetweenPoints(dp1, dp2, $scope.meter);
-              } 
-            })
-          }
-        } else {
-          dp1 = detailedPath[detailedPathIndex];
-          dp2 = detailedPath[detailedPathIndex+1];
           detailedPathIndex += 1;
-          playBetweenPoints(dp1, dp2, $scope.meter);
-        }
-      });
-
-      var play=false;
-      $scope.play = function() {
-        (play = !play) ? $scope.$emit('playMore') : (stop=true);
+          $scope.$emit('driveOverviewPath');
+        } 
       };
-     
-    });
+
+      var count = (savedPath && savedPath.count) || 1;
+      var position = (savedPath && savedPath.position) || point1;
+      savedPath = null; // once start driving, nullify savedPath
+      drive(count, position);
+
+    } else {
+      detailedPathIndex += 1;
+      $scope.$emit('driveOverviewPath');
+    }
+  };
+
+  $scope.$on('driveOverviewPath', function() { 
+    driveOverviewPaths();
+  });
+
+  $scope.drive = function() {
+    $scope.drivingMode = !$scope.drivingMode;
+    if ($scope.drivingMode) {
+      map.setZoom(16);
+      if (savedPath) { // if continues
+        driveDetailedPaths();
+      } else {
+        $scope.$emit('driveOverviewPath');
+      }
+    }
+  };
+
+  // When direction is changed
+  // change overviewPath and reset driving directions
+  $scope.directionsChanged = function() {
+    overviewPath = this.directions.routes[0].overview_path; 
+    console.log('direction is changed', 'got overviewPath with', overviewPath.length, 'points');
+    map.getStreetView().setPosition(overviewPath[0]);
+
+    overviewPathIndex = 0; // set indexes to 0s
+    detailedPathIndex = 0;
+    $scope.drivingMode = false;   // stop driving
+    toContinue = null;     // reset continuing positon
+  }
+
+  $scope.$on('mapInitialized', function(e, _map_) {
+    map = _map_;
+    window.map = map;
+  });
+
+};
+   
+angular.module('myApp', ['ngMap']).controller('MyCtrl', MyCtrl);
 </script>
+<style>
+.half {display:inline-block; width: 45%}
+.full-height {height: 100%}
+label {display:inline-block; width: 200px; text-align:right}
+map {display:block;height:100%}
+</style>
 </head>
 
-<body ng-app="myApp" ng-controller="MyCtrl">
+<body ng-app="myApp" ng-controller="MyCtrl" style="text-align:center">
   <h2> Virtual Road Trip with ngMap StreetView</h2>
-  <div style="positon:absolute;">
-    Origin: <input places-auto-complete ng-model="origin" size=40 /> --&gt; 
-    Destination: <input places-auto-complete ng-model="destination" size=40 /> 
-    &nbsp; &nbsp; <button ng-click="play()">Start Road Trip</button>
+  <div class="half">
+    <label>Origin:</label> 
+    <input places-auto-complete ng-model="origin" size=40 ng-disabled="drivingMode" /> <br/>
+    <label>Destination: </label>
+    <input places-auto-complete ng-model="destination" ng-disabled="drivingMode" size=40 /> <br/>
+    <label>Driving Speed :</label> 
+    <input ng-model="drivingSpeed" type="range" ng-disabled="drivingMode"> {{drivingSpeed}} km / hour<br/>
   </div>
-  <map zoom="18" center="current-position" map-type-id="MapTypeId.SATELLITE" tilt="45">
-    <directions 
-      draggable="true"
-      panel="directions-panel"
-      origin="{{origin}}"
-      on-directions_changed="directionsChanged(evt)"
-      destination="{{destination}}">
-    </directions>
-    <street-view-panorama container="streetview"></street-view-panorama>
-    <marker ng-repeat="pos in markers" position="{{[pos.lat(), pos.lng()]}}"></marker>
-   </map>
- <div id="streetview"></div> 
- <br style="clear:both" />
- <div id="directions-panel"></div>
+  <div class="half">
+    <button ng-click="drive()" style="width: 200px;font-size:1em">
+      {{drivingMode ?  'Stop' : 'Start Driving' }}
+    </button> <br/>
+    <input type="radio" ng-model="driverMode" ng-value="true"> Driver Mode
+    <input type="radio" ng-model="driverMode" ng-value="false"> Passenger Mode
+  </div>
+  <br style="clear:both" />
+  <div class="half" style="height: 70%;">
+    <br/>
+    <map zoom="18" center="1136 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman" tilt="45">
+      <directions 
+        draggable="true"
+        panel="directions-panel"
+        origin="{{origin}}"
+        on-directions_changed="directionsChanged(evt)"
+        destination="{{destination}}">
+      </directions>
+      <street-view-panorama container="streetview"></street-view-panorama>
+      <marker ng-repeat="pos in markers" position="{{[pos.lat(), pos.lng()]}}"></marker>
+     </map>
+  </div>
+  <div class="half" style="height: 70%;">
+    <div class="full-height" id="streetview"></div> 
+  </div>
+  <br style="clear:both" />
+  <a href="" ng-click="showDirectionsPanel = !showDirectionsPanel">{{showDirectionsPanel ? 'Hide' : 'Show'}} Detailed Directions</a>
+  <br style="clear:both" />
+  <div id="directions-panel" ng-show="showDirectionsPanel" style="display:inline-block;width:90%"></div>
 </body>
 </html>
