@@ -730,6 +730,9 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
       scope.$on('mapInitialized', function(event, map) {
         updateRoute(renderer, options);
       });
+      scope.$on('$destroy', function(event, map) {
+        mapController.deleteObject('directionsRenderers', renderer);
+      });
     };
     
     return {
@@ -1139,7 +1142,7 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
  * Example: 
  *
  *   <map zoom="11" center="[41.875696,-87.624207]">
- *     <kml-layer url="http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" ></kml-layer>
+ *     <kml-layer url="https://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" ></kml-layer>
  *    </map>
  */
 /*jshint -W089*/
@@ -1412,7 +1415,7 @@ ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $w
 
       /**
        * create a new `div` inside map tag, so that it does not touch map element
-       * http://stackoverflow.com/questions/20955356
+       * https://stackoverflow.com/questions/20955356
        */
       var el = document.createElement("div");
       el.style.width = "100%";
