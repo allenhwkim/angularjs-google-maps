@@ -70,7 +70,7 @@
 
       /**
        * create a new `div` inside map tag, so that it does not touch map element
-       * http://stackoverflow.com/questions/20955356
+       * https://stackoverflow.com/questions/20955356
        */
       var el = document.createElement("div");
       el.style.width = "100%";

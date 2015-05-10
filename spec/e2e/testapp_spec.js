@@ -1,14 +1,15 @@
 /*global jasmine*/
 var excludes = [
-    "map_events.html", 
-    "map_lazy_init.html", 
-    "map-lazy-load.html", 
-    "marker_with_dynamic_position.html",
-    "marker_with_dynamic_address.html",
-    "marker_with_info_window.html",
-    "places-auto-complete.html",
-    "street-view_road_trip.html"
-  ];
+  "index.html",
+  "map_events.html", 
+  "map_lazy_init.html", 
+  "map-lazy-load.html", 
+  "marker_with_dynamic_position.html",
+  "marker_with_dynamic_address.html",
+  "marker_with_info_window.html",
+  "places-auto-complete.html",
+  "street-view_road_trip.html"
+];
 
 function using(values, func){
   'use strict';

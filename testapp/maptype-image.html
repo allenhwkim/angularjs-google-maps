@@ -2,7 +2,8 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -47,7 +48,7 @@ var moonTypeOptions = {
         return null;
       }
       var bound = Math.pow(2, zoom);
-      return 'http://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw' +
+      return 'https://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw' +
           '/' + zoom + '/' + normalizedCoord.x + '/' +
           (bound - normalizedCoord.y - 1) + '.jpg';
   },

@@ -2,7 +2,8 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
 <!-- build:js scripts/ng-map.min.js -->
 <script src="../app/scripts/app.js"></script>
 <script src="../app/scripts/directives/map_controller.js"></script>
@@ -30,7 +31,7 @@
         return null;
       }
 
-      return ['http://www.gstatic.com/io2010maps/tiles/5/L2_',
+      return ['https://www.gstatic.com/io2010maps/tiles/5/L2_',
           zoom, '_', coord.x, '_', coord.y, '.png'].join('');
     },
     tileSize: new google.maps.Size(256, 256)

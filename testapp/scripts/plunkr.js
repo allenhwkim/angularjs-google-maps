@@ -11,9 +11,9 @@ plunkr.service('Plnkr', function() {
   this.js = null;
   this.css = null;
   this.libs = [
-    "http://maps.google.com/maps/api/js?sensor=false",
-    "http://code.angularjs.org/1.2.5/angular.js",
-    "http://rawgithub.com/allenhwkim/angularjs-google-maps" +
+    "https://maps.google.com/maps/api/js?sensor=false",
+    "https://code.angularjs.org/1.2.5/angular.js",
+    "https://rawgithub.com/allenhwkim/angularjs-google-maps" +
        "/master/build/scripts/ng-map.min.js",
     "script.js",
     "style.css"

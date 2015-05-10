@@ -3,7 +3,7 @@
  */
 var request = require("request");
 
-var base = "http://opendata.socrata.com/resource/92ua-293q.json";
+var base = "https://opendata.socrata.com/resource/92ua-293q.json";
 var stores = [];
 
 for (var i=0; i<21000; i+=1000) {
