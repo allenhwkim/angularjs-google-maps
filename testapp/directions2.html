@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Travel modes in directions</title>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <!-- build:js scripts/ng-map.min.js -->
+    <script src="../app/scripts/app.js"></script>
+    <script src="../app/scripts/services/navigator_geolocation.js"></script>
+    <script src="../app/scripts/services/geo_coder.js"></script>
+    <script src="../app/scripts/services/attr2_options.js"></script>
+    <script src="../app/scripts/directives/map_controller.js"></script>
+    <script src="../app/scripts/directives/map.js"></script>
+    <script src="../app/scripts/directives/directions.js"></script>
+    <!-- endbuild -->
+    <style>
+      html, body {width:100%; height: 100%; padding:0; margin: 0}
+      body {padding: 5px}
+      * { box-sizing: border-box; }
+    </style>
+  </head>
+  <body ng-app="ngMap">
+    <div style="width: 68%; float:left; height: 100%">
+
+      <map zoom="14" center="1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman" style="height:90%" >
+        <directions 
+          draggable="true"
+          panel="directions-panel"
+          travel-mode="DRIVING"
+          origin="1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman"
+          destination="Pier St, Jackson Bay, West Coast, New Zeland">
+        </directions>
+      </map> 
+      Directions path length:
+        {{map.directionsRenderers[0].directions.routes[0].overview_path.length}}
+    </div>
+
+    <div id="directions-panel" style="width: 28%; float:left; height: 100%; overflow: auto; padding: 0px 5px">
+    </div>
+  </body>
+</html>
