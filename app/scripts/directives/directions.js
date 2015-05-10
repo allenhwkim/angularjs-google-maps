@@ -95,6 +95,9 @@
       scope.$on('mapInitialized', function(event, map) {
         updateRoute(renderer, options);
       });
+      scope.$on('$destroy', function(event, map) {
+        mapController.deleteObject('directionsRenderers', renderer);
+      });
     };
     
     return {
