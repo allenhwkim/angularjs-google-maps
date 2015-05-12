@@ -1,3 +1,16 @@
+/**
+ * Add a module for use with commonjs(WebPack)
+ * Add to your webpack.config.js with:
+ * 
+ module.exports = {
+  resolve: {
+    alias: {
+      "ngMap": 'ngmap/build/scripts/ng-map'
+    }
+  }
+ }
+ */
+ 
 var ngMap = angular.module('ngMap', []);
 
 /**
