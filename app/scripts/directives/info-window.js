@@ -84,7 +84,6 @@
 
       infoWindow.__open = function(map, scope, anchor) {
         $timeout(function() {
-          var tempTemplate = infoWindow.__template; // set template in a temporary variable
           infoWindow.__compile(scope, anchor);
           if (anchor && anchor.getPosition) {
             infoWindow.open(map, anchor);
@@ -94,7 +93,6 @@
           } else {
             infoWindow.open(map);
           }
-          infoWindow.__template = tempTemplate; // reset template to the object
         });
       };
 
