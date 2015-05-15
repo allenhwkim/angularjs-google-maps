@@ -100,6 +100,27 @@ describe('Attr2Options', function() {
       var events = parser.getEvents(scope, attrs);
       expect(typeof events.click).toEqual('function');
     });
+    it('should pass arguments to callback', function() {
+      scope.name = 'dave';
+      scope.scopeFunc = function() {}
+      var attrs ={onClick:'scopeFunc(name)'};
+      var events = parser.getEvents(scope, attrs);
+      var event = {};
+      spyOn(scope, 'scopeFunc');
+      events.click(event);
+      expect(scope.scopeFunc).toHaveBeenCalledWith(event, scope.name);
+    });
+    it('should respond to scope model changes', function() {
+      scope.name = 'dave';
+      scope.scopeFunc = function() {};
+      var attrs ={onClick:'scopeFunc(name)'};
+      var events = parser.getEvents(scope, attrs);
+      var event;
+      spyOn(scope, 'scopeFunc');
+      scope.name = 'george';
+      events.click(event);
+      expect(scope.scopeFunc).toHaveBeenCalledWith(event, scope.name);
+    });
   });
 
   describe("#getAttrsToObserve", function() {

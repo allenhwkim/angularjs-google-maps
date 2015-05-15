@@ -195,9 +195,9 @@
         var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
         var funcName = matches[1];
         var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
-        
-        var args = scope.$eval("["+argsStr+"]");
+        var argsExpr = $parse("["+argsStr+"]"); //for perf when triggering event
         return function(event) {
+          var args = argsExpr(scope); //get args here to pass updated model values
           function index(obj,i) {return obj[i];}
           var f = funcName.split('.').reduce(index, scope);
           f && f.apply(this, [event].concat(args));
