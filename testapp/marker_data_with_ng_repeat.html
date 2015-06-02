@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  function MyCtrl($scope) {
+    $scope.positions =[ 
+      {pos:[40.71, -74.21], data: 1111},
+      {pos:[40.72, -74.20], data: 2222},
+      {pos:[40.73, -74.19], data: 3333},
+      {pos:[40.74, -74.18], data: 4444}, 
+      {pos:[40.75, -74.17], data: 5555}, 
+      {pos:[40.76, -74.16], data: 6666}, 
+      {pos:[40.77, -74.15], data: 7777}
+    ];
+    $scope.showData = function() {
+      console.log('this', this);
+      alert(this.data);
+    }
+  }
+</script>
+</head>
+
+<body>
+    <div ng-controller="MyCtrl">
+      <map zoom="11" center="[40.74, -74.18]">
+        <marker ng-repeat="p in positions"
+          position="{{p.pos}}"
+          data="{{p.data}}"
+          on-click="showData()";
+          title="pos: {{p.pos}}"></marker>
+      </map>
+    </div>
+</body>
+</html>
