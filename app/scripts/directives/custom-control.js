@@ -1,4 +1,5 @@
 /*jshint -W030*/
+/* global google, ngMap */
 /**
  * @ngdoc directive
  * @name custom-control
@@ -28,13 +29,13 @@
  */
 /*jshint -W089*/
 ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+  'use strict';
   var parser = Attr2Options;
 
   return {
     restrict: 'E',
     require: '^map',
     link: function(scope, element, attrs, mapController) {
-      element.css('display','none');
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
@@ -44,8 +45,8 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
       /**
        * build a custom control element
        */
-      var compiled = $compile(element.html().trim())(scope);
-      var customControlEl = compiled[0];
+      var customControlEl = element[0].parentElement.removeChild(element[0]);
+      $compile(customControlEl.innerHTML.trim())(scope);
 
       /**
        * set events
