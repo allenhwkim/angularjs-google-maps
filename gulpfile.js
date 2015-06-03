@@ -70,7 +70,7 @@ gulp.task('docs', shell.task([
     '-r app/scripts' 
 ]));
 
-gulp.task('bump', function() { bumpVersion('patch'); });
+gulp.task('bump', ['build'], function() { bumpVersion('patch'); });
 gulp.task('bump:patch', ['build'], function() { bumpVersion('patch'); });
 gulp.task('bump:minor', ['build'], function() { bumpVersion('minor'); });
 gulp.task('bump:major', ['build'], function() { bumpVersion('major'); });
