@@ -17,18 +17,26 @@
 <!-- endbuild -->
 <script>
   function MyCtrl($scope) {
+    $scope.data =[ 
+      {foo:1, bar:1},
+      {foo:2, bar:2},
+      {foo:3, bar:3},
+      {foo:4, bar:4}, 
+      {foo:5, bar:5}, 
+      {foo:6, bar:6}, 
+      {foo:7, bar:7}
+    ];
     $scope.positions =[ 
-      {pos:[40.71, -74.21], data: 1111},
-      {pos:[40.72, -74.20], data: 2222},
-      {pos:[40.73, -74.19], data: 3333},
-      {pos:[40.74, -74.18], data: 4444}, 
-      {pos:[40.75, -74.17], data: 5555}, 
-      {pos:[40.76, -74.16], data: 6666}, 
-      {pos:[40.77, -74.15], data: 7777}
+      {pos:[40.71, -74.21]},
+      {pos:[40.72, -74.20]},
+      {pos:[40.73, -74.19]},
+      {pos:[40.74, -74.18]}, 
+      {pos:[40.75, -74.17]}, 
+      {pos:[40.76, -74.16]}, 
+      {pos:[40.77, -74.15]}
     ];
     $scope.showData = function() {
-      console.log('this', this);
-      alert(this.data);
+      alert(this.data.foo);
     }
   }
 </script>
@@ -39,7 +47,7 @@
       <map zoom="11" center="[40.74, -74.18]">
         <marker ng-repeat="p in positions"
           position="{{p.pos}}"
-          data="{{p.data}}"
+          data="{{data[$index]}}"
           on-click="showData()";
           title="pos: {{p.pos}}"></marker>
       </map>
