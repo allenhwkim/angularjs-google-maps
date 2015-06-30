@@ -69,8 +69,10 @@ section
 nav
 {
     display: block;
-    top: 28px;
-    bottom: 28px;
+    min-width: 200px;
+    top: 0px;
+    bottom: 0px;
+    background-color: #fff;
     border-left: 1px solid #ccc;
     overflow-y: auto;
     position: fixed;
@@ -112,7 +114,13 @@ nav a:active {
     color: #5C5954;
 }
 
+#main  {
+    max-width: 976px;
+    margin: 0 auto;
+}
 footer {
+    max-width: 976px;
+    margin: 0 auto;
     display: block;
     padding: 6px;
     margin-top: 12px;
@@ -240,7 +248,6 @@ a.name-link {
     font-size: 100%;
     line-height: 18px;
     display: block;
-    padding: 4px 12px;
     margin: 0;
     background-color: #fff;
     color: #000;
@@ -253,7 +260,8 @@ a.name-link {
 
 .prettyprint.linenums
 {
-  padding-left: 70px;
+  padding-left: 4em;
+  color: #ccc;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
