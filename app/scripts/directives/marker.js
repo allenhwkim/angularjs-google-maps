@@ -59,8 +59,17 @@
     }
     if (!(options.position instanceof google.maps.LatLng)) {
       options.position = new google.maps.LatLng(0,0);
-    } 
-    marker = new google.maps.Marker(options);
+    }
+
+    /**
+    * include RichMarker functionality if present
+    * otherwise use google maps' built-in Marker class
+    */
+    if (typeof RichMarker !== 'undefined') {
+      marker = new RichMarker(options);
+    } else {
+      marker = new google.maps.Marker(options);
+    }
 
     /**
      * set events
