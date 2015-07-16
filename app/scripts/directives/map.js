@@ -88,6 +88,14 @@
       }
 
       /**
+       * disable drag event
+       */
+      element[0].addEventListener('dragstart', function(event) {
+        event.preventDefault();
+        return false;
+      });
+
+      /**
        * initialize function
        */
       var initializeMap = function(mapOptions, mapEvents) {
