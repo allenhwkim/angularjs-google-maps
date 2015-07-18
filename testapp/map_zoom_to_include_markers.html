@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+<script src="scripts/app.js"></script>
+<!-- build:js scripts/ng-map.min.js -->
+<script src="../app/scripts/app.js"></script>
+<script src="../app/scripts/directives/map_controller.js"></script>
+<script src="../app/scripts/directives/map.js"></script>
+<script src="../app/scripts/directives/marker.js"></script>
+<script src="../app/scripts/directives/shape.js"></script>
+<script src="../app/scripts/services/geo_coder.js"></script>
+<script src="../app/scripts/services/navigator_geolocation.js"></script>
+<script src="../app/scripts/services/attr2_options.js"></script>
+<!-- endbuild -->
+<script>
+  function MyCtrl($scope) {
+    $scope.positions =[ 
+      {pos:[40.71, -74.21]},
+      {pos:[41.72, -73.20]},
+      {pos:[42.73, -72.19]},
+      {pos:[43.74, -71.18]}, 
+      {pos:[44.75, -70.17]}, 
+      {pos:[45.76, -69.16]}, 
+      {pos:[46.77, -68.15]}
+    ];
+  }
+</script>
+</head>
+
+<body>
+    <div ng-controller="MyCtrl">
+      <h3>Without zoom-to-include-markers='true'</h3>
+      <map zoom="11" center="[40.74, -74.18]">
+        <marker ng-repeat="p in positions" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
+      </map>
+
+      <h3>With zoom-to-include-markers='true'</h3>
+      <map zoom="11" center="[40.74, -74.18]" zoom-to-include-markers="true">
+        <marker ng-repeat="p in positions" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
+      </map>
+    </div>
+</body>
+</html>

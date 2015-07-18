@@ -17,14 +17,16 @@
  * @param {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
  * @param {Array} geo-fallback-center 
  *    The center of map incase geolocation failed. i.e. [0,0]
+ * @param {Boolean} zoom-to-include-markers
+ *    When true, map boundary will be changed automatially to include all markers when initialized
  * @param {String} init-event The name of event to initialize this map. 
- *        If this option is given, the map won't be initialized until the event is received.
- *        To invoke the event, use $scope.$emit or $scope.$broacast. 
- *        i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
+ *    If this option is given, the map won't be initialized until the event is received.
+ *    To invoke the event, use $scope.$emit or $scope.$broacast. 
+ *    i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
  * @param {String} &lt;MapOption> Any Google map options, 
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
+ *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @param {String} &lt;MapEvent> Any Google map events, 
- *        https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
@@ -35,7 +37,7 @@
  *   <map center="[40.74, -74.18]" on-click="doThat()">
  *   </map>
  *
- *   <map geo-fallback-center="[40.74, -74.18]">
+ *   <map geo-fallback-center="[40.74, -74.18]" zoom-to-inlude-markers="true">
  *   </map>
  */
 /* global google */
@@ -164,13 +166,11 @@
         scope.map.scope = scope;
         google.maps.event.addListenerOnce(map, "idle", function() {
           scope.$emit('mapInitialized', map);  
+          if (attrs.zoomToIncludeMarkers) {
+            console.log('zoomToIncludeMarkers');
+            ctrl.zoomToIncludeMarkers();
+          }
         });
-
-        // the following lines will be deprecated on behalf of mapInitialized
-        // to collect maps, we should use scope.maps in your own controller, i.e. MyCtrl
-        scope.maps = scope.maps || {}; 
-        scope.maps[options.id||Object.keys(scope.maps).length] = map;
-        scope.$emit('mapsInitialized', scope.maps);  
       }; // function initializeMap()
 
       /**
