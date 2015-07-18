@@ -46,6 +46,8 @@
  *    The center of map incase geolocation failed. i.e. [0,0]
  * @param {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
+ * @param {Boolean} default-style
+ *    When false, the default styling, `display:block;height:300px`, will be ignored.
  * @param {String} init-event The name of event to initialize this map. 
  *    If this option is given, the map won't be initialized until the event is received.
  *    To invoke the event, use $scope.$emit or $scope.$broacast. 
@@ -109,11 +111,13 @@
       /**
        * if style is not given to the map element, set display and height
        */
-      if (getStyle(element[0], 'display') != "block") {
-        element.css('display','block');
-      }
-      if (getStyle(element[0], 'height').match(/^(0|auto)/)) {
-        element.css('height','300px');
+      if (attrs.defaultStyle !== 'false') {
+        if (getStyle(element[0], 'display') != "block") {
+          element.css('display','block');
+        }
+        if (getStyle(element[0], 'height').match(/^(0|auto)/)) {
+          element.css('height','300px');
+        }
       }
 
       /**
