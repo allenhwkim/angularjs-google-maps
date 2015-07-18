@@ -136,6 +136,29 @@
 
         <tr>
             
+                <td class="name"><code>zoom-to-include-markers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>When true, map boundary will be changed automatially to include all markers when initialized</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>init-event</code></td>
             
 
@@ -153,9 +176,9 @@
             
 
             <td class="description last"><p>The name of event to initialize this map. 
-       If this option is given, the map won't be initialized until the event is received.
-       To invoke the event, use $scope.$emit or $scope.$broacast. 
-       i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map></p></td>
+   If this option is given, the map won't be initialized until the event is received.
+   To invoke the event, use $scope.$emit or $scope.$broacast. 
+   i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map></p></td>
         </tr>
 
     
@@ -179,7 +202,7 @@
             
 
             <td class="description last"><p>Any Google map options, 
-       https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions</p></td>
+   https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions</p></td>
         </tr>
 
     
@@ -203,7 +226,7 @@
             
 
             <td class="description last"><p>Any Google map events, 
-       https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html</p></td>
+   https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html</p></td>
         </tr>
 
     
@@ -278,7 +301,7 @@ Example:
   &lt;map center="[40.74, -74.18]" on-click="doThat()">
   &lt;/map>
 
-  &lt;map geo-fallback-center="[40.74, -74.18]">
+  &lt;map geo-fallback-center="[40.74, -74.18]" zoom-to-inlude-markers="true">
   &lt;/map></code></pre>
 
     
@@ -317,7 +340,7 @@ Example:
 <dt>
     
     
-      <a href="directives_map.js.html#line66" class="name-link"><h4 class="name" id=".linkFunc">linkFunc<span class="signature">(scope, element, attrs)</span><span class="type-signature"></span></h4></a>
+      <a href="directives_map.js.html#line68" class="name-link"><h4 class="name" id=".linkFunc">linkFunc<span class="signature">(scope, element, attrs)</span><span class="type-signature"></span></h4></a>
     
 
     
@@ -454,7 +477,7 @@ Example:
     <!-- commented out by Allen Kim
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="directives_map.js.html">directives/map.js</a>, <a href="directives_map.js.html#line66">line 66</a>
+        <a href="directives_map.js.html">directives/map.js</a>, <a href="directives_map.js.html#line68">line 68</a>
     </li></ul></dd>
     -->
     

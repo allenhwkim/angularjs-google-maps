@@ -189,6 +189,16 @@
       }
     };
 
+    /**
+     * include all markers
+     */
+    this.zoomToIncludeMarkers = function() {
+      var bounds = new google.maps.LatLngBounds();
+      for (var marker in this.map.markers) {
+        bounds.extend(this.map.markers[marker].getPosition());
+      }
+      this.map.fitBounds(bounds);
+    };
 
   }; // MapController
 
