@@ -22,7 +22,7 @@
     "gulp-connect": "^2.2.0",
     "gulp-debug": "~0.3.0",
     "gulp-html-replace": "~1.1.0",
-    "gulp-protractor": "0.0.12",
+    "gulp-protractor": "^1.0.0",
     "gulp-rename": "~1.2.0",
     "gulp-replace": "~0.3.0",
     "gulp-rev": "~0.4.0",

@@ -46,9 +46,9 @@ gulp.task('clean', function() {
 
 gulp.task('build-js', function() {
   return gulp.src([
-      'app/scripts/app.js',
-      'app/scripts/services/*.js',
-      'app/scripts/directives/*.js'
+      'app.js',
+      'services/*.js',
+      'directives/*.js'
     ])
     .pipe(concat('ng-map.debug.js'))
     .pipe(gulp.dest('build/scripts'))
@@ -67,7 +67,7 @@ gulp.task('docs', shell.task([
     '-t node_modules/angular-jsdoc/template '+ 
     '-d build/docs '+ 
     './README.md ' +
-    '-r app/scripts' 
+    '-r .' 
 ]));
 
 gulp.task('bump', ['build'], function() { bumpVersion('patch'); });
@@ -93,11 +93,7 @@ gulp.task('testapp-server',  function() {
   });
 });
 
-/**
- * For first-time user, we need to update webdrivers
- * $ node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update
- */
-gulp.task('e2e-test', ['testapp-server'], function() {
+gulp.task('test-e2e', ['testapp-server'], function() {
   gulp.src([__dirname + "/spec/e2e/*_spec.js"])  
     .pipe(gulpProtractor({
       configFile: __dirname + "/config/protractor.conf.js",
@@ -106,6 +102,12 @@ gulp.task('e2e-test', ['testapp-server'], function() {
       ]
     })) 
     .on('error', function(e) { 
+      console.log([
+        '------------------------------------------------------------------------------------',
+        'For first-time user, we need to update webdrivers', 
+        '$ node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update',
+        '------------------------------------------------------------------------------------'
+      ].join('\n'));
       throw e;
     })
     .on('end', function() { // when process exits:

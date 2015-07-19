@@ -14,7 +14,7 @@
  * @example
  * Example: 
  *
- *   <div lazy-load="http://maps.google.com/maps/api/js">
+ *   <div map-lazy-load="http://maps.google.com/maps/api/js">
  *     <map center="Brampton" zoom="10">
  *       <marker position="Brampton"></marker>
  *     </map>

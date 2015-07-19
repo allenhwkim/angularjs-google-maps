@@ -5,7 +5,7 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '../',
 
 
     // frameworks to use
@@ -17,18 +17,18 @@ module.exports = function(config) {
     files: [
       // libraries
       'http://maps.google.com/maps/api/js',
-      __dirname + '/../spec/lib/angular.js',
-      __dirname + '/../spec/lib/angular-mocks.js',
-      __dirname + '/../spec/lib/markerclusterer.js',
+      'spec/lib/angular.js',
+      'spec/lib/angular-mocks.js',
+      'spec/lib/markerclusterer.js',
 
       // our app
-      __dirname + '/../app/scripts/app.js',
-      __dirname + '/../app/scripts/directives/*.js',
-      __dirname + '/../app/scripts/services/*.js',
+      'app.js',
+      'directives/*.js',
+      'services/*.js',
 
       // tests
-      __dirname + '/../spec/directives/*_spec.js',
-      __dirname + '/../spec/services/*_spec.js'
+      'spec/directives/*_spec.js',
+      'spec/services/*_spec.js'
     ],
 
 
