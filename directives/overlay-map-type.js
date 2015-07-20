@@ -13,37 +13,40 @@
  *     <overlay-map-type index="0" object="coordinateMapType"></map-type>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
-  var parser = Attr2Options;
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var overlayMapTypeObject;
-      var initMethod = attrs.initMethod || "insertAt";
-      if (attrs.object) {
-        var __scope = scope[attrs.object] ? scope : $window;
-        overlayMapTypeObject = __scope[attrs.object];
-        if (typeof overlayMapTypeObject == "function") {
-          overlayMapTypeObject = new overlayMapTypeObject();
-        }
-      }
-      if (!overlayMapTypeObject) {
-        throw "invalid map-type object";
-      }
+  angular.module('ngMap').directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
+    var parser = Attr2Options;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      scope.$on('mapInitialized', function(evt, map) {
-        if (initMethod == "insertAt") {
-          var index = parseInt(attrs.index, 10);
-          map.overlayMapTypes.insertAt(index, overlayMapTypeObject);
-        } else if (initMethod == "push") {
-          map.overlayMapTypes.push(overlayMapTypeObject);
+      link: function(scope, element, attrs, mapController) {
+        var overlayMapTypeObject;
+        var initMethod = attrs.initMethod || "insertAt";
+        if (attrs.object) {
+          var __scope = scope[attrs.object] ? scope : $window;
+          overlayMapTypeObject = __scope[attrs.object];
+          if (typeof overlayMapTypeObject == "function") {
+            overlayMapTypeObject = new overlayMapTypeObject();
+          }
         }
-      });
-      mapController.addObject('overlayMapTypes', overlayMapTypeObject);
-    }
-   }; // return
-}]);
+        if (!overlayMapTypeObject) {
+          throw "invalid map-type object";
+        }
+
+        scope.$on('mapInitialized', function(evt, map) {
+          if (initMethod == "insertAt") {
+            var index = parseInt(attrs.index, 10);
+            map.overlayMapTypes.insertAt(index, overlayMapTypeObject);
+          } else if (initMethod == "push") {
+            map.overlayMapTypes.push(overlayMapTypeObject);
+          }
+        });
+        mapController.addObject('overlayMapTypes', overlayMapTypeObject);
+      }
+     }; // return
+  }]);
+})();

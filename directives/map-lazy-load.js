@@ -20,41 +20,44 @@
  *     </map>
  *   </div>
  */
-/*jshint -W089*/
-ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
+(function() {
   'use strict';
-  var directiveDefinitionObject = {
-    compile: function(tElement, tAttrs) {
-      (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
-      var savedHtml = tElement.html(), src = tAttrs.mapLazyLoad;
-      /**
-       * if already loaded, stop processing it
-       */
-      if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
-        return false;
-      }
 
-      tElement.html('');  // will compile again after script is loaded
-      return {
-        pre: function(scope, element, attrs) {
-          window.lazyLoadCallback = function() {
-            console.log('script loaded,' + src);
-            $timeout(function() { /* give some time to load */
+  angular.module('ngMap').directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
+    'use strict';
+    var directiveDefinitionObject = {
+      compile: function(tElement, tAttrs) {
+        (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
+        var savedHtml = tElement.html(), src = tAttrs.mapLazyLoad;
+        /**
+         * if already loaded, stop processing it
+         */
+        if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+          return false;
+        }
+
+        tElement.html('');  // will compile again after script is loaded
+        return {
+          pre: function(scope, element, attrs) {
+            window.lazyLoadCallback = function() {
+              console.log('script loaded,' + src);
+              $timeout(function() { /* give some time to load */
+                element.html(savedHtml);
+                $compile(element.contents())(scope);
+              }, 100);
+            };
+            if(window.google === undefined || window.google.maps === undefined) {
+              var scriptEl = document.createElement('script');
+              scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+              document.body.appendChild(scriptEl);
+            } else {
               element.html(savedHtml);
               $compile(element.contents())(scope);
-            }, 100);
-          };
-          if(window.google === undefined || window.google.maps === undefined) {
-            var scriptEl = document.createElement('script');
-            scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
-            document.body.appendChild(scriptEl);
-          } else {
-            element.html(savedHtml);
-            $compile(element.contents())(scope);
+            }
           }
-        }
-      };
-    }
-  };
-  return directiveDefinitionObject;
-}]);
+        };
+      }
+    };
+    return directiveDefinitionObject;
+  }]);
+})();

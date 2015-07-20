@@ -1,4 +1,4 @@
-var ngMap = angular.module('ngMap', []);
+angular.module('ngMap', []);
 
 /**
  * @ngdoc service
@@ -305,8 +305,9 @@ var ngMap = angular.module('ngMap', []);
     }; // return
 
   }; 
+  Attr2Options.$inject= ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder'];
 
-  angular.module('ngMap').service('Attr2Options', ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder', Attr2Options]);
+  angular.module('ngMap').service('Attr2Options', Attr2Options);
 })();
 
 /**
@@ -345,8 +346,9 @@ var ngMap = angular.module('ngMap', []);
       }
     }
   };
+  GeoCoder.$inject = ['$q'];
 
-  angular.module('ngMap').service('GeoCoder', ['$q', GeoCoder]);
+  angular.module('ngMap').service('GeoCoder', GeoCoder);
 })();
 
 /**
@@ -401,8 +403,9 @@ var ngMap = angular.module('ngMap', []);
       }
     };
   }; 
+  NavigatorGeolocation.$inject = ['$q'];
 
-  angular.module('ngMap').service('NavigatorGeolocation', ['$q', NavigatorGeolocation]);
+  angular.module('ngMap').service('NavigatorGeolocation', NavigatorGeolocation);
 })();
 
 /**
@@ -466,8 +469,9 @@ var ngMap = angular.module('ngMap', []);
     }; // return
 
   };
+  StreetView.$inject = ['$q'];
 
-  angular.module('ngMap').service('StreetView', ['$q', StreetView]);
+  angular.module('ngMap').service('StreetView', StreetView);
 })();
 
 /**
@@ -485,39 +489,41 @@ var ngMap = angular.module('ngMap', []);
  *     <bicycling-layer></bicycling-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  var getLayer = function(options, events) {
-    var layer = new google.maps.BicyclingLayer(options);
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
-    return layer;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
+  angular.module('ngMap').directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    var getLayer = function(options, events) {
+      var layer = new google.maps.BicyclingLayer(options);
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+      return layer;
+    };
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
 
-      void 0;
+        void 0;
 
-      var layer = getLayer(options, events);
-      mapController.addObject('bicyclingLayers', layer);
-      mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
-      element.bind('$destroy', function() {
-        mapController.deleteObject('bicyclingLayers', layer);
-      });
-    }
-   }; // return
-}]);
+        var layer = getLayer(options, events);
+        mapController.addObject('bicyclingLayers', layer);
+        mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+        element.bind('$destroy', function() {
+          mapController.deleteObject('bicyclingLayers', layer);
+        });
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -534,41 +540,41 @@ ngMap.directive('bicyclingLayer', ['Attr2Options', function(Attr2Options) {
  *     <cloud-layer></cloud-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  var getLayer = function(options, events) {
-    var layer = new google.maps.weather.CloudLayer(options);
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
-    return layer;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
+  angular.module('ngMap').directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    var getLayer = function(options, events) {
+      var layer = new google.maps.weather.CloudLayer(options);
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+      return layer;
+    };
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
-      void 0;
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
+        void 0;
 
-      var layer = getLayer(options, events);
-      mapController.addObject('cloudLayers', layer);
-      mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
-      element.bind('$destroy', function() {
-        mapController.deleteObject('cloudLayers', layer);
-      });
-    }
-   }; // return
-}]);
+        var layer = getLayer(options, events);
+        mapController.addObject('cloudLayers', layer);
+        mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+        element.bind('$destroy', function() {
+          mapController.deleteObject('cloudLayers', layer);
+        });
+      }
+     }; // return
+  }]);
+})();
 
-/*jshint -W030*/
-/* global google, ngMap */
 /**
  * @ngdoc directive
  * @name custom-control
@@ -596,43 +602,45 @@ ngMap.directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
  *  </map>
  *
  */
-/*jshint -W089*/
-ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+(function() {
   'use strict';
-  var parser = Attr2Options;
+  angular.module('ngMap').directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+    'use strict';
+    var parser = Attr2Options;
 
-  return {
-    restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered, scope);
-      var events = parser.getEvents(scope, filtered);
-      void 0;
+    return {
+      restrict: 'E',
+      require: '^map',
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered, scope);
+        var events = parser.getEvents(scope, filtered);
+        void 0;
 
-      /**
-       * build a custom control element
-       */
-      var customControlEl = element[0].parentElement.removeChild(element[0]);
-      $compile(customControlEl.innerHTML.trim())(scope);
+        /**
+         * build a custom control element
+         */
+        var customControlEl = element[0].parentElement.removeChild(element[0]);
+        $compile(customControlEl.innerHTML.trim())(scope);
 
-      /**
-       * set events
-       */
-      for (var eventName in events) {
-        google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
-      }
+        /**
+         * set events
+         */
+        for (var eventName in events) {
+          google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
+        }
 
-      mapController.addObject('customControls', customControlEl);
-      scope.$on('mapInitialized', function(evt, map) {
-        var position = options.position;
-        map.controls[google.maps.ControlPosition[position]].push(customControlEl);
-      });
+        mapController.addObject('customControls', customControlEl);
+        scope.$on('mapInitialized', function(evt, map) {
+          var position = options.position;
+          map.controls[google.maps.ControlPosition[position]].push(customControlEl);
+        });
 
-    } //link
-  }; // return
-}]);// function
+      } //link
+    }; // return
+  }]);// function
+})();
 
 /**
  * @ngdoc directive
@@ -767,50 +775,52 @@ ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Opti
  *  currently, for out solution, we have the shapes/markers in our own controller, and we use some css classes to change the shape button
  *  to a remove button (<div>X</div>) and have the remove operation in our own controller.
  */
-/*jshint -W089*/
-ngMap.directive('drawingManager', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
+(function() {
+  'use strict';
+  angular.module('ngMap').directive('drawingManager', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
 
-  return {
-    restrict: 'E',
-    require: '^map',
+    return {
+      restrict: 'E',
+      require: '^map',
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var controlOptions = parser.getControlOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var controlOptions = parser.getControlOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
 
-      void 0;
+        void 0;
 
-      /**
-       * set options
-       */
-      var drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: options.drawingmode,
-        drawingControl: options.drawingcontrol,
-        drawingControlOptions: controlOptions.drawingControlOptions,
-        circleOptions:options.circleoptions,
-        markerOptions:options.markeroptions,
-        polygonOptions:options.polygonoptions,
-        polylineOptions:options.polylineoptions,
-        rectangleOptions:options.rectangleoptions
-      });
+        /**
+         * set options
+         */
+        var drawingManager = new google.maps.drawing.DrawingManager({
+          drawingMode: options.drawingmode,
+          drawingControl: options.drawingcontrol,
+          drawingControlOptions: controlOptions.drawingControlOptions,
+          circleOptions:options.circleoptions,
+          markerOptions:options.markeroptions,
+          polygonOptions:options.polygonoptions,
+          polylineOptions:options.polylineoptions,
+          rectangleOptions:options.rectangleoptions
+        });
 
 
-      /**
-       * set events
-       */
-      var events = parser.getEvents(scope, filtered);
-      for (var eventName in events) {
-        google.maps.event.addListener(drawingManager, eventName, events[eventName]);
+        /**
+         * set events
+         */
+        var events = parser.getEvents(scope, filtered);
+        for (var eventName in events) {
+          google.maps.event.addListener(drawingManager, eventName, events[eventName]);
+        }
+
+        mapController.addObject('mapDrawingManager', drawingManager);
       }
-
-      mapController.addObject('mapDrawingManager', drawingManager);
-    }
-  }; // return
-}]);
+    }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -825,36 +835,39 @@ ngMap.directive('drawingManager', ['Attr2Options', function(Attr2Options) {
  *     <dynamic-maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></dynamic-maps-engine-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
+(function() {
+  'use strict';
 
-  var getDynamicMapsEngineLayer = function(options, events) {
-    var layer = new google.maps.visualization.DynamicMapsEngineLayer(options);
+  angular.module('ngMap').directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
 
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
+    var getDynamicMapsEngineLayer = function(options, events) {
+      var layer = new google.maps.visualization.DynamicMapsEngineLayer(options);
 
-    return layer;
-  };
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
 
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+      return layer;
+    };
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered, events);
-      void 0;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getDynamicMapsEngineLayer(options, events);
-      mapController.addObject('mapsEngineLayers', layer);
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        void 0;
+
+        var layer = getDynamicMapsEngineLayer(options, events);
+        mapController.addObject('mapsEngineLayers', layer);
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -872,36 +885,39 @@ ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options
  *     </fusion-tables-layer>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
+(function() {
+  'use strict';
 
-  var getLayer = function(options, events) {
-    var layer = new google.maps.FusionTablesLayer(options);
+  angular.module('ngMap').directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
 
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
+    var getLayer = function(options, events) {
+      var layer = new google.maps.FusionTablesLayer(options);
 
-    return layer;
-  };
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
 
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+      return layer;
+    };
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered, events);
-      void 0;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getLayer(options, events);
-      mapController.addObject('fusionTablesLayers', layer);
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        void 0;
+
+        var layer = getLayer(options, events);
+        mapController.addObject('fusionTablesLayers', layer);
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -918,39 +934,42 @@ ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
  *     <heatmap-layer data="taxiData"></heatmap-layer>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Options, $window) {
-  var parser = Attr2Options;
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
+  angular.module('ngMap').directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Options, $window) {
+    var parser = Attr2Options;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      /**
-       * set options 
-       */
-      var options = parser.getOptions(filtered);
-      options.data = $window[attrs.data] || scope[attrs.data];
-      if (options.data instanceof Array) {
-        options.data = new google.maps.MVCArray(options.data);
-      } else {
-        throw "invalid heatmap data";
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+
+        /**
+         * set options 
+         */
+        var options = parser.getOptions(filtered);
+        options.data = $window[attrs.data] || scope[attrs.data];
+        if (options.data instanceof Array) {
+          options.data = new google.maps.MVCArray(options.data);
+        } else {
+          throw "invalid heatmap data";
+        }
+        var layer = new google.maps.visualization.HeatmapLayer(options);
+
+        /**
+         * set events 
+         */
+        var events = parser.getEvents(scope, filtered);
+        void 0;
+
+        mapController.addObject('heatmapLayers', layer);
       }
-      var layer = new google.maps.visualization.HeatmapLayer(options);
-
-      /**
-       * set events 
-       */
-      var events = parser.getEvents(scope, filtered);
-      void 0;
-
-      mapController.addObject('heatmapLayers', layer);
-    }
-   }; // return
-}]);
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -1144,38 +1163,41 @@ ngMap.directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Option
  *     <kml-layer url="https://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" ></kml-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  var getKmlLayer = function(options, events) {
-    var kmlLayer = new google.maps.KmlLayer(options);
-    for (var eventName in events) {
-      google.maps.event.addListener(kmlLayer, eventName, events[eventName]);
-    }
-    return kmlLayer;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
-      void 0;
+  angular.module('ngMap').directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    var getKmlLayer = function(options, events) {
+      var kmlLayer = new google.maps.KmlLayer(options);
+      for (var eventName in events) {
+        google.maps.event.addListener(kmlLayer, eventName, events[eventName]);
+      }
+      return kmlLayer;
+    };
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var kmlLayer = getKmlLayer(options, events);
-      mapController.addObject('kmlLayers', kmlLayer);
-      mapController.observeAttrSetObj(orgAttrs, attrs, kmlLayer);  //observers
-      element.bind('$destroy', function() {
-        mapController.deleteObject('kmlLayers', kmlLayer);
-      });
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
+        void 0;
+
+        var kmlLayer = getKmlLayer(options, events);
+        mapController.addObject('kmlLayers', kmlLayer);
+        mapController.observeAttrSetObj(orgAttrs, attrs, kmlLayer);  //observers
+        element.bind('$destroy', function() {
+          mapController.deleteObject('kmlLayers', kmlLayer);
+        });
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -1193,46 +1215,50 @@ ngMap.directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
  *     <map-data load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
  *    </map>
  */
-ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered, events);
+  angular.module('ngMap').directive('mapData', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      void 0;
-      scope.$on('mapInitialized', function(event, map) {
-        /**
-         * options
-         */
-        for (var key in options) {
-          if (key) {
-            var val = options[key];
-            if (typeof scope[val] === "function") {
-              map.data[key](scope[val]);
-            } else {
-              map.data[key](val);
-            }
-          } // if (key)
-        }
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
 
-        /**
-         * events
-         */
-        for (var eventName in events) {
-          if (events[eventName]) {
-            map.data.addListener(eventName, events[eventName]);
+        void 0;
+        scope.$on('mapInitialized', function(event, map) {
+          /**
+           * options
+           */
+          for (var key in options) {
+            if (key) {
+              var val = options[key];
+              if (typeof scope[val] === "function") {
+                map.data[key](scope[val]);
+              } else {
+                map.data[key](val);
+              }
+            } // if (key)
           }
-        }
-      });
-    }
-   }; // return
-}]);
+
+          /**
+           * events
+           */
+          for (var eventName in events) {
+            if (events[eventName]) {
+              map.data.addListener(eventName, events[eventName]);
+            }
+          }
+        });
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -1250,50 +1276,53 @@ ngMap.directive('mapData', ['Attr2Options', function(Attr2Options) {
  * @example
  * Example: 
  *
- *   <div lazy-load="http://maps.google.com/maps/api/js">
+ *   <div map-lazy-load="http://maps.google.com/maps/api/js">
  *     <map center="Brampton" zoom="10">
  *       <marker position="Brampton"></marker>
  *     </map>
  *   </div>
  */
-/*jshint -W089*/
-ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
+(function() {
   'use strict';
-  var directiveDefinitionObject = {
-    compile: function(tElement, tAttrs) {
-      (!tAttrs.mapLazyLoad) && void 0;
-      var savedHtml = tElement.html(), src = tAttrs.mapLazyLoad;
-      /**
-       * if already loaded, stop processing it
-       */
-      if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
-        return false;
-      }
 
-      tElement.html('');  // will compile again after script is loaded
-      return {
-        pre: function(scope, element, attrs) {
-          window.lazyLoadCallback = function() {
-            void 0;
-            $timeout(function() { /* give some time to load */
+  angular.module('ngMap').directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
+    'use strict';
+    var directiveDefinitionObject = {
+      compile: function(tElement, tAttrs) {
+        (!tAttrs.mapLazyLoad) && void 0;
+        var savedHtml = tElement.html(), src = tAttrs.mapLazyLoad;
+        /**
+         * if already loaded, stop processing it
+         */
+        if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+          return false;
+        }
+
+        tElement.html('');  // will compile again after script is loaded
+        return {
+          pre: function(scope, element, attrs) {
+            window.lazyLoadCallback = function() {
+              void 0;
+              $timeout(function() { /* give some time to load */
+                element.html(savedHtml);
+                $compile(element.contents())(scope);
+              }, 100);
+            };
+            if(window.google === undefined || window.google.maps === undefined) {
+              var scriptEl = document.createElement('script');
+              scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+              document.body.appendChild(scriptEl);
+            } else {
               element.html(savedHtml);
               $compile(element.contents())(scope);
-            }, 100);
-          };
-          if(window.google === undefined || window.google.maps === undefined) {
-            var scriptEl = document.createElement('script');
-            scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
-            document.body.appendChild(scriptEl);
-          } else {
-            element.html(savedHtml);
-            $compile(element.contents())(scope);
+            }
           }
-        }
-      };
-    }
-  };
-  return directiveDefinitionObject;
-}]);
+        };
+      }
+    };
+    return directiveDefinitionObject;
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -1310,37 +1339,40 @@ ngMap.directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $time
  *     <map-type name="coordinate" object="coordinateMapType"></map-type>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
-  var parser = Attr2Options;
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var mapTypeName = attrs.name, mapTypeObject;
-      if (!mapTypeName) {
-        throw "invalid map-type name";
-      }
-      if (attrs.object) {
-        var __scope = scope[attrs.object] ? scope : $window;
-        mapTypeObject = __scope[attrs.object];
-        if (typeof mapTypeObject == "function") {
-          mapTypeObject = new mapTypeObject();
+  angular.module('ngMap').directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
+    var parser = Attr2Options;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
+
+      link: function(scope, element, attrs, mapController) {
+        var mapTypeName = attrs.name, mapTypeObject;
+        if (!mapTypeName) {
+          throw "invalid map-type name";
         }
-      }
-      if (!mapTypeObject) {
-        throw "invalid map-type object";
-      }
+        if (attrs.object) {
+          var __scope = scope[attrs.object] ? scope : $window;
+          mapTypeObject = __scope[attrs.object];
+          if (typeof mapTypeObject == "function") {
+            mapTypeObject = new mapTypeObject();
+          }
+        }
+        if (!mapTypeObject) {
+          throw "invalid map-type object";
+        }
 
-      scope.$on('mapInitialized', function(evt, map) {
-        map.mapTypes.set(mapTypeName, mapTypeObject);
-      });
-      mapController.addObject('mapTypes', mapTypeObject);
-    }
-   }; // return
-}]);
+        scope.$on('mapInitialized', function(evt, map) {
+          map.mapTypes.set(mapTypeName, mapTypeObject);
+        });
+        mapController.addObject('mapTypes', mapTypeObject);
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -1744,36 +1776,39 @@ ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $w
  *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
+(function() {
+  'use strict';
 
-  var getMapsEngineLayer = function(options, events) {
-    var layer = new google.maps.visualization.MapsEngineLayer(options);
+  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
 
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
+    var getMapsEngineLayer = function(options, events) {
+      var layer = new google.maps.visualization.MapsEngineLayer(options);
 
-    return layer;
-  };
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
 
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+      return layer;
+    };
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered, events);
-      void 0;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getMapsEngineLayer(options, events);
-      mapController.addObject('mapsEngineLayers', layer);
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        void 0;
+
+        var layer = getMapsEngineLayer(options, events);
+        mapController.addObject('mapsEngineLayers', layer);
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -1914,40 +1949,43 @@ ngMap.directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
  *     <overlay-map-type index="0" object="coordinateMapType"></map-type>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
-  var parser = Attr2Options;
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var overlayMapTypeObject;
-      var initMethod = attrs.initMethod || "insertAt";
-      if (attrs.object) {
-        var __scope = scope[attrs.object] ? scope : $window;
-        overlayMapTypeObject = __scope[attrs.object];
-        if (typeof overlayMapTypeObject == "function") {
-          overlayMapTypeObject = new overlayMapTypeObject();
-        }
-      }
-      if (!overlayMapTypeObject) {
-        throw "invalid map-type object";
-      }
+  angular.module('ngMap').directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
+    var parser = Attr2Options;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      scope.$on('mapInitialized', function(evt, map) {
-        if (initMethod == "insertAt") {
-          var index = parseInt(attrs.index, 10);
-          map.overlayMapTypes.insertAt(index, overlayMapTypeObject);
-        } else if (initMethod == "push") {
-          map.overlayMapTypes.push(overlayMapTypeObject);
+      link: function(scope, element, attrs, mapController) {
+        var overlayMapTypeObject;
+        var initMethod = attrs.initMethod || "insertAt";
+        if (attrs.object) {
+          var __scope = scope[attrs.object] ? scope : $window;
+          overlayMapTypeObject = __scope[attrs.object];
+          if (typeof overlayMapTypeObject == "function") {
+            overlayMapTypeObject = new overlayMapTypeObject();
+          }
         }
-      });
-      mapController.addObject('overlayMapTypes', overlayMapTypeObject);
-    }
-   }; // return
-}]);
+        if (!overlayMapTypeObject) {
+          throw "invalid map-type object";
+        }
+
+        scope.$on('mapInitialized', function(evt, map) {
+          if (initMethod == "insertAt") {
+            var index = parseInt(attrs.index, 10);
+            map.overlayMapTypes.insertAt(index, overlayMapTypeObject);
+          } else if (initMethod == "push") {
+            map.overlayMapTypes.push(overlayMapTypeObject);
+          }
+        });
+        mapController.addObject('overlayMapTypes', overlayMapTypeObject);
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -2296,38 +2334,41 @@ ngMap.directive('overlayMapType', ['Attr2Options', '$window', function(Attr2Opti
  *     <traffic-layer></traffic-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  var getLayer = function(options, events) {
-    var layer = new google.maps.TrafficLayer(options);
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
-    return layer;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
-      void 0;
+  angular.module('ngMap').directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    var getLayer = function(options, events) {
+      var layer = new google.maps.TrafficLayer(options);
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+      return layer;
+    };
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getLayer(options, events);
-      mapController.addObject('trafficLayers', layer);
-      mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
-      element.bind('$destroy', function() {
-        mapController.deleteObject('trafficLayers', layer);
-      });
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
+        void 0;
+
+        var layer = getLayer(options, events);
+        mapController.addObject('trafficLayers', layer);
+        mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+        element.bind('$destroy', function() {
+          mapController.deleteObject('trafficLayers', layer);
+        });
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -2344,38 +2385,41 @@ ngMap.directive('trafficLayer', ['Attr2Options', function(Attr2Options) {
  *     <transit-layer></transit-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  var getLayer = function(options, events) {
-    var layer = new google.maps.TransitLayer(options);
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
-    return layer;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
-      void 0;
+  angular.module('ngMap').directive('transitLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    var getLayer = function(options, events) {
+      var layer = new google.maps.TransitLayer(options);
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+      return layer;
+    };
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getLayer(options, events);
-      mapController.addObject('transitLayers', layer);
-      mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
-      element.bind('$destroy', function() {
-        mapController.deleteObject('transitLayers', layer);
-      });
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
+        void 0;
+
+        var layer = getLayer(options, events);
+        mapController.addObject('transitLayers', layer);
+        mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+        element.bind('$destroy', function() {
+          mapController.deleteObject('transitLayers', layer);
+        });
+      }
+     }; // return
+  }]);
+})();
 
 /**
  * @ngdoc directive
@@ -2392,36 +2436,39 @@ ngMap.directive('transitLayer', ['Attr2Options', function(Attr2Options) {
  *     <weather-layer></weather-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
-  
-  var getLayer = function(options, events) {
-    var layer = new google.maps.weather.WeatherLayer(options);
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
-    return layer;
-  };
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered);
+  angular.module('ngMap').directive('weatherLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+    
+    var getLayer = function(options, events) {
+      var layer = new google.maps.weather.WeatherLayer(options);
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+      return layer;
+    };
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      void 0;
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered);
 
-      var layer = getLayer(options, events);
-      mapController.addObject('weatherLayers', layer);
-      mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
-      element.bind('$destroy', function() {
-        mapController.deleteObject('weatherLayers', layer);
-      });
-    }
-   }; // return
-}]);
+        void 0;
+
+        var layer = getLayer(options, events);
+        mapController.addObject('weatherLayers', layer);
+        mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
+        element.bind('$destroy', function() {
+          mapController.deleteObject('weatherLayers', layer);
+        });
+      }
+     }; // return
+  }]);
+})();

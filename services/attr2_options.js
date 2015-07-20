@@ -303,6 +303,7 @@
     }; // return
 
   }; 
+  Attr2Options.$inject= ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder'];
 
-  angular.module('ngMap').service('Attr2Options', ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder', Attr2Options]);
+  angular.module('ngMap').service('Attr2Options', Attr2Options);
 })();

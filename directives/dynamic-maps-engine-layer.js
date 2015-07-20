@@ -11,33 +11,36 @@
  *     <dynamic-maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></dynamic-maps-engine-layer>
  *    </map>
  */
-/*jshint -W089*/
-ngMap.directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
+(function() {
+  'use strict';
 
-  var getDynamicMapsEngineLayer = function(options, events) {
-    var layer = new google.maps.visualization.DynamicMapsEngineLayer(options);
+  angular.module('ngMap').directive('dynamicMapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
 
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
+    var getDynamicMapsEngineLayer = function(options, events) {
+      var layer = new google.maps.visualization.DynamicMapsEngineLayer(options);
 
-    return layer;
-  };
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
 
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+      return layer;
+    };
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered, events);
-      console.log('dynamic-maps-engine-layer options', options, 'events', events);
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getDynamicMapsEngineLayer(options, events);
-      mapController.addObject('mapsEngineLayers', layer);
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        console.log('dynamic-maps-engine-layer options', options, 'events', events);
+
+        var layer = getDynamicMapsEngineLayer(options, events);
+        mapController.addObject('mapsEngineLayers', layer);
+      }
+     }; // return
+  }]);
+})();

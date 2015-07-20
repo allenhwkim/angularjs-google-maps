@@ -34,6 +34,7 @@
       }
     }
   };
+  GeoCoder.$inject = ['$q'];
 
-  angular.module('ngMap').service('GeoCoder', ['$q', GeoCoder]);
+  angular.module('ngMap').service('GeoCoder', GeoCoder);
 })();

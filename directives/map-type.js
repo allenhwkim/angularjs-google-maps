@@ -13,34 +13,37 @@
  *     <map-type name="coordinate" object="coordinateMapType"></map-type>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
-  var parser = Attr2Options;
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+(function() {
+  'use strict';
 
-    link: function(scope, element, attrs, mapController) {
-      var mapTypeName = attrs.name, mapTypeObject;
-      if (!mapTypeName) {
-        throw "invalid map-type name";
-      }
-      if (attrs.object) {
-        var __scope = scope[attrs.object] ? scope : $window;
-        mapTypeObject = __scope[attrs.object];
-        if (typeof mapTypeObject == "function") {
-          mapTypeObject = new mapTypeObject();
+  angular.module('ngMap').directive('mapType', ['Attr2Options', '$window', function(Attr2Options, $window) {
+    var parser = Attr2Options;
+    
+    return {
+      restrict: 'E',
+      require: '^map',
+
+      link: function(scope, element, attrs, mapController) {
+        var mapTypeName = attrs.name, mapTypeObject;
+        if (!mapTypeName) {
+          throw "invalid map-type name";
         }
-      }
-      if (!mapTypeObject) {
-        throw "invalid map-type object";
-      }
+        if (attrs.object) {
+          var __scope = scope[attrs.object] ? scope : $window;
+          mapTypeObject = __scope[attrs.object];
+          if (typeof mapTypeObject == "function") {
+            mapTypeObject = new mapTypeObject();
+          }
+        }
+        if (!mapTypeObject) {
+          throw "invalid map-type object";
+        }
 
-      scope.$on('mapInitialized', function(evt, map) {
-        map.mapTypes.set(mapTypeName, mapTypeObject);
-      });
-      mapController.addObject('mapTypes', mapTypeObject);
-    }
-   }; // return
-}]);
+        scope.$on('mapInitialized', function(evt, map) {
+          map.mapTypes.set(mapTypeName, mapTypeObject);
+        });
+        mapController.addObject('mapTypes', mapTypeObject);
+      }
+     }; // return
+  }]);
+})();

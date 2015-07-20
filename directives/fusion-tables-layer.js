@@ -14,33 +14,36 @@
  *     </fusion-tables-layer>
  *   </map>
  */
-/*jshint -W089*/
-ngMap.directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
-  var parser = Attr2Options;
+(function() {
+  'use strict';
 
-  var getLayer = function(options, events) {
-    var layer = new google.maps.FusionTablesLayer(options);
+  angular.module('ngMap').directive('fusionTablesLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
 
-    for (var eventName in events) {
-      google.maps.event.addListener(layer, eventName, events[eventName]);
-    }
+    var getLayer = function(options, events) {
+      var layer = new google.maps.FusionTablesLayer(options);
 
-    return layer;
-  };
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
 
-  
-  return {
-    restrict: 'E',
-    require: '^map',
+      return layer;
+    };
 
-    link: function(scope, element, attrs, mapController) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
-      var events = parser.getEvents(scope, filtered, events);
-      console.log('fusion-tables-layer options', options, 'events', events);
+    
+    return {
+      restrict: 'E',
+      require: '^map',
 
-      var layer = getLayer(options, events);
-      mapController.addObject('fusionTablesLayers', layer);
-    }
-   }; // return
-}]);
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        console.log('fusion-tables-layer options', options, 'events', events);
+
+        var layer = getLayer(options, events);
+        mapController.addObject('fusionTablesLayers', layer);
+      }
+     }; // return
+  }]);
+})();

@@ -1,5 +1,3 @@
-/*jshint -W030*/
-/* global google, ngMap */
 /**
  * @ngdoc directive
  * @name custom-control
@@ -27,40 +25,42 @@
  *  </map>
  *
  */
-/*jshint -W089*/
-ngMap.directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+(function() {
   'use strict';
-  var parser = Attr2Options;
+  angular.module('ngMap').directive('customControl', ['Attr2Options', '$compile', function(Attr2Options, $compile)  {
+    'use strict';
+    var parser = Attr2Options;
 
-  return {
-    restrict: 'E',
-    require: '^map',
-    link: function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered, scope);
-      var events = parser.getEvents(scope, filtered);
-      console.log("custom-control options", options, "events", events);
+    return {
+      restrict: 'E',
+      require: '^map',
+      link: function(scope, element, attrs, mapController) {
+        var orgAttrs = parser.orgAttributes(element);
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered, scope);
+        var events = parser.getEvents(scope, filtered);
+        console.log("custom-control options", options, "events", events);
 
-      /**
-       * build a custom control element
-       */
-      var customControlEl = element[0].parentElement.removeChild(element[0]);
-      $compile(customControlEl.innerHTML.trim())(scope);
+        /**
+         * build a custom control element
+         */
+        var customControlEl = element[0].parentElement.removeChild(element[0]);
+        $compile(customControlEl.innerHTML.trim())(scope);
 
-      /**
-       * set events
-       */
-      for (var eventName in events) {
-        google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
-      }
+        /**
+         * set events
+         */
+        for (var eventName in events) {
+          google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
+        }
 
-      mapController.addObject('customControls', customControlEl);
-      scope.$on('mapInitialized', function(evt, map) {
-        var position = options.position;
-        map.controls[google.maps.ControlPosition[position]].push(customControlEl);
-      });
+        mapController.addObject('customControls', customControlEl);
+        scope.$on('mapInitialized', function(evt, map) {
+          var position = options.position;
+          map.controls[google.maps.ControlPosition[position]].push(customControlEl);
+        });
 
-    } //link
-  }; // return
-}]);// function
+      } //link
+    }; // return
+  }]);// function
+})();

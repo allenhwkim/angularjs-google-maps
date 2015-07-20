@@ -1,1 +1,1 @@
-var ngMap = angular.module('ngMap', []);
+angular.module('ngMap', []);

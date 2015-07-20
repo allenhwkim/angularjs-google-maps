@@ -67,7 +67,7 @@ gulp.task('docs', shell.task([
     '-t node_modules/angular-jsdoc/template '+ 
     '-d build/docs '+ 
     './README.md ' +
-    '-r .' 
+    '-r directives services' 
 ]));
 
 gulp.task('bump', ['build'], function() { bumpVersion('patch'); });

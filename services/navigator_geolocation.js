@@ -50,6 +50,7 @@
       }
     };
   }; 
+  NavigatorGeolocation.$inject = ['$q'];
 
-  angular.module('ngMap').service('NavigatorGeolocation', ['$q', NavigatorGeolocation]);
+  angular.module('ngMap').service('NavigatorGeolocation', NavigatorGeolocation);
 })();
