@@ -104,13 +104,15 @@
      */
     this.deleteObject = function(groupName, obj) {
       /* delete from group */
-      var objs = obj.map[groupName];
-      for (var name in objs) {
-        objs[name] === obj &amp;&amp; (delete objs[name]);
-      }
+      if (obj.map) {
+        var objs = obj.map[groupName];
+        for (var name in objs) {
+          objs[name] === obj &amp;&amp; (delete objs[name]);
+        }
 
-      /* delete from map */
-      obj.map &amp;&amp; obj.setMap &amp;&amp; obj.setMap(null);
+        /* delete from map */
+        obj.map &amp;&amp; obj.setMap &amp;&amp; obj.setMap(null);
+      }
     };
 
     /**

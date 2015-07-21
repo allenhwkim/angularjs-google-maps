@@ -1284,44 +1284,54 @@ angular.module('ngMap', []);
  */
 (function() {
   'use strict';
+  var $timeout, $compile, src, savedHtml;
 
-  angular.module('ngMap').directive('mapLazyLoad', ['$compile', '$timeout', function($compile, $timeout) {
-    'use strict';
-    var directiveDefinitionObject = {
-      compile: function(tElement, tAttrs) {
-        (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
-        var savedHtml = tElement.html(), src = tAttrs.mapLazyLoad;
-        /**
-         * if already loaded, stop processing it
-         */
-        if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
-          return false;
-        }
-
-        tElement.html('');  // will compile again after script is loaded
-        return {
-          pre: function(scope, element, attrs) {
-            window.lazyLoadCallback = function() {
-              console.log('script loaded,' + src);
-              $timeout(function() { /* give some time to load */
-                element.html(savedHtml);
-                $compile(element.contents())(scope);
-              }, 100);
-            };
-            if(window.google === undefined || window.google.maps === undefined) {
-              var scriptEl = document.createElement('script');
-              scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
-              document.body.appendChild(scriptEl);
-            } else {
-              element.html(savedHtml);
-              $compile(element.contents())(scope);
-            }
-          }
-        };
-      }
+  var preLinkFunc = function(scope, element, attrs) {
+    window.lazyLoadCallback = function() {
+      console.log('script loaded,' + src);
+      $timeout(function() { /* give some time to load */
+        element.html(savedHtml);
+        $compile(element.contents())(scope);
+      }, 100);
     };
-    return directiveDefinitionObject;
-  }]);
+
+    if(window.google === undefined || window.google.maps === undefined) {
+      var scriptEl = document.createElement('script');
+      scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+      document.body.appendChild(scriptEl);
+    } else {
+      element.html(savedHtml);
+      $compile(element.contents())(scope);
+    }
+  };
+
+  var compileFunc = function(tElement, tAttrs) {
+
+    (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
+    savedHtml = tElement.html(); 
+    src = tAttrs.mapLazyLoad;
+
+    /**
+     * if already loaded, stop processing it
+     */
+    if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+      return false;
+    }
+
+    tElement.html('');  // will compile again after script is loaded
+    return {
+      pre: preLinkFunc
+    };
+  };
+
+  var mapLazyLoad = function(_$compile_, _$timeout_) {
+    $compile = _$compile_, $timeout = _$timeout_;
+    return {
+      compile: compileFunc
+    }
+  };
+
+  angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
 })();
 
 /**
@@ -1661,13 +1671,15 @@ angular.module('ngMap', []);
      */
     this.deleteObject = function(groupName, obj) {
       /* delete from group */
-      var objs = obj.map[groupName];
-      for (var name in objs) {
-        objs[name] === obj && (delete objs[name]);
-      }
+      if (obj.map) {
+        var objs = obj.map[groupName];
+        for (var name in objs) {
+          objs[name] === obj && (delete objs[name]);
+        }
 
-      /* delete from map */
-      obj.map && obj.setMap && obj.setMap(null);
+        /* delete from map */
+        obj.map && obj.setMap && obj.setMap(null);
+      }
     };
 
     /**
