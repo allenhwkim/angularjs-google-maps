@@ -1330,6 +1330,7 @@ angular.module('ngMap', []);
       compile: compileFunc
     }
   };
+  mapLazyLoad.$inject = ['$compile','$timeout'];
 
   angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
 })();
