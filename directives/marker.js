@@ -77,7 +77,7 @@
     return marker;
   };
 
-  var marker = function(Attr2Options, $parse) {
+  var marker = function(Attr2Options, $parse, $timeout) {
     var parser = Attr2Options;
     var linkFunc = function(scope, element, attrs, mapController) {
       var orgAttrs = parser.orgAttributes(element);
@@ -100,6 +100,11 @@
           geoCallback && $parse(geoCallback)(scope);
         });
       }
+      if (mapController.fZoomToIncludeMarkers) {
+        $timeout(function () {
+          mapController.zoomToIncludeMarkers();
+        }, 100);
+      }
 
       /**
        * set observers
@@ -117,7 +122,7 @@
     };
   };
 
-  marker.$inject = ['Attr2Options', '$parse'];
+  marker.$inject = ['Attr2Options', '$parse', '$timeout'];
   angular.module('ngMap').directive('marker', marker); 
 
 })();

@@ -38,6 +38,7 @@
 
     this.map = null;
     this._objects = []; /* temporary collection of map objects */
+    this.fZoomToIncludeMarkers = false;
 
     /**
      * Add an object to the collection of group

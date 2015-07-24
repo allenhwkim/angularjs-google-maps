@@ -172,6 +172,7 @@
           scope.$emit('mapInitialized', map);  
           if (attrs.zoomToIncludeMarkers) {
             console.log('zoomToIncludeMarkers');
+            ctrl.fZoomToIncludeMarkers = true;
             ctrl.zoomToIncludeMarkers();
           }
         });
