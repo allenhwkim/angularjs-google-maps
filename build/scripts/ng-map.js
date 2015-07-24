@@ -1559,6 +1559,7 @@ angular.module('ngMap', []);
           scope.$emit('mapInitialized', map);  
           if (attrs.zoomToIncludeMarkers) {
             void 0;
+            ctrl.fZoomToIncludeMarkers = true;
             ctrl.zoomToIncludeMarkers();
           }
         });
@@ -1591,6 +1592,53 @@ angular.module('ngMap', []);
   };
 
   angular.module('ngMap').directive('map', ['Attr2Options', '$timeout', '$parse', mapDirective]);
+})();
+
+/**
+ * @ngdoc directive
+ * @name maps-engine-layer
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *   <map zoom="14" center="[59.322506, 18.010025]">
+ *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
+ *    </map>
+ */
+(function() {
+  'use strict';
+
+  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+
+    var getMapsEngineLayer = function(options, events) {
+      var layer = new google.maps.visualization.MapsEngineLayer(options);
+
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+
+      return layer;
+    };
+
+    
+    return {
+      restrict: 'E',
+      require: '^map',
+
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        void 0;
+
+        var layer = getMapsEngineLayer(options, events);
+        mapController.addObject('mapsEngineLayers', layer);
+      }
+     }; // return
+  }]);
 })();
 
 /* global google */
@@ -1633,6 +1681,7 @@ angular.module('ngMap', []);
 
     this.map = null;
     this._objects = []; /* temporary collection of map objects */
+    this.fZoomToIncludeMarkers = false;
 
     /**
      * Add an object to the collection of group
@@ -1778,53 +1827,6 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc directive
- * @name maps-engine-layer
- * @description 
- *   Requires:  map directive
- *   Restrict To:  Element
- *
- * @example
- * Example: 
- *   <map zoom="14" center="[59.322506, 18.010025]">
- *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
- *    </map>
- */
-(function() {
-  'use strict';
-
-  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
-
-    var getMapsEngineLayer = function(options, events) {
-      var layer = new google.maps.visualization.MapsEngineLayer(options);
-
-      for (var eventName in events) {
-        google.maps.event.addListener(layer, eventName, events[eventName]);
-      }
-
-      return layer;
-    };
-
-    
-    return {
-      restrict: 'E',
-      require: '^map',
-
-      link: function(scope, element, attrs, mapController) {
-        var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
-        var events = parser.getEvents(scope, filtered, events);
-        void 0;
-
-        var layer = getMapsEngineLayer(options, events);
-        mapController.addObject('mapsEngineLayers', layer);
-      }
-     }; // return
-  }]);
-})();
-
-/**
- * @ngdoc directive
  * @name marker
  * @requires Attr2Options 
  * @requires NavigatorGeolocation
@@ -1902,7 +1904,7 @@ angular.module('ngMap', []);
     return marker;
   };
 
-  var marker = function(Attr2Options, $parse) {
+  var marker = function(Attr2Options, $parse, $timeout) {
     var parser = Attr2Options;
     var linkFunc = function(scope, element, attrs, mapController) {
       var orgAttrs = parser.orgAttributes(element);
@@ -1925,6 +1927,11 @@ angular.module('ngMap', []);
           geoCallback && $parse(geoCallback)(scope);
         });
       }
+      if (mapController.fZoomToIncludeMarkers) {
+        $timeout(function () {
+          mapController.zoomToIncludeMarkers();
+        }, 100);
+      }
 
       /**
        * set observers
@@ -1942,7 +1949,7 @@ angular.module('ngMap', []);
     };
   };
 
-  marker.$inject = ['Attr2Options', '$parse'];
+  marker.$inject = ['Attr2Options', '$parse', '$timeout'];
   angular.module('ngMap').directive('marker', marker); 
 
 })();
