@@ -67,6 +67,9 @@ Lazy Loading
 
 Release Notes
 ---------------
+**1.9.0**
+
+  * Refactored directory structure
 
 **1.7.0**
 
