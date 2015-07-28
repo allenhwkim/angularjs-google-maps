@@ -170,7 +170,12 @@
         scope.map.scope = scope;
         google.maps.event.addListenerOnce(map, "idle", function() {
           scope.$emit('mapInitialized', map);  
-          if (attrs.zoomToIncludeMarkers) {
+          if (attrs.zoomToIncludeMarkers == 'auto') {
+            scope.$on('objectChanged', function(evt, msg) {
+              console.log('objectChanged name', msg);
+              msg[0] == 'markers' && ctrl.zoomToIncludeMarkers();
+            });
+          }else if (attrs.zoomToIncludeMarkers) {
             console.log('zoomToIncludeMarkers');
             ctrl.zoomToIncludeMarkers();
           }
