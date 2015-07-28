@@ -67,6 +67,10 @@ Lazy Loading
 
 Release Notes
 ---------------
+**1.10.0**
+
+  * Added an event `objectChanged` to broadcast change of objects in map. e.g., markers, shapes, etc
+
 **1.9.0**
 
   * Refactored directory structure
