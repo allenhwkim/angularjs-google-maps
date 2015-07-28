@@ -1557,7 +1557,12 @@ angular.module('ngMap', []);
         scope.map.scope = scope;
         google.maps.event.addListenerOnce(map, "idle", function() {
           scope.$emit('mapInitialized', map);  
-          if (attrs.zoomToIncludeMarkers) {
+          if (attrs.zoomToIncludeMarkers == 'auto') {
+            scope.$on('objectChanged', function(evt, msg) {
+              console.log('objectChanged name', msg);
+              msg[0] == 'markers' && ctrl.zoomToIncludeMarkers();
+            });
+          }else if (attrs.zoomToIncludeMarkers) {
             console.log('zoomToIncludeMarkers');
             ctrl.zoomToIncludeMarkers();
           }
@@ -1605,7 +1610,7 @@ angular.module('ngMap', []);
    * @property {Hash} markers collection of Markers initiated within `map` directive
    * @property {Hash} shapes collection of shapes initiated within `map` directive
    */
-  var MapController = function($q, NavigatorGeolocation, GeoCoder, Attr2Options) { 
+  var MapController = function($scope, $q, NavigatorGeolocation, GeoCoder, Attr2Options) { 
     var parser = Attr2Options;
     var _this = this;
 
@@ -1657,6 +1662,7 @@ angular.module('ngMap', []);
         if (obj.centered && obj.position) {
           this.map.setCenter(obj.position);
         }
+        $scope.$emit('objectChanged', [groupName, this.map[groupName]]);
       } else {
         obj.groupName = groupName;
         this._objects.push(obj);
@@ -1680,6 +1686,7 @@ angular.module('ngMap', []);
 
         /* delete from map */
         obj.map && obj.setMap && obj.setMap(null);
+        $scope.$emit('objectChanged', [groupName, this.map[groupName]]);
       }
     };
 
@@ -1772,7 +1779,7 @@ angular.module('ngMap', []);
 
   }; // MapController
 
-  MapController.$inject = ['$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
+  MapController.$inject = ['$scope', '$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
   angular.module('ngMap').controller('MapController', MapController);
 })();
 
