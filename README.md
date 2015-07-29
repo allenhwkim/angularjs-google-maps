@@ -145,7 +145,7 @@ Directives
 
 #### &lt;map .. > 
 
-  As defined on [MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions), you can add any attributes, and events starting witn `on-`. Please note that event value must be a function.
+  As defined on [MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions), you can add any attributes, and events starting with `on-`. Please note that event value must be a function.
 
   Example: 
 
@@ -160,13 +160,20 @@ Directives
       max-zoom="12"
       min-zoom="8"
       tilt="45"
-      map-type-id="TERRAIN">
+      map-type-id="TERRAIN"
+      zoom-to-include-markers="auto"
+      >
     </map>
   i.e. < zoom="11" center="[40.74, -74.18]"
 
+zoom-to-include-markers has two options "true" or "auto".
+Use "true" if your markers do not change after the map is rendered.
+Use "auto" if you want the map to auto zoom when markers are added or removed.
+Example [zoom-to-include-markers](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_zoom_to_include_markers.html)
+
 #### &lt;marker .. > 
 
-  As defined on [MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions), you can add any attributes, and events starting witn `on-`.
+  As defined on [MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions), you can add any attributes, and events starting with `on-`.
 
     <map center="[40.74, -74.18]">
       <marker
