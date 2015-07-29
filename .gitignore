@@ -4,3 +4,4 @@ node_modules
 tmp
 *.log
 gh-pages
+.idea/
