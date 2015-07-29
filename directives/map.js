@@ -44,169 +44,169 @@
  */
 /* global google */
 (function () {
-    'use strict';
+  'use strict';
 
-    function getStyle(el, styleProp) {
-        var y;
-        if (el.currentStyle) {
-            y = el.currentStyle[styleProp];
-        } else if (window.getComputedStyle) {
-            y = document.defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
-        }
-        return y;
+  function getStyle(el, styleProp) {
+    var y;
+    if (el.currentStyle) {
+      y = el.currentStyle[styleProp];
+    } else if (window.getComputedStyle) {
+      y = document.defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
     }
+    return y;
+  }
 
-    var mapDirective = function (Attr2Options, $timeout, $parse) {
-        var parser = Attr2Options;
+  var mapDirective = function (Attr2Options, $timeout, $parse) {
+    var parser = Attr2Options;
+
+    /**
+     * Initialize map and events
+     * @memberof map
+     * @param {$scope} scope
+     * @param {angular.element} element
+     * @param {Hash} attrs
+     * @ctrl {MapController} ctrl
+     */
+    var linkFunc = function (scope, element, attrs, ctrl) {
+      var orgAttrs = parser.orgAttributes(element);
+
+      scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
+
+      /**
+       * create a new `div` inside map tag, so that it does not touch map element
+       * https://stackoverflow.com/questions/20955356
+       */
+      var el = document.createElement("div");
+      el.style.width = "100%";
+      el.style.height = "100%";
+      element.prepend(el);
+
+      /**
+       * if style is not given to the map element, set display and height
+       */
+      if (attrs.defaultStyle !== 'false') {
+        if (getStyle(element[0], 'display') != "block") {
+          element.css('display', 'block');
+        }
+        if (getStyle(element[0], 'height').match(/^(0|auto)/)) {
+          element.css('height', '300px');
+        }
+      }
+
+      /**
+       * disable drag event
+       */
+      element[0].addEventListener('dragstart', function (event) {
+        event.preventDefault();
+        return false;
+      });
+
+      /**
+       * initialize function
+       */
+      var initializeMap = function (mapOptions, mapEvents) {
+        var map = new google.maps.Map(el, {});
+        map.markers = {};
+        map.shapes = {};
 
         /**
-         * Initialize map and events
-         * @memberof map
-         * @param {$scope} scope
-         * @param {angular.element} element
-         * @param {Hash} attrs
-         * @ctrl {MapController} ctrl
+         * resize the map to prevent showing partially, in case intialized too early
          */
-        var linkFunc = function (scope, element, attrs, ctrl) {
-            var orgAttrs = parser.orgAttributes(element);
+        $timeout(function () {
+          google.maps.event.trigger(map, "resize");
+        });
 
-            scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
+        /**
+         * set options
+         */
+        mapOptions.zoom = mapOptions.zoom || 15;
+        var center = mapOptions.center;
+        if (!center) {
+          mapOptions.center = new google.maps.LatLng(0, 0);
+        } else if (!(center instanceof google.maps.LatLng)) {
+          delete mapOptions.center;
+          ctrl.getGeoLocation(center).then(function (latlng) {
+            map.setCenter(latlng);
+            var geoCallback = attrs.geoCallback;
+            geoCallback && $parse(geoCallback)(scope);
+          }, function (error) {
+            map.setCenter(options.geoFallbackCenter);
+          });
+        }
+        map.setOptions(mapOptions);
 
-            /**
-             * create a new `div` inside map tag, so that it does not touch map element
-             * https://stackoverflow.com/questions/20955356
-             */
-            var el = document.createElement("div");
-            el.style.width = "100%";
-            el.style.height = "100%";
-            element.prepend(el);
+        /**
+         * set events
+         */
+        for (var eventName in mapEvents) {
+          if (eventName) {
+            google.maps.event.addListener(map, eventName, mapEvents[eventName]);
+          }
+        }
 
-            /**
-             * if style is not given to the map element, set display and height
-             */
-            if (attrs.defaultStyle !== 'false') {
-                if (getStyle(element[0], 'display') != "block") {
-                    element.css('display', 'block');
-                }
-                if (getStyle(element[0], 'height').match(/^(0|auto)/)) {
-                    element.css('height', '300px');
-                }
+        /**
+         * set observers
+         */
+        ctrl.observeAttrSetObj(orgAttrs, attrs, map);
+
+        /**
+         * set controller and set objects
+         * so that map can be used by other directives; marker or shape
+         * ctrl._objects are gathered when marker and shape are initialized before map is set
+         */
+        ctrl.map = map;
+        /* so that map can be used by other directives; marker or shape */
+        ctrl.addObjects(ctrl._objects);
+
+        // /* providing method to add a marker used by user scope */
+        // map.addMarker = ctrl.addMarker;
+
+        /**
+         * set map for scope and controller and broadcast map event
+         * scope.map will be overwritten if user have multiple maps in a scope,
+         * thus the last map will be set as scope.map.
+         * however an `mapInitialized` event will be emitted every time.
+         */
+        scope.map = map;
+        scope.map.scope = scope;
+        google.maps.event.addListenerOnce(map, "idle", function () {
+          scope.$emit('mapInitialized', map);
+          if (attrs.zoomToIncludeMarkers) {
+            ctrl.zoomToIncludeMarkers();
+            if (attrs.zoomToIncludeMarkers == 'auto') {
+              scope.$on('objectChanged', function (evt, msg) {
+                msg[0] == 'markers' && ctrl.zoomToIncludeMarkers();
+              });
             }
+          }
+        });
+      }; // function initializeMap()
 
-            /**
-             * disable drag event
-             */
-            element[0].addEventListener('dragstart', function (event) {
-                event.preventDefault();
-                return false;
-            });
+      /**
+       * get map options and events
+       */
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered, scope);
+      var controlOptions = parser.getControlOptions(filtered);
+      var mapOptions = angular.extend(options, controlOptions);
+      var mapEvents = parser.getEvents(scope, filtered);
+      console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
 
-            /**
-             * initialize function
-             */
-            var initializeMap = function (mapOptions, mapEvents) {
-                var map = new google.maps.Map(el, {});
-                map.markers = {};
-                map.shapes = {};
-
-                /**
-                 * resize the map to prevent showing partially, in case intialized too early
-                 */
-                $timeout(function () {
-                    google.maps.event.trigger(map, "resize");
-                });
-
-                /**
-                 * set options
-                 */
-                mapOptions.zoom = mapOptions.zoom || 15;
-                var center = mapOptions.center;
-                if (!center) {
-                    mapOptions.center = new google.maps.LatLng(0, 0);
-                } else if (!(center instanceof google.maps.LatLng)) {
-                    delete mapOptions.center;
-                    ctrl.getGeoLocation(center).then(function (latlng) {
-                        map.setCenter(latlng);
-                        var geoCallback = attrs.geoCallback;
-                        geoCallback && $parse(geoCallback)(scope);
-                    }, function (error) {
-                        map.setCenter(options.geoFallbackCenter);
-                    });
-                }
-                map.setOptions(mapOptions);
-
-                /**
-                 * set events
-                 */
-                for (var eventName in mapEvents) {
-                    if (eventName) {
-                        google.maps.event.addListener(map, eventName, mapEvents[eventName]);
-                    }
-                }
-
-                /**
-                 * set observers
-                 */
-                ctrl.observeAttrSetObj(orgAttrs, attrs, map);
-
-                /**
-                 * set controller and set objects
-                 * so that map can be used by other directives; marker or shape
-                 * ctrl._objects are gathered when marker and shape are initialized before map is set
-                 */
-                ctrl.map = map;
-                /* so that map can be used by other directives; marker or shape */
-                ctrl.addObjects(ctrl._objects);
-
-                // /* providing method to add a marker used by user scope */
-                // map.addMarker = ctrl.addMarker;
-
-                /**
-                 * set map for scope and controller and broadcast map event
-                 * scope.map will be overwritten if user have multiple maps in a scope,
-                 * thus the last map will be set as scope.map.
-                 * however an `mapInitialized` event will be emitted every time.
-                 */
-                scope.map = map;
-                scope.map.scope = scope;
-                google.maps.event.addListenerOnce(map, "idle", function () {
-                    scope.$emit('mapInitialized', map);
-                    if (attrs.zoomToIncludeMarkers) {
-                        ctrl.zoomToIncludeMarkers();
-                        if (attrs.zoomToIncludeMarkers == 'auto') {
-                            scope.$on('objectChanged', function (evt, msg) {
-                                msg[0] == 'markers' && ctrl.zoomToIncludeMarkers();
-                            });
-                        }
-                    }
-                });
-            }; // function initializeMap()
-
-            /**
-             * get map options and events
-             */
-            var filtered = parser.filter(attrs);
-            var options = parser.getOptions(filtered, scope);
-            var controlOptions = parser.getControlOptions(filtered);
-            var mapOptions = angular.extend(options, controlOptions);
-            var mapEvents = parser.getEvents(scope, filtered);
-            console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
-
-            if (attrs.initEvent) { // allows controlled initialization
-                scope.$on(attrs.initEvent, function () {
-                    !ctrl.map && initializeMap(mapOptions, mapEvents); // init if not done
-                });
-            } else {
-                initializeMap(mapOptions, mapEvents);
-            } // if
-        };
-
-        return {
-            restrict: 'AE',
-            controller: 'MapController',
-            link: linkFunc
-        };
+      if (attrs.initEvent) { // allows controlled initialization
+        scope.$on(attrs.initEvent, function () {
+          !ctrl.map && initializeMap(mapOptions, mapEvents); // init if not done
+        });
+      } else {
+        initializeMap(mapOptions, mapEvents);
+      } // if
     };
 
-    angular.module('ngMap').directive('map', ['Attr2Options', '$timeout', '$parse', mapDirective]);
+    return {
+      restrict: 'AE',
+      controller: 'MapController',
+      link: linkFunc
+    };
+  };
+
+  angular.module('ngMap').directive('map', ['Attr2Options', '$timeout', '$parse', mapDirective]);
 })();
