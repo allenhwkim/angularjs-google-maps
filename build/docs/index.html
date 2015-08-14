@@ -163,7 +163,7 @@ use this event to get the map instance.</p>
 <li>map-type</li>
 <li>overlay-map-type</li>
 </ul>
-<h2>Directives</h2><h4>&lt;map .. &gt;</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">MapOptions</a>, you can add any attributes, and events starting witn <code>on-</code>. Please note that event value must be a function.</p>
+<h2>Directives</h2><h4>&lt;map .. &gt;</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MapOptions">MapOptions</a>, you can add any attributes, and events starting with <code>on-</code>. Please note that event value must be a function.</p>
 <p>  Example: </p>
 <pre class="prettyprint source"><code>&lt;map zoom=&quot;11&quot; 
   center=&quot;[40.74, -74.18]&quot; 
@@ -176,9 +176,15 @@ use this event to get the map instance.</p>
   max-zoom=&quot;12&quot;
   min-zoom=&quot;8&quot;
   tilt=&quot;45&quot;
-  map-type-id=&quot;TERRAIN&quot;>
+  map-type-id=&quot;TERRAIN&quot;
+  zoom-to-include-markers=&quot;auto&quot;
+  >
 &lt;/map></code></pre><p>  i.e. &lt; zoom=&quot;11&quot; center=&quot;[40.74, -74.18]&quot;</p>
-<h4>&lt;marker .. &gt;</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">MarkerOptions</a>, you can add any attributes, and events starting witn <code>on-</code>.</p>
+<p>zoom-to-include-markers has two options &quot;true&quot; or &quot;auto&quot;.
+Use &quot;true&quot; if your markers do not change after the map is rendered.
+Use &quot;auto&quot; if you want the map to auto zoom when markers are added or removed.
+Example <a href="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_zoom_to_include_markers.html">zoom-to-include-markers</a></p>
+<h4>&lt;marker .. &gt;</h4><p>  As defined on <a href="https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions">MarkerOptions</a>, you can add any attributes, and events starting with <code>on-</code>.</p>
 <pre class="prettyprint source"><code>&lt;map center=&quot;[40.74, -74.18]&quot;>
   &lt;marker
       position=&quot;[40.76, -74.16]&quot;
