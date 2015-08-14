@@ -1,5 +1,6 @@
 /**
  * @ngdoc directive
+ * @memberof ngMap
  * @name map
  * @requires Attr2Options
  * @description

@@ -1387,6 +1387,7 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc directive
+ * @memberof ngMap
  * @name map
  * @requires Attr2Options
  * @description
@@ -2022,7 +2023,7 @@ angular.module('ngMap', []);
  * @example
  * Example: 
  *   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
- *   <input places-auto-complete types="['geocode']" />
+ *   <input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" />
  */
 /* global google */
 (function() {
@@ -2040,11 +2041,14 @@ angular.module('ngMap', []);
       for (var eventName in events) {
         google.maps.event.addListener(autocomplete, eventName, events[eventName]);
       }
-      element[0].addEventListener('change', function() {
+
+      var updateModel = function() {
         $timeout(function(){
           ngModelCtrl && ngModelCtrl.$setViewValue(element.val());
         },100);
-      });
+      }
+      google.maps.event.addListener(autocomplete, 'place_changed', updateModel);
+      element[0].addEventListener('change', updateModel);
 
       attrs.$observe('types', function(val) {
         if (val) {
