@@ -36,7 +36,7 @@ After map is initialized, you will have one event and map instances
 
 Event:
 
-  * `mapInitialized` with parameter with map
+  * `mapInitialized` with parameter with map 
 
     In case your map directive scope is different from your controller scope,
     use this event to get the map instance.
@@ -62,6 +62,14 @@ Lazy Loading
   Simply wrap the map tag with `map-lazy-load="http://maps.google.com/maps/api/js"`.
 
     <div map-lazy-load="http://maps.google.com/maps/api/js">
+      <map center="41,-87" zoom="3"></map>
+    </div>
+
+  If you need to pass in an API key to the javascript, you can set a scope variable in your controller (e.g. `$scope.googleMapsUrl="http://maps.google.com/maps/api/js?v=3.20&client=XXXXenter-api-keyXXXX";`). 
+  This can be set from a constant value in your app to standardise the API key to pass to google for multiple controllers.
+
+    <div map-lazy-load="http://maps.google.com/maps/api/js"
+          map-lazy-load-params="{{googleMapsUrl}}">
       <map center="41,-87" zoom="3"></map>
     </div>
 
@@ -340,6 +348,17 @@ Contributors
       1  Ishaan Puniani
       1  Michael Liu
       1  unknown
+
+Contributing
+============
+- Clone the repository from github
+- Change to the folder dowloaded
+- **npm install** to install the build tools
+- **gulp build** to build the javascript & doc files in the /build folder & run the unit tests.
+- **gulp clean** to cleanup the repository from a previous build ? does this work ?
+- **gulp test** to run the Karma unit test suite. 
+- **gulp test-e2e** to run the Protractor test suite. For the first test run, you may need to update the protractor webdriver manager. It will show the command on screen if this is required (node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update).
+- **gulp testapp-server** will start a web server for the testapp on http://localhost:8888
 
 license
 =======
