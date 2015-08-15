@@ -1,0 +1,81 @@
+<!doctype html>
+<html ng-app="myapp">
+  <head>
+<script src="https://code.angularjs.org/1.2.25/angular.js"></script>
+<script src="../build/scripts/ng-map.min.js"></script>
+<!--
+<script src="../app.js"></script>
+<script src="../directives/map_controller.js"></script>
+<script src="../directives/map.js"></script>
+<script src="../directives/marker.js"></script>
+<script src="../directives/shape.js"></script>
+<script src="../directives/info-window.js"></script>
+<script src="../directives/map-lazy-load.js"></script>
+<script src="../services/geo_coder.js"></script>
+<script src="../services/navigator_geolocation.js"></script>
+<script src="../services/attr2_options.js"></script>
+-->
+<script>
+var app = app || angular.module('myapp', ['ngMap']);
+app.controller('MyCtrl', function($scope, $timeout) {
+  $scope.stores = {
+    foo: { position:[41, -87], items: [1,2,3,4]},
+    bar:{ position:[41, -83], items: [5,6,7,8]}
+  };
+  //$scope.googleMapsUrl = 'https://maps.google.com/maps/api/js?v=3&client=XXXXXXXXenter-api-key-hereXXXX';
+  $scope.googleMapsUrl = 'https://maps.google.com/maps/api/js'; // Just use the default for testing
+  $scope.pauseLoading=true;
+  console.log("Starting a timer to wait for 5 seconds before the map will start loading");
+
+  $timeout(function() {
+    console.debug("Showing the map. The google maps api should load now.");
+    $scope.pauseLoading=false;
+  },5000);
+
+  $scope.showStore = function(evt, id) {
+    $scope.store = $scope.stores[id];
+    $scope.showInfoWindow.apply(this, [evt, 'foo']);
+  };
+});  
+</script>
+  </head>
+  <body ng-controller="MyCtrl">
+
+    <div data-ng-if="pauseLoading">
+      <h1>Waiting for 5 seconds to lazy load the maps API via map-lazy-load</h1>
+    </div>
+    <div data-ng-if="!pauseLoading">
+      <h1>Lazy Load Activated: the map should be visible</h1>
+      <p>This screen demonstrates the lazy loading of the google maps api. Check the network tab of the dev tools and the maps api should start loading 5 seconds after the page is loaded. This demo also shows the use of the map-lazy-load-params attribute to allow specification of map API key via an angular/javascript variable.</p>
+
+      <div map-lazy-load="https://maps.google.com/maps/api/js" map-lazy-load-params="{{googleMapsUrl}}" >
+        <map center="41,-87" zoom="3">
+        
+          <info-window id="foo">
+            <div ng-non-bindable="">
+              Lat/Lng: {{this.getPosition()}}<br/>
+              <ul>
+                <li ng-repeat='item in store.items'>{{item}}</li>
+              </ul>
+            </div>
+          </info-window>
+          
+          <marker ng-repeat="(id, store) in stores" id="{{id}}"
+            position="{{store.position}}"
+            on-click="showStore(event, id)"
+          ></marker>
+          
+          <info-window id="bar">
+            <div ng-non-bindable="">
+              Lat: {{this.getPosition().lat()}}<br/>
+              Lng: {{this.getPosition().lng()}}<br/>
+            </div>
+          </info-window>
+
+          <marker position="41, -79" on-click="showInfoWindow('bar')"></marker>
+        </map>
+      </div>
+    </div>
+    
+  </body>
+</html>
