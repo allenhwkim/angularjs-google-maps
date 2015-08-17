@@ -1262,21 +1262,33 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc directive
- * @name lazy-load
+ * @name map-lazy-load
  * @requires Attr2Options 
  * @description 
- *   Requires: Delay the initialization of directive until required .js loads
+ *   Requires: Delay the initialization of map directive until the map is ready to be rendered
  *   Restrict To: Attribute 
  *
- * @param {String} lazy-load
-      script source file location
- *    example:  
- *      'http://maps.googlecom/maps/api/js'   
+ * @param {String} map-lazy-load
+      Maps api script source file location.
+ *    Example:  
+ *      'https://maps.google.com/maps/api/js'   
+ * @param {String} map-lazy-load-params
+     Maps api script source file location via angular scope variable.
+     Also requires the map-lazy-load attribute to be present in the directive.
+     Example: In your controller, set 
+       $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&client=XXXXXenter-api-key-hereXXXX'
 
  * @example
  * Example: 
  *
  *   <div map-lazy-load="http://maps.google.com/maps/api/js">
+ *     <map center="Brampton" zoom="10">
+ *       <marker position="Brampton"></marker>
+ *     </map>
+ *   </div>
+ *
+ *   <div map-lazy-load="http://maps.google.com/maps/api/js" 
+ *        map-lazy-load-params="{{googleMapsUrl}}">
  *     <map center="Brampton" zoom="10">
  *       <marker position="Brampton"></marker>
  *     </map>
@@ -1287,8 +1299,10 @@ angular.module('ngMap', []);
   var $timeout, $compile, src, savedHtml;
 
   var preLinkFunc = function(scope, element, attrs) {
+    var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;    
+    
     window.lazyLoadCallback = function() {
-      console.log('script loaded,' + src);
+      console.log('Google maps script loaded:', mapsUrl);
       $timeout(function() { /* give some time to load */
         element.html(savedHtml);
         $compile(element.contents())(scope);
@@ -1297,7 +1311,8 @@ angular.module('ngMap', []);
 
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
-      scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+      console.log('Prelinking script loaded,' + src);
+      scriptEl.src = mapsUrl + (mapsUrl.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
       document.body.appendChild(scriptEl);
     } else {
       element.html(savedHtml);
@@ -1314,7 +1329,7 @@ angular.module('ngMap', []);
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+    if (document.querySelector('script[src="'+src+(src.indexOf('?') > -1 ? '&' : '?')+'callback=lazyLoadCallback"]')) {
       return false;
     }
 
@@ -1330,6 +1345,7 @@ angular.module('ngMap', []);
       compile: compileFunc
     }
   };
+  mapLazyLoad.$inject = ['$compile','$timeout'];
 
   angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
 })();
@@ -1386,6 +1402,7 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc directive
+ * @memberof ngMap
  * @name map
  * @requires Attr2Options
  * @description
@@ -1401,26 +1418,26 @@ angular.module('ngMap', []);
  *     Element
  *
  * @param {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
- * @param {Array} geo-fallback-center 
+ * @param {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
  * @param {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
  * @param {Boolean} default-style
  *    When false, the default styling, `display:block;height:300px`, will be ignored.
- * @param {String} init-event The name of event to initialize this map. 
+ * @param {String} init-event The name of event to initialize this map.
  *    If this option is given, the map won't be initialized until the event is received.
- *    To invoke the event, use $scope.$emit or $scope.$broacast. 
+ *    To invoke the event, use $scope.$emit or $scope.$broacast.
  *    i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
- * @param {String} &lt;MapOption> Any Google map options, 
+ * @param {String} &lt;MapOption> Any Google map options,
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
- * @param {String} &lt;MapEvent> Any Google map events, 
+ * @param {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
  *     ... Any children directives
  *   </map>
- * 
+ *
  * Example:
  *   <map center="[40.74, -74.18]" on-click="doThat()">
  *   </map>
@@ -1429,20 +1446,20 @@ angular.module('ngMap', []);
  *   </map>
  */
 /* global google */
-(function() {
+(function () {
   'use strict';
 
-  function getStyle(el,styleProp) {
+  function getStyle(el, styleProp) {
     var y;
     if (el.currentStyle) {
       y = el.currentStyle[styleProp];
     } else if (window.getComputedStyle) {
-      y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+      y = document.defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
     }
     return y;
   }
 
-  var mapDirective = function(Attr2Options, $timeout, $parse) {
+  var mapDirective = function (Attr2Options, $timeout, $parse) {
     var parser = Attr2Options;
 
     /**
@@ -1453,7 +1470,7 @@ angular.module('ngMap', []);
      * @param {Hash} attrs
      * @ctrl {MapController} ctrl
      */
-    var linkFunc = function(scope, element, attrs, ctrl) {
+    var linkFunc = function (scope, element, attrs, ctrl) {
       var orgAttrs = parser.orgAttributes(element);
 
       scope.google = google;  //used by $scope.eval in Attr2Options to avoid eval()
@@ -1472,17 +1489,17 @@ angular.module('ngMap', []);
        */
       if (attrs.defaultStyle !== 'false') {
         if (getStyle(element[0], 'display') != "block") {
-          element.css('display','block');
+          element.css('display', 'block');
         }
         if (getStyle(element[0], 'height').match(/^(0|auto)/)) {
-          element.css('height','300px');
+          element.css('height', '300px');
         }
       }
 
       /**
        * disable drag event
        */
-      element[0].addEventListener('dragstart', function(event) {
+      element[0].addEventListener('dragstart', function (event) {
         event.preventDefault();
         return false;
       });
@@ -1490,15 +1507,15 @@ angular.module('ngMap', []);
       /**
        * initialize function
        */
-      var initializeMap = function(mapOptions, mapEvents) {
+      var initializeMap = function (mapOptions, mapEvents) {
         var map = new google.maps.Map(el, {});
         map.markers = {};
         map.shapes = {};
-       
+
         /**
          * resize the map to prevent showing partially, in case intialized too early
          */
-        $timeout(function() {
+        $timeout(function () {
           google.maps.event.trigger(map, "resize");
         });
 
@@ -1508,14 +1525,14 @@ angular.module('ngMap', []);
         mapOptions.zoom = mapOptions.zoom || 15;
         var center = mapOptions.center;
         if (!center) {
-          mapOptions.center = new google.maps.LatLng(0,0);
+          mapOptions.center = new google.maps.LatLng(0, 0);
         } else if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
-          ctrl.getGeoLocation(center).then(function(latlng) {
+          ctrl.getGeoLocation(center).then(function (latlng) {
             map.setCenter(latlng);
             var geoCallback = attrs.geoCallback;
             geoCallback && $parse(geoCallback)(scope);
-          }, function(error) {
+          }, function (error) {
             map.setCenter(options.geoFallbackCenter);
           });
         }
@@ -1537,10 +1554,11 @@ angular.module('ngMap', []);
 
         /**
          * set controller and set objects
-         * so that map can be used by other directives; marker or shape 
+         * so that map can be used by other directives; marker or shape
          * ctrl._objects are gathered when marker and shape are initialized before map is set
          */
-        ctrl.map = map;   /* so that map can be used by other directives; marker or shape */
+        ctrl.map = map;
+        /* so that map can be used by other directives; marker or shape */
         ctrl.addObjects(ctrl._objects);
 
         // /* providing method to add a marker used by user scope */
@@ -1554,11 +1572,15 @@ angular.module('ngMap', []);
          */
         scope.map = map;
         scope.map.scope = scope;
-        google.maps.event.addListenerOnce(map, "idle", function() {
-          scope.$emit('mapInitialized', map);  
+        google.maps.event.addListenerOnce(map, "idle", function () {
+          scope.$emit('mapInitialized', map);
           if (attrs.zoomToIncludeMarkers) {
-            console.log('zoomToIncludeMarkers');
             ctrl.zoomToIncludeMarkers();
+            if (attrs.zoomToIncludeMarkers == 'auto') {
+              scope.$on('objectChanged', function (evt, msg) {
+                msg[0] == 'markers' && ctrl.zoomToIncludeMarkers();
+              });
+            }
           }
         });
       }; // function initializeMap()
@@ -1574,7 +1596,7 @@ angular.module('ngMap', []);
       console.log("filtered", filtered, "mapOptions", mapOptions, 'mapEvents', mapEvents);
 
       if (attrs.initEvent) { // allows controlled initialization
-        scope.$on(attrs.initEvent, function() {
+        scope.$on(attrs.initEvent, function () {
           !ctrl.map && initializeMap(mapOptions, mapEvents); // init if not done
         });
       } else {
@@ -1586,7 +1608,7 @@ angular.module('ngMap', []);
       restrict: 'AE',
       controller: 'MapController',
       link: linkFunc
-    }; 
+    };
   };
 
   angular.module('ngMap').directive('map', ['Attr2Options', '$timeout', '$parse', mapDirective]);
@@ -1604,7 +1626,7 @@ angular.module('ngMap', []);
    * @property {Hash} markers collection of Markers initiated within `map` directive
    * @property {Hash} shapes collection of shapes initiated within `map` directive
    */
-  var MapController = function($q, NavigatorGeolocation, GeoCoder, Attr2Options) { 
+  var MapController = function($scope, $q, NavigatorGeolocation, GeoCoder, Attr2Options) { 
     var parser = Attr2Options;
     var _this = this;
 
@@ -1656,6 +1678,7 @@ angular.module('ngMap', []);
         if (obj.centered && obj.position) {
           this.map.setCenter(obj.position);
         }
+        $scope.$emit('objectChanged', [groupName, this.map[groupName]]);
       } else {
         obj.groupName = groupName;
         this._objects.push(obj);
@@ -1679,6 +1702,7 @@ angular.module('ngMap', []);
 
         /* delete from map */
         obj.map && obj.setMap && obj.setMap(null);
+        $scope.$emit('objectChanged', [groupName, this.map[groupName]]);
       }
     };
 
@@ -1771,7 +1795,7 @@ angular.module('ngMap', []);
 
   }; // MapController
 
-  MapController.$inject = ['$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
+  MapController.$inject = ['$scope', '$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
   angular.module('ngMap').controller('MapController', MapController);
 })();
 
@@ -2014,7 +2038,7 @@ angular.module('ngMap', []);
  * @example
  * Example: 
  *   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
- *   <input places-auto-complete types="['geocode']" />
+ *   <input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" />
  */
 /* global google */
 (function() {
@@ -2032,11 +2056,14 @@ angular.module('ngMap', []);
       for (var eventName in events) {
         google.maps.event.addListener(autocomplete, eventName, events[eventName]);
       }
-      element[0].addEventListener('change', function() {
+
+      var updateModel = function() {
         $timeout(function(){
           ngModelCtrl && ngModelCtrl.$setViewValue(element.val());
         },100);
-      });
+      }
+      google.maps.event.addListener(autocomplete, 'place_changed', updateModel);
+      element[0].addEventListener('change', updateModel);
 
       attrs.$observe('types', function(val) {
         if (val) {

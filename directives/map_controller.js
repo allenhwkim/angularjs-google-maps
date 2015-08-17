@@ -10,7 +10,7 @@
    * @property {Hash} markers collection of Markers initiated within `map` directive
    * @property {Hash} shapes collection of shapes initiated within `map` directive
    */
-  var MapController = function($q, NavigatorGeolocation, GeoCoder, Attr2Options) { 
+  var MapController = function($scope, $q, NavigatorGeolocation, GeoCoder, Attr2Options) { 
     var parser = Attr2Options;
     var _this = this;
 
@@ -62,6 +62,7 @@
         if (obj.centered && obj.position) {
           this.map.setCenter(obj.position);
         }
+        $scope.$emit('objectChanged', [groupName, this.map[groupName]]);
       } else {
         obj.groupName = groupName;
         this._objects.push(obj);
@@ -85,6 +86,7 @@
 
         /* delete from map */
         obj.map && obj.setMap && obj.setMap(null);
+        $scope.$emit('objectChanged', [groupName, this.map[groupName]]);
       }
     };
 
@@ -177,6 +179,6 @@
 
   }; // MapController
 
-  MapController.$inject = ['$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
+  MapController.$inject = ['$scope', '$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
   angular.module('ngMap').controller('MapController', MapController);
 })();

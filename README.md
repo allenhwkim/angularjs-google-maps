@@ -36,7 +36,7 @@ After map is initialized, you will have one event and map instances
 
 Event:
 
-  * `mapInitialized` with parameter with map
+  * `mapInitialized` with parameter with map 
 
     In case your map directive scope is different from your controller scope,
     use this event to get the map instance.
@@ -65,8 +65,20 @@ Lazy Loading
       <map center="41,-87" zoom="3"></map>
     </div>
 
+  If you need to pass in an API key to the javascript, you can set a scope variable in your controller (e.g. `$scope.googleMapsUrl="http://maps.google.com/maps/api/js?v=3.20&client=XXXXenter-api-keyXXXX";`). 
+  This can be set from a constant value in your app to standardise the API key to pass to google for multiple controllers.
+
+    <div map-lazy-load="http://maps.google.com/maps/api/js"
+          map-lazy-load-params="{{googleMapsUrl}}">
+      <map center="41,-87" zoom="3"></map>
+    </div>
+
 Release Notes
 ---------------
+**1.10.0**
+
+  * Added an event `objectChanged` to broadcast change of objects in map. e.g., markers, shapes, etc
+
 **1.9.0**
 
   * Refactored directory structure
@@ -141,7 +153,7 @@ Directives
 
 #### &lt;map .. > 
 
-  As defined on [MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions), you can add any attributes, and events starting witn `on-`. Please note that event value must be a function.
+  As defined on [MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions), you can add any attributes, and events starting with `on-`. Please note that event value must be a function.
 
   Example: 
 
@@ -156,13 +168,20 @@ Directives
       max-zoom="12"
       min-zoom="8"
       tilt="45"
-      map-type-id="TERRAIN">
+      map-type-id="TERRAIN"
+      zoom-to-include-markers="auto"
+      >
     </map>
   i.e. < zoom="11" center="[40.74, -74.18]"
 
+zoom-to-include-markers has two options "true" or "auto".
+Use "true" if your markers do not change after the map is rendered.
+Use "auto" if you want the map to auto zoom when markers are added or removed.
+Example [zoom-to-include-markers](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_zoom_to_include_markers.html)
+
 #### &lt;marker .. > 
 
-  As defined on [MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions), you can add any attributes, and events starting witn `on-`.
+  As defined on [MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions), you can add any attributes, and events starting with `on-`.
 
     <map center="[40.74, -74.18]">
       <marker
@@ -329,6 +348,17 @@ Contributors
       1  Ishaan Puniani
       1  Michael Liu
       1  unknown
+
+Contributing
+============
+- Clone the repository from github
+- Change to the folder dowloaded
+- **npm install** to install the build tools
+- **gulp build** to build the javascript & doc files in the /build folder & run the unit tests.
+- **gulp clean** to cleanup the repository from a previous build ? does this work ?
+- **gulp test** to run the Karma unit test suite. 
+- **gulp test-e2e** to run the Protractor test suite. For the first test run, you may need to update the protractor webdriver manager. It will show the command on screen if this is required (node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update).
+- **gulp testapp-server** will start a web server for the testapp on http://localhost:8888
 
 license
 =======

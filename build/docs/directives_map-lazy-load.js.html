@@ -27,21 +27,33 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
- * @name lazy-load
+ * @name map-lazy-load
  * @requires Attr2Options 
  * @description 
- *   Requires: Delay the initialization of directive until required .js loads
+ *   Requires: Delay the initialization of map directive until the map is ready to be rendered
  *   Restrict To: Attribute 
  *
- * @param {String} lazy-load
-      script source file location
- *    example:  
- *      'http://maps.googlecom/maps/api/js'   
+ * @param {String} map-lazy-load
+      Maps api script source file location.
+ *    Example:  
+ *      'https://maps.google.com/maps/api/js'   
+ * @param {String} map-lazy-load-params
+     Maps api script source file location via angular scope variable.
+     Also requires the map-lazy-load attribute to be present in the directive.
+     Example: In your controller, set 
+       $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX'
 
  * @example
  * Example: 
  *
  *   &lt;div map-lazy-load="http://maps.google.com/maps/api/js">
+ *     &lt;map center="Brampton" zoom="10">
+ *       &lt;marker position="Brampton">&lt;/marker>
+ *     &lt;/map>
+ *   &lt;/div>
+ *
+ *   &lt;div map-lazy-load="http://maps.google.com/maps/api/js" 
+ *        map-lazy-load-params="{{googleMapsUrl}}">
  *     &lt;map center="Brampton" zoom="10">
  *       &lt;marker position="Brampton">&lt;/marker>
  *     &lt;/map>
@@ -52,8 +64,10 @@
   var $timeout, $compile, src, savedHtml;
 
   var preLinkFunc = function(scope, element, attrs) {
+    var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;    
+    
     window.lazyLoadCallback = function() {
-      console.log('script loaded,' + src);
+      console.log('Google maps script loaded:', mapsUrl);
       $timeout(function() { /* give some time to load */
         element.html(savedHtml);
         $compile(element.contents())(scope);
@@ -62,7 +76,8 @@
 
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
-      scriptEl.src = src + (src.indexOf('?') > -1 ? '&amp;' : '?') + 'callback=lazyLoadCallback';
+      console.log('Prelinking script loaded,' + src);
+      scriptEl.src = mapsUrl + (mapsUrl.indexOf('?') > -1 ? '&amp;' : '?') + 'callback=lazyLoadCallback';
       document.body.appendChild(scriptEl);
     } else {
       element.html(savedHtml);
@@ -79,7 +94,7 @@
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+    if (document.querySelector('script[src="'+src+(src.indexOf('?') > -1 ? '&amp;' : '?')+'callback=lazyLoadCallback"]')) {
       return false;
     }
 
@@ -95,6 +110,7 @@
       compile: compileFunc
     }
   };
+  mapLazyLoad.$inject = ['$compile','$timeout'];
 
   angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
 })();
@@ -108,7 +124,7 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="directions.html">directions</a></li><li><a href="drawing-manager.html">drawing-manager</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="lazy-load.html">lazy-load</a></li><li><a href="map.html">map</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-type.html">map-type</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="places-auto-complete.html">places-auto-complete</a></li><li><a href="shape.html">shape</a></li><li><a href="streetview-panorama.html">streetview-panorama</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul><h3>controller</h3><ul><li><a href="MapController.html">MapController</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>service</h3><ul><li><a href="Attr2Options.html">Attr2Options</a></li><li><a href="GeoCoder.html">GeoCoder</a></li><li><a href="NavigatorGeolocation.html">NavigatorGeolocation</a></li><li><a href="StreetView.html">StreetView</a></li></ul><h3>directive</h3><ul><li><a href="bicycling-layer.html">bicycling-layer</a></li><li><a href="cloud-layer.html">cloud-layer</a></li><li><a href="custom-control.html">custom-control</a></li><li><a href="directions.html">directions</a></li><li><a href="drawing-manager.html">drawing-manager</a></li><li><a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a></li><li><a href="fusion-tables-layer.html">fusion-tables-layer</a></li><li><a href="heatmap-layer.html">heatmap-layer</a></li><li><a href="info-window.html">info-window</a></li><li><a href="kml-layer.html">kml-layer</a></li><li><a href="map-data.html">map-data</a></li><li><a href="map-lazy-load.html">map-lazy-load</a></li><li><a href="map-type.html">map-type</a></li><li><a href="maps-engine-layer.html">maps-engine-layer</a></li><li><a href="marker.html">marker</a></li><li><a href="ngMap.map.html">map</a></li><li><a href="overlay-map-type.html">overlay-map-type</a></li><li><a href="places-auto-complete.html">places-auto-complete</a></li><li><a href="shape.html">shape</a></li><li><a href="streetview-panorama.html">streetview-panorama</a></li><li><a href="traffic-layer.html">traffic-layer</a></li><li><a href="transit-layer.html">transit-layer</a></li><li><a href="weather-layer.html">weather-layer</a></li></ul><h3>controller</h3><ul><li><a href="MapController.html">MapController</a></li></ul>
 </nav>
 
 <br clear="both">
