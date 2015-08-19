@@ -17,6 +17,7 @@ var shell = require('gulp-shell');
 var karma = require('karma').server;
 var connect = require('gulp-connect');
 var gulpProtractor = require("gulp-protractor").protractor;
+var angularJsdoc = require('angular-jsdoc');
 var bumpVersion = function(type) {
   type = type || 'patch';
   var version = '';
