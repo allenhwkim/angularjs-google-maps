@@ -61,14 +61,9 @@ gulp.task('build-js', function() {
     .on('error', gutil.log);
 });
 
-gulp.task('docs', shell.task([
-  'node_modules/jsdoc/jsdoc.js '+
-    '-c node_modules/angular-jsdoc/conf.json '+
-    '-t node_modules/angular-jsdoc/template '+ 
-    '-d build/docs '+ 
-    './README.md ' +
-    '-r directives services' 
-]));
+gulp.task('docs', function() {
+  angularJsdoc(['directives', 'services'], {destination: 'build/docs'});
+});
 
 gulp.task('bump', ['build'], function() { bumpVersion('patch'); });
 gulp.task('bump:patch', ['build'], function() { bumpVersion('patch'); });
