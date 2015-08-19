@@ -1,12 +1,13 @@
 /**
  * @ngdoc directive
  * @name map-data
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   set map data
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param {String} method-name, run map.data[method-name] with attribute value
+ * @wn {String} method-name, run map.data[method-name] with attribute value
  * @example
  * Example: 
  *

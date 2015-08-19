@@ -64,7 +64,7 @@
         <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name shape
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Initialize a Google map shape in map with given options and register events  
  *   The shapes are:
@@ -78,15 +78,15 @@
  *
  *   Restrict To:  Element
  *
- * @param {Boolean} centered if set, map will be centered with this marker
- * @param {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
- * @param {String} &lt;OPTIONS>
+ * @attr {Boolean} centered if set, map will be centered with this marker
+ * @attr {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
+ * @attr {String} &lt;OPTIONS>
  *   For circle, [any circle options](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)  
  *   For polygon, [any polygon options](https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions)  
  *   For polyline, [any polyline options](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)   
  *   For rectangle, [any rectangle options](https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions)   
  *   For image, [any groundOverlay options](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)   
- * @param {String} &lt;MapEvent> Any Shape events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {String} &lt;MapEvent> [Any Shape events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
  * Usage: 
  *   &lt;map MAP_ATTRIBUTES>

@@ -70,7 +70,22 @@
         </div>
         <div class="details"></div>
           <h5>Dependencies:</h5>
-          <table class="params" width="50%">
+          <table class="params">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name" nowrap>Attr2Options</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>convert html attribute to Gogole map api options</p></td>
+              </tr>
+            </tbody>
+          </table>
+          <h5>Attributes:</h5>
+          <table class="params">
             <thead>
               <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
             </thead>
@@ -81,7 +96,8 @@
                   String
                 </span></td>
                 <td class="description last"><p>Maps api script source file location.
-   Example:<br>     'https://maps.google.com/maps/api/js'</p></td>
+   Example:<br>     &#39;<a href="https://maps.google.com/maps/api/js">https://maps.google.com/maps/api/js</a>&#39;</p>
+</td>
               </tr>
               <tr>
                 <td class="name" nowrap>map-lazy-load-params</td>
@@ -91,14 +107,11 @@
                 <td class="description last"><p>Maps api script source file location via angular scope variable.
      Also requires the map-lazy-load attribute to be present in the directive.
      Example: In your controller, set 
-       $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX'</p></td>
+       $scope.googleMapsURL = &#39;<a href="https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX">https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX</a>&#39;</p>
+</td>
               </tr>
             </tbody>
           </table>
-          <h5>Dependencies</h5>
-          <ul>
-              <li>module:Attr2Options Service</li>
-          </ul>
           <h5>Example</h5>
             <pre class="prettyprint"><code><span class="str">Example: 
   &lt;div map-lazy-load="http://maps.google.com/maps/api/js">

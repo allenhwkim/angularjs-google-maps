@@ -5,7 +5,11 @@
   /**
    * @ngdoc controller
    * @name MapController
-   * @requires $scope
+   * @param $scope {service}
+   * @param $q {service} promise Q
+   * @param NavigatorGeolocation {service}
+   * @param GeoCoder {service}
+   * @param Attr2Options {service} convert html attribute to Gogole map api options
    * @property {Hash} controls collection of Controls initiated within `map` directive
    * @property {Hash} markers collection of Markers initiated within `map` directive
    * @property {Hash} shapes collection of shapes initiated within `map` directive

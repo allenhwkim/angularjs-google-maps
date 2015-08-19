@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name map-type
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element

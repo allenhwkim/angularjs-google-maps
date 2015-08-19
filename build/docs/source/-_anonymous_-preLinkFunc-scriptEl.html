@@ -64,16 +64,16 @@
         <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name map-lazy-load
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires: Delay the initialization of map directive until the map is ready to be rendered
  *   Restrict To: Attribute 
  *
- * @param {String} map-lazy-load
+ * @attr {String} map-lazy-load
       Maps api script source file location.
  *    Example:  
  *      'https://maps.google.com/maps/api/js'   
- * @param {String} map-lazy-load-params
+ * @attr {String} map-lazy-load-params
      Maps api script source file location via angular scope variable.
      Also requires the map-lazy-load attribute to be present in the directive.
      Example: In your controller, set 

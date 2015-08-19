@@ -64,16 +64,14 @@
         <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name streetview-panorama
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param container Optional, id or css selector, if given, streetview will be in the given html element
- * @param {String} &lt;StreetViewPanoramaOption> Any Google StreetViewPanorama options, 
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions
- * @param {String} &lt;StreetViewPanoramaEvent> Any Google StreetViewPanorama events, 
- *        https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama 
+ * @attr container Optional, id or css selector, if given, streetview will be in the given html element
+ * @attr {String} &lt;StreetViewPanoramaOption> [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
+ * @attr {String} &lt;StreetViewPanoramaEvent> [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
  *
  * @example
  *   &lt;map zoom="11" center="[40.688738,-74.043871]" >

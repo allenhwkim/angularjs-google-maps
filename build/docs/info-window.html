@@ -71,7 +71,29 @@
         </div>
         <div class="details"></div>
           <h5>Dependencies:</h5>
-          <table class="params" width="50%">
+          <table class="params">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name" nowrap>Attr2Options</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>convert html attribute to Gogole map api options</p></td>
+              </tr>
+              <tr>
+                <td class="name" nowrap>$compile</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>$compile service</p></td>
+              </tr>
+            </tbody>
+          </table>
+          <h5>Attributes:</h5>
+          <table class="params">
             <thead>
               <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
             </thead>
@@ -81,21 +103,24 @@
                 <td class="type"><span class="param-type">
                   Boolean
                 </span></td>
-                <td class="description last"><p>Indicates to show it when map is initialized</p></td>
+                <td class="description last"><p>Indicates to show it when map is initialized</p>
+</td>
               </tr>
               <tr>
                 <td class="name" nowrap>visible-on-marker</td>
                 <td class="type"><span class="param-type">
                   Boolean
                 </span></td>
-                <td class="description last"><p>Indicates to show it on a marker when map is initialized</p></td>
+                <td class="description last"><p>Indicates to show it on a marker when map is initialized</p>
+</td>
               </tr>
               <tr>
                 <td class="name" nowrap>geo-callback</td>
                 <td class="type"><span class="param-type">
                   Expression
                 </span></td>
-                <td class="description last"><p>if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback=&quot;showDetail()&quot;</p></td>
+                <td class="description last"><p>if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback=&quot;showDetail()&quot;</p>
+</td>
               </tr>
               <tr>
                 <td class="name" nowrap>&lt;InfoWindowOption></td>
@@ -103,22 +128,19 @@
                   String
                 </span></td>
                 <td class="description last"><p>Any InfoWindow options,
-       https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</p></td>
+      <a href="https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions">https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</a></p>
+</td>
               </tr>
               <tr>
                 <td class="name" nowrap>&lt;InfoWindowEvent></td>
                 <td class="type"><span class="param-type">
                   String
                 </span></td>
-                <td class="description last"><p>Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference</p></td>
+                <td class="description last"><p>Any InfoWindow events, <a href="https://developers.google.com/maps/documentation/javascript/reference">https://developers.google.com/maps/documentation/javascript/reference</a></p>
+</td>
               </tr>
             </tbody>
           </table>
-          <h5>Dependencies</h5>
-          <ul>
-              <li>module:Attr2Options Service</li>
-              <li>module:$compile Service</li>
-          </ul>
           <h5>Example</h5>
             <pre class="prettyprint"><code><span class="str">Usage:
   &lt;map MAP_ATTRIBUTES>

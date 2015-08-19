@@ -1,14 +1,13 @@
 /**
  * @ngdoc directive
  * @name places-auto-complete
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Provides address auto complete feature to an input element
  *   Requires: input tag
  *   Restrict To: Attribute
  *
- * @param {AutoCompleteOptions} Any AutocompleteOptions
- *    https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions
+ * @attr {AutoCompleteOptions} [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
  *
  * @example
  * Example: 

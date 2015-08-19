@@ -1,8 +1,8 @@
 /**
  * @ngdoc directive
  * @name marker
- * @requires Attr2Options 
- * @requires NavigatorGeolocation
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param NavigatorGeolocation It is used to find the current location
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
  *   
@@ -10,15 +10,15 @@
  *
  *   Restrict To:  Element 
  *
- * @param {String} position address, 'current', or [latitude, longitude]  
+ * @attr {String} position address, 'current', or [latitude, longitude]  
  *    example:  
  *      '1600 Pennsylvania Ave, 20500  Washingtion DC',   
  *      'current position',  
  *      '[40.74, -74.18]'  
- * @param {Boolean} centered if set, map will be centered with this marker
- * @param {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
- * @param {String} &lt;MarkerOption> Any Marker options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions  
- * @param {String} &lt;MapEvent> Any Marker events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {Boolean} centered if set, map will be centered with this marker
+ * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
+ * @attr {String} &lt;MarkerOption> [Any Marker options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions) 
+ * @attr {String} &lt;MapEvent> [Any Marker events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>

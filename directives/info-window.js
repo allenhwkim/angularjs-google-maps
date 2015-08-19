@@ -1,8 +1,8 @@
 /**
  * @ngdoc directive
  * @name info-window
- * @requires Attr2Options
- * @requires $compile
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} $compile service
  * @description
  *   Defines infoWindow and provides compile method
  *
@@ -10,12 +10,12 @@
  *
  *   Restrict To:  Element
  *
- * @param {Boolean} visible Indicates to show it when map is initialized
- * @param {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
- * @param {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
- * @param {String} &lt;InfoWindowOption> Any InfoWindow options,
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
- * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {Boolean} visible Indicates to show it when map is initialized
+ * @attr {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
+ * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
+ * @attr {String} &lt;InfoWindowOption> Any InfoWindow options,
+ *       https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+ * @attr {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage:
  *   <map MAP_ATTRIBUTES>

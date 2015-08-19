@@ -69,10 +69,28 @@
   Restrict To:  Element</p>
         </div>
         <div class="details"></div>
-          <h5>Dependencies</h5>
-          <ul>
-              <li>module:Attr2Options Service</li>
-          </ul>
+          <h5>Dependencies:</h5>
+          <table class="params">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name" nowrap>Attr2Options</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>convert html attribute to Gogole map api options</p></td>
+              </tr>
+              <tr>
+                <td class="name" nowrap>$window</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"></td>
+              </tr>
+            </tbody>
+          </table>
           <h5>Example</h5>
             <pre class="prettyprint"><code><span class="str">Example: 
   &lt;map zoom="13" center="34.04924594193164, -118.24104309082031">

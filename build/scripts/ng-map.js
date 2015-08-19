@@ -477,7 +477,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name bicycling-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -528,7 +528,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name cloud-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -578,8 +578,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name custom-control
- * @requires Attr2Options 
- * @requires $compile
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} AngularJS $compile service
  * @description 
  *   Build custom control and set to the map with position
  *   
@@ -587,9 +587,9 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
- * @param {String} position position of this control
+ * @attr {String} position position of this control
  *        i.e. TOP_RIGHT
- * @param {Number} index index of the control
+ * @attr {Number} index index of the control
  * @example
  *
  * Example: 
@@ -652,10 +652,8 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element 
  *
- * @param {String} &lt;DirectionsRendererOptions> Any DirectionsRendererOptions, 
- *   https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions
- * @param {String} &lt;DirectionsRequest Options> Any DirectionsRequest options, 
- *   https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest
+ * @attr {String} DirectionsRendererOptions [Any DirectionsRendererOptions](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions)
+ * @attr {String} DirectionsRequestOptions [Any DirectionsRequest options](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest)
  * @example
  * Example: 
  *   <map zoom="14" center="37.7699298, -122.4469157">
@@ -759,7 +757,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name drawing-manager
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -922,7 +920,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name heatmap-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -974,8 +972,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name info-window
- * @requires Attr2Options
- * @requires $compile
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} $compile service
  * @description
  *   Defines infoWindow and provides compile method
  *
@@ -983,12 +981,12 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
- * @param {Boolean} visible Indicates to show it when map is initialized
- * @param {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
- * @param {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
- * @param {String} &lt;InfoWindowOption> Any InfoWindow options,
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
- * @param {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {Boolean} visible Indicates to show it when map is initialized
+ * @attr {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
+ * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
+ * @attr {String} &lt;InfoWindowOption> Any InfoWindow options,
+ *       https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions
+ * @attr {String} &lt;InfoWindowEvent> Any InfoWindow events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage:
  *   <map MAP_ATTRIBUTES>
@@ -1141,16 +1139,16 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name kml-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   renders Kml layer on a map
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param {Url} url url of the kml layer
- * @param {KmlLayerOptions} KmlLayerOptions
+ * @attr {Url} url url of the kml layer
+ * @attr {KmlLayerOptions} KmlLayerOptions
  *   (https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions)  
- * @param {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>
@@ -1202,12 +1200,13 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name map-data
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   set map data
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param {String} method-name, run map.data[method-name] with attribute value
+ * @wn {String} method-name, run map.data[method-name] with attribute value
  * @example
  * Example: 
  *
@@ -1263,16 +1262,16 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name map-lazy-load
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires: Delay the initialization of map directive until the map is ready to be rendered
  *   Restrict To: Attribute 
  *
- * @param {String} map-lazy-load
+ * @attr {String} map-lazy-load
       Maps api script source file location.
  *    Example:  
  *      'https://maps.google.com/maps/api/js'   
- * @param {String} map-lazy-load-params
+ * @attr {String} map-lazy-load-params
      Maps api script source file location via angular scope variable.
      Also requires the map-lazy-load attribute to be present in the directive.
      Example: In your controller, set 
@@ -1353,7 +1352,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name map-type
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -1404,7 +1403,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @memberof ngMap
  * @name map
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Implementation of {@link MapController}
  *   Initialize a Google map within a `<div>` tag with given options and register events
@@ -1417,20 +1416,20 @@ angular.module('ngMap', []);
  *   Restrict To:
  *     Element
  *
- * @param {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
- * @param {Array} geo-fallback-center
+ * @attr {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
+ * @attr {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
- * @param {Boolean} zoom-to-include-markers
+ * @attr {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
- * @param {Boolean} default-style
+ * @attr {Boolean} default-style
  *    When false, the default styling, `display:block;height:300px`, will be ignored.
- * @param {String} init-event The name of event to initialize this map.
+ * @attr {String} init-event The name of event to initialize this map.
  *    If this option is given, the map won't be initialized until the event is received.
  *    To invoke the event, use $scope.$emit or $scope.$broacast.
  *    i.e. <map init-event="init-map" ng-click="$emit('init-map')" center=... ></map>
- * @param {String} &lt;MapOption> Any Google map options,
+ * @attr {String} &lt;MapOption> Any Google map options,
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
- * @param {String} &lt;MapEvent> Any Google map events,
+ * @attr {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @example
  * Usage:
@@ -1621,7 +1620,11 @@ angular.module('ngMap', []);
   /**
    * @ngdoc controller
    * @name MapController
-   * @requires $scope
+   * @param $scope {service}
+   * @param $q {service} promise Q
+   * @param NavigatorGeolocation {service}
+   * @param GeoCoder {service}
+   * @param Attr2Options {service} convert html attribute to Gogole map api options
    * @property {Hash} controls collection of Controls initiated within `map` directive
    * @property {Hash} markers collection of Markers initiated within `map` directive
    * @property {Hash} shapes collection of shapes initiated within `map` directive
@@ -1849,8 +1852,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name marker
- * @requires Attr2Options 
- * @requires NavigatorGeolocation
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param NavigatorGeolocation It is used to find the current location
  * @description 
  *   Draw a Google map marker on a map with given options and register events  
  *   
@@ -1858,15 +1861,15 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element 
  *
- * @param {String} position address, 'current', or [latitude, longitude]  
+ * @attr {String} position address, 'current', or [latitude, longitude]  
  *    example:  
  *      '1600 Pennsylvania Ave, 20500  Washingtion DC',   
  *      'current position',  
  *      '[40.74, -74.18]'  
- * @param {Boolean} centered if set, map will be centered with this marker
- * @param {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
- * @param {String} &lt;MarkerOption> Any Marker options, https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions  
- * @param {String} &lt;MapEvent> Any Marker events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {Boolean} centered if set, map will be centered with this marker
+ * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
+ * @attr {String} &lt;MarkerOption> [Any Marker options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions) 
+ * @attr {String} &lt;MapEvent> [Any Marker events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>
@@ -1973,7 +1976,8 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name overlay-map-type
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $window {service} 
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -2026,14 +2030,13 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name places-auto-complete
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Provides address auto complete feature to an input element
  *   Requires: input tag
  *   Restrict To: Attribute
  *
- * @param {AutoCompleteOptions} Any AutocompleteOptions
- *    https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions
+ * @attr {AutoCompleteOptions} [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
  *
  * @example
  * Example: 
@@ -2090,7 +2093,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name shape
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Initialize a Google map shape in map with given options and register events  
  *   The shapes are:
@@ -2104,15 +2107,15 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
- * @param {Boolean} centered if set, map will be centered with this marker
- * @param {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
- * @param {String} &lt;OPTIONS>
+ * @attr {Boolean} centered if set, map will be centered with this marker
+ * @attr {Expression} geo-callback if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
+ * @attr {String} &lt;OPTIONS>
  *   For circle, [any circle options](https://developers.google.com/maps/documentation/javascript/reference#CircleOptions)  
  *   For polygon, [any polygon options](https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions)  
  *   For polyline, [any polyline options](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)   
  *   For rectangle, [any rectangle options](https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions)   
  *   For image, [any groundOverlay options](https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions)   
- * @param {String} &lt;MapEvent> Any Shape events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {String} &lt;MapEvent> [Any Shape events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>
@@ -2264,16 +2267,14 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name streetview-panorama
- * @requires Attr2Options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param container Optional, id or css selector, if given, streetview will be in the given html element
- * @param {String} &lt;StreetViewPanoramaOption> Any Google StreetViewPanorama options, 
- *        https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions
- * @param {String} &lt;StreetViewPanoramaEvent> Any Google StreetViewPanorama events, 
- *        https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama 
+ * @attr container Optional, id or css selector, if given, streetview will be in the given html element
+ * @attr {String} &lt;StreetViewPanoramaOption> [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
+ * @attr {String} &lt;StreetViewPanoramaEvent> [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
  *
  * @example
  *   <map zoom="11" center="[40.688738,-74.043871]" >
@@ -2361,7 +2362,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name traffic-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -2412,7 +2413,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name transit-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -2463,7 +2464,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name weather-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element

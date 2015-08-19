@@ -1,8 +1,8 @@
 /**
  * @ngdoc directive
  * @name custom-control
- * @requires Attr2Options 
- * @requires $compile
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $compile {service} AngularJS $compile service
  * @description 
  *   Build custom control and set to the map with position
  *   
@@ -10,9 +10,9 @@
  *
  *   Restrict To:  Element
  *
- * @param {String} position position of this control
+ * @attr {String} position position of this control
  *        i.e. TOP_RIGHT
- * @param {Number} index index of the control
+ * @attr {Number} index index of the control
  * @example
  *
  * Example: 

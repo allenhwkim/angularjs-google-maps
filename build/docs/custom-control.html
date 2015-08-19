@@ -71,7 +71,29 @@
         </div>
         <div class="details"></div>
           <h5>Dependencies:</h5>
-          <table class="params" width="50%">
+          <table class="params">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name" nowrap>Attr2Options</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>convert html attribute to Gogole map api options</p></td>
+              </tr>
+              <tr>
+                <td class="name" nowrap>$compile</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>AngularJS $compile service</p></td>
+              </tr>
+            </tbody>
+          </table>
+          <h5>Attributes:</h5>
+          <table class="params">
             <thead>
               <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
             </thead>
@@ -82,22 +104,19 @@
                   String
                 </span></td>
                 <td class="description last"><p>position of this control
-       i.e. TOP_RIGHT</p></td>
+       i.e. TOP_RIGHT</p>
+</td>
               </tr>
               <tr>
                 <td class="name" nowrap>index</td>
                 <td class="type"><span class="param-type">
                   Number
                 </span></td>
-                <td class="description last"><p>index of the control</p></td>
+                <td class="description last"><p>index of the control</p>
+</td>
               </tr>
             </tbody>
           </table>
-          <h5>Dependencies</h5>
-          <ul>
-              <li>module:Attr2Options Service</li>
-              <li>module:$compile Service</li>
-          </ul>
           <h5>Example</h5>
             <pre class="prettyprint"><code><span class="str">Example: 
  &lt;map center="41.850033,-87.6500523" zoom="3">

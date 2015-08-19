@@ -1,7 +1,8 @@
 /**
  * @ngdoc directive
  * @name overlay-map-type
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param $window {service} 
  * @description 
  *   Requires:  map directive
  *   Restrict To:  Element

@@ -1,16 +1,16 @@
 /**
  * @ngdoc directive
  * @name kml-layer
- * @requires Attr2Options 
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   renders Kml layer on a map
  *   Requires:  map directive
  *   Restrict To:  Element
  *
- * @param {Url} url url of the kml layer
- * @param {KmlLayerOptions} KmlLayerOptions
+ * @attr {Url} url url of the kml layer
+ * @attr {KmlLayerOptions} KmlLayerOptions
  *   (https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions)  
- * @param {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
+ * @attr {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
  * @example
  * Usage: 
  *   <map MAP_ATTRIBUTES>

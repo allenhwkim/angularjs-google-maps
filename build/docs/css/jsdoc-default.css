@@ -27,6 +27,8 @@
         url('../fonts/OpenSans-Light-webfont.svg#open_sanslight') format('svg');
 }
 
+* { box-sizing: border-box }
+
 html
 {
     overflow: auto;
@@ -77,6 +79,7 @@ tt, code, kbd, samp {
 #main {
     float: left;
     width: 70%;
+    padding-right: 20px;
 }
 
 article dl {
