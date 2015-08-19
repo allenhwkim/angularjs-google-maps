@@ -40,7 +40,7 @@ var bumpVersion = function(type) {
 };
 
 gulp.task('clean', function() {
-  return gulp.src('bulid')
+  return gulp.src('build')
     .pipe(clean({force: true}));
 });
 

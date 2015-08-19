@@ -1,20 +1,32 @@
 /**
  * @ngdoc directive
- * @name lazy-load
+ * @name map-lazy-load
  * @requires Attr2Options 
  * @description 
- *   Requires: Delay the initialization of directive until required .js loads
+ *   Requires: Delay the initialization of map directive until the map is ready to be rendered
  *   Restrict To: Attribute 
  *
- * @param {String} lazy-load
-      script source file location
- *    example:  
- *      'http://maps.googlecom/maps/api/js'   
+ * @param {String} map-lazy-load
+      Maps api script source file location.
+ *    Example:  
+ *      'https://maps.google.com/maps/api/js'   
+ * @param {String} map-lazy-load-params
+     Maps api script source file location via angular scope variable.
+     Also requires the map-lazy-load attribute to be present in the directive.
+     Example: In your controller, set 
+       $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&client=XXXXXenter-api-key-hereXXXX'
 
  * @example
  * Example: 
  *
  *   <div map-lazy-load="http://maps.google.com/maps/api/js">
+ *     <map center="Brampton" zoom="10">
+ *       <marker position="Brampton"></marker>
+ *     </map>
+ *   </div>
+ *
+ *   <div map-lazy-load="http://maps.google.com/maps/api/js" 
+ *        map-lazy-load-params="{{googleMapsUrl}}">
  *     <map center="Brampton" zoom="10">
  *       <marker position="Brampton"></marker>
  *     </map>
@@ -25,8 +37,10 @@
   var $timeout, $compile, src, savedHtml;
 
   var preLinkFunc = function(scope, element, attrs) {
+    var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;    
+    
     window.lazyLoadCallback = function() {
-      console.log('script loaded,' + src);
+      console.log('Google maps script loaded:', mapsUrl);
       $timeout(function() { /* give some time to load */
         element.html(savedHtml);
         $compile(element.contents())(scope);
@@ -35,7 +49,8 @@
 
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
-      scriptEl.src = src + (src.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+      console.log('Prelinking script loaded,' + src);
+      scriptEl.src = mapsUrl + (mapsUrl.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
       document.body.appendChild(scriptEl);
     } else {
       element.html(savedHtml);
@@ -52,7 +67,7 @@
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector('script[src="'+src+'?callback=lazyLoadCallback"]')) {
+    if (document.querySelector('script[src="'+src+(src.indexOf('?') > -1 ? '&' : '?')+'callback=lazyLoadCallback"]')) {
       return false;
     }
 
