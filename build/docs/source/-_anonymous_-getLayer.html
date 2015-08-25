@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: Source:transit-layer.js</title>
+    <title>JSDoc: Source:cloud-layer.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <script src="js/prettify.js"></script>
@@ -95,13 +95,13 @@
       </div>
     </nav>
     <h1 class="title">
-      Source:transit-layer.js
+      Source:cloud-layer.js
     </h1>
     <div id="main">
       <article>
         <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
- * @name transit-layer
+ * @name cloud-layer
  * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description 
  *   Requires:  map directive
@@ -111,15 +111,15 @@
  * Example: 
  *
  *   &lt;map zoom="13" center="34.04924594193164, -118.24104309082031">
- *     &lt;transit-layer>&lt;/transit-layer>
+ *     &lt;cloud-layer>&lt;/cloud-layer>
  *    &lt;/map>
  */
 (function() {
   'use strict';
-  angular.module('ngMap').directive('transitLayer', ['Attr2Options', function(Attr2Options) {
+  angular.module('ngMap').directive('cloudLayer', ['Attr2Options', function(Attr2Options) {
     var parser = Attr2Options;
     var getLayer = function(options, events) {
-      var layer = new google.maps.TransitLayer(options);
+      var layer = new google.maps.weather.CloudLayer(options);
       for (var eventName in events) {
         google.maps.event.addListener(layer, eventName, events[eventName]);
       }
@@ -133,12 +133,12 @@
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered);
         var events = parser.getEvents(scope, filtered);
-        console.log('transit-layer options', options, 'events', events);
+        console.log('cloud-layer options', options, 'events', events);
         var layer = getLayer(options, events);
-        mapController.addObject('transitLayers', layer);
+        mapController.addObject('cloudLayers', layer);
         mapController.observeAttrSetObj(orgAttrs, attrs, layer);  //observers
         element.bind('$destroy', function() {
-          mapController.deleteObject('transitLayers', layer);
+          mapController.deleteObject('cloudLayers', layer);
         });
       }
      }; // return

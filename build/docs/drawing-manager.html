@@ -125,6 +125,16 @@
             </tbody>
           </table>
         </div>
+        <div>
+          <h5>Example</h5>
+          <pre class="prettyprint"><code><span class="str">Example:
+ &lt;map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
+   &lt;drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" >&lt;/drawing-manager>
+ &lt;/map>
+ TODO: Add remove button.
+ currently, for out solution, we have the shapes/markers in our own controller, and we use some css classes to change the shape button
+ to a remove button (&lt;div>X&lt;/div>) and have the remove operation in our own controller.</span></code></pre>
+        </div>
       </dd>
     </div>
     <section>
