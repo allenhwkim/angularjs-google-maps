@@ -55,6 +55,11 @@
         (validKeys.indexOf(key) === -1) && (delete request[key]);
       }
 
+      if(request.waypoints) {
+        // Check fo valid values
+        if(request.waypoints == "[]" || request.waypoints == "")  delete request.waypoints;
+      }
+
       if (request.origin && request.destination) {
         console.log('request', request);
         directionsService.route(request, function(response, status) {
