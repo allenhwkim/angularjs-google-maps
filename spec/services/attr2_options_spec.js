@@ -60,6 +60,20 @@ describe('Attr2Options', function() {
       attrs = {MapTypeId:'HYBRID'};
       expect(parser.getOptions(attrs, scope).MapTypeId).toEqual(google.maps.MapTypeId.HYBRID);
     });
+    it('should convert ISO date strings to Date objects', function() {
+      var attrs = {a:'2015-08-13T04:11:23.005Z'};
+      expect(parser.getOptions(attrs, scope).a instanceof Date).toBe(true);
+    });
+    it('should convert nested date to Date object', function() {
+      var attrs = {a: '{"departureTime":"2015-08-13T18:00:21.846Z"}'};
+      expect(typeof parser.getOptions(attrs, scope).a).toEqual('object');
+      expect(parser.getOptions(attrs, scope).a.departureTime instanceof Date).toEqual(true);
+    });
+    it('should convert nested value to google object', function() {
+      var attrs = {circleOptions: '{"center": "LatLng(80,-49)"}'};
+      expect(parser.getOptions(attrs, scope).circleOptions.center.lat()).toEqual(80);
+      expect(parser.getOptions(attrs, scope).circleOptions.center.lng()).toEqual(-49);
+    });
   });
 
   describe("#getControlOptions", function() {
