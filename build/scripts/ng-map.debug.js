@@ -78,6 +78,10 @@ angular.module('ngMap', []);
               return new google.maps.LatLng(output[0], output[1]);
             }
           }
+          else if (output === Object(output)) { // JSON is an object (not array or null)
+            // check for nested hashes and convert to Google API options
+            output = getOptions(output, options);
+          }
         } catch(err2) {
           // 3. Object Expression. i.e. LatLng(80,-49)
           if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
@@ -105,6 +109,13 @@ angular.module('ngMap', []);
               } else {
                 output = google.maps[capitalizedKey][input];
               }
+            } catch(e) {
+              output = input;
+            }
+          // 6. Date Object as ISO String i.e. "2015-08-12T06:12:40.858Z"
+          } else if (input.match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)) {
+            try {
+              output = new Date(input);
             } catch(e) {
               output = input;
             }
@@ -174,7 +185,12 @@ angular.module('ngMap', []);
           } else if (key.match(/ControlOptions$/)) { // skip controlOptions
             continue;
           } else {
-            options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+            // nested conversions need to be typechecked (non-strings are fully converted)
+            if (typeof attrs[key] !== 'string') {
+              options[key] = attrs[key];
+            } else {
+              options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+            }
           }
         } // if (attrs[key])
       } // for(var key in attrs)
@@ -697,6 +713,11 @@ angular.module('ngMap', []);
       ];
       for(var key in request){
         (validKeys.indexOf(key) === -1) && (delete request[key]);
+      }
+
+      if(request.waypoints) {
+        // Check fo valid values
+        if(request.waypoints == "[]" || request.waypoints == "")  delete request.waypoints;
       }
 
       if (request.origin && request.destination) {
