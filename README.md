@@ -75,6 +75,14 @@ Lazy Loading
 
 Release Notes
 ---------------
+**1.13.0**
+
+  * New directive `custom-marker`
+
+**1.12.0**
+
+  * Refactored documentation with angular-jsdoc
+
 **1.10.0**
 
   * Added an event `objectChanged` to broadcast change of objects in map. e.g., markers, shapes, etc
