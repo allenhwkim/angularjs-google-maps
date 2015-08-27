@@ -44,85 +44,90 @@
      this[key] = options[key];
     }
   };
-  
-  CustomMarker.prototype = new google.maps.OverlayView();
 
-  CustomMarker.prototype.setContent = function(html, scope) {
-    this.html = html;
-    if (scope) {
-      var compiledEl = $compile(html)(scope);
-      var customMarkerEl = compiledEl[0];
-      var me = this;
-      $timeout(function() {
-        me.content = customMarkerEl.innerHTML;
-        me.el.innerHTML = me.content;
-      });
-    } else {
-      this.content = html;
-      this.el.innerHTML = this.content;
-    }
-    this.el.style.position = 'relative';
-    this.el.className = 'custom-marker';
-  };
+  var setCustomMarker = function() {
 
-  CustomMarker.prototype.setPosition = function(position) {
-    position && (this.position = position);
-    if (this.getProjection() && typeof this.position.lng == 'function') {
-      var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
-      var x = Math.round(posPixel.x - (this.el.offsetWidth/2));
-      var y = Math.round(posPixel.y - this.el.offsetHeight - 10); // 10px for anchor
-      this.el.style.left = x + "px";
-      this.el.style.top = y + "px";
-    }
-  };
+    CustomMarker.prototype = new google.maps.OverlayView();
 
-  CustomMarker.prototype.setZIndex = function(zIndex) {
-    zIndex && (this.zIndex = zIndex);
-    this.el.style.zIndex = this.zIndex;
-  };
+    CustomMarker.prototype.setContent = function(html, scope) {
+      this.html = html;
+      if (scope) {
+        var compiledEl = $compile(html)(scope);
+        var customMarkerEl = compiledEl[0];
+        var me = this;
+        $timeout(function() {
+          me.content = customMarkerEl.innerHTML;
+          me.el.innerHTML = me.content;
+        });
+      } else {
+        this.content = html;
+        this.el.innerHTML = this.content;
+      }
+      this.el.style.position = 'relative';
+      this.el.className = 'custom-marker';
+    };
 
-  CustomMarker.prototype.setVisible = function(visible) {
-    this.el.style.display = visible ? 'inline-block' : 'none';
-    this.visible = visible;
-  };
+    CustomMarker.prototype.setPosition = function(position) {
+      position && (this.position = position);
+      if (this.getProjection() && typeof this.position.lng == 'function') {
+        var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
+        var x = Math.round(posPixel.x - (this.el.offsetWidth/2));
+        var y = Math.round(posPixel.y - this.el.offsetHeight - 10); // 10px for anchor
+        this.el.style.left = x + "px";
+        this.el.style.top = y + "px";
+      }
+    };
 
-  CustomMarker.prototype.addClass = function(className) {
-    var classNames = this.el.className.split(' ');
-    (classNames.indexOf(className) == -1) && classNames.push(className);
-    this.el.className = classNames.join(' ');
-  };
-  
-  CustomMarker.prototype.removeClass = function(className) {
-    var classNames = this.el.className.split(' ');
-    var index = classNames.indexOf(className);
-    (index > -1) && classNames.splice(index, 1);
-    this.el.className = classNames.join(' ');
-  };
+    CustomMarker.prototype.setZIndex = function(zIndex) {
+      zIndex && (this.zIndex = zIndex);
+      this.el.style.zIndex = this.zIndex;
+    };
 
-  CustomMarker.prototype.onAdd = function() {
-    this.getPanes().overlayMouseTarget.appendChild(this.el);
-  };
-  
-  CustomMarker.prototype.draw = function() {
-    this.setPosition();
-    this.setZIndex(this.zIndex);
-    this.setVisible(this.visible);
-  };
-  
-  CustomMarker.prototype.onRemove = function() {
-    this.el.parentNode.removeChild(this.el);
-    this.el = null;
+    CustomMarker.prototype.setVisible = function(visible) {
+      this.el.style.display = visible ? 'inline-block' : 'none';
+      this.visible = visible;
+    };
+
+    CustomMarker.prototype.addClass = function(className) {
+      var classNames = this.el.className.split(' ');
+      (classNames.indexOf(className) == -1) && classNames.push(className);
+      this.el.className = classNames.join(' ');
+    };
+    
+    CustomMarker.prototype.removeClass = function(className) {
+      var classNames = this.el.className.split(' ');
+      var index = classNames.indexOf(className);
+      (index > -1) && classNames.splice(index, 1);
+      this.el.className = classNames.join(' ');
+    };
+
+    CustomMarker.prototype.onAdd = function() {
+      this.getPanes().overlayMouseTarget.appendChild(this.el);
+    };
+    
+    CustomMarker.prototype.draw = function() {
+      this.setPosition();
+      this.setZIndex(this.zIndex);
+      this.setVisible(this.visible);
+    };
+    
+    CustomMarker.prototype.onRemove = function() {
+      this.el.parentNode.removeChild(this.el);
+      this.el = null;
+    };
   };
 
   var customMarkerDirective = function(Attr2Options, _$compile_, _$timeout_)  {
     parser = Attr2Options;
     $compile = _$compile_;
     $timeout = _$timeout_;
+    setCustomMarker();
 
     return {
       restrict: 'E',
       require: '^map',
       link: function(scope, element, attrs, mapController) {
+
         var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, scope);
