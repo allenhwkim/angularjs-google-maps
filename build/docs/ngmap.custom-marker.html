@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="./">
-    <title>JSDoc: directive:fusion-tables-layer</title>
+    <title>JSDoc: directive:ngmap.custom-marker</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <script src="js/prettify.js"></script>
@@ -105,8 +105,8 @@
       </div>
     </nav>
     <h1 class="title">
-      directive:fusion-tables-layer
-      <a class="name-link signature-attributes" href="source/fusion-tables-layer.html#line1">source</a>
+      directive:ngmap.custom-marker
+      <a class="name-link signature-attributes" href="source/ngmap.custom-marker.html#line1">source</a>
     </h1>
     <div id="main">
       <div>
@@ -114,18 +114,81 @@
       <dt></dt>
       <dd>
         <div class="description">
-          <p>Requires:  map directive
+          <p>Marker with html
+  Requires:  map directive
   Restrict To:  Element</p>
         </div>
         <div class="details"></div>
         <div>
+          <h5>Dependencies:</h5>
+          <table class="params">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name" nowrap="">Attr2Options</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>convert html attribute to Gogole map api options</p></td>
+              </tr><tr>
+                <td class="name" nowrap="">$compile</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>AngularJS $compile service</p></td>
+              </tr><tr>
+                <td class="name" nowrap="">$timeout</td>
+                <td class="type"><span class="param-type">
+                  service
+                </span></td>
+                <td class="description last"><p>AngularJS $timeout</p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h5>Attributes:</h5>
+          <table class="params">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name" nowrap="">position</td>
+                <td class="type"><span class="param-type">
+                  String
+                </span></td>
+                <td class="description last"><p>required, position on map</p>
+</td>
+              </tr><tr>
+                <td class="name" nowrap="">z-index</td>
+                <td class="type"><span class="param-type">
+                  Number
+                </span></td>
+                <td class="description last"><p>optional</p>
+</td>
+              </tr><tr>
+                <td class="name" nowrap="">visible</td>
+                <td class="type"><span class="param-type">
+                  Boolean
+                </span></td>
+                <td class="description last"><p>optional</p>
+</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
           <h5>Example</h5>
           <pre class="prettyprint"><code><span class="str">Example: 
-  &lt;map zoom="11" center="41.850033, -87.6500523">
-    &lt;fusion-tables-layer query="{
-      select: 'Geocodable address',
-      from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
-    &lt;/fusion-tables-layer>
+  &lt;map center="41.850033,-87.6500523" zoom="3">
+    &lt;custom-marker position="41.850033,-87.6500523">
+      &lt;div>
+        &lt;b>Home&lt;/b>
+      &lt;/div>
+    &lt;/custom-marker>
   &lt;/map></span></code></pre>
         </div>
       </dd>
