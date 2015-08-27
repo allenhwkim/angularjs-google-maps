@@ -40,7 +40,7 @@
 
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
-    Nthis.visible = true; for (var key in options) {
+    this.visible = true; for (var key in options) {
      this[key] = options[key];
     }
   };
