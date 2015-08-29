@@ -1,0 +1,83 @@
+<!doctype html>
+<html ng-app="myapp">
+  <head>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="https://code.angularjs.org/1.3.16/angular.js"></script>
+    <!--
+    <script src="../build/scripts/ng-map.min.js"></script>
+    -->
+    <script src="../app.js"></script>
+    <script src="../directives/map_controller.js"></script>
+    <script src="../directives/map.js"></script>
+    <script src="../directives/marker.js"></script>
+    <script src="../directives/custom-marker.js"></script>
+    <script src="../services/geo_coder.js"></script>
+    <script src="../services/navigator_geolocation.js"></script>
+    <script src="../services/attr2_options.js"></script>
+    <script>
+      angular.module('myapp', ['ngMap']);
+      angular.module('myapp').controller('MyCtrl', function($scope){
+        //$scope.centerCustomMarker = function() {
+        //  $scope.map.customMarkers.foo.setPosition(this.getCenter());
+        //}
+      });
+    </script>
+    <style>
+      .custom-marker {
+        font-size: 1.5em;
+        padding: 10px;
+        background: #fff;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border: #7F7F7F solid 1px;
+      }
+
+      .custom-marker:after {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 7px 6px 0;
+        border-color: #fff transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        margin-left: -6px;
+        bottom: -6px;
+        left: 50%;
+      }
+
+      .custom-marker:before {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 7px 6px 0;
+        border-color: #7F7F7F transparent;
+        display: block;
+        width: 0;
+        z-index: 0;
+        margin-left: -6px;
+        bottom: -7px;
+        left: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div ng-controller="MyCtrl">
+      <map zoom="8" center="1600 pennsylvania ave, washington DC" style="height:600px"
+        on-center-changed="centerCustomMarker()">
+        <custom-marker id="foo" position="1600 pennsylvania ave, washington DC" on-click="click()">
+          <div>
+            <img width="64" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/President_Barack_Obama%2C_2012_portrait_crop.jpg/140px-President_Barack_Obama%2C_2012_portrait_crop.jpg" align="left" /> Hi, How Are You? <br/>
+            My Name is Obama, and people call me as Mr. President.<br/>
+            We live in this house.<br/>
+            <br/>
+            <img width="300" src="http://cdn.cstatic.net/images/gridfs/53b42fd3f92ea17d970280b4/Screen%20Shot%202014-07-02%20at%2012.07.54%20PM.png" />
+            <br/>
+            If you want to visit us, please click <a href="https://www.whitehouse.gov">here</a>
+        </custom-marker>
+      </map>
+    </div>
+  </body>
+</html>
+
