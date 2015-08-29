@@ -38,7 +38,7 @@
     return renderer;
   };
 
-  var directions = function(Attr2Options, $timeout) {
+  var directions = function(Attr2Options, $timeout, NavigatorGeolocation) {
     var parser = Attr2Options;
     var directionsService = new google.maps.DirectionsService();
 
@@ -60,7 +60,7 @@
         if(request.waypoints == "[]" || request.waypoints == "")  delete request.waypoints;
       }
 
-      if (request.origin && request.destination) {
+      var showDirections = function(request) {
         console.log('request', request);
         directionsService.route(request, function(response, status) {
           if (status == google.maps.DirectionsStatus.OK) {
@@ -69,6 +69,22 @@
             });
           }
         });
+      };
+
+      if (request.origin && request.destination) {
+        if (request.origin == 'current-location') {
+          NavigatorGeolocation.getCurrentPosition().then(function(ll) {
+            request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
+            showDirections(request);
+          });
+        } else if (request.destination == 'current-location') {
+          NavigatorGeolocation.getCurrentPosition().then(function(ll) {
+            request.destination = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
+            showDirections(request);
+          });
+        } else {
+          showDirections(request);
+        }
       } 
     };
 
@@ -115,7 +131,7 @@
       link: linkFunc
     }
   }; // var directions
-  directions.$inject = ['Attr2Options', '$timeout'];
+  directions.$inject = ['Attr2Options', '$timeout', 'NavigatorGeolocation'];
 
   angular.module('ngMap').directive('directions', directions);
 })();
