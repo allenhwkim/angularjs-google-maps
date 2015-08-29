@@ -85,7 +85,13 @@
       attrsToObserve.forEach(function(attrName) {
         (function(attrName) {
           attrs.$observe(attrName, function(val) {
-            if (options[attrName] !== val) { //apply only if changed
+            if (attrName == 'panel') {
+              $timeout(function(){
+                var panel = document.getElementById(val) || document.querySelector(val);
+                console.log('setting ', attrName, 'with value', panel);
+                panel && renderer.setPanel(panel);
+              });
+            } else if (options[attrName] !== val) { //apply only if changed
               var optionValue = parser.toOptionValue(val, {key: attrName});
               console.log('setting ', attrName, 'with value', optionValue);
               options[attrName] = optionValue;

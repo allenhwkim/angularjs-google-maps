@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Travel modes in directions</title>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<!--
+<script src="../build/scripts/ng-map.min.js"></script>
+-->
+    <script src="../app.js"></script>
+    <script src="../services/navigator_geolocation.js"></script>
+    <script src="../services/geo_coder.js"></script>
+    <script src="../services/attr2_options.js"></script>
+    <script src="../directives/map_controller.js"></script>
+    <script src="../directives/map.js"></script>
+    <script src="../directives/directions.js"></script>
+    <style>
+      html, body {width:100%; height: 100%; padding:0; margin: 0}
+      body {padding: 5px}
+      * { box-sizing: border-box; }
+    </style>
+    <script>
+      angular.module('ngMap').run(function($rootScope) {
+        $rootScope.directions = [
+          {origin:"Palo Alto", destination:"Gilroy", panelName:"p1"},
+          {origin:"San Jose", destination:"Mountain View", panelName:"p2"}
+        ];
+      });
+    </script>
+  </head>
+  <body ng-app="ngMap">
+
+    <div ng-repeat="dir in directions">
+      <div style="width: 68%; float:left; height:450px">
+        <map style="height:100%" >
+          
+          <directions 
+            draggable="false"
+            travel-mode="DRIVING"
+            panel="{{dir.panelName}}"
+            origin="{{dir.origin}}"
+            destination="{{dir.destination}}">
+          </directions>
+        </map>
+      </div>
+      <div id="{{dir.panelName}}" style="width: 32%; float:left; height:450px"></div>
+    </div>
+                            
+  </body>
+
+</html>
