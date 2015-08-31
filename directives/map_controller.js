@@ -122,12 +122,13 @@
      * @memberof MapController
      * @function getGeoLocation
      * @param {String} string an address to find the location
+     * @param {Object} geoLocationOptions the navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
      * @returns {Promise} latlng the location of the address
      */
-    this.getGeoLocation = function(string) {
+    this.getGeoLocation = function(string, geoLocationOptions) {
       var deferred = $q.defer();
       if (!string || string.match(/^current/i)) { // current location
-        NavigatorGeolocation.getCurrentPosition().then(
+        NavigatorGeolocation.getCurrentPosition(geoLocationOptions).then(
           function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;

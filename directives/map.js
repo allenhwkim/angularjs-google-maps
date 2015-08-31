@@ -18,6 +18,8 @@
  * @attr {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
  * @attr {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
+ * @attr {Object} geo-location-options
+ *    The navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
  * @attr {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
  * @attr {Boolean} default-style
@@ -126,7 +128,7 @@
           mapOptions.center = new google.maps.LatLng(0, 0);
         } else if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
-          ctrl.getGeoLocation(center).then(function (latlng) {
+          ctrl.getGeoLocation(center, options.geoLocationOptions).then(function (latlng) {
             map.setCenter(latlng);
             var geoCallback = attrs.geoCallback;
             geoCallback && $parse(geoCallback)(scope);
