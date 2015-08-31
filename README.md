@@ -341,23 +341,8 @@ Advanced Examples
 - [Marker Clusterer](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/marker-clusterer.html)
 - [Starbucks World Wide](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_app.html)
 
-Contributors
-==============
-
-    285  Allen Kim
-     13  Hamza Azeem
-      4  Fangming Du
-      3  Antonio Salumbides
-      2  Alexandre Kilian
-      2  Prem Prakash
-      2  Romain Maneschi
-      2  jpagand
-      1  martinmicunda
-      1  Simon Hampton
-      1  Will
-      1  Ishaan Puniani
-      1  Michael Liu
-      1  unknown
+[Contributors](CONTRIBUTORS.md)
+===============================
 
 Contributing
 ============
