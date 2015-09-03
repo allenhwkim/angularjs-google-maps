@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places,geometry"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
+<!--
+<script src="../build/scripts/ng-map.min.js"></script>
+-->
+<script src="../app.js"></script>
+<script src="../directives/map_controller.js"></script>
+<script src="../directives/map.js"></script>
+<script src="../directives/marker.js"></script>
+<script src="../directives/shape.js"></script>
+<script src="../directives/info-window.js"></script>
+<script src="../services/geo_coder.js"></script>
+<script src="../services/navigator_geolocation.js"></script>
+<script src="../services/attr2_options.js"></script>
+<script>
+var $timeout, $q;
+var app = angular.module('myApp', ['ngMap']);
+
+/**
+ * var mapAnimation = MapAnimation.new({map: myMap})
+ * mapAnimation.move(myMarker, destination, {duration:5000, centered:true});
+ */
+var NgMapAnimation = {
+
+  move : function(obj, dest, moveOptions) {
+    if (!obj)  {throw 'Invalid target';}
+    if (!dest) {throw 'Invalid destination.';}
+    moveOptions = moveOptions || {};
+
+    var MOVE_MS = 100; // each movement in milli sec.
+    var duration = moveOptions.duration || 5000;
+        
+    var origin = obj.getPosition();
+    var heading = google.maps.geometry.spherical.computeHeading(origin, dest);
+    var totalDistance = google.maps.geometry.spherical.computeDistanceBetween(origin, dest);
+    var stepDistance = totalDistance / ((duration / MOVE_MS) || 10);
+    if (!totalDistance) {
+      console.error("Invalid totalDistance from origin,", origin, "destination,", dest);
+      return false;
+    }
+
+    var deferred = $q.defer();
+    var nextDistance=0, nextPosition, timer;
+    var run = function() {
+      console.log('totalDistance', totalDistance, 'nextDistance', nextDistance);
+      nextDistance += stepDistance;
+      nextPosition = google.maps.geometry.spherical.computeOffset(origin, nextDistance, heading);
+      obj.setPosition(nextPosition);
+      moveOptions.centered && obj.getMap().setCenter(nextPosition);
+
+      if (nextDistance >= totalDistance) {
+        $timeout.cancel(timer)
+        deferred.resolve(obj);
+        return false;
+      }
+      timer = $timeout(run, MOVE_MS); 
+    }
+    run();
+    return deferred.promise;
+  } // end move
+
+
+};
+
+app.controller('MapScriptCtrl', function($scope, _$q_, _$timeout_) {
+  $timeout = _$timeout_; $q = _$q_;
+  var vm = this;
+  vm.map;
+
+  var point1 = new google.maps.LatLng(37.76947653081494, -122.44674682617188);
+  var point2 = new google.maps.LatLng(37.80502010718875, -122.47386932373047);
+
+  vm.moveMarker = function() {
+
+    console.log(new Date(), 'animation starts!!!!');
+    $q.all([
+      NgMapAnimation.move(vm.map.markers.m1, point1, {duration: 1000}),
+      NgMapAnimation.move(vm.map.markers.m2, point1, {duration: 3000}),
+      NgMapAnimation.move(vm.map.markers.m3, point1, {duration: 5000})
+    ]).then(function() {
+      return NgMapAnimation.move(vm.map.markers.m1, point2, {centered:true});
+    })
+    .then(function() {
+      console.log(new Date(), 'All done!!!!');
+    });
+  };
+
+  $scope.$on('mapInitialized', function(e, map) {
+    vm.map = map;
+  });
+
+  this.showPos = function(e) {
+    console.log(e.latLng.lat(), e.latLng.lng());
+  };
+});
+</script>
+</head>
+
+<body>
+  <h3> Map-Script </h3>
+  <div ng-controller="MapScriptCtrl as vm">
+    <map center="37.7699298, -122.4469157" zoom="12" on-click="vm.showPos()">
+      <marker id="m1" position="37.80583388197601, -122.37018585205078"></marker>
+      <marker id="m2" position="37.73201519224944, -122.50373840332031"></marker>
+      <marker id="m3" position="37.73364434043925, -122.37979888916016"></marker>
+      <marker id="p1" position="37.76947653081494, -122.44674682617188"></marker>
+    </map>
+    <br/>
+    <button ng-click="vm.moveMarker()">Move Marker</button>
+  </div>
+</body>
+</html>
