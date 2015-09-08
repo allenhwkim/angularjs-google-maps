@@ -22,7 +22,9 @@
     return {
       restrict: 'E',
       require: '^map',
-
+      scope: {
+        data : '='
+      },
       link: function(scope, element, attrs, mapController) {
         var filtered = parser.filter(attrs);
 
