@@ -381,6 +381,7 @@ angular.module('ngMap', []);
     return {
       /**
        * @memberof NavigatorGeolocation
+       * @param {Object} geoLocationOptions the navigator geolocations options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
        * @param {function} success success callback function
        * @param {function} failure failure callback function
        * @example
@@ -393,16 +394,25 @@ angular.module('ngMap', []);
        * ```
        * @returns {HttpPromise} Future object
        */
-      getCurrentPosition: function() {
+      getCurrentPosition: function(geoLocationOptions) {
         var deferred = $q.defer();
         if (navigator.geolocation) {
+          
+          if (geoLocationOptions === undefined) {
+            geoLocationOptions = { timeout: 5000 };
+          }
+          else if (geoLocationOptions.timeout === undefined) {
+            geoLocationOptions.timeout = 5000;
+          }
+          
           navigator.geolocation.getCurrentPosition(
             function(position) {
               deferred.resolve(position);
             }, function(evt) {
               void 0;
               deferred.reject(evt);
-            }
+            },
+            geoLocationOptions
           );
         } else {
           deferred.reject("Browser Geolocation service failed.");
@@ -1156,7 +1166,9 @@ angular.module('ngMap', []);
     return {
       restrict: 'E',
       require: '^map',
-
+      scope: {
+        data : '='
+      },
       link: function(scope, element, attrs, mapController) {
         var filtered = parser.filter(attrs);
 
@@ -1634,6 +1646,8 @@ angular.module('ngMap', []);
  * @attr {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
  * @attr {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
+ * @attr {Object} geo-location-options
+ *    The navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
  * @attr {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
  * @attr {Boolean} default-style
@@ -1742,7 +1756,7 @@ angular.module('ngMap', []);
           mapOptions.center = new google.maps.LatLng(0, 0);
         } else if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
-          ctrl.getGeoLocation(center).then(function (latlng) {
+          ctrl.getGeoLocation(center, options.geoLocationOptions).then(function (latlng) {
             map.setCenter(latlng);
             var geoCallback = attrs.geoCallback;
             geoCallback && $parse(geoCallback)(scope);
@@ -1826,6 +1840,53 @@ angular.module('ngMap', []);
   };
 
   angular.module('ngMap').directive('map', ['Attr2Options', '$timeout', '$parse', mapDirective]);
+})();
+
+/**
+ * @ngdoc directive
+ * @name maps-engine-layer
+ * @description 
+ *   Requires:  map directive
+ *   Restrict To:  Element
+ *
+ * @example
+ * Example: 
+ *   <map zoom="14" center="[59.322506, 18.010025]">
+ *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
+ *    </map>
+ */
+(function() {
+  'use strict';
+
+  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
+    var parser = Attr2Options;
+
+    var getMapsEngineLayer = function(options, events) {
+      var layer = new google.maps.visualization.MapsEngineLayer(options);
+
+      for (var eventName in events) {
+        google.maps.event.addListener(layer, eventName, events[eventName]);
+      }
+
+      return layer;
+    };
+
+    
+    return {
+      restrict: 'E',
+      require: '^map',
+
+      link: function(scope, element, attrs, mapController) {
+        var filtered = parser.filter(attrs);
+        var options = parser.getOptions(filtered);
+        var events = parser.getEvents(scope, filtered, events);
+        void 0;
+
+        var layer = getMapsEngineLayer(options, events);
+        mapController.addObject('mapsEngineLayers', layer);
+      }
+     }; // return
+  }]);
 })();
 
 /* global google */
@@ -1952,12 +2013,13 @@ angular.module('ngMap', []);
      * @memberof MapController
      * @function getGeoLocation
      * @param {String} string an address to find the location
+     * @param {Object} geoLocationOptions the navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
      * @returns {Promise} latlng the location of the address
      */
-    this.getGeoLocation = function(string) {
+    this.getGeoLocation = function(string, geoLocationOptions) {
       var deferred = $q.defer();
       if (!string || string.match(/^current/i)) { // current location
-        NavigatorGeolocation.getCurrentPosition().then(
+        NavigatorGeolocation.getCurrentPosition(geoLocationOptions).then(
           function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
@@ -2015,53 +2077,6 @@ angular.module('ngMap', []);
 
   MapController.$inject = ['$scope', '$q', 'NavigatorGeolocation', 'GeoCoder', 'Attr2Options'];
   angular.module('ngMap').controller('MapController', MapController);
-})();
-
-/**
- * @ngdoc directive
- * @name maps-engine-layer
- * @description 
- *   Requires:  map directive
- *   Restrict To:  Element
- *
- * @example
- * Example: 
- *   <map zoom="14" center="[59.322506, 18.010025]">
- *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
- *    </map>
- */
-(function() {
-  'use strict';
-
-  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
-
-    var getMapsEngineLayer = function(options, events) {
-      var layer = new google.maps.visualization.MapsEngineLayer(options);
-
-      for (var eventName in events) {
-        google.maps.event.addListener(layer, eventName, events[eventName]);
-      }
-
-      return layer;
-    };
-
-    
-    return {
-      restrict: 'E',
-      require: '^map',
-
-      link: function(scope, element, attrs, mapController) {
-        var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
-        var events = parser.getEvents(scope, filtered, events);
-        void 0;
-
-        var layer = getMapsEngineLayer(options, events);
-        mapController.addObject('mapsEngineLayers', layer);
-      }
-     }; // return
-  }]);
 })();
 
 /**
