@@ -1176,7 +1176,7 @@ angular.module('ngMap', []);
          * set options 
          */
         var options = parser.getOptions(filtered);
-        options.data = $window[attrs.data] || scope[attrs.data];
+        options.data = $window[attrs.data] || scope[attrs.data] || scope.data;
         if (options.data instanceof Array) {
           options.data = new google.maps.MVCArray(options.data);
         } else {
