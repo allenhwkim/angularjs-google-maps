@@ -2,115 +2,168 @@
 <html>
   <head>
     <base href="./">
-    <title>JSDoc: directive:ngmap.custom-marker</title>
+    <title>JSDoc: directive:custom-marker</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
+    <link href="css/custom.css" type="text/css" rel="stylesheet">
     <script src="js/prettify.js"></script>
+    <script src="js/angular.min.js"></script>
   </head>
-  <body>
+  <body ng-app="">
     <nav>
       <h2><a href="index.html">Index</a></h2>
-      <div>
-        <h3>module: undefined</h3>
-        <div>
-          <h3>service</h3>
-          <ul>
-            <li>
-              <a href="Attr2Options.html">Attr2Options</a>
-            </li><li>
-              <a href="GeoCoder.html">GeoCoder</a>
-            </li><li>
-              <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
-            </li><li>
-              <a href="StreetView.html">StreetView</a>
-            </li>
+      <ul class="module">
+        <h3>
+          <a href="" ng-click="moduleundefined = !moduleundefined">
+            module: undefined
+          </a>
+          <i ng-cloak="" ng-show="moduleundefined">+</i>
+        </h3>
+        <li id="undefined" ng-hide="moduleundefined">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedservice = !undefinedservice">
+                service
+              </a>
+              <i ng-cloak="" ng-show="undefinedservice">+</i>
+            </h3>
+            <ul ng-hide="undefinedservice">
+              <li>
+                <a href="Attr2Options.html">Attr2Options</a>
+              </li><li>
+                <a href="GeoCoder.html">GeoCoder</a>
+              </li><li>
+                <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
+              </li><li>
+                <a href="StreetView.html">StreetView</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefineddirective = !undefineddirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="undefineddirective">+</i>
+            </h3>
+            <ul ng-hide="undefineddirective">
+              <li>
+                <a href="bicycling-layer.html">bicycling-layer</a>
+              </li><li>
+                <a href="cloud-layer.html">cloud-layer</a>
+              </li><li>
+                <a href="custom-control.html">custom-control</a>
+              </li><li>
+                <a href="directions.html">directions</a>
+              </li><li>
+                <a href="drawing-manager.html">drawing-manager</a>
+              </li><li>
+                <a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a>
+              </li><li>
+                <a href="fusion-tables-layer.html">fusion-tables-layer</a>
+              </li><li>
+                <a href="heatmap-layer.html">heatmap-layer</a>
+              </li><li>
+                <a href="info-window.html">info-window</a>
+              </li><li>
+                <a href="kml-layer.html">kml-layer</a>
+              </li><li>
+                <a href="map-data.html">map-data</a>
+              </li><li>
+                <a href="map-lazy-load.html">map-lazy-load</a>
+              </li><li>
+                <a href="map-type.html">map-type</a>
+              </li><li>
+                <a href="maps-engine-layer.html">maps-engine-layer</a>
+              </li><li>
+                <a href="marker.html">marker</a>
+              </li><li>
+                <a href="overlay-map-type.html">overlay-map-type</a>
+              </li><li>
+                <a href="places-auto-complete.html">places-auto-complete</a>
+              </li><li>
+                <a href="shape.html">shape</a>
+              </li><li>
+                <a href="streetview-panorama.html">streetview-panorama</a>
+              </li><li>
+                <a href="traffic-layer.html">traffic-layer</a>
+              </li><li>
+                <a href="transit-layer.html">transit-layer</a>
+              </li><li>
+                <a href="weather-layer.html">weather-layer</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
+                controller
+              </a>
+              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+            </h3>
+            <ul ng-hide="undefinedcontroller">
+              <li>
+                <a href="MapController.html">MapController</a>
+              </li>
+            </ul>
           </ul>
-        </div><div>
-          <h3>directive</h3>
-          <ul>
-            <li>
-              <a href="bicycling-layer.html">bicycling-layer</a>
-            </li><li>
-              <a href="cloud-layer.html">cloud-layer</a>
-            </li><li>
-              <a href="custom-control.html">custom-control</a>
-            </li><li>
-              <a href="directions.html">directions</a>
-            </li><li>
-              <a href="drawing-manager.html">drawing-manager</a>
-            </li><li>
-              <a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a>
-            </li><li>
-              <a href="fusion-tables-layer.html">fusion-tables-layer</a>
-            </li><li>
-              <a href="heatmap-layer.html">heatmap-layer</a>
-            </li><li>
-              <a href="info-window.html">info-window</a>
-            </li><li>
-              <a href="kml-layer.html">kml-layer</a>
-            </li><li>
-              <a href="map-data.html">map-data</a>
-            </li><li>
-              <a href="map-lazy-load.html">map-lazy-load</a>
-            </li><li>
-              <a href="map-type.html">map-type</a>
-            </li><li>
-              <a href="maps-engine-layer.html">maps-engine-layer</a>
-            </li><li>
-              <a href="marker.html">marker</a>
-            </li><li>
-              <a href="overlay-map-type.html">overlay-map-type</a>
-            </li><li>
-              <a href="places-auto-complete.html">places-auto-complete</a>
-            </li><li>
-              <a href="shape.html">shape</a>
-            </li><li>
-              <a href="streetview-panorama.html">streetview-panorama</a>
-            </li><li>
-              <a href="traffic-layer.html">traffic-layer</a>
-            </li><li>
-              <a href="transit-layer.html">transit-layer</a>
-            </li><li>
-              <a href="weather-layer.html">weather-layer</a>
-            </li>
+        </li>
+      </ul><ul class="module">
+        <h3>
+          <a href="" ng-click="modulengmap = !modulengmap">
+            module: ngmap
+          </a>
+          <i ng-cloak="" ng-show="modulengmap">+</i>
+        </h3>
+        <li id="ngmap" ng-hide="modulengmap">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="ngmapdirective = !ngmapdirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="ngmapdirective">+</i>
+            </h3>
+            <ul ng-hide="ngmapdirective">
+              <li>
+                <a href="ngmap.custom-marker.html">custom-marker</a>
+              </li>
+            </ul>
           </ul>
-        </div><div>
-          <h3>controller</h3>
-          <ul>
-            <li>
-              <a href="MapController.html">MapController</a>
-            </li>
+        </li>
+      </ul><ul class="module">
+        <h3>
+          <a href="" ng-click="modulengMap = !modulengMap">
+            module: ngMap
+          </a>
+          <i ng-cloak="" ng-show="modulengMap">+</i>
+        </h3>
+        <li id="ngMap" ng-hide="modulengMap">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="ngMapdirective = !ngMapdirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="ngMapdirective">+</i>
+            </h3>
+            <ul ng-hide="ngMapdirective">
+              <li>
+                <a href="ngMap.map.html">map</a>
+              </li>
+            </ul>
           </ul>
-        </div>
-      </div><div>
-        <h3>module: ngmap</h3>
-        <div>
-          <h3>directive</h3>
-          <ul>
-            <li>
-              <a href="ngmap.custom-marker.html">ngmap.custom-marker</a>
-            </li>
-          </ul>
-        </div>
-      </div><div>
-        <h3>module: ngMap</h3>
-        <div>
-          <h3>directive</h3>
-          <ul>
-            <li>
-              <a href="ngMap.map.html">ngMap.map</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+        </li>
+      </ul>
     </nav>
-    <h1 class="title">
-      directive:ngmap.custom-marker
-      <a class="name-link signature-attributes" href="source/ngmap.custom-marker.html#line1">source</a>
-    </h1>
-    <div id="main">
-      <div>
-        <div><div class="container-overview">
+    <div id="content" class="page-wrap">
+      <h1 class="title">
+        directive:custom-marker
+        <a class="name-link signature-attributes" href="source/ngmap.custom-marker.html#line1">source</a>
+      </h1>
+      <div id="main" class="big-container">
+        <!-- source code html -->
+        <!-- index.html -->
+        <!-- class files -->
+        <div>
+          <div><div class="container-overview">
       <dt></dt>
       <dd>
         <div class="description">
@@ -195,20 +248,20 @@
     </div>
     <section>
     </section></div>
+        </div>
       </div>
+      <footer style="clear:both">
+        Documentation generated by
+        <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+        using
+        <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template</a>
+      </footer>
     </div>
-    <footer style="clear:both">
-      Documentation generated by
-      <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-      using 
-      <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template</a> 
-    </footer>
     <!--%= prettyJson %-->
     <script>
       prettyPrint();
-      var lineNo = window.location.hash.match(/([0-9]*)$/)[0] || 1;
-      var line = document.querySelector("ol li:nth-child("+(lineNo||1)+")");
-      line && line.scrollIntoView();
+      var lineNo = window.location.hash.match(/#line([0-9]+)$/);
+      lineNo && document.querySelector("ol li:nth-child("+(lineNo[1])+")").scrollIntoView();
     </script>
   </body>
 </html>
