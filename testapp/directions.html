@@ -19,6 +19,17 @@
       body {padding: 5px}
       * { box-sizing: border-box; }
     </style>
+    <script>
+      angular.module('ngMap').run(function($rootScope) {
+        $rootScope.logLatLng = function(e) {
+          console.log('loc', e.latLng);
+        }
+        $rootScope.wayPoints = [
+          {location: {lat:44.32384807250689, lng: -78.079833984375}, stopover: true},
+          {location: {lat:44.55916341529184, lng: -76.17919921875}, stopover: true},
+        ];
+      });
+    </script>
   </head>
   <body ng-app="ngMap">
     <div style="width: 68%; float:left; height: 100%">
@@ -44,12 +55,12 @@
         <option value="TRANSIT">Transit</option>
       </select>
 
-      <map zoom="14" center="37.7699298, -122.4469157" style="height:90%" >
+      <map zoom="14" center="37.7699298, -122.4469157" style="height:90%" on-click="logLatLng()" >
         <directions 
           draggable="true"
           panel="directions-panel"
           travel-mode="{{travelMode}}"
-          waypoints="[{location:'kingston', stopover:true}]"
+          waypoints="{{wayPoints}}"
           origin="{{origin}}"
           destination="{{destination}}">
         </directions>
