@@ -2,10 +2,7 @@
   "name": "ngmap",
   "version": "1.13.5",
   "main": "build/scripts/ng-map.js",
-  "dependencies": {
-    "glob": "~4.0.2",
-    "gulp": "^3.8.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=0.8.0"
   },
@@ -16,6 +13,8 @@
     "angular-jsdoc": "^1.1.3",
     "compression": "~1.0.6",
     "express": "~4.4.1",
+    "glob": "~4.0.2",
+    "gulp": "^3.8.0",
     "gulp-bump": "~0.1.9",
     "gulp-clean": "~0.3.0",
     "gulp-concat": "~2.2.0",
