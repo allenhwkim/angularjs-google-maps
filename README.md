@@ -29,7 +29,6 @@ For Bower users,
 
 1. Include `ng-map.min.js` as well as google maps.  
     `<script src="http://maps.google.com/maps/api/js"></script>`  
-    `<script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>`
 
 2. name angular app as ngMap, or add it as a dependency
 
