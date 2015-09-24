@@ -19,7 +19,7 @@
   angular.module('myApp',['ngMap']).controller('MyCtrl', function($scope) {
     $scope.message = 'You can not hide. :)';
     $scope.callbackFunc = function(param) {
-      console.log('I know where '+ param +' are.' + $scope.message);
+      console.log('I know where '+ param +' are. ' + $scope.message);
       console.log('You are at' + $scope.map.getCenter());
     };
   });
