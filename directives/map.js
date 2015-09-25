@@ -32,6 +32,9 @@
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ * @attr {Boolean} single-info-window
+ *    When true the map will only display one info window at the time, if not set or false,
+ *    everytime an info window is open it will be displayed with the othe one.
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
@@ -137,6 +140,8 @@
           });
         }
         map.setOptions(mapOptions);
+
+        ctrl.singleInfoWindow = mapOptions.singleInfoWindow;
 
         /**
          * set events

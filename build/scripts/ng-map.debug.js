@@ -381,6 +381,7 @@ angular.module('ngMap', []);
     return {
       /**
        * @memberof NavigatorGeolocation
+       * @param {Object} geoLocationOptions the navigator geolocations options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
        * @param {function} success success callback function
        * @param {function} failure failure callback function
        * @example
@@ -393,16 +394,25 @@ angular.module('ngMap', []);
        * ```
        * @returns {HttpPromise} Future object
        */
-      getCurrentPosition: function() {
+      getCurrentPosition: function(geoLocationOptions) {
         var deferred = $q.defer();
         if (navigator.geolocation) {
+          
+          if (geoLocationOptions === undefined) {
+            geoLocationOptions = { timeout: 5000 };
+          }
+          else if (geoLocationOptions.timeout === undefined) {
+            geoLocationOptions.timeout = 5000;
+          }
+          
           navigator.geolocation.getCurrentPosition(
             function(position) {
               deferred.resolve(position);
             }, function(evt) {
               console.error(evt);
               deferred.reject(evt);
-            }
+            },
+            geoLocationOptions
           );
         } else {
           deferred.reject("Browser Geolocation service failed.");
@@ -1196,6 +1206,9 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
+ *   NOTE: this directive should **NOT** be used with `ng-repeat` because InfoWindow itself is a template,
+ *   and must be reused by each marker, thus, should not be redefined by `ng-repeat`.
+ *
  * @attr {Boolean} visible Indicates to show it when map is initialized
  * @attr {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
  * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
@@ -1287,6 +1300,7 @@ angular.module('ngMap', []);
 
     var linkFunc = function(scope, element, attrs, mapController) {
       element.css('display','none');
+
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
@@ -1326,6 +1340,10 @@ angular.module('ngMap', []);
         var infoWindow = mapController.map.infoWindows[id];
         var anchor = marker ? marker : (this.getPosition ? this : null);
         infoWindow.__open(mapController.map, scope, anchor);
+        if(mapController.singleInfoWindow) {
+          if(mapController.lastInfoWindow) scope.hideInfoWindow(e, mapController.lastInfoWindow);
+          mapController.lastInfoWindow = id;
+        }
       };
 
       /**
@@ -1634,6 +1652,8 @@ angular.module('ngMap', []);
  * @attr {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
  * @attr {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
+ * @attr {Object} geo-location-options
+ *    The navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
  * @attr {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
  * @attr {Boolean} default-style
@@ -1646,6 +1666,9 @@ angular.module('ngMap', []);
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ * @attr {Boolean} single-info-window
+ *    When true the map will only display one info window at the time, if not set or false,
+ *    everytime an info window is open it will be displayed with the othe one.
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
@@ -1742,7 +1765,7 @@ angular.module('ngMap', []);
           mapOptions.center = new google.maps.LatLng(0, 0);
         } else if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
-          ctrl.getGeoLocation(center).then(function (latlng) {
+          ctrl.getGeoLocation(center, options.geoLocationOptions).then(function (latlng) {
             map.setCenter(latlng);
             var geoCallback = attrs.geoCallback;
             geoCallback && $parse(geoCallback)(scope);
@@ -1751,6 +1774,8 @@ angular.module('ngMap', []);
           });
         }
         map.setOptions(mapOptions);
+
+        ctrl.singleInfoWindow = mapOptions.singleInfoWindow;
 
         /**
          * set events
@@ -1952,12 +1977,13 @@ angular.module('ngMap', []);
      * @memberof MapController
      * @function getGeoLocation
      * @param {String} string an address to find the location
+     * @param {Object} geoLocationOptions the navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
      * @returns {Promise} latlng the location of the address
      */
-    this.getGeoLocation = function(string) {
+    this.getGeoLocation = function(string, geoLocationOptions) {
       var deferred = $q.defer();
       if (!string || string.match(/^current/i)) { // current location
-        NavigatorGeolocation.getCurrentPosition().then(
+        NavigatorGeolocation.getCurrentPosition(geoLocationOptions).then(
           function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
