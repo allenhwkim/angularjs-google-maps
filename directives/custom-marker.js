@@ -63,8 +63,7 @@
         this.content = html;
         this.el.innerHTML = this.content;
       }
-      this.el.style.position = 'relative';
-      this.el.className = 'custom-marker';
+      this.el.style.position = 'absolute';
     };
 
     CustomMarker.prototype.setPosition = function(position) {
@@ -89,7 +88,7 @@
     };
 
     CustomMarker.prototype.addClass = function(className) {
-      var classNames = this.el.className.split(' ');
+      var classNames = this.el.className.trim().split(' ');
       (classNames.indexOf(className) == -1) && classNames.push(className);
       this.el.className = classNames.join(' ');
     };
@@ -140,6 +139,9 @@
         console.log("custom-marker options", options);
         var customMarker = new CustomMarker(options);
         customMarker.setContent(removedEl.innerHTML, scope);
+        var classNames = removedEl.firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
         console.log('customMarker', customMarker);
 
         console.log("custom-marker events", "events");
