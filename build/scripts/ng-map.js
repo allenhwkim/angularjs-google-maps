@@ -28,13 +28,13 @@ angular.module('ngMap', []);
     } catch(e) { // if not parsable, change little
       return str
         // wrap keys without quote with valid double quote
-        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
+        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":';})
         // replacing single quote wrapped ones to double quote 
-        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"';});
     }
   }
 
-  var Attr2Options = function($parse, $timeout, NavigatorGeolocation, GeoCoder) { 
+  var Attr2Options = function($parse, $timeout, $log, NavigatorGeolocation, GeoCoder) { 
 
     /**
      * Returns the attributes of an element as hash
@@ -130,14 +130,13 @@ angular.module('ngMap', []);
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
       if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-        void(0);
-      } else {
-        for (var attrName in attrs) {
-          var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            void 0;
-            attrsToObserve.push(camelCase(attrName));
-          }
+        $log.warn("It is NOT ideal to have many observers or watcher with ng-repeat. Please use it with your own risk");
+      }
+      for (var attrName in attrs) {
+        var attrValue = attrs[attrName];
+        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          void 0;
+          attrsToObserve.push(camelCase(attrName));
         }
       }
       return attrsToObserve;
@@ -286,8 +285,8 @@ angular.module('ngMap', []);
                       return str;
                     }
                   });
-                } 
-                
+                }
+
                 if (key === "style") {
                   var str = attr.charAt(0).toUpperCase() + attr.slice(1);
                   var objName = str.replace(/Options$/,'')+"Style";
@@ -320,8 +319,8 @@ angular.module('ngMap', []);
       orgAttributes: orgAttributes
     }; // return
 
-  }; 
-  Attr2Options.$inject= ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder'];
+  };
+  Attr2Options.$inject= ['$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder'];
 
   angular.module('ngMap').service('Attr2Options', Attr2Options);
 })();
