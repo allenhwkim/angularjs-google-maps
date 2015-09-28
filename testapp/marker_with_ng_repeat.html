@@ -27,12 +27,14 @@
 
 <body>
     <div ng-controller="MyCtrl">
+      <input type="checkbox" ng-model="draggable" /> Draggable
       <map zoom="11" center="[40.74, -74.18]">
         <marker ng-repeat="p in positions" position="{{p}}" title="pos: {{p}}"></marker>
       </map>
       <map zoom="11" center="[40.74, -74.18]">
-        <marker ng-repeat="p in positions2" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
+        <marker ng-repeat="p in positions2" draggable="{{draggable}}" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
       </map>
+      draggable: {{draggable}}
     </div>
 </body>
 </html>
