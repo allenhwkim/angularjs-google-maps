@@ -18,7 +18,7 @@
       angular.module('myApp', ['ngMap'])
        .controller('MyCtrl', function($scope) {
          $scope.types = "['establishment']";
-         $scope.placeChanged = function(place) {
+         $scope.placeChanged = function() {
            $scope.place = this.getPlace();
            console.log($scope.place.geometry.location.lat(), $scope.place.geometry.location.lng());
            $scope.map.setCenter($scope.place.geometry.location);
