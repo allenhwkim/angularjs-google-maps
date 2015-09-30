@@ -64,10 +64,6 @@
 (function() {
   'use strict';
 
-  var getBounds = function(points) {
-    return new google.maps.LatLngBounds(points[0], points[1]);
-  };
-  
   var getShape = function(options, events) {
     var shape;
 
@@ -78,14 +74,6 @@
     /**
      * set options
      */
-    if (options.icons) {
-      for (var i=0; i<options.icons.length; i++) {
-        var el = options.icons[i];
-        if (el.icon.path.match(/^[A-Z_]+$/)) {
-          el.icon.path =  google.maps.SymbolPath[el.icon.path];
-        }
-      }
-    }
     switch(shapeName) {
       case "circle":
         if (!(options.center instanceof google.maps.LatLng)) {
@@ -96,21 +84,17 @@
       case "polygon":
         shape = new google.maps.Polygon(options);
         break;
-      case "polyline": 
+      case "polyline":
         shape = new google.maps.Polyline(options);
         break;
-      case "rectangle": 
-        if (options.bounds) {
-          options.bounds = getBounds(options.bounds);
-        }
+      case "rectangle":
         shape = new google.maps.Rectangle(options);
         break;
       case "groundOverlay":
       case "image":
         var url = options.url;
-        var bounds = getBounds(options.bounds);
         var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
-        shape = new google.maps.GroundOverlay(url, bounds, opts);
+        shape = new google.maps.GroundOverlay(url, options.bounds, opts);
         break;
     }
 

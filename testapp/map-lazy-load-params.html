@@ -25,12 +25,12 @@ app.controller('MyCtrl', function($scope, $timeout) {
   //$scope.googleMapsUrl = 'https://maps.google.com/maps/api/js?v=3&client=XXXXXXXXenter-api-key-hereXXXX';
   $scope.googleMapsUrl = 'https://maps.google.com/maps/api/js'; // Just use the default for testing
   $scope.pauseLoading=true;
-  console.log("Starting a timer to wait for 5 seconds before the map will start loading");
+  console.log("Starting a timer to wait for 2 seconds before the map will start loading");
 
   $timeout(function() {
     console.debug("Showing the map. The google maps api should load now.");
     $scope.pauseLoading=false;
-  },5000);
+  },2000);
 
   $scope.showStore = function(evt, id) {
     $scope.store = $scope.stores[id];
@@ -42,7 +42,7 @@ app.controller('MyCtrl', function($scope, $timeout) {
   <body ng-controller="MyCtrl">
 
     <div data-ng-if="pauseLoading">
-      <h1>Waiting for 5 seconds to lazy load the maps API via map-lazy-load</h1>
+      <h1>Waiting for 2 seconds to lazy load the maps API via map-lazy-load</h1>
     </div>
     <div data-ng-if="!pauseLoading">
       <h1>Lazy Load Activated: the map should be visible</h1>
