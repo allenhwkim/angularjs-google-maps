@@ -291,6 +291,10 @@
         var infoWindow = mapController.map.infoWindows[id];
         var anchor = marker ? marker : (this.getPosition ? this : null);
         infoWindow.__open(mapController.map, scope, anchor);
+        if(mapController.singleInfoWindow) {
+          if(mapController.lastInfoWindow) scope.hideInfoWindow(e, mapController.lastInfoWindow);
+          mapController.lastInfoWindow = id;
+        }
       };
       /**
        * provide hideInfoWindow method to scope

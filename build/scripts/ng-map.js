@@ -125,12 +125,27 @@ angular.module('ngMap', []);
         } // catch(err2)
       } // catch(err)
 
+      // convert output more for shape bounds
+      if (options.key == 'bounds' && output instanceof Array) {
+        output = new google.maps.LatLngBounds(output[0], output[1]);
+      }
+
+      // convert output more for shape icons
+      if (options.key == 'icons' && output instanceof Array) {
+        for (var i=0; i<output.length; i++) {
+          var el = output[i];
+          if (el.icon.path.match(/^[A-Z_]+$/)) {
+            el.icon.path =  google.maps.SymbolPath[el.icon.path];
+          }
+        }
+      }
+
       // convert output more for marker icon
       if (options.key == 'icon' && output instanceof Object) {
         if ((""+output.path).match(/^[A-Z_]+$/)) {
-          output.path =  google.maps.SymbolPath[iconObj.path];
+          output.path = google.maps.SymbolPath[output.path];
         }
-        for (var key in output) {
+        for (var key in output) { //jshint ignore:line
           var arr = output[key];
           if (key == "anchor" || key == "origin") {
             output[key] = new google.maps.Point(arr[0], arr[1]);
@@ -148,7 +163,7 @@ angular.module('ngMap', []);
       if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
         //$log.warn("It is NOT ideal to have many observers or watcher with ng-repeat. Please use it with your own risk");
       }
-      for (var attrName in attrs) {
+      for (var attrName in attrs) { //jshint ignore:line
         var attrValue = attrs[attrName];
         if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
           void 0;
@@ -690,7 +705,7 @@ angular.module('ngMap', []);
  * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @param $compile {service} AngularJS $compile service
  * @param $timeout {service} AngularJS $timeout
- * @description 
+ * @description
  *   Marker with html
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -700,7 +715,7 @@ angular.module('ngMap', []);
  * @attr {Boolean} visible optional
  * @example
  *
- * Example: 
+ * Example:
  *   <map center="41.850033,-87.6500523" zoom="3">
  *     <custom-marker position="41.850033,-87.6500523">
  *       <div>
@@ -718,14 +733,15 @@ angular.module('ngMap', []);
     e.preventDefault && e.preventDefault();
     e.cancelBubble = true;
     e.stopPropagation && e.stopPropagation();
-  }; 
+  };
 
   var CustomMarker = function(options) {
     options = options || {};
 
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
-    this.visible = true; for (var key in options) {
+    this.visible = true;
+    for (var key in options) {
      this[key] = options[key];
     }
   };
@@ -777,7 +793,7 @@ angular.module('ngMap', []);
       (classNames.indexOf(className) == -1) && classNames.push(className);
       this.el.className = classNames.join(' ');
     };
-    
+
     CustomMarker.prototype.removeClass = function(className) {
       var classNames = this.el.className.split(' ');
       var index = classNames.indexOf(className);
@@ -788,13 +804,13 @@ angular.module('ngMap', []);
     CustomMarker.prototype.onAdd = function() {
       this.getPanes().overlayMouseTarget.appendChild(this.el);
     };
-    
+
     CustomMarker.prototype.draw = function() {
       this.setPosition();
       this.setZIndex(this.zIndex);
       this.setVisible(this.visible);
     };
-    
+
     CustomMarker.prototype.onRemove = function() {
       this.el.parentNode.removeChild(this.el);
       this.el = null;
@@ -1357,6 +1373,10 @@ angular.module('ngMap', []);
         var infoWindow = mapController.map.infoWindows[id];
         var anchor = marker ? marker : (this.getPosition ? this : null);
         infoWindow.__open(mapController.map, scope, anchor);
+        if(mapController.singleInfoWindow) {
+          if(mapController.lastInfoWindow) scope.hideInfoWindow(e, mapController.lastInfoWindow);
+          mapController.lastInfoWindow = id;
+        }
       };
 
       /**
@@ -1679,6 +1699,9 @@ angular.module('ngMap', []);
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ * @attr {Boolean} single-info-window
+ *    When true the map will only display one info window at the time, if not set or false,
+ *    everytime an info window is open it will be displayed with the othe one.
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
@@ -1784,6 +1807,8 @@ angular.module('ngMap', []);
           });
         }
         map.setOptions(mapOptions);
+
+        ctrl.singleInfoWindow = mapOptions.singleInfoWindow;
 
         /**
          * set events
@@ -2389,10 +2414,6 @@ angular.module('ngMap', []);
 (function() {
   'use strict';
 
-  var getBounds = function(points) {
-    return new google.maps.LatLngBounds(points[0], points[1]);
-  };
-  
   var getShape = function(options, events) {
     var shape;
 
@@ -2403,14 +2424,6 @@ angular.module('ngMap', []);
     /**
      * set options
      */
-    if (options.icons) {
-      for (var i=0; i<options.icons.length; i++) {
-        var el = options.icons[i];
-        if (el.icon.path.match(/^[A-Z_]+$/)) {
-          el.icon.path =  google.maps.SymbolPath[el.icon.path];
-        }
-      }
-    }
     switch(shapeName) {
       case "circle":
         if (!(options.center instanceof google.maps.LatLng)) {
@@ -2421,21 +2434,17 @@ angular.module('ngMap', []);
       case "polygon":
         shape = new google.maps.Polygon(options);
         break;
-      case "polyline": 
+      case "polyline":
         shape = new google.maps.Polyline(options);
         break;
-      case "rectangle": 
-        if (options.bounds) {
-          options.bounds = getBounds(options.bounds);
-        }
+      case "rectangle":
         shape = new google.maps.Rectangle(options);
         break;
       case "groundOverlay":
       case "image":
         var url = options.url;
-        var bounds = getBounds(options.bounds);
         var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
-        shape = new google.maps.GroundOverlay(url, bounds, opts);
+        shape = new google.maps.GroundOverlay(url, options.bounds, opts);
         break;
     }
 
