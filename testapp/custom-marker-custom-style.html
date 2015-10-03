@@ -102,19 +102,20 @@
           this.style.backgroundColor = 'white';
         };
         $rootScope.click = function() {console.log('click')};
+        $rootScope.customMarkers = [
+          {address: "1600 pennsylvania ave, washington DC", "class": "my1"},
+          {address: "600 pennsylvania ave, washington DC",  "class": "my2"},
+        ];
       });
     </script>
   </head>
   <body>
     <div>
       <map zoom="13" center="1600 pennsylvania ave, washington DC">
-        <custom-marker position="1600 pennsylvania ave, washington DC"
+        <custom-marker ng-repeat="cm in customMarkers" position="{{cm.address}}"
           on-mouseover="mouseover()" on-mouseout="mouseout()"
           on-click="click()">
-          <div class="my1"> Custom Marker 1 </div>
-        </custom-marker>
-        <custom-marker position="600 pennsylvania ave, washington DC">
-          <div class="my2"> Custom Marker 2 </div>
+          <div class="{{cm.class}}"><div> Custom Marker {{cm.class}}</div> </div>
         </custom-marker>
       </map>
     </div>
