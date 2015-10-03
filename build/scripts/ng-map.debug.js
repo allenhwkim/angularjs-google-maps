@@ -851,7 +851,7 @@ angular.module('ngMap', []);
 
         element.bind('$destroy', function() {
           //Is it required to remove event listeners when DOM is removed?
-          mapController.deleteObject('customMarkers', marker);
+          mapController.deleteObject('customMarkers', customMarker);
         });
 
       } //link
