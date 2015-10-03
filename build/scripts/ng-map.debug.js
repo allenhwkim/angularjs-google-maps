@@ -703,7 +703,6 @@ angular.module('ngMap', []);
  * @memberof ngmap
  * @name custom-marker
  * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @param $compile {service} AngularJS $compile service
  * @param $timeout {service} AngularJS $timeout
  * @description
  *   Marker with html
@@ -727,7 +726,7 @@ angular.module('ngMap', []);
  */
 (function() {
   'use strict';
-  var parser, $compile, $timeout;
+  var parser, $timeout;
 
   var cAbortEvent = function (e) {
     e.preventDefault && e.preventDefault();
@@ -750,20 +749,8 @@ angular.module('ngMap', []);
 
     CustomMarker.prototype = new google.maps.OverlayView();
 
-    CustomMarker.prototype.setContent = function(html, scope) {
-      this.html = html;
-      if (scope) {
-        var compiledEl = $compile(html)(scope);
-        var customMarkerEl = compiledEl[0];
-        var me = this;
-        $timeout(function() {
-          me.content = customMarkerEl.innerHTML;
-          me.el.innerHTML = me.content;
-        });
-      } else {
-        this.content = html;
-        this.el.innerHTML = this.content;
-      }
+    CustomMarker.prototype.setContent = function(html) {
+      this.el.innerHTML = this.content = html;
       this.el.style.position = 'absolute';
     };
 
@@ -817,9 +804,8 @@ angular.module('ngMap', []);
     };
   };
 
-  var customMarkerDirective = function(Attr2Options, _$compile_, _$timeout_)  {
+  var customMarkerDirective = function(Attr2Options, _$timeout_)  {
     parser = Attr2Options;
-    $compile = _$compile_;
     $timeout = _$timeout_;
     setCustomMarker();
 
@@ -839,11 +825,22 @@ angular.module('ngMap', []);
         var removedEl = element[0].parentElement.removeChild(element[0]);
         console.log("custom-marker options", options);
         var customMarker = new CustomMarker(options);
-        customMarker.setContent(removedEl.innerHTML, scope);
-        var classNames = removedEl.firstElementChild.className;
-        customMarker.addClass('custom-marker');
-        customMarker.addClass(classNames);
-        console.log('customMarker', customMarker);
+
+        $timeout(function() { //apply contents, class, and location after it is compiled
+          customMarker.setContent(removedEl.innerHTML);
+          var classNames = removedEl.firstElementChild.className;
+          customMarker.addClass('custom-marker');
+          customMarker.addClass(classNames);
+          console.log('customMarker', customMarker);
+
+          if (!(options.position instanceof google.maps.LatLng)) {
+            mapController.getGeoLocation(options.position).then(
+              function(latlng) {
+                customMarker.setPosition(latlng);
+              }
+            );
+          }
+        });
 
         console.log("custom-marker events", "events");
         for (var eventName in events) {
@@ -851,14 +848,6 @@ angular.module('ngMap', []);
             customMarker.el, eventName, events[eventName]);
         }
         mapController.addObject('customMarkers', customMarker);
-
-        if (!(options.position instanceof google.maps.LatLng)) {
-          mapController.getGeoLocation(options.position).then(
-            function(latlng) {
-              customMarker.setPosition(latlng);
-            }
-          );
-        }
 
         element.bind('$destroy', function() {
           //Is it required to remove event listeners when DOM is removed?
@@ -868,7 +857,7 @@ angular.module('ngMap', []);
       } //link
     }; // return
   };// function
-  customMarkerDirective.$inject = ['Attr2Options', '$compile', '$timeout'];
+  customMarkerDirective.$inject = ['Attr2Options', '$timeout'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();
