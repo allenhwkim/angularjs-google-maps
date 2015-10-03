@@ -12,12 +12,16 @@
     <script src="../services/geo_coder.js"></script>
     <script src="../services/attr2_options.js"></script>
     <script src="../directives/places-auto-complete.js"></script>
+    <script src="../directives/map_controller.js"></script>
+    <script src="../directives/map.js"></script>
     <script>
       angular.module('myApp', ['ngMap'])
        .controller('MyCtrl', function($scope) {
          $scope.types = "['establishment']";
          $scope.placeChanged = function() {
            $scope.place = this.getPlace();
+           console.log($scope.place.geometry.location.lat(), $scope.place.geometry.location.lng());
+           $scope.map.setCenter($scope.place.geometry.location);
          }
        });
     </script>
@@ -42,6 +46,7 @@
       Location: {{place.geometry.location}}<br/>
     </div>
     address : {{address}}
+    <map></map>
   </body>
 </html>
 

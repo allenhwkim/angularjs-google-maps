@@ -10,6 +10,9 @@
  *
  *   Restrict To:  Element
  *
+ *   NOTE: this directive should **NOT** be used with `ng-repeat` because InfoWindow itself is a template,
+ *   and must be reused by each marker, thus, should not be redefined by `ng-repeat`.
+ *
  * @attr {Boolean} visible Indicates to show it when map is initialized
  * @attr {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
  * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
@@ -101,6 +104,7 @@
 
     var linkFunc = function(scope, element, attrs, mapController) {
       element.css('display','none');
+
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
@@ -140,6 +144,10 @@
         var infoWindow = mapController.map.infoWindows[id];
         var anchor = marker ? marker : (this.getPosition ? this : null);
         infoWindow.__open(mapController.map, scope, anchor);
+        if(mapController.singleInfoWindow) {
+          if(mapController.lastInfoWindow) scope.hideInfoWindow(e, mapController.lastInfoWindow);
+          mapController.lastInfoWindow = id;
+        }
       };
 
       /**

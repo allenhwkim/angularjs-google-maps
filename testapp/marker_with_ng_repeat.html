@@ -17,9 +17,7 @@
 <script src="../services/attr2_options.js"></script>
 <script>
   function MyCtrl($scope) {
-    $scope.positions =[ [40.71, -74.21], [40.72, -74.20], [40.73, -74.19],
-      [40.74, -74.18], [40.75, -74.17], [40.76, -74.16], [40.77, -74.15]];
-    $scope.positions2 =[ {pos:[40.71, -74.21]}, {pos:[40.72, -74.20]}, {pos: [40.73, -74.19]},
+    $scope.positions =[ {pos:[40.71, -74.21]}, {pos:[40.72, -74.20]}, {pos: [40.73, -74.19]},
       {pos:[40.74, -74.18]}, {pos:[40.75, -74.17]}, {pos:[40.76, -74.16]}, {pos:[40.77, -74.15]}];
   }
 </script>
@@ -27,12 +25,11 @@
 
 <body>
     <div ng-controller="MyCtrl">
+      <input type="checkbox" ng-model="draggable" /> Draggable
       <map zoom="11" center="[40.74, -74.18]">
-        <marker ng-repeat="p in positions" position="{{p}}" title="pos: {{p}}"></marker>
+        <marker ng-repeat="p in positions" draggable="{{draggable}}" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
       </map>
-      <map zoom="11" center="[40.74, -74.18]">
-        <marker ng-repeat="p in positions2" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-      </map>
+      draggable: {{draggable}}
     </div>
 </body>
 </html>

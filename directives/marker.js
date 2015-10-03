@@ -41,25 +41,9 @@
   var getMarker = function(options, events) {
     var marker;
 
-    /**
-     * set options
-     */
-    if (options.icon instanceof Object) {
-      if ((""+options.icon.path).match(/^[A-Z_]+$/)) {
-        options.icon.path =  google.maps.SymbolPath[options.icon.path];
-      }
-      for (var key in options.icon) {
-        var arr = options.icon[key];
-        if (key == "anchor" || key == "origin") {
-          options.icon[key] = new google.maps.Point(arr[0], arr[1]);
-        } else if (key == "size" || key == "scaledSize") {
-          options.icon[key] = new google.maps.Size(arr[0], arr[1]);
-        } 
-      }
-    }
     if (!(options.position instanceof google.maps.LatLng)) {
       options.position = new google.maps.LatLng(0,0);
-    } 
+    }
     marker = new google.maps.Marker(options);
 
     /**

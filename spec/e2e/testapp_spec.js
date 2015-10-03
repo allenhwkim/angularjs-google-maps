@@ -1,9 +1,10 @@
 /*global jasmine*/
 var excludes = [
   "index.html",
-  "map_events.html", 
-  "map_lazy_init.html", 
-  "map-lazy-load.html", 
+  "map_events.html",
+  "map_lazy_init.html",
+  "map-lazy-load.html",
+  "map-lazy-load-params.html",
   "marker_with_dynamic_position.html",
   "marker_with_dynamic_address.html",
   "marker_with_info_window.html",

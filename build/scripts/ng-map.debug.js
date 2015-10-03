@@ -28,13 +28,13 @@ angular.module('ngMap', []);
     } catch(e) { // if not parsable, change little
       return str
         // wrap keys without quote with valid double quote
-        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
+        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":';})
         // replacing single quote wrapped ones to double quote 
-        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"';});
     }
   }
 
-  var Attr2Options = function($parse, $timeout, NavigatorGeolocation, GeoCoder) { 
+  var Attr2Options = function($parse, $timeout, $log, NavigatorGeolocation, GeoCoder) { 
 
     /**
      * Returns the attributes of an element as hash
@@ -124,20 +124,50 @@ angular.module('ngMap', []);
           }
         } // catch(err2)
       } // catch(err)
+
+      // convert output more for shape bounds
+      if (options.key == 'bounds' && output instanceof Array) {
+        output = new google.maps.LatLngBounds(output[0], output[1]);
+      }
+
+      // convert output more for shape icons
+      if (options.key == 'icons' && output instanceof Array) {
+        for (var i=0; i<output.length; i++) {
+          var el = output[i];
+          if (el.icon.path.match(/^[A-Z_]+$/)) {
+            el.icon.path =  google.maps.SymbolPath[el.icon.path];
+          }
+        }
+      }
+
+      // convert output more for marker icon
+      if (options.key == 'icon' && output instanceof Object) {
+        if ((""+output.path).match(/^[A-Z_]+$/)) {
+          output.path = google.maps.SymbolPath[output.path];
+        }
+        for (var key in output) { //jshint ignore:line
+          var arr = output[key];
+          if (key == "anchor" || key == "origin") {
+            output[key] = new google.maps.Point(arr[0], arr[1]);
+          } else if (key == "size" || key == "scaledSize") {
+            output[key] = new google.maps.Size(arr[0], arr[1]);
+          }
+        }
+      }
+
       return output;
     };
 
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
       if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-        void(0);
-      } else {
-        for (var attrName in attrs) {
-          var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
-            attrsToObserve.push(camelCase(attrName));
-          }
+        //$log.warn("It is NOT ideal to have many observers or watcher with ng-repeat. Please use it with your own risk");
+      }
+      for (var attrName in attrs) { //jshint ignore:line
+        var attrValue = attrs[attrName];
+        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+          attrsToObserve.push(camelCase(attrName));
         }
       }
       return attrsToObserve;
@@ -286,8 +316,8 @@ angular.module('ngMap', []);
                       return str;
                     }
                   });
-                } 
-                
+                }
+
                 if (key === "style") {
                   var str = attr.charAt(0).toUpperCase() + attr.slice(1);
                   var objName = str.replace(/Options$/,'')+"Style";
@@ -320,8 +350,8 @@ angular.module('ngMap', []);
       orgAttributes: orgAttributes
     }; // return
 
-  }; 
-  Attr2Options.$inject= ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder'];
+  };
+  Attr2Options.$inject= ['$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder'];
 
   angular.module('ngMap').service('Attr2Options', Attr2Options);
 })();
@@ -381,6 +411,7 @@ angular.module('ngMap', []);
     return {
       /**
        * @memberof NavigatorGeolocation
+       * @param {Object} geoLocationOptions the navigator geolocations options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
        * @param {function} success success callback function
        * @param {function} failure failure callback function
        * @example
@@ -393,16 +424,25 @@ angular.module('ngMap', []);
        * ```
        * @returns {HttpPromise} Future object
        */
-      getCurrentPosition: function() {
+      getCurrentPosition: function(geoLocationOptions) {
         var deferred = $q.defer();
         if (navigator.geolocation) {
+          
+          if (geoLocationOptions === undefined) {
+            geoLocationOptions = { timeout: 5000 };
+          }
+          else if (geoLocationOptions.timeout === undefined) {
+            geoLocationOptions.timeout = 5000;
+          }
+          
           navigator.geolocation.getCurrentPosition(
             function(position) {
               deferred.resolve(position);
             }, function(evt) {
               console.error(evt);
               deferred.reject(evt);
-            }
+            },
+            geoLocationOptions
           );
         } else {
           deferred.reject("Browser Geolocation service failed.");
@@ -665,7 +705,7 @@ angular.module('ngMap', []);
  * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @param $compile {service} AngularJS $compile service
  * @param $timeout {service} AngularJS $timeout
- * @description 
+ * @description
  *   Marker with html
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -675,7 +715,7 @@ angular.module('ngMap', []);
  * @attr {Boolean} visible optional
  * @example
  *
- * Example: 
+ * Example:
  *   <map center="41.850033,-87.6500523" zoom="3">
  *     <custom-marker position="41.850033,-87.6500523">
  *       <div>
@@ -693,14 +733,15 @@ angular.module('ngMap', []);
     e.preventDefault && e.preventDefault();
     e.cancelBubble = true;
     e.stopPropagation && e.stopPropagation();
-  }; 
+  };
 
   var CustomMarker = function(options) {
     options = options || {};
 
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
-    this.visible = true; for (var key in options) {
+    this.visible = true;
+    for (var key in options) {
      this[key] = options[key];
     }
   };
@@ -723,8 +764,7 @@ angular.module('ngMap', []);
         this.content = html;
         this.el.innerHTML = this.content;
       }
-      this.el.style.position = 'relative';
-      this.el.className = 'custom-marker';
+      this.el.style.position = 'absolute';
     };
 
     CustomMarker.prototype.setPosition = function(position) {
@@ -749,11 +789,11 @@ angular.module('ngMap', []);
     };
 
     CustomMarker.prototype.addClass = function(className) {
-      var classNames = this.el.className.split(' ');
+      var classNames = this.el.className.trim().split(' ');
       (classNames.indexOf(className) == -1) && classNames.push(className);
       this.el.className = classNames.join(' ');
     };
-    
+
     CustomMarker.prototype.removeClass = function(className) {
       var classNames = this.el.className.split(' ');
       var index = classNames.indexOf(className);
@@ -764,13 +804,13 @@ angular.module('ngMap', []);
     CustomMarker.prototype.onAdd = function() {
       this.getPanes().overlayMouseTarget.appendChild(this.el);
     };
-    
+
     CustomMarker.prototype.draw = function() {
       this.setPosition();
       this.setZIndex(this.zIndex);
       this.setVisible(this.visible);
     };
-    
+
     CustomMarker.prototype.onRemove = function() {
       this.el.parentNode.removeChild(this.el);
       this.el = null;
@@ -800,6 +840,9 @@ angular.module('ngMap', []);
         console.log("custom-marker options", options);
         var customMarker = new CustomMarker(options);
         customMarker.setContent(removedEl.innerHTML, scope);
+        var classNames = removedEl.firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
         console.log('customMarker', customMarker);
 
         console.log("custom-marker events", "events");
@@ -1196,6 +1239,9 @@ angular.module('ngMap', []);
  *
  *   Restrict To:  Element
  *
+ *   NOTE: this directive should **NOT** be used with `ng-repeat` because InfoWindow itself is a template,
+ *   and must be reused by each marker, thus, should not be redefined by `ng-repeat`.
+ *
  * @attr {Boolean} visible Indicates to show it when map is initialized
  * @attr {Boolean} visible-on-marker Indicates to show it on a marker when map is initialized
  * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showDetail()"
@@ -1287,6 +1333,7 @@ angular.module('ngMap', []);
 
     var linkFunc = function(scope, element, attrs, mapController) {
       element.css('display','none');
+
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
@@ -1326,6 +1373,10 @@ angular.module('ngMap', []);
         var infoWindow = mapController.map.infoWindows[id];
         var anchor = marker ? marker : (this.getPosition ? this : null);
         infoWindow.__open(mapController.map, scope, anchor);
+        if(mapController.singleInfoWindow) {
+          if(mapController.lastInfoWindow) scope.hideInfoWindow(e, mapController.lastInfoWindow);
+          mapController.lastInfoWindow = id;
+        }
       };
 
       /**
@@ -1634,6 +1685,8 @@ angular.module('ngMap', []);
  * @attr {Expression} geo-callback if center is an address or current location, the expression is will be executed when geo-lookup is successful. e.g., geo-callback="showMyStoreInfo()"
  * @attr {Array} geo-fallback-center
  *    The center of map incase geolocation failed. i.e. [0,0]
+ * @attr {Object} geo-location-options
+ *    The navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
  * @attr {Boolean} zoom-to-include-markers
  *    When true, map boundary will be changed automatially to include all markers when initialized
  * @attr {Boolean} default-style
@@ -1646,6 +1699,9 @@ angular.module('ngMap', []);
  *    https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,
  *    https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ * @attr {Boolean} single-info-window
+ *    When true the map will only display one info window at the time, if not set or false,
+ *    everytime an info window is open it will be displayed with the othe one.
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
@@ -1742,7 +1798,7 @@ angular.module('ngMap', []);
           mapOptions.center = new google.maps.LatLng(0, 0);
         } else if (!(center instanceof google.maps.LatLng)) {
           delete mapOptions.center;
-          ctrl.getGeoLocation(center).then(function (latlng) {
+          ctrl.getGeoLocation(center, options.geoLocationOptions).then(function (latlng) {
             map.setCenter(latlng);
             var geoCallback = attrs.geoCallback;
             geoCallback && $parse(geoCallback)(scope);
@@ -1751,6 +1807,8 @@ angular.module('ngMap', []);
           });
         }
         map.setOptions(mapOptions);
+
+        ctrl.singleInfoWindow = mapOptions.singleInfoWindow;
 
         /**
          * set events
@@ -1952,12 +2010,13 @@ angular.module('ngMap', []);
      * @memberof MapController
      * @function getGeoLocation
      * @param {String} string an address to find the location
+     * @param {Object} geoLocationOptions the navigator geolocation options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added
      * @returns {Promise} latlng the location of the address
      */
-    this.getGeoLocation = function(string) {
+    this.getGeoLocation = function(string, geoLocationOptions) {
       var deferred = $q.defer();
       if (!string || string.match(/^current/i)) { // current location
-        NavigatorGeolocation.getCurrentPosition().then(
+        NavigatorGeolocation.getCurrentPosition(geoLocationOptions).then(
           function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
@@ -2107,25 +2166,9 @@ angular.module('ngMap', []);
   var getMarker = function(options, events) {
     var marker;
 
-    /**
-     * set options
-     */
-    if (options.icon instanceof Object) {
-      if ((""+options.icon.path).match(/^[A-Z_]+$/)) {
-        options.icon.path =  google.maps.SymbolPath[options.icon.path];
-      }
-      for (var key in options.icon) {
-        var arr = options.icon[key];
-        if (key == "anchor" || key == "origin") {
-          options.icon[key] = new google.maps.Point(arr[0], arr[1]);
-        } else if (key == "size" || key == "scaledSize") {
-          options.icon[key] = new google.maps.Size(arr[0], arr[1]);
-        } 
-      }
-    }
     if (!(options.position instanceof google.maps.LatLng)) {
       options.position = new google.maps.LatLng(0,0);
-    } 
+    }
     marker = new google.maps.Marker(options);
 
     /**
@@ -2371,10 +2414,6 @@ angular.module('ngMap', []);
 (function() {
   'use strict';
 
-  var getBounds = function(points) {
-    return new google.maps.LatLngBounds(points[0], points[1]);
-  };
-  
   var getShape = function(options, events) {
     var shape;
 
@@ -2385,14 +2424,6 @@ angular.module('ngMap', []);
     /**
      * set options
      */
-    if (options.icons) {
-      for (var i=0; i<options.icons.length; i++) {
-        var el = options.icons[i];
-        if (el.icon.path.match(/^[A-Z_]+$/)) {
-          el.icon.path =  google.maps.SymbolPath[el.icon.path];
-        }
-      }
-    }
     switch(shapeName) {
       case "circle":
         if (!(options.center instanceof google.maps.LatLng)) {
@@ -2403,21 +2434,17 @@ angular.module('ngMap', []);
       case "polygon":
         shape = new google.maps.Polygon(options);
         break;
-      case "polyline": 
+      case "polyline":
         shape = new google.maps.Polyline(options);
         break;
-      case "rectangle": 
-        if (options.bounds) {
-          options.bounds = getBounds(options.bounds);
-        }
+      case "rectangle":
         shape = new google.maps.Rectangle(options);
         break;
       case "groundOverlay":
       case "image":
         var url = options.url;
-        var bounds = getBounds(options.bounds);
         var opts = {opacity: options.opacity, clickable: options.clickable, id:options.id};
-        shape = new google.maps.GroundOverlay(url, bounds, opts);
+        shape = new google.maps.GroundOverlay(url, options.bounds, opts);
         break;
     }
 
