@@ -1,0 +1,128 @@
+<!doctype html>
+<html ng-app="ngMap">
+  <head>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="lib/angular.js"></script>
+    <!--
+    <script src="../build/scripts/ng-map.min.js"></script>
+    -->
+    <script src="../app.js"></script>
+    <script src="../directives/map_controller.js"></script>
+    <script src="../directives/map.js"></script>
+    <script src="../directives/marker.js"></script>
+    <script src="../directives/custom-marker.js"></script>
+    <script src="../services/geo_coder.js"></script>
+    <script src="../services/navigator_geolocation.js"></script>
+    <script src="../services/attr2_options.js"></script>
+    <style>
+      .custom-marker.my1 {
+        font-size: 1.5em;
+        padding: 10px;
+        background: #fff;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border: #7F7F7F solid 1px;
+      }
+
+      .custom-marker.my1:after {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 7px 6px 0;
+        border-color: #fff transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        margin-left: -6px;
+        bottom: -6px;
+        left: 50%;
+      }
+
+      .custom-marker.my1:before {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 7px 6px 0;
+        border-color: #7F7F7F transparent;
+        display: block;
+        width: 0;
+        z-index: 0;
+        margin-left: -6px;
+        bottom: -7px;
+        left: 50%;
+      }
+
+      .custom-marker.my2 {
+        font-size: 1.5em;
+        padding: 10px;
+        background: #fff;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border: #7F7F7F solid 1px;
+        background: red;
+      }
+
+      .custom-marker.my2:after {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 7px 6px 0;
+        border-color: red transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        margin-left: -6px;
+        bottom: -6px;
+        left: 50%;
+      }
+
+      .custom-marker.my2:before {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 7px 6px 0;
+        border-color: #7F7F7F transparent;
+        display: block;
+        width: 0;
+        z-index: 0;
+        margin-left: -6px;
+        bottom: -7px;
+        left: 50%;
+      }
+    </style>
+    <script>
+      angular.module('ngMap').run(function($rootScope) {
+        $rootScope.mouseover = function() {
+          console.log('mouseover', this);
+          this.style.backgroundColor = 'grey';
+        };
+        $rootScope.mouseout = function() {
+          this.style.backgroundColor = 'white';
+        };
+        $rootScope.click = function() {console.log('click')};
+        $rootScope.customMarkers = [
+          {address: "1600 pennsylvania ave, washington DC", "class": "my1"},
+          {address: "600 pennsylvania ave, washington DC",  "class": "my2"},
+        ];
+        $rootScope.world = "World";
+      });
+    </script>
+  </head>
+  <body>
+    <map zoom="13" center="1600 pennsylvania ave, washington DC">
+      <custom-marker ng-repeat="cm in customMarkers" position="{{cm.address}}"
+        on-mouseover="mouseover()" on-mouseout="mouseout()"
+        on-click="click()">
+        <div class="{{cm.class}}">
+          <div> Custom Marker {{cm.class}}</div>
+          <div> Hello {{world}}</div>
+        </div>
+      </custom-marker>
+    </map>
+    <br/>
+    Enter your name : <input ng-model="world" />
+  </body>
+</html>
+

@@ -21,7 +21,6 @@
           var i=0, interval, chats = document.querySelectorAll('#chats li');
           var talk = function(){
             var el = chats[i];
-console.log(i, chats.length, el, $scope.map.customMarkers);
             $scope.map.customMarkers.usa.setVisible(false);
             $scope.map.customMarkers.can.setVisible(false);
             $scope.map.customMarkers[el.className].setContent(el.innerHTML);
