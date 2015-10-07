@@ -726,13 +726,7 @@ angular.module('ngMap', []);
  */
 (function() {
   'use strict';
-  var parser, $timeout;
-
-  var cAbortEvent = function (e) {
-    e.preventDefault && e.preventDefault();
-    e.cancelBubble = true;
-    e.stopPropagation && e.stopPropagation();
-  };
+  var parser, $timeout, $compile;
 
   var CustomMarker = function(options) {
     options = options || {};
@@ -740,7 +734,7 @@ angular.module('ngMap', []);
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
     this.visible = true;
-    for (var key in options) {
+    for (var key in options) { /* jshint ignore:line */
      this[key] = options[key];
     }
   };
@@ -749,13 +743,16 @@ angular.module('ngMap', []);
 
     CustomMarker.prototype = new google.maps.OverlayView();
 
-    CustomMarker.prototype.setContent = function(html) {
-      this.el.innerHTML = this.content = html;
+    CustomMarker.prototype.setContent = function(html, scope) {
+      this.el.innerHTML = html;
       this.el.style.position = 'absolute';
+      if (scope) {
+        $compile(angular.element(this.el).contents())(scope);
+      }
     };
 
     CustomMarker.prototype.setPosition = function(position) {
-      position && (this.position = position);
+      position && (this.position = position); /* jshint ignore:line */
       if (this.getProjection() && typeof this.position.lng == 'function') {
         var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
         var x = Math.round(posPixel.x - (this.el.offsetWidth/2));
@@ -766,7 +763,7 @@ angular.module('ngMap', []);
     };
 
     CustomMarker.prototype.setZIndex = function(zIndex) {
-      zIndex && (this.zIndex = zIndex);
+      zIndex && (this.zIndex = zIndex); /* jshint ignore:line */
       this.el.style.zIndex = this.zIndex;
     };
 
@@ -777,14 +774,14 @@ angular.module('ngMap', []);
 
     CustomMarker.prototype.addClass = function(className) {
       var classNames = this.el.className.trim().split(' ');
-      (classNames.indexOf(className) == -1) && classNames.push(className);
+      (classNames.indexOf(className) == -1) && classNames.push(className); /* jshint ignore:line */
       this.el.className = classNames.join(' ');
     };
 
     CustomMarker.prototype.removeClass = function(className) {
       var classNames = this.el.className.split(' ');
       var index = classNames.indexOf(className);
-      (index > -1) && classNames.splice(index, 1);
+      (index > -1) && classNames.splice(index, 1); /* jshint ignore:line */
       this.el.className = classNames.join(' ');
     };
 
@@ -804,60 +801,83 @@ angular.module('ngMap', []);
     };
   };
 
-  var customMarkerDirective = function(Attr2Options, _$timeout_)  {
+  var linkFunc = function(orgHtml, varsToWatch) {
+    //console.log('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
+
+    return function(scope, element, attrs, mapController) {
+
+      var orgAttrs = parser.orgAttributes(element);
+      var filtered = parser.filter(attrs);
+      var options = parser.getOptions(filtered, scope);
+      var events = parser.getEvents(scope, filtered);
+
+      /**
+       * build a custom marker element
+       */
+      var removedEl = element[0].parentElement.removeChild(element[0]);
+      void 0;
+      var customMarker = new CustomMarker(options);
+
+      $timeout(function() { //apply contents, class, and location after it is compiled
+        scope.$watch('[' + varsToWatch.join(',') + ']', function(val) {
+          customMarker.setContent(orgHtml, scope);
+        });
+
+        customMarker.setContent(removedEl.innerHTML, scope);
+        var classNames = removedEl.firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
+        void 0;
+
+        if (!(options.position instanceof google.maps.LatLng)) {
+          mapController.getGeoLocation(options.position).then(
+            function(latlng) {
+              customMarker.setPosition(latlng);
+            }
+          );
+        }
+      });
+
+      void 0;
+      for (var eventName in events) { /* jshint ignore:line */
+        google.maps.event.addDomListener(
+          customMarker.el, eventName, events[eventName]);
+      }
+      mapController.addObject('customMarkers', customMarker);
+
+      element.bind('$destroy', function() {
+        //Is it required to remove event listeners when DOM is removed?
+        mapController.deleteObject('customMarkers', customMarker);
+      });
+
+    }; // linkFunc
+  };
+
+  var customMarkerDirective = function(Attr2Options, _$timeout_, _$compile_)  {
     parser = Attr2Options;
     $timeout = _$timeout_;
+    $compile = _$compile_;
     setCustomMarker();
 
     return {
       restrict: 'E',
       require: '^map',
-      link: function(scope, element, attrs, mapController) {
-
-        var orgAttrs = parser.orgAttributes(element);
-        var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered, scope);
-        var events = parser.getEvents(scope, filtered);
-
-        /**
-         * build a custom marker element
-         */
-        var removedEl = element[0].parentElement.removeChild(element[0]);
-        void 0;
-        var customMarker = new CustomMarker(options);
-
-        $timeout(function() { //apply contents, class, and location after it is compiled
-          customMarker.setContent(removedEl.innerHTML);
-          var classNames = removedEl.firstElementChild.className;
-          customMarker.addClass('custom-marker');
-          customMarker.addClass(classNames);
-          void 0;
-
-          if (!(options.position instanceof google.maps.LatLng)) {
-            mapController.getGeoLocation(options.position).then(
-              function(latlng) {
-                customMarker.setPosition(latlng);
-              }
-            );
+      compile: function(element) {
+        var orgHtml = element.html();
+        var matches = orgHtml.match(/{{([^}]+)}}/g);
+        var varsToWatch = [];
+        (matches || []).forEach(function(match) { //filter out that contains '::', 'this.'
+          var toWatch = match.replace('{{','').replace('}}','');
+          if (match.indexOf('::') == -1 && match.indexOf('this.') == -1 && varsToWatch.indexOf(toWatch) == -1) {
+            varsToWatch.push(match.replace('{{','').replace('}}',''));
           }
         });
 
-        void 0;
-        for (var eventName in events) {
-          google.maps.event.addDomListener(
-            customMarker.el, eventName, events[eventName]);
-        }
-        mapController.addObject('customMarkers', customMarker);
-
-        element.bind('$destroy', function() {
-          //Is it required to remove event listeners when DOM is removed?
-          mapController.deleteObject('customMarkers', customMarker);
-        });
-
-      } //link
+        return linkFunc(orgHtml, varsToWatch);
+      }
     }; // return
   };// function
-  customMarkerDirective.$inject = ['Attr2Options', '$timeout'];
+  customMarkerDirective.$inject = ['Attr2Options', '$timeout', '$compile'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();

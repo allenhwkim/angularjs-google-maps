@@ -136,8 +136,13 @@ nav h3 {
     margin-top: 12px;
 }
 
+nav ul {
+    margin-top: 1.5em;
+}
+
 nav li {
     margin-top: 6px;
+    margin-left: 10px;
 }
 
 footer {
