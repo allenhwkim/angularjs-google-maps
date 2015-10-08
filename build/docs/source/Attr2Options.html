@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: Source:attr2_options.js</title>
+    <title>JSDoc: source : attr2_options.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -14,6 +14,7 @@
     <nav>
       <h2><a href="index.html">Index</a></h2>
       <ul class="module">
+        <!-- undefined -->
         <h3>
           <a href="" ng-click="moduleundefined = !moduleundefined">
             module: undefined
@@ -108,6 +109,7 @@
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ngmap -->
         <h3>
           <a href="" ng-click="modulengmap = !modulengmap">
             module: ngmap
@@ -130,21 +132,22 @@
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ng_ap -->
         <h3>
-          <a href="" ng-click="modulengMap = !modulengMap">
+          <a href="" ng-click="moduleng_ap = !moduleng_ap">
             module: ngMap
           </a>
-          <i ng-cloak="" ng-show="modulengMap">+</i>
+          <i ng-cloak="" ng-show="moduleng_ap">+</i>
         </h3>
-        <li id="ngMap" ng-hide="modulengMap">
+        <li id="ngMap" ng-hide="moduleng_ap">
           <ul class="group">
             <h3>
-              <a href="" ng-click="ngMapdirective = !ngMapdirective">
+              <a href="" ng-click="ng_apdirective = !ng_apdirective">
                 directive
               </a>
-              <i ng-cloak="" ng-show="ngMapdirective">+</i>
+              <i ng-cloak="" ng-show="ng_apdirective">+</i>
             </h3>
-            <ul ng-hide="ngMapdirective">
+            <ul ng-hide="ng_apdirective">
               <li>
                 <a href="ngMap.map.html">map</a>
               </li>
@@ -155,7 +158,7 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        Source:attr2_options.js
+        source : attr2_options.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
@@ -234,7 +237,7 @@
           }
           else if (output === Object(output)) { // JSON is an object (not array or null)
             // check for nested hashes and convert to Google API options
-            output = getOptions(output, options);
+            output = getOptions(output, options, true);
           }
         } catch(err2) {
           // 3. Object Expression. i.e. LatLng(80,-49)
@@ -353,7 +356,7 @@
      * @param {scope} scope angularjs scope
      * @returns {Hash} options converted attributess
      */
-    var getOptions = function(attrs, scope) {
+    var getOptions = function(attrs, scope, doNotConverStringToNumber) {
       var options = {};
       for(var key in attrs) {
         if (attrs[key]) {
@@ -366,7 +369,11 @@
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+              if (doNotConverStringToNumber && attrs[key].match(/^[0-9]+$/)) {
+                options[key] = attrs[key];
+              } else {
+                options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+              }
             }
           }
         } // if (attrs[key])
