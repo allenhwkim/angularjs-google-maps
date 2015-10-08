@@ -78,7 +78,7 @@
           }
           else if (output === Object(output)) { // JSON is an object (not array or null)
             // check for nested hashes and convert to Google API options
-            output = getOptions(output, options);
+            output = getOptions(output, options, true);
           }
         } catch(err2) {
           // 3. Object Expression. i.e. LatLng(80,-49)
@@ -204,7 +204,7 @@
      * @param {scope} scope angularjs scope
      * @returns {Hash} options converted attributess
      */
-    var getOptions = function(attrs, scope) {
+    var getOptions = function(attrs, scope, doNotConverStringToNumber) {
       var options = {};
       for(var key in attrs) {
         if (attrs[key]) {
@@ -217,7 +217,11 @@
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+              if (doNotConverStringToNumber && attrs[key].match(/^[0-9]+$/)) {
+                options[key] = attrs[key];
+              } else {
+                options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+              }
             }
           }
         } // if (attrs[key])

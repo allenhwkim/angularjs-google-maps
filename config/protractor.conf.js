@@ -2,7 +2,7 @@
 exports.config = {
   seleniumServerJar: __dirname + 
     '/../node_modules/gulp-protractor' +
-    '/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+    '/node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
 
   browserName: 'chrome',
 

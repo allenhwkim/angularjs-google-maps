@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="http://code.angularjs.org/1.4.6/angular.js"></script>
+  <script src="http://maps.google.com/maps/api/js"></script>
+  <!--
+  <script src="../build/scripts/ng-map.min.js"></script>
+  -->
+  <script src="../app.js"></script>
+  <script src="../directives/map_controller.js"></script>
+  <script src="../directives/map.js"></script>
+  <script src="../directives/marker.js"></script>
+  <script src="../directives/shape.js"></script>
+  <script src="../services/geo_coder.js"></script>
+  <script src="../services/navigator_geolocation.js"></script>
+  <script src="../services/attr2_options.js"></script>
+  <script>
+    var app = angular.module('myApp', ['ngMap']);
+
+    app.controller('MapCtrl', function($scope) {
+      $scope.results = [
+        {
+          id: "ChIJmzrzi9Y0K4gRgXUc3sTY7RU",   // This fails
+          lat: 57.479541,
+          lng: -4.225208
+        }
+      ];
+    }); 
+  </script>
+</head>
+
+<body ng-app="myApp">
+  <map ng-controller="MapCtrl" center="57.5,-4" zoom="8">
+    <marker
+      id="{{info.id}}"
+      ng-repeat="info in results"
+      position="{{info.lat}}, {{info.lng}}"
+      label='{ text: "3" }'></marker>
+  </map>
+</body>
+
+</html>
