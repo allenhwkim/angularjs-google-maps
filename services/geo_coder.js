@@ -27,7 +27,7 @@
           if (status == google.maps.GeocoderStatus.OK) {
             deferred.resolve(results);
           } else {
-            deferred.reject('Geocoder failed due to: '+ status);
+            deferred.reject(status);
           }
         });
         return deferred.promise;

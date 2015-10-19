@@ -35,7 +35,7 @@ describe('GeoCoder', function () {
       geoCoder.geocode('Canada').then(okMock, errorMock);
       scope.$apply();
       expect(okMock).not.toHaveBeenCalled();
-      expect(errorMock).toHaveBeenCalledWith('Geocoder failed due to: ERROR');
+      expect(errorMock).toHaveBeenCalledWith('ERROR');
     });
           
   });
