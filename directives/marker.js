@@ -17,6 +17,7 @@
  *      '[40.74, -74.18]'  
  * @attr {Boolean} centered if set, map will be centered with this marker
  * @attr {Expression} geo-callback if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback="showStoreInfo()"
+ * @attr {Boolean} no-watcher if true, no attribute observer is added. Useful for many ng-repeat
  * @attr {String} &lt;MarkerOption> [Any Marker options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#MarkerOptions) 
  * @attr {String} &lt;MapEvent> [Any Marker events](https://developers.google.com/maps/documentation/javascript/reference)
  * @example
@@ -88,7 +89,10 @@
       /**
        * set observers
        */
-      mapController.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
+      if (!markerOptions.noWatcher) {
+        console.log('observers are added for marker', marker)
+        mapController.observeAttrSetObj(orgAttrs, attrs, marker); /* observers */
+      }
       element.bind('$destroy', function() {
         mapController.deleteObject('markers', marker);
       });
