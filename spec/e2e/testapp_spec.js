@@ -1,6 +1,5 @@
 /*global jasmine*/
-var excludes = [
-  "index.html",
+var excludes = [ // these examples has no ng-map
   "map_events.html",
   "map_lazy_init.html",
   "map-lazy-load.html",
@@ -12,44 +11,37 @@ function using(values, func){
   'use strict';
   for (var i = 0, count = values.length; i < count; i++) {
     (!Array.isArray(values[i])) && (values[i] = [values[i]]);
-    func.apply(this, values[i]);
-    jasmine.currentEnv_.currentSpec.description += ' (with using ' + values[i].join(', ') + ')';
+    func.apply(this, values[i]); //jshint ignore:line
+    jasmine.currentEnv_.currentSpec.description +=
+      ' (with using ' + values[i].join(', ') + ')';
   }
 }
 
 describe('testapp directory', function() {
   'use strict';
   var files = require('fs').readdirSync(__dirname + "/../../testapp");
-  var urls = files.filter(function(filename) {
+  files = files.filter(function(filename) {
     return filename.match(/\.html$/) && excludes.indexOf(filename) === -1;
   });
+  var urls = {};
+  for (var i=0;i<files.length; i++) {
+    var groupId = Math.floor(i/10);
+    urls[groupId] = urls[groupId] || [];
+    urls[groupId].push(files[i]);
+  }
   console.log('urls', urls);
 
-  using(urls, function(url){
-
-    it('testapp/'+url, function() {
-      browser.get('testapp/'+url);
-      browser.wait( function() {
-        return browser.driver.isElementPresent(
-          by.css("map div div.gm-style")
-          //webdriver.By.css("map div div.gm-style div")
-        );
-        //return browser.executeScript( function() {
-        //  map div div.gm-style div
-        //  var el = document.querySelector("map");
-
-        //  var scope = angular.element(el).scope();
-        //  return scope.map.getCenter();
-        //}).then(function(result) {
-        //  return result;
-        //});
-      }, 5000);
-      browser.manage().logs().get('browser').then(function(browserLog) {
-        (browserLog.length > 0) && console.log('log: ' + require('util').inspect(browserLog));
-        expect(browserLog).toEqual([]);
+  for (var key in urls) {
+    using(urls[key], function(url){
+      it('testapp/'+url, function() {
+        browser.get('testapp/'+url);
+        browser.wait( function() {
+          return browser.driver.isElementPresent(
+            by.css("map div div.gm-style")
+          );
+        }, 5000);
       });
     });
-
-  });
+  }
 
 });
