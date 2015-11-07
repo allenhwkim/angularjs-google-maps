@@ -10,24 +10,31 @@
  * Example:
  *
  *  <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
- *    <drawing-manager  on-overlaycomplete="onMapOverlayCompleted()" position="ControlPosition.TOP_CENTER" drawingModes="POLYGON,CIRCLE" drawingControl="true" circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" ></drawing-manager>
+ *    <drawing-manager
+ *      on-overlaycomplete="onMapOverlayCompleted()"
+ *      position="ControlPosition.TOP_CENTER"
+ *      drawingModes="POLYGON,CIRCLE"
+ *      drawingControl="true"
+ *      circleOptions="fillColor: '#FFFF00';fillOpacity: 1;strokeWeight: 5;clickable: false;zIndex: 1;editable: true;" >
+ *    </drawing-manager>
  *  </map>
  *
  *  TODO: Add remove button.
- *  currently, for out solution, we have the shapes/markers in our own controller, and we use some css classes to change the shape button
+ *  currently, for our solution, we have the shapes/markers in our own
+ *  controller, and we use some css classes to change the shape button
  *  to a remove button (<div>X</div>) and have the remove operation in our own controller.
  */
 (function() {
   'use strict';
-  angular.module('ngMap').directive('drawingManager', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
+  angular.module('ngMap').directive('drawingManager', [
+    'Attr2MapOptions', function(Attr2MapOptions) {
+    var parser = Attr2MapOptions;
 
     return {
       restrict: 'E',
       require: '^map',
 
       link: function(scope, element, attrs, mapController) {
-        var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered);
         var controlOptions = parser.getControlOptions(filtered);
@@ -53,7 +60,6 @@
         /**
          * set events
          */
-        var events = parser.getEvents(scope, filtered);
         for (var eventName in events) {
           google.maps.event.addListener(drawingManager, eventName, events[eventName]);
         }

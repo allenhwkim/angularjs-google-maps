@@ -1,21 +1,22 @@
 /**
  * @ngdoc directive
  * @name maps-engine-layer
- * @description 
+ * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
  * @example
- * Example: 
- *   <map zoom="14" center="[59.322506, 18.010025]">
- *     <maps-engine-layer layer-id="06673056454046135537-08896501997766553811"></maps-engine-layer>
- *    </map>
+ * Example:
+ *  <map zoom="14" center="[59.322506, 18.010025]">
+ *    <maps-engine-layer layer-id="06673056454046135537-08896501997766553811">
+ *    </maps-engine-layer>
+ *  </map>
  */
 (function() {
   'use strict';
 
-  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
+  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2MapOptions', function(Attr2MapOptions) {
+    var parser = Attr2MapOptions;
 
     var getMapsEngineLayer = function(options, events) {
       var layer = new google.maps.visualization.MapsEngineLayer(options);
@@ -27,7 +28,6 @@
       return layer;
     };
 
-    
     return {
       restrict: 'E',
       require: '^map',

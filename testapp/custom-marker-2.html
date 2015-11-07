@@ -1,40 +1,46 @@
 <!doctype html>
 <html ng-app="myapp">
   <head>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script src="http://maps.google.com/maps/api/js"></script>
     <script src="lib/angular.js"></script>
     <!--
     <script src="../build/scripts/ng-map.min.js"></script>
     -->
     <script src="../app.js"></script>
-    <script src="../directives/map_controller.js"></script>
+    <script src="../controllers/map-controller.js"></script>
+    <script src="../services/ng-map.js"></script>
+    <script src="../services/geo-coder.js"></script>
+    <script src="../services/navigator-geolocation.js"></script>
+    <script src="../services/attr2-map-options.js"></script>
+    <script src="../filters/camel-case.js"></script>
+    <script src="../filters/jsonize.js"></script>
     <script src="../directives/map.js"></script>
-    <script src="../directives/marker.js"></script>
     <script src="../directives/custom-marker.js"></script>
-    <script src="../services/geo_coder.js"></script>
-    <script src="../services/navigator_geolocation.js"></script>
-    <script src="../services/attr2_options.js"></script>
     <link href="custom-marker.css"  rel="stylesheet" />
   </head>
   <body>
     <script>
       angular.module('myapp', ['ngMap']);
-      angular.module('myapp').controller('MyCtrl', function($scope){
-        $scope.showCustomMarker= function(evt) {
-          $scope.map.customMarkers.foo.setVisible(true);
-          $scope.map.customMarkers.foo.setPosition(this.getPosition());
-        }
-        $scope.closeCustomMarker= function(evt) {
-          this.style.display = 'none';
-        }
+      angular.module('myapp').controller('MyCtrl', function(NgMap){
+        var vm = this;
+        NgMap.getMap().then(function(map) {
+          vm.showCustomMarker= function(evt) {
+            map.customMarkers.foo.setVisible(true);
+            map.customMarkers.foo.setPosition(this.getPosition());
+          };
+          vm.closeCustomMarker= function(evt) {
+            this.style.display = 'none';
+          };
+        });
       });
     </script>
-    <div ng-controller="MyCtrl">
+    <div ng-controller="MyCtrl as vm">
       <map zoom="13" center="1600 pennsylvania ave, washington DC" style="height:600px"
         on-center-changed="centerCustomMarker()">
-        <marker position="10 pennsylvania ave, washington DC" on-click="showCustomMarker()"></marker>
-        <marker position="2600 pennsylvania ave, washington DC" on-click="showCustomMarker()"></marker>
-        <custom-marker id="foo" position="10 pennsylvania ave, washington DC" on-click="closeCustomMarker()">
+        <marker position="10 pennsylvania ave, washington DC" on-click="vm.showCustomMarker()"></marker>
+        <marker position="2600 pennsylvania ave, washington DC" on-click="vm.showCustomMarker()"></marker>
+        <custom-marker id="foo" position="10 pennsylvania ave, washington DC" on-click="vm.closeCustomMarker()">
           <div>
             <img width="64" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/President_Barack_Obama%2C_2012_portrait_crop.jpg/140px-President_Barack_Obama%2C_2012_portrait_crop.jpg" align="left" /> Hi, How Are You? <br/>
             My Name is Obama, and people call me as Mr. President.<br/>

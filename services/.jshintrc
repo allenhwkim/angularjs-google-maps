@@ -1,4 +1,0 @@
-{
-  "predef" : [ "ngMap", "google", "MarkerCluster" ],
-  "forin" : true
-}

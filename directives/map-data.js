@@ -1,58 +1,51 @@
 /**
  * @ngdoc directive
  * @name map-data
- * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @description 
+ * @param Attr2MapOptions {service}
+ *   convert html attribute to Gogole map api options
+ * @description
  *   set map data
  *   Requires:  map directive
  *   Restrict To:  Element
  *
  * @wn {String} method-name, run map.data[method-name] with attribute value
  * @example
- * Example: 
+ * Example:
  *
- *   <map zoom="11" center="[41.875696,-87.624207]">
- *     <map-data load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
- *    </map>
+ *  <map zoom="11" center="[41.875696,-87.624207]">
+ *    <map-data load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
+ *   </map>
  */
 (function() {
   'use strict';
 
-  angular.module('ngMap').directive('mapData', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
-    
+  angular.module('ngMap').directive('mapData', [
+    'Attr2MapOptions', 'NgMap', function(Attr2MapOptions, NgMap) {
+    var parser = Attr2MapOptions;
     return {
       restrict: 'E',
       require: '^map',
 
-      link: function(scope, element, attrs, mapController) {
+      link: function(scope, element, attrs) {
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered);
         var events = parser.getEvents(scope, filtered, events);
 
         console.log('map-data options', options);
-        scope.$on('mapInitialized', function(event, map) {
-          /**
-           * options
-           */
+        NgMap.getMap().then(function(map) {
+          //options
           for (var key in options) {
-            if (key) {
-              var val = options[key];
-              if (typeof scope[val] === "function") {
-                map.data[key](scope[val]);
-              } else {
-                map.data[key](val);
-              }
-            } // if (key)
+            var val = options[key];
+            if (typeof scope[val] === "function") {
+              map.data[key](scope[val]);
+            } else {
+              map.data[key](val);
+            }
           }
 
-          /**
-           * events
-           */
+          //events
           for (var eventName in events) {
-            if (events[eventName]) {
-              map.data.addListener(eventName, events[eventName]);
-            }
+            map.data.addListener(eventName, events[eventName]);
           }
         });
       }

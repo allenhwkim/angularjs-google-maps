@@ -5,11 +5,7 @@ var excludes = [
   "map_lazy_init.html",
   "map-lazy-load.html",
   "map-lazy-load-params.html",
-  "marker_with_dynamic_position.html",
-  "marker_with_dynamic_address.html",
-  "marker_with_info_window.html",
-  "places-auto-complete.html",
-  "street-view_road_trip.html"
+  "places-auto-complete.html"
 ];
 
 function using(values, func){
@@ -24,23 +20,29 @@ function using(values, func){
 describe('testapp directory', function() {
   'use strict';
   var files = require('fs').readdirSync(__dirname + "/../../testapp");
-  var urls = files.filter(function(filename) { 
-    return filename.match(/\.html$/) && excludes.indexOf(filename) === -1; 
+  var urls = files.filter(function(filename) {
+    return filename.match(/\.html$/) && excludes.indexOf(filename) === -1;
   });
   console.log('urls', urls);
 
   using(urls, function(url){
 
     it('testapp/'+url, function() {
-      browser.get(url);
+      browser.get('testapp/'+url);
       browser.wait( function() {
-        return browser.executeScript( function() {
-          var el = document.querySelector("map");  
-          var scope = angular.element(el).scope();
-          return scope.map.getCenter();
-        }).then(function(result) {
-          return result;
-        });
+        return browser.driver.isElementPresent(
+          by.css("map div div.gm-style")
+          //webdriver.By.css("map div div.gm-style div")
+        );
+        //return browser.executeScript( function() {
+        //  map div div.gm-style div
+        //  var el = document.querySelector("map");
+
+        //  var scope = angular.element(el).scope();
+        //  return scope.map.getCenter();
+        //}).then(function(result) {
+        //  return result;
+        //});
       }, 5000);
       browser.manage().logs().get('browser').then(function(browserLog) {
         (browserLog.length > 0) && console.log('log: ' + require('util').inspect(browserLog));

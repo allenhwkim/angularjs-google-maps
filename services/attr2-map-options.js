@@ -1,42 +1,37 @@
 /**
  * @ngdoc service
- * @name Attr2Options
- * @description 
- *   Converts tag attributes to options used by google api v3 objects, map, marker, polygon, circle, etc.
+ * @name Attr2MapOptions
+ * @description
+ *   Converts tag attributes to options used by google api v3 objects
  */
 /* global google */
 (function() {
   'use strict';
 
-  var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
-  var MOZ_HACK_REGEXP = /^moz([A-Z])/;  
+  //i.e. "2015-08-12T06:12:40.858Z"
+  var isoDateRE = new RegExp(
+    "\d{4}-[01]\d-[0-3]\d" +
+    "T[0-2]\d:[0-5]\d:[0-5]\d\." +
+    "\d+([+-][0-2]\d:[0-5]\d|Z)"
+  );
 
-  function camelCase(name) {
-    return name.
-      replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
-        return offset ? letter.toUpperCase() : letter;
-      }).
-      replace(MOZ_HACK_REGEXP, 'Moz$1');
-  }
-
-  function JSONize(str) {
-    try {       // if parsable already, return as it is
-      JSON.parse(str);
-      return str;
-    } catch(e) { // if not parsable, change little
-      return str
-        // wrap keys without quote with valid double quote
-        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":';})
-        // replacing single quote wrapped ones to double quote 
-        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"';});
+  var getNumber = function(input) {
+    var num = Number(input);
+    if (isNaN(num)) {
+      throw "Not a number";
+    } else  {
+      return num;
     }
-  }
+  };
 
-  var Attr2Options = function($parse, $timeout, $log, NavigatorGeolocation, GeoCoder) { 
+  var Attr2MapOptions = function(
+      $parse, $timeout, $log, NavigatorGeolocation, GeoCoder,
+      camelCaseFilter, jsonizeFilter
+    ) {
 
     /**
      * Returns the attributes of an element as hash
-     * @memberof Attr2Options
+     * @memberof Attr2MapOptions
      * @param {HTMLElement} el html element
      * @returns {Hash} attributes
      */
@@ -50,58 +45,71 @@
       return orgAttributes;
     };
 
+    var getJSON = function(input) {
+      var re =/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/; //lat,lng
+      if (input.match(re)) {
+        input = "["+input+"]";
+      }
+      return JSON.parse(jsonizeFilter(input));
+    };
+
+    var getLatLng = function(input) {
+      var output = input;
+      if (input[0].constructor == Array) { // [[1,2],[3,4]]
+        output = input.map(function(el) {
+          return new google.maps.LatLng(el[0], el[1]);
+        });
+      } else if(!isNaN(parseFloat(input[0])) && isFinite(input[0])) {
+        output = new google.maps.LatLng(output[0], output[1]);
+      }
+      return output;
+    };
+
     var toOptionValue = function(input, options) {
-      var output, key=options.key, scope=options.scope;
+      var output;
       try { // 1. Number?
-        var num = Number(input);
-        if (isNaN(num)) {
-          throw "Not a number";
-        } else  {
-          output = num;
-        }
-      } catch(err) { 
-        try { // 2.JSON?
-          if (input.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/)) { // i.e "-1.0, 89.89"
-            input = "["+input+"]";
-          }
-          output = JSON.parse(JSONize(input));
+        output = getNumber(input);
+      } catch(err) {
+        try { // 2. JSON?
+          var output = getJSON(input);
           if (output instanceof Array) {
-            var t1stEl = output[0];
-            if (t1stEl.constructor == Object) { // [{a:1}] : not lat/lng ones
-            } else if (t1stEl.constructor == Array) { // [[1,2],[3,4]] 
-              output =  output.map(function(el) {
-                return new google.maps.LatLng(el[0], el[1]);
-              });
-            } else if(!isNaN(parseFloat(t1stEl)) && isFinite(t1stEl)) {
-              return new google.maps.LatLng(output[0], output[1]);
+            // [{a:1}] : not lat/lng ones
+            if (output[0].constructor == Object) {
+              output = output;
+            } else { // [[1,2],[3,4]] or [1,2]
+              output = getLatLng(output);
             }
           }
-          else if (output === Object(output)) { // JSON is an object (not array or null)
+          // JSON is an object (not array or null)
+          else if (output === Object(output)) {
             // check for nested hashes and convert to Google API options
-            output = getOptions(output, options, true);
+            var newOptions = options;
+            newOptions.doNotConverStringToNumber = true;
+            output = getOptions(output, newOptions);
           }
         } catch(err2) {
-          // 3. Object Expression. i.e. LatLng(80,-49)
+          // 3. Google Map Object function Expression. i.e. LatLng(80,-49)
           if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
             try {
               var exp = "new google.maps."+input;
-              output = eval(exp); // TODO, still eval
+              output = eval(exp); /* jshint ignore:line */
             } catch(e) {
               output = input;
-            } 
-          // 4. Object Expression. i.e. MayTypeId.HYBRID 
+            }
+          // 4. Google Map Object constant Expression. i.e. MayTypeId.HYBRID
           } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
             try {
               var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
               output = google.maps[matches[1]][matches[2]];
             } catch(e) {
               output = input;
-            } 
-          // 5. Object Expression. i.e. HYBRID 
+            }
+          // 5. Google Map Object constant Expression. i.e. HYBRID
           } else if (input.match(/^[A-Z]+$/)) {
             try {
-              var capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-              if (key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
+              var capitalizedKey = options.key.charAt(0).toUpperCase() +
+                options.key.slice(1);
+              if (options.key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
                 capitalizedKey = capitalizedKey.replace(/s$/,"");
                 output = google.maps.weather[capitalizedKey][input];
               } else {
@@ -110,8 +118,8 @@
             } catch(e) {
               output = input;
             }
-          // 6. Date Object as ISO String i.e. "2015-08-12T06:12:40.858Z"
-          } else if (input.match(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/)) {
+          // 6. Date Object as ISO String
+          } else if (input.match(isoDateRE)) {
             try {
               output = new Date(input);
             } catch(e) {
@@ -130,6 +138,7 @@
 
       // convert output more for shape icons
       if (options.key == 'icons' && output instanceof Array) {
+
         for (var i=0; i<output.length; i++) {
           var el = output[i];
           if (el.icon.path.match(/^[A-Z_]+$/)) {
@@ -158,22 +167,24 @@
 
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
-      if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-        //$log.warn("It is NOT ideal to have many observers or watcher with ng-repeat. Please use it with your own risk");
-      }
-      for (var attrName in attrs) { //jshint ignore:line
-        var attrValue = attrs[attrName];
-        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
-          attrsToObserve.push(camelCase(attrName));
+
+      if (!attrs.noWatcher) {
+        for (var attrName in attrs) { //jshint ignore:line
+          var attrValue = attrs[attrName];
+          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+            console.log('setting attribute to observe',
+              attrName, camelCaseFilter(attrName), attrValue);
+            attrsToObserve.push(camelCaseFilter(attrName));
+          }
         }
       }
+
       return attrsToObserve;
     };
 
     /**
      * filters attributes by skipping angularjs methods $.. $$..
-     * @memberof Attr2Options
+     * @memberof Attr2MapOptions
      * @param {Hash} attrs tag attributes
      * @returns {Hash} filterd attributes
      */
@@ -190,21 +201,21 @@
     };
 
     /**
-     * converts attributes hash to Google Maps API v3 options  
+     * converts attributes hash to Google Maps API v3 options
      * ```
-     *  . converts numbers to number   
-     *  . converts class-like string to google maps instance   
-     *    i.e. `LatLng(1,1)` to `new google.maps.LatLng(1,1)`  
-     *  . converts constant-like string to google maps constant    
-     *    i.e. `MapTypeId.HYBRID` to `google.maps.MapTypeId.HYBRID`   
-     *    i.e. `HYBRID"` to `google.maps.MapTypeId.HYBRID`  
+     *  . converts numbers to number
+     *  . converts class-like string to google maps instance
+     *    i.e. `LatLng(1,1)` to `new google.maps.LatLng(1,1)`
+     *  . converts constant-like string to google maps constant
+     *    i.e. `MapTypeId.HYBRID` to `google.maps.MapTypeId.HYBRID`
+     *    i.e. `HYBRID"` to `google.maps.MapTypeId.HYBRID`
      * ```
-     * @memberof Attr2Options
+     * @memberof Attr2MapOptions
      * @param {Hash} attrs tag attributes
-     * @param {scope} scope angularjs scope
+     * @param {Hash} options
      * @returns {Hash} options converted attributess
      */
-    var getOptions = function(attrs, scope, doNotConverStringToNumber) {
+    var getOptions = function(attrs, params) {
       var options = {};
       for(var key in attrs) {
         if (attrs[key]) {
@@ -213,14 +224,18 @@
           } else if (key.match(/ControlOptions$/)) { // skip controlOptions
             continue;
           } else {
-            // nested conversions need to be typechecked (non-strings are fully converted)
+            // nested conversions need to be typechecked
+            // (non-strings are fully converted)
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              if (doNotConverStringToNumber && attrs[key].match(/^[0-9]+$/)) {
+              if (params &&
+                params.doNotConverStringToNumber &&
+                attrs[key].match(/^[0-9]+$/)
+              ) {
                 options[key] = attrs[key];
               } else {
-                options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+                options[key] = toOptionValue(attrs[key], {key: key});
               }
             }
           }
@@ -231,7 +246,7 @@
 
     /**
      * converts attributes hash to scope-specific event function 
-     * @memberof Attr2Options
+     * @memberof Attr2MapOptions
      * @param {scope} scope angularjs scope
      * @param {Hash} attrs tag attributes
      * @returns {Hash} events converted events
@@ -241,7 +256,8 @@
       var toLowercaseFunc = function($1){
         return "_"+$1.toLowerCase();
       };
-      var eventFunc = function(attrValue) {
+      var EventFunc = function(attrValue) {
+        // funcName(argsStr)
         var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
         var funcName = matches[1];
         var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
@@ -262,14 +278,14 @@
           if (!key.match(/^on[A-Z]/)) { //skip if not events
             continue;
           }
-          
+
           //get event name as underscored. i.e. zoom_changed
           var eventName = key.replace(/^on/,'');
           eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
           eventName = eventName.replace(/([A-Z])/g, toLowercaseFunc);
 
           var attrValue = attrs[key];
-          events[eventName] = new eventFunc(attrValue);
+          events[eventName] = new EventFunc(attrValue);
         }
       }
       return events;
@@ -277,7 +293,7 @@
 
     /**
      * control means map controls, i.e streetview, pan, etc, not a general control
-     * @memberof Attr2Options
+     * @memberof Attr2MapOptions
      * @param {Hash} filtered filtered tag attributes
      * @returns {Hash} Google Map options
      */
@@ -300,8 +316,8 @@
             if ($1) {
               return $1.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
             } else {
-              return $2; 
-            } 
+              return $2;
+            }
           });
           try {
             var options = JSON.parse(newValue);
@@ -342,7 +358,6 @@
     };
 
     return {
-      camelCase: camelCase,
       filter: filter,
       getOptions: getOptions,
       getEvents: getEvents,
@@ -353,7 +368,10 @@
     }; // return
 
   };
-  Attr2Options.$inject= ['$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder'];
+  Attr2MapOptions.$inject= [
+    '$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder',
+    'camelCaseFilter', 'jsonizeFilter'
+  ];
 
-  angular.module('ngMap').service('Attr2Options', Attr2Options);
+  angular.module('ngMap').service('Attr2MapOptions', Attr2MapOptions);
 })();

@@ -1,52 +1,60 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Place Autocomplete Address Form</title>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<head>
+<title>Place Autocomplete Address Form</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="http://maps.google.com/maps/api/js"></script>
+<script src="lib/angular.js"></script>
 <!--
 <script src="../build/scripts/ng-map.min.js"></script>
 -->
-    <script src="../app.js"></script>
-    <script src="../services/navigator_geolocation.js"></script>
-    <script src="../services/geo_coder.js"></script>
-    <script src="../services/attr2_options.js"></script>
-    <script src="../directives/places-auto-complete.js"></script>
-    <script src="../directives/map_controller.js"></script>
-    <script src="../directives/map.js"></script>
-    <script>
-      angular.module('myApp', ['ngMap'])
-       .controller('MyCtrl', function($scope) {
-         $scope.types = "['establishment']";
-         $scope.placeChanged = function() {
-           $scope.place = this.getPlace();
-           console.log($scope.place.geometry.location.lat(), $scope.place.geometry.location.lng());
-           $scope.map.setCenter($scope.place.geometry.location);
-         }
-       });
-    </script>
-  </head>
+<script src="../app.js"></script>
+<script src="../controllers/map-controller.js"></script>
+<script src="../services/ng-map.js"></script>
+<script src="../services/geo-coder.js"></script>
+<script src="../services/navigator-geolocation.js"></script>
+<script src="../services/attr2-map-options.js"></script>
+<script src="../filters/camel-case.js"></script>
+<script src="../filters/jsonize.js"></script>
+<script src="../directives/map.js"></script>
+<script src="../directives/places-auto-complete.js"></script>
+<script>
+angular.module('myApp', ['ngMap'])
+ .controller('MyCtrl', function() {
+   var vm = this;
+   vm.types = "['establishment']";
+   vm.placeChanged = function() {
+     vm.place = this.getPlace();
+     console.log(
+       vm.place.geometry.location.lat(),
+       vm.place.geometry.location.lng()
+     );
+     vm.map.setCenter(vm.place.geometry.location);
+   }
+ });
+</script>
+</head>
 
-  <body ng-app="myApp" ng-controller="MyCtrl">
-    Auto Complete Type: 
-    <select ng-model="types">
-      <option value="['geocode']">Geodode</option>
-      <option value="['establishment']">Establishment</option>
-      <option value="['address']">Address</option>
-    </select><br/>
+<body ng-app="myApp" ng-controller="MyCtrl as vm">
+  Auto Complete Type:
+  <select ng-model="vm.types">
+    <option value="['geocode']">Geodode</option>
+    <option value="['establishment']">Establishment</option>
+    <option value="['address']">Address</option>
+  </select><br/>
 
-    Enter an address: <br/>
-    <input places-auto-complete size=80 
-      ng-model="address" 
-      xxx-component-restrictions="{country:'us'}"
-      types="{{types}}"
-      on-place-changed="placeChanged(place)" /> <br/>
-    <div ng-show="place">
-      Address = {{place.formatted_address}} <br/>
-      Location: {{place.geometry.location}}<br/>
-    </div>
-    address : {{address}}
-    <map></map>
-  </body>
+  Enter an address: <br/>
+  <input places-auto-complete size=80
+    ng-model="vm.address"
+    component-restrictions="{country:'us'}"
+    types="{{types}}"
+    on-place-changed="vm.placeChanged()" /> <br/>
+  <div ng-show="vm.place">
+    Address = {{vm.place.formatted_address}} <br/>
+    Location: {{vm.place.geometry.location}}<br/>
+  </div>
+  address : {{vm.address}}
+  <map></map>
+</body>
 </html>
 

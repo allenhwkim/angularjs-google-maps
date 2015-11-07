@@ -2,29 +2,25 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var debug = require('gulp-debug');
 var rename = require('gulp-rename');
 var stripDebug = require('gulp-strip-debug');
 var gutil = require('gulp-util');
 var clean = require('gulp-clean');
 var runSequence = require('run-sequence');
 var gutil = require('gulp-util');
-var through = require('through2');
-var replace = require('gulp-replace');
 var tap = require('gulp-tap');
 var bump = require('gulp-bump');
 var shell = require('gulp-shell');
 var karma = require('karma').server;
 var connect = require('gulp-connect');
 var gulpProtractor = require("gulp-protractor").protractor;
-var angularJsdoc = require('angular-jsdoc');
 var bumpVersion = function(type) {
   type = type || 'patch';
   var version = '';
   gulp.src(['./bower.json', './package.json'])
     .pipe(bump({type: type}))
     .pipe(gulp.dest('./'))
-    .pipe(tap(function(file, t) {
+    .pipe(tap(function(file) {
       version = JSON.parse(file.contents.toString()).version;
     })).on('end', function() {
       var color = gutil.colors;
@@ -91,7 +87,7 @@ gulp.task('test', function (done) {
 
 gulp.task('testapp-server',  function() {
   connect.server({
-    root: __dirname + '/testapp',
+    root: __dirname,
     port: 8888
   });
 });

@@ -2,25 +2,29 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="http://maps.google.com/maps/api/js"></script>
+<script src="http://code.angularjs.org/1.3.15/angular.min.js"></script>
 <!--
 <script src="../build/scripts/ng-map.min.js"></script>
 -->
 <script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
+<script src="../controllers/map-controller.js"></script>
+<script src="../services/ng-map.js"></script>
+<script src="../services/geo-coder.js"></script>
+<script src="../services/navigator-geolocation.js"></script>
+<script src="../services/attr2-map-options.js"></script>
+<script src="../filters/camel-case.js"></script>
+<script src="../filters/jsonize.js"></script>
 <script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
 <script src="../directives/info-window.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
 <script>
-  var app = angular.module('myApp', ['ngMap']); 
-  app.controller('EventPropertiesController', function($scope) {
-    $scope.$on('mapInitialized', function(evt, map) {
+  var app = angular.module('myApp', ['ngMap']);
+  app.controller('EventPropertiesController', function(NgMap) {
+    var vm = this;
+    NgMap.getMap().then(function(map) {
       var infoWindow = map.infoWindows[1];
-      $scope.zoomChanged = function(e) {
+      vm.zoomChanged = function(e) {
         infoWindow.setContent('Zoom: ' + map.getZoom());
         map.setCenter(infoWindow.getPosition());
       }
@@ -29,16 +33,14 @@
 </script>
 </head>
 
-<body>
-    <div ng-controller="EventPropertiesController">
-      Assigning arguments in UI events
-      <br/>
-      When zoom level changed, the contents of infoWindow also updates.
-      <map zoom="4" center="-25.363882, 131.044922" on-zoom_changed="zoomChanged()">
-        <info-window id="1" position="-25.363882, 131.044922" visible="true">
-          <div ng-non-bindable>Change the zoom level</div>
-        </info-window>
-      </map>
-    </div>
+<body ng-controller="EventPropertiesController as vm">
+  Assigning arguments in UI events
+  <br/>
+  When zoom level changed, the contents of infoWindow also updates.
+  <map zoom="4" center="-25.363882, 131.044922" on-zoom_changed="vm.zoomChanged()">
+    <info-window id="1" position="-25.363882, 131.044922" visible="true">
+      <div ng-non-bindable>Change the zoom level</div>
+    </info-window>
+  </map>
 </body>
 </html>

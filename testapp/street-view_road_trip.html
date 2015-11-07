@@ -2,17 +2,20 @@
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places,geometry"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places,geometry"></script>
+<script src="lib/angular.js"></script>
 <!--
 <script src="../build/scripts/ng-map.min.js"></script>
 -->
 <script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
+<script src="../controllers/map-controller.js"></script>
+<script src="../services/ng-map.js"></script>
+<script src="../services/geo-coder.js"></script>
+<script src="../services/navigator-geolocation.js"></script>
+<script src="../services/attr2-map-options.js"></script>
+<script src="../filters/camel-case.js"></script>
+<script src="../filters/jsonize.js"></script>
 <script src="../directives/map.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
 <script src="../directives/street-view-panorama.js"></script>
 <script src="../directives/places-auto-complete.js"></script>
 <script src="../directives/directions.js"></script>
@@ -22,26 +25,27 @@
   button {background-color: grey}
 </style>
 <script>
-var MyCtrl = function($scope, $timeout) {
+angular.module('ngMap').controller('MyCtrl', function($timeout, NgMap) {
 
-  $scope.drivingMode = false; // indicates streetview should be on driving mode
-  $scope.drivingSpeed = 40; // 100 km per hour
-  $scope.driverMode = false;
+  var vm = this;
 
-  $scope.origin = "1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman";
-  $scope.destination = "Pier St, Jackson Bay, West Coast, New Zeland";
+  vm.drivingMode = false; // indicates streetview should be on driving mode
+  vm.drivingSpeed = 40; // 100 km per hour
+  vm.driverMode = false;
 
-  var map;
+  vm.origin = "1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman";
+  vm.destination = "Pier St, Jackson Bay, West Coast, New Zeland";
+
   var updateFrequency = 1*1000; // half a second
   var savedPath = null;  // position and count to restart from pause mode
 
-  // Overview path between orign and destination. 
+  // Overview path between orign and destination.
   // This does NOT exactly follow the path of a road. It is used to draw path on the map.
-  var overviewPath=[]; 
+  var overviewPath=[];
   var overviewPathIndex=0;  // current index points of overview path
 
   // Detailed path between overview path points
-  // This does exactly follow the path of a road. 
+  // This does exactly follow the path of a road.
   var detailedPath=[];
   var detailedPathIndex=0;  // current index points of detailed path
 
@@ -71,7 +75,7 @@ var MyCtrl = function($scope, $timeout) {
               'with', detailedPath.length, 'geo points');
             detailedPathIndex = 0;
             driveOverviewPaths();
-          } 
+          }
         });
       }
     } 
@@ -82,7 +86,7 @@ var MyCtrl = function($scope, $timeout) {
   //
   var driveDetailedPaths = function() {
     var meter = Math.floor(
-      (parseInt($scope.drivingSpeed, 10) * 1000) / 3600  // how far we deive every second
+      (parseInt(vm.drivingSpeed, 10) * 1000) / 3600  // how far we deive every second
       * (updateFrequency/1000));                         // how often do we see streetview
     var point1 = detailedPath[detailedPathIndex];
     var point2 = detailedPath[detailedPathIndex+1];
@@ -94,25 +98,25 @@ var MyCtrl = function($scope, $timeout) {
       var totalCount = parseInt(distance / meter, 10) || 1;
 
       var drive = function(count, position) {
-        console.log(overviewPathIndex + '/' + overviewPath.length, 
-          detailedPathIndex + '/' + detailedPath.length, 
+        console.log(overviewPathIndex + '/' + overviewPath.length,
+          detailedPathIndex + '/' + detailedPath.length,
           count + '/' + totalCount, 'distance', meter);
         if (totalCount >= count) {
           $timeout( function() {
-            var pov = map.getStreetView().getPov();
-            if ($scope.driverMode) {
-              map.setHeading(heading); // map heading is different from pov heading
+            var pov = vm.map.getStreetView().getPov();
+            if (vm.driverMode) {
+              vm.map.setHeading(heading); // map heading is different from pov heading
               pov.heading = heading;
             }
 
-            map.getStreetView().setPosition(position);
-            map.getStreetView().setPov(pov);
-            map.getStreetView().setVisible(true);
+            vm.map.getStreetView().setPosition(position);
+            vm.map.getStreetView().setPov(pov);
+            vm.map.getStreetView().setVisible(true);
 
             var distanceToPoint2 = google.maps.geometry.spherical.computeDistanceBetween(position, point2);
-            var nextPosition = distanceToPoint2 < meter ? 
+            var nextPosition = distanceToPoint2 < meter ?
               point2 : google.maps.geometry.spherical.computeOffset(position, meter, heading);
-            if ($scope.drivingMode) {
+            if (vm.drivingMode) {
               drive(++count, nextPosition);
             } else {
               savedPath = {count: count, position: position};
@@ -121,8 +125,8 @@ var MyCtrl = function($scope, $timeout) {
           }, updateFrequency);
         } else {
           detailedPathIndex += 1;
-          $scope.$emit('driveOverviewPath');
-        } 
+          driveOverviewPaths();
+        }
       };
 
       var count = (savedPath && savedPath.count) || 1;
@@ -132,47 +136,40 @@ var MyCtrl = function($scope, $timeout) {
 
     } else {
       detailedPathIndex += 1;
-      $scope.$emit('driveOverviewPath');
+      driveOverviewPaths();
     }
   };
 
-  $scope.$on('driveOverviewPath', function() { 
-    driveOverviewPaths();
-  });
-
-  $scope.drive = function() {
-    $scope.drivingMode = !$scope.drivingMode;
-    if ($scope.drivingMode) {
-      map.setZoom(16);
+  vm.drive = function() {
+    vm.drivingMode = !vm.drivingMode;
+    if (vm.drivingMode) {
+      vm.map.setZoom(16);
       if (savedPath) { // if continues
         driveDetailedPaths();
       } else {
-        $scope.$emit('driveOverviewPath');
+        driveOverviewPaths();
       }
     }
   };
 
   // When direction is changed
   // change overviewPath and reset driving directions
-  $scope.directionsChanged = function() {
-    overviewPath = this.directions.routes[0].overview_path; 
+  vm.directionsChanged = function() {
+    overviewPath = this.directions.routes[0].overview_path;
     console.log('direction is changed', 'got overviewPath with', overviewPath.length, 'points');
-    map.getStreetView().setPosition(overviewPath[0]);
+    vm.map.getStreetView().setPosition(overviewPath[0]);
 
     overviewPathIndex = 0; // set indexes to 0s
     detailedPathIndex = 0;
-    $scope.drivingMode = false;   // stop driving
+    vm.drivingMode = false;   // stop driving
     toContinue = null;     // reset continuing positon
   }
 
-  $scope.$on('mapInitialized', function(e, _map_) {
-    map = _map_;
-    window.map = map;
+  NgMap.getMap().then(function(map) {
+    vm.map = map;
   });
 
-};
-   
-angular.module('myApp', ['ngMap']).controller('MyCtrl', MyCtrl);
+});
 </script>
 <style>
 .half {display:inline-block; width: 45%}
@@ -182,59 +179,52 @@ map {display:block;height:100%}
 </style>
 </head>
 
-<body ng-app="myApp" ng-controller="MyCtrl" style="text-align:center">
+<body ng-app="ngMap" ng-controller="MyCtrl as vm" style="text-align:center">
   <h2> Virtual Road Trip with ngMap StreetView</h2>
   <div class="half">
-    <label>Origin:</label> 
-    <input places-auto-complete ng-model="origin" size=40 ng-disabled="drivingMode" /> <br/>
+    <label>Origin:</label>
+    <input places-auto-complete ng-model="vm.origin"
+      size=40 ng-disabled="vm.drivingMode" /> <br/>
     <label>Destination: </label>
-    <input places-auto-complete ng-model="destination" ng-disabled="drivingMode" size=40 /> <br/>
-    <label>Driving Speed :</label> 
-    <input ng-model="drivingSpeed" type="range" ng-disabled="drivingMode"> {{drivingSpeed}} km / hour<br/>
+    <input places-auto-complete ng-model="vm.destination"
+      ng-disabled="vm.drivingMode" size=40 /> <br/>
+    <label>Driving Speed :</label>
+    <input ng-model="vm.drivingSpeed" type="range"
+      ng-disabled="vm.drivingMode"> {{vm.drivingSpeed}} km / hour<br/>
   </div>
   <div class="half">
-    <button ng-click="drive()" style="width: 200px;font-size:1em">
-      {{drivingMode ?  'Stop' : 'Start Driving' }}
+    <button ng-click="vm.drive()" style="width: 200px;font-size:1em">
+      {{vm.drivingMode ?  'Stop' : 'Start Driving' }}
     </button> <br/>
-    <input type="radio" ng-model="driverMode" ng-value="true"> Driver Mode
-    <input type="radio" ng-model="driverMode" ng-value="false"> Passenger Mode
+    <input type="radio" ng-model="vm.driverMode" ng-value="true"> Driver Mode
+    <input type="radio" ng-model="vm.driverMode" ng-value="false"> Passenger Mode
   </div>
   <br style="clear:both" />
   <div class="half" style="height: 70%;">
     <br/>
-    <map zoom="18" center="1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman" tilt="45">
-      <directions 
+    <map default-style="false" zoom="18" tilt="45"
+      center="1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman">
+      <directions
         draggable="true"
         panel="directions-panel"
-        origin="{{origin}}"
-        on-directions_changed="directionsChanged(evt)"
-        destination="{{destination}}">
+        origin="{{vm.origin}}"
+        on-directions_changed="vm.directionsChanged(evt)"
+        destination="{{vm.destination}}">
       </directions>
       <street-view-panorama container="streetview"></street-view-panorama>
-      <marker ng-repeat="pos in markers" position="{{[pos.lat(), pos.lng()]}}"></marker>
+      <marker ng-repeat="pos in vm.markers"
+        position="{{[pos.lat(), pos.lng()]}}"></marker>
      </map>
   </div>
   <div class="half" style="height: 70%;">
-    <div class="full-height" id="streetview"></div> 
+    <div class="full-height" id="streetview"></div>
   </div>
   <br style="clear:both" />
-  <a href="" ng-click="showDirectionsPanel = !showDirectionsPanel">{{showDirectionsPanel ? 'Hide' : 'Show'}} Detailed Directions</a>
+  <a href="" ng-click="vm.showDirectionsPanel = !vm.showDirectionsPanel">
+    {{vm.showDirectionsPanel ? 'Hide' : 'Show'}} Detailed Directions
+  </a>
   <br style="clear:both" />
-  <div id="directions-panel" ng-show="showDirectionsPanel" style="display:inline-block;width:90%"></div>
-
-  <!-- disqus -->
-  <div id="disqus_thread"></div>
-  <script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'angularjs-google-maps'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-  </script>
-  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <div id="directions-panel" ng-show="vm.showDirectionsPanel"
+    style="display:inline-block;width:90%"></div>
 </body>
 </html>
