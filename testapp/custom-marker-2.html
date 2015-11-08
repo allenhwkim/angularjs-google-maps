@@ -22,7 +22,7 @@
       });
     </script>
     <div ng-controller="MyCtrl as vm">
-      <map zoom="13" center="1600 pennsylvania ave, washington DC" style="height:600px"
+      <ng-map zoom="13" center="1600 pennsylvania ave, washington DC" style="height:600px"
         on-center-changed="centerCustomMarker()">
         <marker position="10 pennsylvania ave, washington DC" on-click="vm.showCustomMarker()"></marker>
         <marker position="2600 pennsylvania ave, washington DC" on-click="vm.showCustomMarker()"></marker>
@@ -36,7 +36,7 @@
             <br/>
             If you want to visit us, please click <a href="https://www.whitehouse.gov">here</a>
         </custom-marker>
-      </map>
+      </ng-map>
     </div>
   </body>
 </html>

@@ -43,7 +43,7 @@ CoordMapType.prototype.alt = 'Tile Coordinate Map Type';
 </script>
 </head>
 <body ng-controller="MapTypeBaseCtrl as vm">
-  <map zoom="10" center="41.850033,-87.6500523"
+  <ng-map zoom="10" center="41.850033,-87.6500523"
     on-maptypeid_changed="vm.mapTypeChanged()"
     street-view-control="false"
     map-type-id="coordinate"
@@ -53,6 +53,6 @@ CoordMapType.prototype.alt = 'Tile Coordinate Map Type';
     }">
     <map-type name="coordinate" object="vm.coordMapType">
     </map-type>
-  </map>
+  </ng-map>
 </body>
 </html>

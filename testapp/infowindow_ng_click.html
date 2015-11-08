@@ -18,7 +18,7 @@ app.controller('MyCtrl', function(NgMap) {
 </head>
 <body>
   <div ng-controller="MyCtrl as vm">
-    <map center="41,-87" zoom="3">
+    <ng-map center="41,-87" zoom="3">
       <marker position="41,-87" on-click="vm.map.showInfoWindow('foo')">
       </marker>
       <info-window id="foo">
@@ -33,7 +33,7 @@ app.controller('MyCtrl', function(NgMap) {
           <a href="#" ng-click="vm.clicked()">Click Here</a>
         </div>
       </info-window>
-    </map>
+    </ng-map>
     <button ng-click="vm.map.showInfoWindow('bar', map.markers[0])">
       Show InfoWindow
     </button>

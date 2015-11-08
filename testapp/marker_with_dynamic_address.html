@@ -12,10 +12,10 @@ angular.module('ngMap').controller('MyCtrl', function() {
 
 <body>
   <div ng-controller="MyCtrl as vm">
-    <map zoom="11" center="{{vm.address}}" style="width:600px; height:400px">
+    <ng-map zoom="11" center="{{vm.address}}" style="width:600px; height:400px">
       <marker position="{{vm.address}}" title="{{address}}"></marker>
       <marker position="Brampton Canada" title="Brampton Canada"></marker>
-    </map>
+    </ng-map>
     <br/>Address : <input ng-model="vm.address" />
   </div>
 </body>

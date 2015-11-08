@@ -1,5 +1,5 @@
 /* global ngMap, google */
-describe('MapController', function() {
+describe('__MapController', function() {
   'use strict';
 
   var scope, ctrl;
@@ -7,12 +7,15 @@ describe('MapController', function() {
 
   beforeEach(function() {
     module('ngMap');
-    inject( function($controller, $rootScope){
+    inject( function($controller, $rootScope, $element, $parse, Attr2MapOptions, NgMap){
         scope = $rootScope;
-        ctrl = $controller('MapController', {
-          $scope: scope, 
-          'NavigatorGeolocation': {},
-          'GeoCoder': {}
+        ctrl = $controller('__MapController', {
+          $scope: scope,
+          '$element': $element,
+          '$attrs': $attrs,
+          '$parse': $parse,
+          Attr2MapOptions: Attr2MapOptions,
+          NgMap: NgMap
         });
     });
   });
@@ -33,7 +36,7 @@ describe('MapController', function() {
       // ctrl.map.markers
       expect(Object.keys(ctrl.map.markers).length).toEqual(1);
     });
-    
+
     it('should add a marker to ctrl._objects when ctrl.map is not init', function() {
       ctrl._objects = [];
       var marker = new google.maps.Marker({position: new google.maps.LatLng(1,1)});
@@ -49,7 +52,7 @@ describe('MapController', function() {
       ctrl.addObject('shapes', circle);
       expect(ctrl._objects[0]).toBe(circle);
     });
-    
+
     it('should add a shape to the existing map', function() {
       ctrl.map  = new google.maps.Map(el, {}); //each method require ctrl.map;
       ctrl.map.shapes = {};

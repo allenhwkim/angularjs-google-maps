@@ -29,13 +29,13 @@
 
 <body ng-controller="MyCtrl as vm">
   <input type="checkbox" ng-model="draggable" /> Draggable
-  <map zoom="10" center="[40.74, -74.18]">
+  <ng-map zoom="10" center="[40.74, -74.18]">
     <marker no-watcher="true"
       ng-repeat="p in vm.positions"
       draggable="true"
       position="{{p.lat}}, {{p.lng}}"
       title="pos: {{p}}"></marker>
-  </map>
+  </ng-map>
   draggable: {{draggable}}
 </body>
 </html>

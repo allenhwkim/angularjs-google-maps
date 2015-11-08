@@ -13,24 +13,24 @@
   <body ng-app="ngMap">
     <div style="width: 68%; float:left; height: 100%">
 
-      <map zoom="14" center="37.7699298, -122.4469157" >
+      <ng-map zoom="14" center="37.7699298, -122.4469157" >
         <directions
           draggable="true"
           travel-mode="DRIVING"
           origin="current-location"
           destination="Montreal, Canada">
         </directions>
-      </map>
+      </ng-map>
       <br/>
       <br/>
-      <map zoom="14" center="37.7699298, -122.4469157" >
+      <ng-map zoom="14" center="37.7699298, -122.4469157" >
         <directions
           draggable="true"
           travel-mode="DRIVING"
           origin="Ottawa, Canada"
           destination="current-location">
         </directions>
-      </map>
+      </ng-map>
 
     </div>
 

@@ -100,7 +100,7 @@
     </script>
   </head>
   <body>
-    <map zoom="13" center="1600 pennsylvania ave, washington DC">
+    <ng-map zoom="13" center="1600 pennsylvania ave, washington DC">
       <custom-marker ng-repeat="cm in customMarkers" position="{{cm.address}}"
         on-mouseover="mouseover()" on-mouseout="mouseout()"
         on-click="click()">
@@ -109,7 +109,7 @@
           <div> Hello {{world}}</div>
         </div>
       </custom-marker>
-    </map>
+    </ng-map>
     <br/>
     Enter your name : <input ng-model="world" />
   </body>

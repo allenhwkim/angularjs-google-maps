@@ -23,7 +23,7 @@
 
 <body>
   <div ng-controller="OverlaySymbolAnimateCtrl as vm">
-   <map zoom="5" center="20.291, 153.027" map-type-id="TERRAIN">
+   <ng-map zoom="5" center="20.291, 153.027" map-type-id="TERRAIN">
      <shape name="polyline" id="foo"
        icons="[{
          icon: {
@@ -35,7 +35,7 @@
        }]"
        path="[[22.291, 153.027], [18.291, 153.027]]">
      </shape>
-   </map>
+   </ng-map>
   </div>
 
 </body>

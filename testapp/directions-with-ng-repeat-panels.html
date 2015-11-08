@@ -22,7 +22,7 @@
 
     <div ng-repeat="dir in directions">
       <div style="width: 68%; float:left; height:450px">
-        <map style="height:100%" >
+        <ng-map style="height:100%" >
           <directions
             draggable="false"
             travel-mode="DRIVING"
@@ -30,7 +30,7 @@
             origin="{{dir.origin}}"
             destination="{{dir.destination}}">
           </directions>
-        </map>
+        </ng-map>
       </div>
       <div id="{{dir.panelName}}" style="width: 32%; float:left; height:450px"></div>
     </div>

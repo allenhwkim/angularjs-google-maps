@@ -9,20 +9,8 @@
   'use strict';
 
   //i.e. "2015-08-12T06:12:40.858Z"
-  var isoDateRE = new RegExp(
-    "\d{4}-[01]\d-[0-3]\d" +
-    "T[0-2]\d:[0-5]\d:[0-5]\d\." +
-    "\d+([+-][0-2]\d:[0-5]\d|Z)"
-  );
-
-  var getNumber = function(input) {
-    var num = Number(input);
-    if (isNaN(num)) {
-      throw "Not a number";
-    } else  {
-      return num;
-    }
-  };
+  var isoDateRE =
+    /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/;
 
   var Attr2MapOptions = function(
       $parse, $timeout, $log, NavigatorGeolocation, GeoCoder,

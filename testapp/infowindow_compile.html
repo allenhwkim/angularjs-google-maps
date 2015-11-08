@@ -25,7 +25,7 @@ app.controller('MyCtrl', function($compile, NgMap) {
 </script>
 </head>
 <body ng-controller="MyCtrl as vm">
-  <map center="41,-87" zoom="3">
+  <ng-map center="41,-87" zoom="3">
 
     <info-window id="foo" on-mouseover="vm.mouseover()">
       <div ng-non-bindable="">
@@ -48,6 +48,6 @@ app.controller('MyCtrl', function($compile, NgMap) {
     </info-window>
 
     <marker position="41, -79" on-click="vm.map.showInfoWindow('bar')" />
-  </map>
+  </ng-map>
 </body>
 </html>

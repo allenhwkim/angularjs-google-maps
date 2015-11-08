@@ -100,13 +100,13 @@
   </head>
   <body>
     <div>
-      <map zoom="13" center="1600 pennsylvania ave, washington DC">
+      <ng-map zoom="13" center="1600 pennsylvania ave, washington DC">
         <custom-marker ng-repeat="cm in customMarkers" position="{{cm.address}}"
           on-mouseover="mouseover()" on-mouseout="mouseout()"
           on-click="click()">
           <div class="{{cm.class}}"><div> Custom Marker {{cm.class}}</div> </div>
         </custom-marker>
-      </map>
+      </ng-map>
     </div>
   </body>
 </html>

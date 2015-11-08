@@ -1,32 +1,82 @@
 <!DOCTYPE html>
-<html ng-app="ngMap">
+<html ng-app="myapp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<link href="lib/prettify-tomorrow-night.css" type="text/css" rel="stylesheet" />
+<script src="lib/prettify.js"></script>
 <script src="lib/angular.js"></script>
 <style>
   * { box-sizing: border-box }
   html, body {width:100%; height: 100%}
-  .left  {width: 50%; float:left}
-  .right {width: 50%; height:100%; float:left}
+  .left  {width: 33%; height:100%; overflow:auto; float:left}
+  .right {width: 66%; height:100%; float:left}
   .right .buttons {}
   .right iframe {width:100%; height:90%}
+  .right .source {overflow:auto; width:100%; height: 90%}
 </style>
+<script>
+angular.module('myapp',[]);
+angular.module('myapp').directive('allExamples', function() {
+  var ctrl = function($http, $timeout) {
+    var vm = this;
+    vm.viewIframeSource = function() {
+      var url = window.iframe.location.href;
+      $http.get(url).then(function(resp) {
+        vm.iframeSource = resp.data;
+        vm.viewSource = true;
+        $timeout(function() {
+          prettyPrint();
+        });
+      })
+    };
+    vm.viewInPlunker = function() {
+    };
+
+    $http.get('all-examples.json').then(function(resp) {
+      console.log('data', resp.data);
+      vm.allExamples = resp.data;
+    });
+  };
+  return {
+    restrict: 'E',
+    scope: {},
+    controller: ctrl,
+    controllerAs: 'vm',
+    transclude: true,
+    link: function(scope, element, a, c, transclude) {
+      transclude(scope, function(clone) {
+        element.append(clone);
+      });
+    }
+  }
+});
+</script>
 </head>
 
 <body>
-  <div class="left">
-    <ul>
-      <li>
-    </ul>
-  </div>
-  <div class="right">
-    <div class="buttons">
-      <button>Run</button>
-      <button>Source</button>
-      <button>Plunker</button>
+  <all-examples>
+    <div class="left">
+      <ul>
+        <li ng-repeat="(fileName,file) in vm.allExamples">
+          <a ng-click="vm.viewSource=false"
+            ng-href="{{fileName}}" target="iframe">
+            {{fileName}}
+          </a>
+        </li>
+      </ul>
     </div>
-    <iframe>
-    </iframe>
-  </div>
+    <div class="right">
+      <div class="buttons">
+        <button ng-click="vm.viewSource=false">Run</button>
+        <button ng-click="vm.viewIframeSource()">Source</button>
+        <button ng-click="vm.viewInPlunker()">Plunker</button>
+      </div>
+      <iframe ng-hide="vm.viewSource"
+        src="map-simple.html" name="iframe" frameborder="0">
+      </iframe>
+      <pre ng-show="vm.viewSource"
+        class="source prettyprint lang-html" >{{vm.iframeSource}}</pre>
+    </div>
+  </all-examples>
 </body>
 </html>

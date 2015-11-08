@@ -30,6 +30,7 @@
   var parser, $compile, NgMap;
 
   var linkFunc = function(scope, element, attrs, mapController) {
+    mapController = mapController[0]||mapController[1];
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered);
     var events = parser.getEvents(scope, filtered);
@@ -61,7 +62,7 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: linkFunc
     }; // return
   };

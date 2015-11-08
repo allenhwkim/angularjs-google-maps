@@ -28,7 +28,7 @@
   <body>
     <div ng-controller="MyCtrl">
       {{world}}
-      <map zoom="2" center="toronto, canada" style="height:300px">
+      <ng-map zoom="2" center="toronto, canada" style="height:300px">
         <custom-marker id="can" position="canada" on-click="click()">
         <div><b>Hi, USA</b>
           <img src="http://icons.iconarchive.com/icons/custom-icon-design/2014-world-cup-flags/32/USA-icon.png" />
@@ -39,7 +39,7 @@
           <img src="http://icons.iconarchive.com/icons/gosquared/flag/32/Canada-flat-icon.png" />
         </div>
         </custom-marker>
-      </map>
+      </ng-map>
       <ul id="chats">
         <li class="usa"> <span><b>We are alike, right?</b></span>
         <li class="can"> <span><b>Yes, we are</b></span>

@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: Source:places-auto-complete.js</title>
+    <title>JSDoc: source : places-auto-complete.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -14,6 +14,7 @@
     <nav>
       <h2><a href="index.html">Index</a></h2>
       <ul class="module">
+        <!-- undefined -->
         <h3>
           <a href="" ng-click="moduleundefined = !moduleundefined">
             module: undefined
@@ -30,11 +31,13 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
                 <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
+              </li><li>
+                <a href="NgMap.html">NgMap</a>
               </li><li>
                 <a href="StreetView.html">StreetView</a>
               </li>
@@ -49,8 +52,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,25 +90,12 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
-              </li>
-            </ul>
-          </ul><ul class="group">
-            <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
-              </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
-            </h3>
-            <ul ng-hide="undefinedcontroller">
-              <li>
-                <a href="MapController.html">MapController</a>
               </li>
             </ul>
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ngmap -->
         <h3>
           <a href="" ng-click="modulengmap = !modulengmap">
             module: ngmap
@@ -130,23 +118,24 @@
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ng_ap -->
         <h3>
-          <a href="" ng-click="modulengMap = !modulengMap">
+          <a href="" ng-click="moduleng_ap = !moduleng_ap">
             module: ngMap
           </a>
-          <i ng-cloak="" ng-show="modulengMap">+</i>
+          <i ng-cloak="" ng-show="moduleng_ap">+</i>
         </h3>
-        <li id="ngMap" ng-hide="modulengMap">
+        <li id="ngMap" ng-hide="moduleng_ap">
           <ul class="group">
             <h3>
-              <a href="" ng-click="ngMapdirective = !ngMapdirective">
+              <a href="" ng-click="ng_apdirective = !ng_apdirective">
                 directive
               </a>
-              <i ng-cloak="" ng-show="ngMapdirective">+</i>
+              <i ng-cloak="" ng-show="ng_apdirective">+</i>
             </h3>
-            <ul ng-hide="ngMapdirective">
+            <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -155,7 +144,7 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        Source:places-auto-complete.js
+        source : places-auto-complete.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
@@ -163,24 +152,25 @@
           <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name places-auto-complete
- * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @description 
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @description
  *   Provides address auto complete feature to an input element
  *   Requires: input tag
  *   Restrict To: Attribute
  *
- * @attr {AutoCompleteOptions} [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
+ * @attr {AutoCompleteOptions}
+ *   [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
  *
  * @example
- * Example: 
+ * Example:
  *   &lt;script src="https://maps.googleapis.com/maps/api/js?libraries=places">&lt;/script>
  *   &lt;input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" />
  */
 /* global google */
 (function() {
   'use strict';
-  var placesAutoComplete = function(Attr2Options, $timeout) {
-    var parser = Attr2Options;
+  var placesAutoComplete = function(Attr2MapOptions, $timeout) {
+    var parser = Attr2MapOptions;
     var linkFunc = function(scope, element, attrs, ngModelCtrl) {
       if (attrs.placesAutoComplete ==='false') {
         return false;
@@ -197,7 +187,7 @@
         $timeout(function(){
           ngModelCtrl && ngModelCtrl.$setViewValue(element.val());
         },100);
-      }
+      };
       google.maps.event.addListener(autocomplete, 'place_changed', updateModel);
       element[0].addEventListener('change', updateModel);
       attrs.$observe('types', function(val) {
@@ -215,8 +205,8 @@
       link: linkFunc
     };
   };
-  placesAutoComplete.$inject = ['Attr2Options', '$timeout'];
-  angular.module('ngMap').directive('placesAutoComplete', placesAutoComplete); 
+  placesAutoComplete.$inject = ['Attr2MapOptions', '$timeout'];
+  angular.module('ngMap').directive('placesAutoComplete', placesAutoComplete);
 })();
 </code></pre>
         </article>

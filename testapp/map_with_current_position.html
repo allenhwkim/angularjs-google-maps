@@ -17,9 +17,9 @@
 
 <body ng-app="myApp" ng-controller="MyCtrl as vm">
   NOTE: open console, then see the message from callback
-  <map center='current-position'
+  <ng-map center='current-position'
     geo-fallback-center="[40.74, -74.18]"
     geo-callback="vm.callbackFunc('you')"
-    ></map>
+    ></ng-map>
 </body>
 </html>

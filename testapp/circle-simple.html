@@ -21,7 +21,7 @@
 </head>
 
 <body ng-controller="CircleSimpleCtrl as vm">
-  <map center="37.09024, -95.712891" zoom="4" mayTypeId="TERRAIN">
+  <ng-map center="37.09024, -95.712891" zoom="4" mayTypeId="TERRAIN">
     <shape name="circle" ng-repeat="city in vm.cities" no-watcher="true"
       stroke-color="#FF0000"
       stroke-opacity="0.8"
@@ -31,6 +31,6 @@
       center="{{city.position}}"
       radius="{{vm.getRadius(city.population)}}">
     </shape>
-  </map>
+  </ng-map>
 </body>
 </html>

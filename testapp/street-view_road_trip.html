@@ -185,7 +185,7 @@ map {display:block;height:100%}
   <br style="clear:both" />
   <div class="half" style="height: 70%;">
     <br/>
-    <map default-style="false" zoom="18" tilt="45"
+    <ng-map default-style="false" zoom="18" tilt="45"
       center="1135 Karamea-Kohaihai Rd, Kahurangi National Park, Tasman">
       <directions
         draggable="true"
@@ -197,7 +197,7 @@ map {display:block;height:100%}
       <street-view-panorama container="streetview"></street-view-panorama>
       <marker ng-repeat="pos in vm.markers"
         position="{{[pos.lat(), pos.lng()]}}"></marker>
-     </map>
+     </ng-map>
   </div>
   <div class="half" style="height: 70%;">
     <div class="full-height" id="streetview"></div>

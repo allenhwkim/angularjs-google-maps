@@ -26,23 +26,23 @@ angular.module('ngMap').controller('MyCtrl', function() {
 
 <body ng-controller="MyCtrl as vm">
   <h3>Without zoom-to-include-markers</h3>
-  <map zoom="11" center="[40.74, -74.18]">
+  <ng-map zoom="11" center="[40.74, -74.18]">
     <marker ng-repeat="p in vm.positions"
       position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-  </map>
+  </ng-map>
 
   <h3>With zoom-to-include-markers='true'</h3>
-  <map zoom="11" center="[40.74, -74.18]" zoom-to-include-markers="true">
+  <ng-map zoom="11" center="[40.74, -74.18]" zoom-to-include-markers="true">
     <marker ng-repeat="p in vm.positions"
       position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-  </map>
+  </ng-map>
 
   <h3>With zoom-to-include-markers='auto'</h3>
   Please click on map to add more markers
-  <map zoom="11" center="[40.74, -74.18]"
+  <ng-map zoom="11" center="[40.74, -74.18]"
     zoom-to-include-markers="auto" on-click="vm.addMarker()">
     <marker ng-repeat="p in vm.positions"
       position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-  </map>
+  </ng-map>
 </body>
 </html>

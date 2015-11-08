@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: Source:street-view-panorama.js</title>
+    <title>JSDoc: source : street-view-panorama.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -14,6 +14,7 @@
     <nav>
       <h2><a href="index.html">Index</a></h2>
       <ul class="module">
+        <!-- undefined -->
         <h3>
           <a href="" ng-click="moduleundefined = !moduleundefined">
             module: undefined
@@ -30,11 +31,13 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
                 <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
+              </li><li>
+                <a href="NgMap.html">NgMap</a>
               </li><li>
                 <a href="StreetView.html">StreetView</a>
               </li>
@@ -49,8 +52,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,25 +90,12 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
-              </li>
-            </ul>
-          </ul><ul class="group">
-            <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
-              </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
-            </h3>
-            <ul ng-hide="undefinedcontroller">
-              <li>
-                <a href="MapController.html">MapController</a>
               </li>
             </ul>
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ngmap -->
         <h3>
           <a href="" ng-click="modulengmap = !modulengmap">
             module: ngmap
@@ -130,23 +118,24 @@
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ng_ap -->
         <h3>
-          <a href="" ng-click="modulengMap = !modulengMap">
+          <a href="" ng-click="moduleng_ap = !moduleng_ap">
             module: ngMap
           </a>
-          <i ng-cloak="" ng-show="modulengMap">+</i>
+          <i ng-cloak="" ng-show="moduleng_ap">+</i>
         </h3>
-        <li id="ngMap" ng-hide="modulengMap">
+        <li id="ngMap" ng-hide="moduleng_ap">
           <ul class="group">
             <h3>
-              <a href="" ng-click="ngMapdirective = !ngMapdirective">
+              <a href="" ng-click="ng_apdirective = !ng_apdirective">
                 directive
               </a>
-              <i ng-cloak="" ng-show="ngMapdirective">+</i>
+              <i ng-cloak="" ng-show="ng_apdirective">+</i>
             </h3>
-            <ul ng-hide="ngMapdirective">
+            <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -155,7 +144,7 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        Source:street-view-panorama.js
+        source : street-view-panorama.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
@@ -163,14 +152,16 @@
           <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name streetview-panorama
- * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
  * @attr container Optional, id or css selector, if given, streetview will be in the given html element
- * @attr {String} &lt;StreetViewPanoramaOption> [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
- * @attr {String} &lt;StreetViewPanoramaEvent> [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
+ * @attr {String} &lt;StreetViewPanoramaOption>
+ *   [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
+ * @attr {String} &lt;StreetViewPanoramaEvent>
+ *   [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
  *
  * @example
  *   &lt;map zoom="11" center="[40.688738,-74.043871]" >
@@ -187,11 +178,11 @@
  *     &lt;/street-view-panorama>
  *   &lt;/map>
  */
-/* global google */
+/* global google, document */
 (function() {
   'use strict';
-  var streetViewPanorama = function(Attr2Options) {
-    var parser = Attr2Options;
+  var streetViewPanorama = function(Attr2MapOptions, NgMap) {
+    var parser = Attr2MapOptions;
     var getStreetViewPanorama = function(map, options, events) {
       var svp, container;
       if (options.container) {
@@ -210,16 +201,15 @@
       }
       return svp;
     };
-    var linkFunc = function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
+    var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var controlOptions = parser.getControlOptions(filtered);
       var svpOptions = angular.extend(options, controlOptions);
       var svpEvents = parser.getEvents(scope, filtered);
-      console.log('street-view-panorama', 
+      console.log('street-view-panorama',
         'options', svpOptions, 'events', svpEvents);
-      scope.$on('mapInitialized', function(evt, map) {
+      NgMap.getMap().then(function(map) {
         var svp = getStreetViewPanorama(map, svpOptions, svpEvents);
         map.setStreetView(svp);
         (!svp.getPosition()) && svp.setPosition(map.getCenter());
@@ -229,19 +219,20 @@
           }
         });
         //needed for geo-callback
-        var listener = google.maps.event.addListener(map, 'center_changed', function() {
-          svp.setPosition(map.getCenter());
-          google.maps.event.removeListener(listener);
-        });
+        var listener =
+          google.maps.event.addListener(map, 'center_changed', function() {
+            svp.setPosition(map.getCenter());
+            google.maps.event.removeListener(listener);
+          });
       });
     }; //link
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: linkFunc
     };
   };
-  streetViewPanorama.$inject = ['Attr2Options'];
+  streetViewPanorama.$inject = ['Attr2MapOptions', 'NgMap'];
   angular.module('ngMap').directive('streetViewPanorama', streetViewPanorama);
 })();
 </code></pre>

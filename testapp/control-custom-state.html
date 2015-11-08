@@ -24,13 +24,13 @@ app.controller('CustomControlCtrl', function(NgMap) {
   Adding state to controls<br/>
   Adds a control to the map that returns the user to the control's defined home
   <br/>
-  <map center="41.850033, -87.6500523" zoom="6">
+  <ng-map center="41.850033, -87.6500523" zoom="6">
     <custom-control id="go-home" position="TOP_RIGHT" index="1" on-click="vm.goHome()">
       <div style="background-color: black; color:#fff;cursor:pointer; margin:10px">Go Home</div>
     </custom-control>
     <custom-control id="set-home" position="TOP_RIGHT" index="1" on-click="vm.setHome()">
       <div style="background-color: black; color:#fff;cursor:pointer; margin:10px">Set Home</div>
     </custom-control>
-  </map>
+  </ng-map>
 </body>
 </html>

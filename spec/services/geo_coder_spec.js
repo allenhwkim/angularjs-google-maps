@@ -8,16 +8,16 @@ describe('GeoCoder', function () {
     scope = $rootScope, geoCoder = GeoCoder;
     google.maps.Geocoder = jasmine.createSpy();
   }));
-  
+
   describe('geocode function', function () {
-    
+
     it('Should return a promise', function () {
       var GoodResponse = function (params, callback) { callback('GOOD', 'OK'); };
       google.maps.Geocoder.prototype.geocode = jasmine.createSpy().andCallFake(GoodResponse);
       var promise = geoCoder.geocode('Canada');
       expect(typeof promise.then).toBe('function');
     });
-    
+
     it('Should call geocoder.geocode to retrieve good results', function () {
       var GoodResponse = function (params, callback) { callback('GOOD', 'OK'); };
       google.maps.Geocoder.prototype.geocode = jasmine.createSpy().andCallFake(GoodResponse);
@@ -25,8 +25,8 @@ describe('GeoCoder', function () {
       geoCoder.geocode('Canada').then(okMock);
       scope.$apply();
       expect(okMock).toHaveBeenCalledWith('GOOD');
-    }); 
-          
+    });
+
     it('Should call geocoder.geocode to retrieve  bad results', function () {
       var BadResponse = function (params, callback) { callback('BAD', 'ERROR'); };
       google.maps.Geocoder.prototype.geocode = jasmine.createSpy().andCallFake(BadResponse);
@@ -37,7 +37,5 @@ describe('GeoCoder', function () {
       expect(okMock).not.toHaveBeenCalled();
       expect(errorMock).toHaveBeenCalledWith('ERROR');
     });
-          
   });
-  
 });

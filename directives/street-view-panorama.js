@@ -86,7 +86,7 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: linkFunc
     };
 

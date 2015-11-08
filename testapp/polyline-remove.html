@@ -40,7 +40,7 @@ app.controller('PolylineRemoveCtrl', function(NgMap) {
     <input ng-click="vm.removeLine()" type=button value="Remove Line">
     <input ng-click="vm.addLine()" type=button value="Restore Line">
   </div>
-  <map zoom="3" center="0, -180" map-type-id="TERRAIN">
+  <ng-map zoom="3" center="0, -180" map-type-id="TERRAIN">
     <shape name="polyline" id="foo"
       path="[
         [37.772323, -122.214897],
@@ -53,7 +53,7 @@ app.controller('PolylineRemoveCtrl', function(NgMap) {
       stroke-opacity="1.0"
       stroke-weight="2">
     </shape>
-  </map>
+  </ng-map>
 
 </body>
 </html>

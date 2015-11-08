@@ -33,13 +33,13 @@
 
 <body>
   <div ng-controller="MyCtrl as vm">
-    <map zoom="11" center="[40.74, -74.18]">
+    <ng-map zoom="11" center="[40.74, -74.18]">
       <marker ng-repeat="p in vm.positions"
         position="{{p.pos}}"
         data="{{data[$index]}}"
         on-click="showData()";
         title="pos: {{p.pos}}"></marker>
-    </map>
+    </ng-map>
   </div>
 </body>
 </html>

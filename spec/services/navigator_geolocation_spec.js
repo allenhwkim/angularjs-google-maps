@@ -9,9 +9,9 @@ describe('NavigatorGeolocation', function () {
   beforeEach(inject(function ($rootScope, NavigatorGeolocation) {
     scope = $rootScope, navGeo = NavigatorGeolocation;
   }));
-  
+
   describe('getCurrentPosition function', function () {
-    
+
     beforeEach(function() {
       var GoodResponse = function (successCallback, errorCallback) { successCallback('GOOD'); };
       navigator.geolocation.getCurrentPosition = jasmine.createSpy().andCallFake(GoodResponse);
@@ -21,7 +21,7 @@ describe('NavigatorGeolocation', function () {
       var promise = navGeo.getCurrentPosition();
       expect(typeof promise.then).toBe('function');
     });
-    
+
     it('Should call getCurrentPosition to retrieve good results', function () {
       var jasmineSuccess = jasmine.createSpy('success');
       var jasmineError = jasmine.createSpy('error');
@@ -30,12 +30,12 @@ describe('NavigatorGeolocation', function () {
       expect(jasmineSuccess).toHaveBeenCalled();
       expect(jasmineError).not.toHaveBeenCalled();
       expect(jasmineSuccess).toHaveBeenCalledWith('GOOD');
-    }); 
-          
+    });
+
   });
-  
+
   describe('getCurrentPosition function', function () {
-    
+
     beforeEach(function() {
       var BadResponse = function (successCallback, errorCallback) { errorCallback('BAD'); };
       navigator.geolocation.getCurrentPosition = jasmine.createSpy().andCallFake(BadResponse);
@@ -49,7 +49,7 @@ describe('NavigatorGeolocation', function () {
       expect(jasmineSuccess).not.toHaveBeenCalled();
       expect(jasmineError).toHaveBeenCalled();
       expect(jasmineSuccess).not.toHaveBeenCalled();
-    }); 
-          
+    });
+
   });
 });

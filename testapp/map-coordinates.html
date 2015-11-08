@@ -76,7 +76,7 @@ app.controller('BasicCtrl1', function(NgMap) {
 <body ng-controller="BasicCtrl1 as vm">
   Showing static coordinates of Chicago
   <br/>
-  <map center="41.850033,-87.6500523" zoom="3">
+  <ng-map center="41.850033,-87.6500523" zoom="3">
     <info-window id="1" position="41.850033,-87.6500523" visible="true">
       <div ng-non-bindable>
         Chicago, IL<br/>
@@ -86,6 +86,6 @@ app.controller('BasicCtrl1', function(NgMap) {
         Tile Coordinate: {{vm.tileCoordinate.x}}, {{vm.tileCoordinate.y}} at Zoom Level {{vm.map.getZoom()}}
       </div>
     </info-window>
-  </map>
+  </ng-map>
 </body>
 </html>

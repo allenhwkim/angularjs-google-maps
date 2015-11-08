@@ -43,7 +43,7 @@ app.controller('MyController', function(NgMap) {
   All event-related attributes are preceded by 'on-', i.e. on-click, on-mouseover, etc
   <br/>
   <br/>
-  <map zoom="11" center="{{vm.latlng}}" on-click="vm.setCenter(event)" tilt="0">
+  <ng-map zoom="11" center="{{vm.latlng}}" on-click="vm.setCenter(event)" tilt="0">
     <marker position="[40.79, -74.20]" on-click="vm.foo(2,3)"></marker>
     <shape name="circle" stroke-color='#FF0000' stroke-weight="2"
       center="{{vm.latlng}}" radius="{{vm.radius}}"
@@ -53,6 +53,6 @@ app.controller('MyController', function(NgMap) {
       on-drag="vm.drag()"
       on-dragend="vm.dragEnd()">
     </shape>
-  </map>
+  </ng-map>
 </body>
 </html>

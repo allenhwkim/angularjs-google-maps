@@ -1,5 +1,6 @@
 /*global jasmine*/
 var excludes = [ // these examples has no ng-map
+  "all-examples.html",
   "map_events.html",
   "map_lazy_init.html",
   "map-lazy-load.html",
@@ -23,6 +24,7 @@ describe('testapp directory', function() {
   files = files.filter(function(filename) {
     return filename.match(/\.html$/) && excludes.indexOf(filename) === -1;
   });
+
   var urls = {};
   for (var i=0;i<files.length; i++) {
     var groupId = Math.floor(i/10);
@@ -37,7 +39,7 @@ describe('testapp directory', function() {
         browser.get('testapp/'+url);
         browser.wait( function() {
           return browser.driver.isElementPresent(
-            by.css("map div div.gm-style")
+            by.css("ng-map div div.gm-style")
           );
         }, 5000);
       });

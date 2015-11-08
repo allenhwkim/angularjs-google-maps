@@ -107,6 +107,8 @@
     };
 
     var linkFunc = function(scope, element, attrs, mapController) {
+      mapController = mapController[0]||mapController[1];
+
       element.css('display','none');
 
       var orgAttrs = parser.orgAttributes(element);
@@ -168,7 +170,7 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: linkFunc
     };
 

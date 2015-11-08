@@ -22,9 +22,9 @@
 </script>
 </head>
 <body ng-controller="MyCtrl as vm">
-  <map center="-25,131">
+  <ng-map center="-25,131">
     <marker ng-repeat="pos in vm.positions" position="{{pos}}"></marker>
-  </map>
+  </ng-map>
 </body>
 </html>
 

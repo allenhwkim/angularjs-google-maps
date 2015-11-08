@@ -36,9 +36,9 @@ app.controller('mapController', function($interval) {
   <hr />
 
   <div ng-controller="mapController as vm">
-    <map zoom="14" center="[40.71, -74.21]">
+    <ng-map zoom="14" center="[40.71, -74.21]">
       <marker ng-repeat="p in vm.positions" position="{{p}}"></marker>
-    </map>
+    </ng-map>
   </div>
 </body>
 </html>

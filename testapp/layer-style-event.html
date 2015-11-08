@@ -22,11 +22,11 @@
 </head>
 <body>
   <div ng-controller="LayerDataEventCtrl as vm">
-    <map zoom="4" center="-28, 137.883">
+    <ng-map zoom="4" center="-28, 137.883">
       <map-data set-style="vm.styleFunc"
         on-mouseover="vm.onMouseover()"
         load-geo-json="https://storage.googleapis.com/maps-devrel/google.json"></map-data>
-    </map>
+    </ng-map>
     <h1>{{vm.letter}}</h1>
   </div>
 </body>

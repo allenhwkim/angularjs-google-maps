@@ -22,9 +22,11 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
 
       link: function(scope, element, attrs, mapController) {
+        mapController = mapController[0]||mapController[1];
+
         var initMethod = attrs.initMethod || "insertAt";
         var overlayMapTypeObject = scope[attrs.object];
 

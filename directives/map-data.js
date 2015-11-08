@@ -24,7 +24,7 @@
     var parser = Attr2MapOptions;
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
 
       link: function(scope, element, attrs) {
         var filtered = parser.filter(attrs);

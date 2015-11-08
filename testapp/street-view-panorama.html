@@ -6,7 +6,7 @@
 </head>
 
 <body ng-app="ngMap">
-  <map zoom="20" center="40.740, -74.18" >
+  <ng-map zoom="20" center="40.740, -74.18" >
     <marker position="40.740, -74.18"></marker>
     <street-view-panorama
       click-to-go="false"
@@ -18,7 +18,7 @@
       enable-close-button="true"
       visible="true">
     </street-view-panorama>
-  </map>
+  </ng-map>
   <div id="streetview" style="width: 100px; height: 100px"></div>
 </body>
 </html>

@@ -16,13 +16,13 @@
 </head>
 
 <body ng-controller="PolylineComplexCtrl as vm">
-  <map zoom="7" center="41.879535, -87.624333" on-click="vm.addMarkerAndPath()">
+  <ng-map zoom="7" center="41.879535, -87.624333" on-click="vm.addMarkerAndPath()">
     <shape name="polyline" id="foo"
       path="{{vm.path}}"
       stroke-color="#FF0000"
       stroke-opacity="1.0"
       stroke-weight="3">
     </shape>
-  </map>
+  </ng-map>
 </body>
 </html>

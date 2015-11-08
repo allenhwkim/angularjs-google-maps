@@ -39,7 +39,7 @@ app.controller('LayerDataEventCtrl', function(NgMap) {
 </head>
 <body>
   <div ng-controller="LayerDataEventCtrl as vm">
-    <map zoom="4" center="-28, 137.883">
+    <ng-map zoom="4" center="-28, 137.883">
       <map-data
         set-style="vm.styleFunc"
         on-click="vm.onClick()"
@@ -47,7 +47,7 @@ app.controller('LayerDataEventCtrl', function(NgMap) {
         on-mouseout="vm.onMouseout()"
         load-geo-json="https://storage.googleapis.com/maps-devrel/google.json">
       </map-data>
-    </map>
+    </ng-map>
     <h1>{{letter}}</h1>
   </div>
 </body>

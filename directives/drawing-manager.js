@@ -32,9 +32,11 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
 
       link: function(scope, element, attrs, mapController) {
+        mapController = mapController[0]||mapController[1];
+
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered);
         var controlOptions = parser.getControlOptions(filtered);

@@ -106,6 +106,7 @@
     //console.log('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
 
     return function(scope, element, attrs, mapController) {
+      mapController = mapController[0]||mapController[1];
 
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
@@ -165,7 +166,7 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       compile: function(element) {
         var orgHtml = element.html();
         var matches = orgHtml.match(/{{([^}]+)}}/g);

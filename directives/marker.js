@@ -69,6 +69,8 @@
   };
 
   var linkFunc = function(scope, element, attrs, mapController) {
+    mapController = mapController[0]||mapController[1];
+
     var orgAttrs = parser.orgAttributes(element);
     var filtered = parser.filter(attrs);
     var markerOptions = parser.getOptions(filtered, scope);
@@ -105,7 +107,7 @@
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['^?map','?^ngMap'],
       link: linkFunc
     };
   };

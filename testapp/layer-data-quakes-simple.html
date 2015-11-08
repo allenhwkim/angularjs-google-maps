@@ -23,10 +23,10 @@ app.controller('LayerDataQuakesSimpleCtrl', function($scope) {
 </head>
 <body>
   <div ng-controller="LayerDataQuakesSimpleCtrl as vm">
-    <map zoom="3" center="20, -160">
+    <ng-map zoom="3" center="20, -160">
       <map-data set-style="vm.styleFunc"
         load-geo-json="scripts/quakes.geo.json"></map-data>
-    </map>
+    </ng-map>
   </div>
 </body>
 </html>

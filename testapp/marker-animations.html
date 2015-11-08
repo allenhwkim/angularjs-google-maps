@@ -24,12 +24,12 @@
   using a DROP animation. Clicking on the marker will toggle
   the animation between a BOUNCE animation and no animation.
     <div ng-controller="MarkerAnimationCtrl as vm">
-      <map center="59.32522, 18.07002" zoom="13">
+      <ng-map center="59.32522, 18.07002" zoom="13">
         <marker position="59.327383, 18.06747"
           on-click="vm.toggleBounce()"
           animation="DROP"
           draggable="true"></marker>
-      </map>
+      </ng-map>
     </div>
 </body>
 </html>

@@ -29,13 +29,13 @@
 </head>
 
 <body ng-controller="IconComplexCtrl as vm">
-  <map zoom="10" center="-33.9, 151.2">
+  <ng-map zoom="10" center="-33.9, 151.2">
     <marker ng-repeat="beach in vm.beaches"
       icon="{{vm.image}}"
       shape="{{vm.shape}}"
       title="{{beach[0]}}"
       position="{{beach[1]}}, {{beach[2]}}"
       z-index="{{beach[3]}}"></marker>
-  </map>
+  </ng-map>
 </body>
 </html>

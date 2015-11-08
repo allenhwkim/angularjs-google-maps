@@ -2,7 +2,7 @@
 exports.config = {
   seleniumServerJar: __dirname +
     '/../node_modules/gulp-protractor' +
-    '/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+    '/node_modules/protractor/selenium/selenium-server-standalone-2.47.1.jar',
 
   browserName: 'chrome',
 
@@ -24,7 +24,8 @@ exports.config = {
   },
 
   plugins: [{
-    path: __dirname + '/../node_modules/protractor/plugins/console/index.js',
+    path: __dirname + '/../node_modules/gulp-protractor/node_modules/' +
+      'protractor/node_modules/jasmine/node_modules/jasmine-core/lib/console/console.js',
     failOnWarning: true,
     failOnError: true
   }],

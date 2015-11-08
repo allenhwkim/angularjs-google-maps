@@ -31,9 +31,9 @@
   <hr />
 
   <div ng-controller="mapController as vm">
-    <map zoom="14" center="[43.6650000, -79.4103000]">
+    <ng-map zoom="14" center="[43.6650000, -79.4103000]">
       <marker ng-repeat="pos in vm.positions" position="{{pos.lat}},{{pos.lng}}"></marker>
-    </map>
+    </ng-map>
   </div>
 </body>
 </html>

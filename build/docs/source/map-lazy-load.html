@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: Source:map-lazy-load.js</title>
+    <title>JSDoc: source : map-lazy-load.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -14,6 +14,7 @@
     <nav>
       <h2><a href="index.html">Index</a></h2>
       <ul class="module">
+        <!-- undefined -->
         <h3>
           <a href="" ng-click="moduleundefined = !moduleundefined">
             module: undefined
@@ -30,11 +31,13 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
                 <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
+              </li><li>
+                <a href="NgMap.html">NgMap</a>
               </li><li>
                 <a href="StreetView.html">StreetView</a>
               </li>
@@ -49,8 +52,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,25 +90,12 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
-              </li>
-            </ul>
-          </ul><ul class="group">
-            <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
-              </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
-            </h3>
-            <ul ng-hide="undefinedcontroller">
-              <li>
-                <a href="MapController.html">MapController</a>
               </li>
             </ul>
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ngmap -->
         <h3>
           <a href="" ng-click="modulengmap = !modulengmap">
             module: ngmap
@@ -130,23 +118,24 @@
           </ul>
         </li>
       </ul><ul class="module">
+        <!-- ng_ap -->
         <h3>
-          <a href="" ng-click="modulengMap = !modulengMap">
+          <a href="" ng-click="moduleng_ap = !moduleng_ap">
             module: ngMap
           </a>
-          <i ng-cloak="" ng-show="modulengMap">+</i>
+          <i ng-cloak="" ng-show="moduleng_ap">+</i>
         </h3>
-        <li id="ngMap" ng-hide="modulengMap">
+        <li id="ngMap" ng-hide="moduleng_ap">
           <ul class="group">
             <h3>
-              <a href="" ng-click="ngMapdirective = !ngMapdirective">
+              <a href="" ng-click="ng_apdirective = !ng_apdirective">
                 directive
               </a>
-              <i ng-cloak="" ng-show="ngMapdirective">+</i>
+              <i ng-cloak="" ng-show="ng_apdirective">+</i>
             </h3>
-            <ul ng-hide="ngMapdirective">
+            <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -155,7 +144,7 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        Source:map-lazy-load.js
+        source : map-lazy-load.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
@@ -164,21 +153,23 @@
  * @ngdoc directive
  * @name map-lazy-load
  * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @description 
- *   Requires: Delay the initialization of map directive until the map is ready to be rendered
- *   Restrict To: Attribute 
+ * @description
+ *  Requires: Delay the initialization of map directive
+ *    until the map is ready to be rendered
+ *  Restrict To: Attribute
  *
  * @attr {String} map-lazy-load
-      Maps api script source file location.
- *    Example:  
- *      'https://maps.google.com/maps/api/js'   
+ *    Maps api script source file location.
+ *    Example:
+ *      'https://maps.google.com/maps/api/js'
  * @attr {String} map-lazy-load-params
-     Maps api script source file location via angular scope variable.
-     Also requires the map-lazy-load attribute to be present in the directive.
-     Example: In your controller, set 
-       $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&client=XXXXXenter-api-key-hereXXXX'
+ *   Maps api script source file location via angular scope variable.
+ *   Also requires the map-lazy-load attribute to be present in the directive.
+ *   Example: In your controller, set
+ *     $scope.googleMapsURL = 'https://maps.google.com/maps/api/js?v=3.20&client=XXXXXenter-api-key-hereXXXX'
+ *
  * @example
- * Example: 
+ * Example:
  *
  *   &lt;div map-lazy-load="http://maps.google.com/maps/api/js">
  *     &lt;map center="Brampton" zoom="10">
@@ -186,18 +177,19 @@
  *     &lt;/map>
  *   &lt;/div>
  *
- *   &lt;div map-lazy-load="http://maps.google.com/maps/api/js" 
+ *   &lt;div map-lazy-load="http://maps.google.com/maps/api/js"
  *        map-lazy-load-params="{{googleMapsUrl}}">
  *     &lt;map center="Brampton" zoom="10">
  *       &lt;marker position="Brampton">&lt;/marker>
  *     &lt;/map>
  *   &lt;/div>
  */
+/* global window, document */
 (function() {
   'use strict';
   var $timeout, $compile, src, savedHtml;
   var preLinkFunc = function(scope, element, attrs) {
-    var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;    
+    var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;
     window.lazyLoadCallback = function() {
       console.log('Google maps script loaded:', mapsUrl);
       $timeout(function() { /* give some time to load */
@@ -208,7 +200,9 @@
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
       console.log('Prelinking script loaded,' + src);
-      scriptEl.src = mapsUrl + (mapsUrl.indexOf('?') > -1 ? '&' : '?') + 'callback=lazyLoadCallback';
+      scriptEl.src = mapsUrl +
+        (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
+        'callback=lazyLoadCallback';
       document.body.appendChild(scriptEl);
     } else {
       element.html(savedHtml);
@@ -217,12 +211,17 @@
   };
   var compileFunc = function(tElement, tAttrs) {
     (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
-    savedHtml = tElement.html(); 
+    savedHtml = tElement.html();
     src = tAttrs.mapLazyLoad;
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector('script[src="'+src+(src.indexOf('?') > -1 ? '&' : '?')+'callback=lazyLoadCallback"]')) {
+    if (document.querySelector(
+      'script[src="' +
+      src +
+      (src.indexOf('?') > -1 ? '&' : '?') +
+      'callback=lazyLoadCallback"]')
+    ) {
       return false;
     }
     tElement.html('');  // will compile again after script is loaded
@@ -234,7 +233,7 @@
     $compile = _$compile_, $timeout = _$timeout_;
     return {
       compile: compileFunc
-    }
+    };
   };
   mapLazyLoad.$inject = ['$compile','$timeout'];
   angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
