@@ -9,7 +9,7 @@
     var vm = this;
     NgMap.getMap().then(function(map) {
       var count = 0;
-      var line = vm.map.shapes.foo;
+      var line = map.shapes.foo;
       $interval(function() {
         count = (count + 1) % 200;
         var icons = line.get('icons');

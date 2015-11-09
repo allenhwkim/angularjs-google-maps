@@ -2,20 +2,7 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="http://maps.google.com/maps/api/js"></script>
-<script src="lib/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../controllers/map-controller.js"></script>
-<script src="../services/ng-map.js"></script>
-<script src="../services/geo-coder.js"></script>
-<script src="../services/navigator-geolocation.js"></script>
-<script src="../services/attr2-map-options.js"></script>
-<script src="../filters/camel-case.js"></script>
-<script src="../filters/jsonize.js"></script>
-<script src="../directives/map.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script src="USGSOverlay.js"></script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
@@ -32,11 +19,8 @@
 </script>
 </head>
 
-<body>
-  <div ng-controller="GroundoverlayCustomCtrl as vm">
-    <ng-map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
-   </ng-map>
-  </div>
-
+<body ng-controller="GroundoverlayCustomCtrl as vm">
+  <ng-map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
+  </ng-map>
 </body>
 </html>

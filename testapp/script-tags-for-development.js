@@ -1,5 +1,5 @@
 document.write([
-  '<script src="http://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry"></script>',
+  '<script src="http://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places"></script>',
   '<script src="lib/angular.js"></script>',
   '<script src="../app.js"></script>',
   '<script src="../controllers/map-controller.js"></script>',

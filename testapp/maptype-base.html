@@ -34,7 +34,7 @@ CoordMapType.prototype.alt = 'Tile Coordinate Map Type';
   var app = angular.module('myApp', ['ngMap']);
   app.controller('MapTypeBaseCtrl', function() {
     var vm = this;
-    vm.coordMapType = CoordMapType;
+    vm.coordMapType = new CoordMapType();
     vm.mapTypeChanged = function() {
       var showStreetViewControl = this.getMapTypeId() != 'coordinate';
       this.setOptions({'streetViewControl': showStreetViewControl});

@@ -9,7 +9,7 @@
   <script>
   var app = angular.module('myApp', ['ngMap']);
 
-  app.controller('mapController', function($http, StreetView, NgMap) {
+  app.controller('mapController', function($http, $timeout, StreetView, NgMap) {
     var vm = this;
     vm.stores = [];
     NgMap.getMap().then(function(evtMap) {
@@ -23,73 +23,32 @@
           var store = stores[i];
           store.position = new google.maps.LatLng(store.latitude,store.longitude);
           store.title = store.name;
-
           var marker = new google.maps.Marker(store);
-          google.maps.event.addListener(marker, 'click', function() {
-            vm.store = this;
-            StreetView.getPanorama(map).then(function(panoId) {
-              vm.panoId = panoId;
-            });
-            map.setZoom(18);
-            map.setCenter(this.getPosition());
-            vm.storeInfo.show();
-          });
-          google.maps.event.addListener(map, 'click', function() {
-            vm.storeInfo.hide();
-          });
-
           vm.stores.push(marker);
         }
         console.log('finished loading scripts/starbucks.json', 'vm.stores', vm.stores.length);
         vm.markerClusterer = new MarkerClusterer(map, vm.stores, {});
-        vm.fullScreenToggle.click();
       }, function(err) { console.log('err', err)});
     });
-    vm.showStreetView = function() {
-      StreetView.setPanorama(map, vm.panoId);
-      vm.storeInfo.hide();
-    };
-    vm.showHybridView = function() {
-      map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      map.setTilt(45);
-      vm.storeInfo.hide();
-    }
   });
 
-  app.directive('fullScreenToggle', function() {
+  app.directive('fullScreenToggle', function($timeout) {
     return {
-      link: function(scope, e, a) {
-        this.click = function() {
+      controller: 'mapController',
+      link: function(scope, e, a, ctrl) {
+        var fullScreenClick = function() {
           e.parent().toggleClass('full-screen');
           e.text( e.parent().hasClass('full-screen') ? 'Exit Full Screen' : 'Full Screen' );
           google.maps.event.trigger(scope.map, 'resize');
         };
-        e.on('click', this.click);
-        scope.fullScreenToggle = this;
+        e.on('click', fullScreenClick);
+        $timeout(function() {
+          fullScreenClick();
+        }, 1000);
       }
     }
   });
 
-  app.directive('storeInfo', function() {
-    var StoreInfo = function(s, e, a) {
-      this.scope = s;
-      this.element = e;
-      this.attrs = a;
-      this.show = function() {
-        this.element.css('display', 'block');
-        this.scope.$apply();
-      }
-      this.hide = function() {
-        this.element.css('display', 'none');
-      }
-    };
-    return {
-      templateUrl: 'store-info.html',
-      link: function(scope, e, a) {
-        scope.storeInfo= new StoreInfo(scope, e, a);
-      }
-    }
-  });
   </script>
   <style>
     html, body {width:100%; height: 100%; margin: 0}
@@ -98,35 +57,8 @@
 
     div#map-container.full-screen {position:absolute; display:block; width:100%; height:100%; top: 0; left: 0}
     div#map-container div[full-screen-toggle] { cursor: pointer; position: absolute; top: 5px; right: 100px; }
-    div#map-container div[store-info] { position: absolute; display: none; top: 5px; right: 5px; bottom: 5px; width: 40%  }
-    div#map-container div[store-info] a.hide-link { float:right  }
-    div#map-container div[store-info] table { width: 100% }
-    div#map-container div[store-info] table td { text-align: left; padding: 5px; border: 1px solid #ccc  }
-    map {display:block; width:100%; height:100%;}
+    ng-map {display:block; width:100%; height:100%;}
   </style>
-
-  <script type="text/ng-template" id="store-info.html">
-    <a class="hide-link" ng-click="vm.storeInfo.hide()" href="">x</a>
-    <h3> {{vm.store.name}} </h3>
-    <table>
-      <tr>
-        <td> Address </td>
-        <td> {{vm.store.street_combined}} <br/>
-          {{vm.store.city}} {{vm.store.postal_code}} {{vm.store.country}} <br/>
-        </td>
-      </tr>
-      <tr>
-        <td> Coordinates </td>
-        <td>
-          Latitude: {{vm.store.latitude}} <br/>
-          Longitude: {{vm.store.longitude}}
-        </td>
-      </tr>
-    </table>
-    <a ng-show="panoId" href="" ng-click="vm.showStreetView()">Street View</a>
-    <a href="" ng-click="vm.showHybridView()">Satellite View</a>
-  </script>
-
 </head>
 
 <body>
@@ -134,9 +66,9 @@
   <hr />
 
   <div id="map-container" ng-controller="mapController as vm">
-    <ng-map zoom="2" center="[45.518970, -122.672899]"></ng-map>
+    <ng-map default-style="false" zoom="2" center="[45.518970, -122.672899]">
+    </ng-map>
     <div full-screen-toggle class="custom-control">Full Screen</div>
-    <div store-info class="custom-control">Store Info</div>
   </div>
 
 </body>

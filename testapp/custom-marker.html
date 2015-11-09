@@ -7,7 +7,7 @@
       angular.module('myapp', ['ngMap']);
       angular.module('myapp').controller('MyCtrl', function($interval, NgMap) {
         var map, i=0, interval, chats = document.querySelectorAll('#chats li');
-        NgMap.getMap().then(function(evtmap) {
+        NgMap.getMap().then(function(evtMap) {
           map = evtMap;
           interval = $interval(talk, 2000);
         });
