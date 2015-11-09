@@ -1,5 +1,6 @@
 /* global google */
-describe('Attr2Options', function() {
+describe('Attr2MapOptions', function() {
+  'use strict';
   var scope, parser;
 
   // load the tabs code
@@ -14,7 +15,7 @@ describe('Attr2Options', function() {
       };
 
       scope.$apply();
-      parser = $injector.get('Attr2Options');
+      parser = $injector.get('Attr2MapOptions');
     });
   });
 
@@ -109,18 +110,18 @@ describe('Attr2Options', function() {
       expect(parser.getEvents(scope, attrs).a).toEqual(undefined);
     });
     it('should set scope function as events', function() {
-      scope.scopeFunc = function() {}
+      scope.scopeFunc = function() {};
       var attrs ={onClick:'scopeFunc()'};
       var events = parser.getEvents(scope, attrs);
       expect(typeof events.click).toEqual('function');
     });
     it('should pass arguments to callback', function() {
       scope.name = 'dave';
-      scope.scopeFunc = function() {}
+      scope.scopeFunc = function() {};
       var attrs ={onClick:'scopeFunc(name)'};
       var events = parser.getEvents(scope, attrs);
       var event = {};
-      spyOn(scope, 'scopeFunc');
+      spyOn(scope, 'scopeFunc'); /*jshint ignore:line*/
       events.click(event);
       expect(scope.scopeFunc).toHaveBeenCalledWith(event, scope.name);
     });
@@ -130,7 +131,7 @@ describe('Attr2Options', function() {
       var attrs ={onClick:'scopeFunc(name)'};
       var events = parser.getEvents(scope, attrs);
       var event;
-      spyOn(scope, 'scopeFunc');
+      spyOn(scope, 'scopeFunc'); /*jshint ignore:line*/
       scope.name = 'george';
       events.click(event);
       expect(scope.scopeFunc).toHaveBeenCalledWith(event, scope.name);

@@ -1,46 +1,34 @@
 <!doctype html>
 <html ng-app="myapp">
   <head>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    <script src="lib/angular.js"></script>
-    <!--
-    <script src="../build/scripts/ng-map.min.js"></script>
-    -->
-    <script src="../app.js"></script>
-    <script src="../directives/map_controller.js"></script>
-    <script src="../directives/map.js"></script>
-    <script src="../directives/marker.js"></script>
-    <script src="../directives/custom-marker.js"></script>
-    <script src="../services/geo_coder.js"></script>
-    <script src="../services/navigator_geolocation.js"></script>
-    <script src="../services/attr2_options.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script src="script-tags-for-development.js"></script>
     <script>
       angular.module('myapp', ['ngMap']);
-      angular.module('myapp').controller('MyCtrl', 
-        function($scope, $interval) {
-          var i=0, interval, chats = document.querySelectorAll('#chats li');
-          var talk = function(){
-            var el = chats[i];
-            $scope.map.customMarkers.usa.setVisible(false);
-            $scope.map.customMarkers.can.setVisible(false);
-            $scope.map.customMarkers[el.className].setContent(el.innerHTML);
-            $scope.map.customMarkers[el.className].setVisible(true);
-            $scope.map.customMarkers[el.className].draw();
-            i++;
-            (i >= chats.length) && $interval.cancel(interval);
-          };
-          $scope.$on('mapInitialized', function(e,map) {
-            interval = $interval(talk, 2000);
-          });
-        }
-      );
+      angular.module('myapp').controller('MyCtrl', function($interval, NgMap) {
+        var map, i=0, interval, chats = document.querySelectorAll('#chats li');
+        NgMap.getMap().then(function(evtMap) {
+          map = evtMap;
+          interval = $interval(talk, 2000);
+        });
+        var talk = function(){
+          var el = chats[i];
+          map.customMarkers.usa.setVisible(false);
+          map.customMarkers.can.setVisible(false);
+          map.customMarkers[el.className].setContent(el.innerHTML);
+          map.customMarkers[el.className].setVisible(true);
+          map.customMarkers[el.className].draw();
+          i++;
+          (i >= chats.length) && $interval.cancel(interval);
+        };
+      });
     </script>
     <link href="custom-marker.css"  rel="stylesheet" />
   </head>
   <body>
     <div ng-controller="MyCtrl">
       {{world}}
-      <map zoom="2" center="toronto, canada" style="height:300px">
+      <ng-map zoom="2" center="toronto, canada" style="height:300px">
         <custom-marker id="can" position="canada" on-click="click()">
         <div><b>Hi, USA</b>
           <img src="http://icons.iconarchive.com/icons/custom-icon-design/2014-world-cup-flags/32/USA-icon.png" />
@@ -51,7 +39,7 @@
           <img src="http://icons.iconarchive.com/icons/gosquared/flag/32/Canada-flat-icon.png" />
         </div>
         </custom-marker>
-      </map>
+      </ng-map>
       <ul id="chats">
         <li class="usa"> <span><b>We are alike, right?</b></span>
         <li class="can"> <span><b>Yes, we are</b></span>

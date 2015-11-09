@@ -2,33 +2,24 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/map-data.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
   var app = app || angular.module('myApp', ['ngMap']);
-  app.controller('LayerDataQuakesAdvCtrl', function($scope) {
-    function interpolateHsl(lowHsl, highHsl, fraction) {
-      var color = [];
-      for (var i = 0; i < 3; i++) {
-        // Calculate color based on the fraction.
-        color[i] = (highHsl[i] - lowHsl[i]) * fraction + lowHsl[i];
-      }
 
-      return 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)';
+  function interpolateHsl(lowHsl, highHsl, fraction) {
+    var color = [];
+    for (var i = 0; i < 3; i++) {
+      // Calculate color based on the fraction.
+      color[i] = (highHsl[i] - lowHsl[i]) * fraction + lowHsl[i];
     }
-    $scope.styleFunc = function(feature) {
+
+    return 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)';
+  };
+
+  app.controller('LayerDataQuakesAdvCtrl', function() {
+
+    var vm = this;
+    vm.styleFunc = function(feature) {
       var low = [151, 83, 34];   // color of mag 1.0
       var high = [5, 69, 54];  // color of mag 6.0 and above
       var minMag = 1.0;
@@ -57,29 +48,29 @@
 </script>
 </head>
 <body>
-    <div ng-controller="LayerDataQuakesAdvCtrl">
-      <map zoom="3" center="20, -160"
-        styles="[{
-            'featureType': 'all',
-            'elementType': 'all',
-            'stylers': [{'visibility': 'off'}]
-          }, {
-            'featureType': 'landscape',
-            'elementType': 'geometry',
-            'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
-          }, {
-            'featureType': 'water',
-            'elementType': 'labels',
-            'stylers': [{'visibility': 'off'}]
-          }, {
-            'featureType': 'water',
-            'elementType': 'geometry',
-            'stylers': [{'visibility': 'on'}, {'hue': '#5f94ff'}, {'lightness': 60}]
-          }]">
-        <map-data 
-          set-style="styleFunc"
-          load-geo-json="scripts/quakes.geo.json"></map-data>
-      </map>
-    </div>
+  <div ng-controller="LayerDataQuakesAdvCtrl as vm">
+    <ng-map zoom="3" center="20, -160"
+      styles="[{
+          'featureType': 'all',
+          'elementType': 'all',
+          'stylers': [{'visibility': 'off'}]
+        }, {
+          'featureType': 'landscape',
+          'elementType': 'geometry',
+          'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
+        }, {
+          'featureType': 'water',
+          'elementType': 'labels',
+          'stylers': [{'visibility': 'off'}]
+        }, {
+          'featureType': 'water',
+          'elementType': 'geometry',
+          'stylers': [{'visibility': 'on'}, {'hue': '#5f94ff'}, {'lightness': 60}]
+        }]">
+      <map-data
+        set-style="vm.styleFunc"
+        load-geo-json="scripts/quakes.geo.json"></map-data>
+    </ng-map>
+  </div>
 </body>
 </html>

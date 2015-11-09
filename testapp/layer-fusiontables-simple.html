@@ -2,30 +2,17 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/fusion-tables-layer.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 </head>
 
 <body>
-    <div>
-      <map zoom="11" center="41.850033, -87.6500523">
-        <fusion-tables-layer query="{
-          select: 'Geocodable address',
-          from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
-        </fusion-tables-layer>
-      </map>
-    </div>
+  <div>
+    <ng-map zoom="11" center="41.850033, -87.6500523">
+      <fusion-tables-layer query="{
+        select: 'Geocodable address',
+        from: '1mZ53Z70NsChnBMm-qEYmSDOvLXgrreLTkQUvvg'}">
+      </fusion-tables-layer>
+    </ng-map>
+  </div>
 </body>
 </html>

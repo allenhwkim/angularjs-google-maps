@@ -3,10 +3,19 @@ GoogleMap AngularJS Directive
 
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 
+IMPORTANT NOTICE
+-----------------
+
+ - `$scope.map` is deprecated. Use `NgMap.getMap().then(function(map) {...})`
+    instead to get a map instance.
+ - `$scope.$on('mapInitialized', function(event, map) {..}` is deprecated.
+    Use `NgMap.getMap().then(function(map) {...})` instead to get a map instance.
+ - `map` tag is deprecated. Use `ng-map` tag instead
+
 [Demo](http://ngmap.github.io)  
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)  
 [Road Trip By StreetView](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html)  
-[**NEW** Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html) | 
+[Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html) |
 [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)  
 
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach than the existing one, such as;
@@ -34,44 +43,32 @@ For Bower users,
 
    `var myApp = angular.module('myApp', ['ngMap']);`
 
-After map is initialized, you will have one event and map instances
-
-Event:
-
-  * `mapInitialized` with parameter with map 
-
-    In case your map directive scope is different from your controller scope,
-    use this event to get the map instance.
+To get map instance, use `NgMap.getMap()` function
 
     <pre>
-      app.controller('parentParentController', function($scope) {
-        $scope.$on('mapInitialized', function(event, map) {
-          map.setCenter( .... )
-          ..
+      app.controller('MyController', function(NgMap) {
+        NgMap.getMap().then(function(map) {
+          console.log(map.getCenter());
+          console.log('markers', map.markers);
+          console.log('shapes', map.shapes);
         });
       });
     </pre>
-      
-Instances:
 
-  * `$scope.map`
-  * `$scope.map.markers`
-  * `$scope.map.shapes`
-  * etc
-
-Lazy Loading
-------------
+Lazy Loading of Google Maps Javascript
+---------------------------------------
   Simply wrap the map tag with `map-lazy-load="http://maps.google.com/maps/api/js"`.
 
     <div map-lazy-load="http://maps.google.com/maps/api/js">
       <map center="41,-87" zoom="3"></map>
     </div>
 
-  If you need to pass in an API key to the javascript, you can set a scope variable in your controller (e.g. `$scope.googleMapsUrl="http://maps.google.com/maps/api/js?v=3.20&client=XXXXenter-api-keyXXXX";`). 
+  If you need to pass in an API key to the javascript, you can set a scope
+  variable in your controller (e.g. `$scope.googleMapsUrl="http://maps.google.com/maps/api/js?v=3.20&client=XXXXenter-api-keyXXXX";`).
   This can be set from a constant value in your app to standardise the API key to pass to google for multiple controllers.
 
     <div map-lazy-load="http://maps.google.com/maps/api/js"
-          map-lazy-load-params="{{googleMapsUrl}}">
+      map-lazy-load-params="{{googleMapsUrl}}">
       <map center="41,-87" zoom="3"></map>
     </div>
 
@@ -79,7 +76,6 @@ Directives
 ----------
 
  * bicycling-layer
- * cloud-layer
  * custom-control
  * custom-marker (NEW)
  * directions (NEW)
@@ -102,15 +98,14 @@ Directives
  * street-view-panorama (NEW)
  * traffic-layer
  * transit-layer
- * weather-layer
 
 Advanced Examples
 -------------------
 - [Marker Clusterer](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/marker-clusterer.html)
 - [Starbucks World Wide](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_app.html)
-- [Road Trip By StreetView](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html)  
+- [Road Trip By StreetView](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html)
 - [Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html)
-- [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)  
+- [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)
 
 [Contributors](CONTRIBUTORS.md)
 ===============================
@@ -122,12 +117,18 @@ Contributing
 - **npm install** to install the build tools
 - **gulp build** to build the javascript & doc files in the /build folder & run the unit tests.
 - **gulp clean** to cleanup the repository from a previous build ? does this work ?
-- **gulp test** to run the Karma unit test suite. 
-- **gulp test-e2e** to run the Protractor test suite. For the first test run, you may need to update the protractor webdriver manager. It will show the command on screen if this is required (node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update).
-- **gulp testapp-server** will start a web server for the testapp on http://localhost:8888
+- **gulp test** to run the Karma unit test suite.
+- **gulp test:e2e** to run the Protractor test suite. For the first test run, you may need to update the protractor webdriver manager. It will show the command on screen if this is required (node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update).
+- **gulp test:server** will start a web server for the testapp on http://localhost:8888
 
 Release Notes
 ===============
+**1.14.0**
+
+  * Prepared for Angular2 transition by removing all scopes
+  * NgMap service is introduced
+  * Refactored 
+
 **1.13.0**
 
   * New directive `custom-marker`

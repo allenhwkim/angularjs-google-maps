@@ -24,9 +24,10 @@
  *   </map>
  *
  */
+/* global document */
 (function() {
   'use strict';
-  var parser, $timeout, $compile;
+  var parser, $timeout, $compile, NgMap;
 
   var CustomMarker = function(options) {
     options = options || {};
@@ -105,8 +106,8 @@
     //console.log('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
 
     return function(scope, element, attrs, mapController) {
+      mapController = mapController[0]||mapController[1];
 
-      var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
       var events = parser.getEvents(scope, filtered);
@@ -119,7 +120,7 @@
       var customMarker = new CustomMarker(options);
 
       $timeout(function() { //apply contents, class, and location after it is compiled
-        scope.$watch('[' + varsToWatch.join(',') + ']', function(val) {
+        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
           customMarker.setContent(orgHtml, scope);
         });
 
@@ -130,7 +131,7 @@
         console.log('customMarker', customMarker);
 
         if (!(options.position instanceof google.maps.LatLng)) {
-          mapController.getGeoLocation(options.position).then(
+          NgMap.getGeoLocation(options.position).then(
             function(latlng) {
               customMarker.setPosition(latlng);
             }
@@ -153,22 +154,29 @@
     }; // linkFunc
   };
 
-  var customMarkerDirective = function(Attr2Options, _$timeout_, _$compile_)  {
-    parser = Attr2Options;
+
+  var customMarkerDirective = function(
+      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
+    )  {
+    parser = Attr2MapOptions;
     $timeout = _$timeout_;
     $compile = _$compile_;
+    NgMap = _NgMap_;
     setCustomMarker();
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       compile: function(element) {
         var orgHtml = element.html();
         var matches = orgHtml.match(/{{([^}]+)}}/g);
         var varsToWatch = [];
-        (matches || []).forEach(function(match) { //filter out that contains '::', 'this.'
+        //filter out that contains '::', 'this.'
+        (matches || []).forEach(function(match) {
           var toWatch = match.replace('{{','').replace('}}','');
-          if (match.indexOf('::') == -1 && match.indexOf('this.') == -1 && varsToWatch.indexOf(toWatch) == -1) {
+          if (match.indexOf('::') == -1 &&
+            match.indexOf('this.') == -1 &&
+            varsToWatch.indexOf(toWatch) == -1) {
             varsToWatch.push(match.replace('{{','').replace('}}',''));
           }
         });
@@ -177,7 +185,8 @@
       }
     }; // return
   };// function
-  customMarkerDirective.$inject = ['Attr2Options', '$timeout', '$compile'];
+  customMarkerDirective.$inject =
+    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();

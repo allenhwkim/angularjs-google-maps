@@ -2,18 +2,8 @@
 <html>
   <head>
     <title>Travel modes in directions</title>
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-    <script src="../app.js"></script>
-    <script src="../services/navigator_geolocation.js"></script>
-    <script src="../services/geo_coder.js"></script>
-    <script src="../services/attr2_options.js"></script>
-    <script src="../directives/map_controller.js"></script>
-    <script src="../directives/map.js"></script>
-    <script src="../directives/directions.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script src="script-tags-for-development.js"></script>
     <style>
       html, body {width:100%; height: 100%; padding:0; margin: 0}
       body {padding: 5px}
@@ -23,24 +13,24 @@
   <body ng-app="ngMap">
     <div style="width: 68%; float:left; height: 100%">
 
-      <map zoom="14" center="37.7699298, -122.4469157" >
-        <directions 
+      <ng-map zoom="14" center="37.7699298, -122.4469157" >
+        <directions
           draggable="true"
           travel-mode="DRIVING"
           origin="current-location"
           destination="Montreal, Canada">
         </directions>
-      </map> 
+      </ng-map>
       <br/>
       <br/>
-      <map zoom="14" center="37.7699298, -122.4469157" >
-        <directions 
+      <ng-map zoom="14" center="37.7699298, -122.4469157" >
+        <directions
           draggable="true"
           travel-mode="DRIVING"
           origin="Ottawa, Canada"
           destination="current-location">
         </directions>
-      </map> 
+      </ng-map>
 
     </div>
 

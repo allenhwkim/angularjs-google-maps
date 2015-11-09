@@ -2,55 +2,44 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
-  function MyCtrl($scope) {
-    $scope.data =[ 
+  angular.module('ngMap').controller('MyCtrl', function() {
+    var vm=this;
+    vm.data =[
       {foo:1, bar:1},
       {foo:2, bar:2},
       {foo:3, bar:3},
-      {foo:4, bar:4}, 
-      {foo:5, bar:5}, 
-      {foo:6, bar:6}, 
+      {foo:4, bar:4},
+      {foo:5, bar:5},
+      {foo:6, bar:6},
       {foo:7, bar:7}
     ];
-    $scope.positions =[ 
+    vm.positions =[
       {pos:[40.71, -74.21]},
       {pos:[40.72, -74.20]},
       {pos:[40.73, -74.19]},
-      {pos:[40.74, -74.18]}, 
-      {pos:[40.75, -74.17]}, 
-      {pos:[40.76, -74.16]}, 
+      {pos:[40.74, -74.18]},
+      {pos:[40.75, -74.17]},
+      {pos:[40.76, -74.16]},
       {pos:[40.77, -74.15]}
     ];
-    $scope.showData = function() {
+    vm.showData = function() {
       alert(this.data.foo);
     }
-  }
+  });
 </script>
 </head>
 
 <body>
-    <div ng-controller="MyCtrl">
-      <map zoom="11" center="[40.74, -74.18]">
-        <marker ng-repeat="p in positions"
-          position="{{p.pos}}"
-          data="{{data[$index]}}"
-          on-click="showData()";
-          title="pos: {{p.pos}}"></marker>
-      </map>
-    </div>
+  <div ng-controller="MyCtrl as vm">
+    <ng-map zoom="11" center="[40.74, -74.18]">
+      <marker ng-repeat="p in vm.positions"
+        position="{{p.pos}}"
+        data="{{data[$index]}}"
+        on-click="showData()";
+        title="pos: {{p.pos}}"></marker>
+    </ng-map>
+  </div>
 </body>
 </html>

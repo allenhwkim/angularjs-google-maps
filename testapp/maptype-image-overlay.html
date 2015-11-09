@@ -2,20 +2,7 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/overlay-map-type.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
   var bounds = {
     17: [[20969, 20970], [50657, 50658]],
@@ -37,12 +24,15 @@
     },
     tileSize: new google.maps.Size(256, 256)
   });
+  angular.module('ngMap').run(function($rootScope) {
+    $rootScope.imageMapType = imageMapType;
+  });
 </script>
 </head>
 <body>
-      <map zoom="18" center="37.78313383212, -122.4039494991302">
-        <overlay-map-type object="imageMapType" init-method="push">
-        </overlay-map-type>
-      </map>
+  <ng-map zoom="18" center="37.78313383212, -122.4039494991302">
+    <overlay-map-type object="imageMapType" init-method="push">
+    </overlay-map-type>
+  </ng-map>
 </body>
 </html>

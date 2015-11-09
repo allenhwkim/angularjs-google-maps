@@ -2,53 +2,41 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 </head>
 
 <body>
-    <map zoom="6" center="20.291, 153.027" map-type-id="TERRAIN">
-      <shape name="polyline" id="foo"
-        path="[[22.291, 153.027], [18.291, 153.027]]"
-        icons="[
-          {
-            icon: {
-              path: 'M -2,0 0,-2 2,0 0,2 z',
-              strokeColor: '#F00',
-              fillColor: '#F00',
-              fillOpacity: 1
-            },
-            offset: '0%'
+  <ng-map zoom="6" center="20.291, 153.027" map-type-id="TERRAIN">
+    <shape name="polyline" id="foo"
+      path="[[22.291, 153.027], [18.291, 153.027]]"
+      icons="[
+        {
+          icon: {
+            path: 'M -2,0 0,-2 2,0 0,2 z',
+            strokeColor: '#F00',
+            fillColor: '#F00',
+            fillOpacity: 1
           },
-          {
-            icon: {
-              path: 'M -1,0 A 1,1 0 0 0 -3,0 1,1 0 0 0 -1,0M 1,0 A 1,1 0 0 0 3,0 1,1 0 0 0 1,0M -3,3 Q 0,5 3,3',
-              strokeColor: '#00F',
-              rotation: 45
-            },
-            offset: '50%'
+          offset: '0%'
+        },
+        {
+          icon: {
+            path: 'M -1,0 A 1,1 0 0 0 -3,0 1,1 0 0 0 -1,0M 1,0 A 1,1 0 0 0 3,0 1,1 0 0 0 1,0M -3,3 Q 0,5 3,3',
+            strokeColor: '#00F',
+            rotation: 45
           },
-          {
-            icon: {
-              path: 'M -2,-2 2,2 M 2,-2 -2,2',
-              strokeColor: '#292',
-              strokeWeight: 4
-            },
-            offset: '100%'
-          }
-        ]">
-      </shape>
-   </map>
+          offset: '50%'
+        },
+        {
+          icon: {
+            path: 'M -2,-2 2,2 M 2,-2 -2,2',
+            strokeColor: '#292',
+            strokeWeight: 4
+          },
+          offset: '100%'
+        }
+      ]">
+    </shape>
+ </ng-map>
 </body>
 </html>

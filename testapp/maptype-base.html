@@ -2,20 +2,7 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/map-type.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
 /**
  * @constructor
@@ -45,27 +32,27 @@ CoordMapType.prototype.alt = 'Tile Coordinate Map Type';
 </script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
-  app.controller('MapTypeBaseCtrl', function($scope) {
-    $scope.mapTypeChanged = function() {
+  app.controller('MapTypeBaseCtrl', function() {
+    var vm = this;
+    vm.coordMapType = new CoordMapType();
+    vm.mapTypeChanged = function() {
       var showStreetViewControl = this.getMapTypeId() != 'coordinate';
       this.setOptions({'streetViewControl': showStreetViewControl});
     };
   });
 </script>
 </head>
-<body>
-    <div ng-controller="MapTypeBaseCtrl">
-      <map zoom="10" center="41.850033,-87.6500523"
-        on-maptypeid_changed="mapTypeChanged()"
-        street-view-control="false"
-        map-type-id="coordinate"
-        map-type-control-options="{
-          mapTypeIds: ['coordinate', 'ROADMAP'],
-          style: 'DROPDOWN_MENU'
-        }">
-        <map-type name="coordinate" object="CoordMapType">
-        </map-type>
-      </map>
-    </div>
+<body ng-controller="MapTypeBaseCtrl as vm">
+  <ng-map zoom="10" center="41.850033,-87.6500523"
+    on-maptypeid_changed="vm.mapTypeChanged()"
+    street-view-control="false"
+    map-type-id="coordinate"
+    map-type-control-options="{
+      mapTypeIds: ['coordinate', 'ROADMAP'],
+      style: 'DROPDOWN_MENU'
+    }">
+    <map-type name="coordinate" object="vm.coordMapType">
+    </map-type>
+  </ng-map>
 </body>
 </html>

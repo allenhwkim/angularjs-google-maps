@@ -1,11 +1,11 @@
-<!DOCTYPE html> 
-<html> 
-  <head> 
-    <meta charset="utf-8"> 
-    <title> 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
       Google Maps V3 API Events for google.maps.Map Demo
-    </title> 
-    <style type="text/css"> 
+    </title>
+    <style type="text/css">
       body {
        color: #585858;
        font-family: sans-serif;
@@ -29,9 +29,9 @@
       #events {
        overflow: hidden;
       }
-    </style> 
-    <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript"> 
+    </style>
+    <script src="https://maps.google.com/maps/api/js"></script>
+    <script type="text/javascript">
       var events = {
         'bounds_changed': 'fired when the viewport bounds have changed.',
         'center_changed': 'fired when the map center property changes.',
@@ -53,12 +53,12 @@
         'tilt_changed': 'fired when the map tilt property changes.',
         'zoom_changed': 'fired when the map zoom property changes.'
       };
- 
+
       function setBackgroundColor(eventName, color) {
         var row = document.getElementById(eventName);
         row.style.backgroundColor = color;
       }
- 
+
       function setupListener(map, name) {
         google.maps.event.addListener(map, name, function() {
           setBackgroundColor(name, '#99CCFF');
@@ -67,7 +67,7 @@
           }, 500);
         });
       }
- 
+
       function initialize() {
         populateTable();
         var mapDiv = document.getElementById('map-canvas');
@@ -81,7 +81,7 @@
           setupListener(map, eventName);
         }
       }
- 
+
       // Dynamically create the table of events from the defined hashmap
       function populateTable() {
         var eventsTable = document.getElementById('event_descr');
@@ -94,38 +94,37 @@
       }
       // Load the map
       google.maps.event.addDomListener(window, 'load', initialize);
-    </script> 
-  </head> 
-  <body> 
-    <div id="main"> 
-      <p> 
+    </script>
+  </head>
+  <body>
+    <div id="main">
+      <p>
         This page lists all the events that can be triggered for the
-        <code> 
+        <code>
         google.maps.Map
-        </code> 
+        </code>
         object and shows when that happens, by highlighting the names to the right.
-      </p> 
-      </p> 
+      </p>
+      </p>
         Play around with the map and see what happens.
         For more information check
       <a href="https://code.google.com/apis/maps/documentation/javascript/reference.html#Map">the API reference</a>.
-      </p> 
-      <div id="map"> 
-        <h2> 
+      </p>
+      <div id="map">
+        <h2>
           Map
-        </h2> 
-        <div id="map-canvas"> 
-        </div> 
-      </div> 
-      <div id="events"> 
-        <h2> 
+        </h2>
+        <div id="map-canvas">
+        </div>
+      </div>
+      <div id="events">
+        <h2>
           Events
-        </h2> 
-        <table width="100%" id="event_descr"> 
-        </table> 
-      </div> 
-    </div> 
-    </div> 
-  </body> 
-</html> 
+        </h2>
+        <table width="100%" id="event_descr">
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
 

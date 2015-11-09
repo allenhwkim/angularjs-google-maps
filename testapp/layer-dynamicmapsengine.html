@@ -2,50 +2,37 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/dynamic-maps-engine-layer.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
-  var app = angular.module('myApp', ['ngMap']);
-  app.controller('LayerDynamicMapsEngineCtrl', function($scope) {
-    $scope.onMouseover = function(event) {
-      var fillArray = ['red', 'blue', 'yellow', 'green'];
-      var style = this.getFeatureStyle(event.featureId); 
-      style.fillColor = fillArray[event.featureId - 1];
-      style.fillOpacity = '0.8';
-    };
-    $scope.onMouseout = function(event) {
-      var style = this.getFeatureStyle(event.featureId).resetAll();
-    };
-  });
+var app = angular.module('myApp', ['ngMap']);
+app.controller('LayerDynamicMapsEngineCtrl', function() {
+  var vm = this;
+  vm.onMouseover = function(event) {
+    var fillArray = ['red', 'blue', 'yellow', 'green'];
+    var style = this.getFeatureStyle(event.featureId);
+    style.fillColor = fillArray[event.featureId - 1];
+    style.fillOpacity = '0.8';
+  };
+  vm.onMouseout = function(event) {
+    this.getFeatureStyle(event.featureId).resetAll();
+  };
+});
 </script>
 </head>
-
 <body>
   Circle Simple<br/>
-   This example creates circles on the map, representing
-   populations in North America.
-    <div ng-controller="LayerDynamicMapsEngineCtrl">
-      <map center="59.322506, 18.010025" zoom="14">
-        <dynamic-maps-engine-layer
-          suppress-info-windows="true"
-          clickable="true"
-          on-mouseover="onMouseover()"
-          on-mouseout="onMouseout()"
-          layer-id="06673056454046135537-08896501997766553811">
-        </dynamic-maps-engine-layer>
-      </map>
-    </div>
+  This example creates circles on the map, representing
+  populations in North America.
+  <div ng-controller="LayerDynamicMapsEngineCtrl as vm">
+    <ng-map center="59.322506, 18.010025" zoom="14">
+      <dynamic-maps-engine-layer
+        suppress-info-windows="true"
+        clickable="true"
+        on-mouseover="vm.onMouseover()"
+        on-mouseout="vm.onMouseout()"
+        layer-id="06673056454046135537-08896501997766553811">
+      </dynamic-maps-engine-layer>
+    </ng-map>
+  </div>
 </body>
 </html>

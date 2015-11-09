@@ -2,53 +2,43 @@
 <html ng-app="myApp">
 
 <head>
-  <title>Dynamic ngMap demo</title>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-  <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-  <script src="../app.js"></script>
-  <script src="../directives/map_controller.js"></script>
-  <script src="../directives/map.js"></script>
-  <script src="../directives/marker.js"></script>
-  <script src="../directives/shape.js"></script>
-  <script src="../services/geo_coder.js"></script>
-  <script src="../services/navigator_geolocation.js"></script>
-  <script src="../services/attr2_options.js"></script>
-  <script>
-    var app = angular.module('myApp', ['ngMap']);
+<title>Dynamic ngMap demo</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+var app = angular.module('myApp', ['ngMap']);
 
-    app.controller('mapController', function($scope, $http, $interval) {
-      $scope.positions =[ [40.71, -74.21], [40.72, -74.20], [40.73, -74.19],
-        [40.74, -74.18], [40.75, -74.17], [40.76, -74.16], [40.77, -74.15]];
+app.controller('mapController', function($interval) {
+  var vm = this;
+  vm.positions =[
+    [40.71, -74.21], [40.72, -74.20], [40.73, -74.19], [40.74, -74.18],
+    [40.75, -74.17], [40.76, -74.16], [40.77, -74.15], [40.77, -74.15]
+  ];
 
-      $interval(function() {
-        var numMarkers = Math.floor(Math.random() * 4) + 4; //between 4 to 8 markers
-        var positions = [];
-        for (i = 0; i < numMarkers; i++) {
-          var lat = 40.71 + (Math.random() / 100);
-          var lng = -74.21 + (Math.random() / 100);
-          positions.push([lat, lng]);
-        }
-        $scope.positions = positions;
-      }, 2000);
-    });
-  </script>
-  <style>
-    map, div[map] {display:block; width:600px; height:400px;}
-  </style>
+  $interval(function() {
+    var numMarkers = Math.floor(Math.random() * 4) + 4; //between 4 to 8 markers
+    vm.positions = [];
+    for (i = 0; i < numMarkers; i++) {
+      var lat = 40.71 + (Math.random() / 100);
+      var lng = -74.21 + (Math.random() / 100);
+      vm.positions.push([lat, lng]);
+    }
+  }, 2000);
+});
+</script>
+<style>
+  map, div[map] {display:block; width:600px; height:400px;}
+</style>
 </head>
 
 <body>
   <h1>Dynamic Markers With ng-repeat</h1>
   <hr />
-  
-    <div ng-controller="mapController">
-      <map zoom="14" center="[40.71, -74.21]">
-        <marker ng-repeat="p in positions" position="{{p}}"></marker>
-      </map>
-    </div>
+
+  <div ng-controller="mapController as vm">
+    <ng-map zoom="14" center="[40.71, -74.21]">
+      <marker ng-repeat="p in vm.positions" position="{{p}}"></marker>
+    </ng-map>
+  </div>
 </body>
 </html>
