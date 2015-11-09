@@ -31,5 +31,6 @@ document.write([
   '<script src="../directives/shape.js"></script>',
   '<script src="../directives/street-view-panorama.js"></script>',
   '<script src="../directives/traffic-layer.js"></script>',
-  '<script src="../directives/transit-layer.js"></script>'
+  '<script src="../directives/transit-layer.js"></script>',
+  '<script>window.onload=function() {window.postMessage(document.body.scrollHeight, '*');}</script>'
 ].join('\n'));

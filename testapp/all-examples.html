@@ -51,7 +51,6 @@ angular.module('myapp').directive('allExamples', function() {
     var vm = this;
     vm.viewIframe = function(url) {
       vm.viewSource = false;
-      //$location.search('f', url);
       window.iframe.location.href = url;
     };
     vm.viewIframeSource = function() {
@@ -128,7 +127,7 @@ angular.module('myapp').directive('allExamples', function() {
     <div class="left">
       Search: <input ng-model="search" />
       <ul>
-        <li ng-repeat="example in vm.allExamples | filter:search">
+        <li ng-repeat="example in vm.allExamples | filter:search | filter:'!all-examples' ">
           <a href="#{{example.key}}" ng-click="vm.viewIframe(example.key)">
             {{example.key}}
           </a>
