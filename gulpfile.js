@@ -52,8 +52,10 @@ gulp.task('clean', function() {
 gulp.task('build-js', function() {
   return gulp.src([
       'app.js',
-      'services/*.js',
-      'directives/*.js'
+      'controllers/*.js',
+      'directives/*.js',
+      'filters/*.js',
+      'services/*.js'
     ])
     .pipe(concat('ng-map.debug.js'))
     .pipe(gulp.dest('build/scripts'))

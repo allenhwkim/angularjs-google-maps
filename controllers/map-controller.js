@@ -166,6 +166,9 @@
         if (mapOptions.zoomToIncludeMarkers) {
           vm.zoomToIncludeMarkers();
         }
+        //TODO: it's for backward compatibiliy. will be removed
+        $scope.map = vm.map;
+        $scope.$emit('mapInitialized', vm.map);
       });
     };
 

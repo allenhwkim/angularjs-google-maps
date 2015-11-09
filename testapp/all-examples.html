@@ -17,6 +17,28 @@
 <script>
 angular.module('myapp',[]);
 angular.module('myapp').directive('allExamples', function() {
+  var submitToPlunker = function(html) {
+    var form = document.createElement('form');
+    form.style.display = 'none';
+    form.method = 'post';
+    form.action = 'http://plnkr.co/edit/?p=preview';
+    var postData = {
+      description: "AngularJS Google Maps Directive",
+      'private': true,
+      'tags[]': 'auglarjs',
+      'files[index.html]': html
+    };
+    for(var key in postData) {
+      var input = document.createElement('input');
+      input.type = "hidden";
+      input.name = key;
+      input.value = postData[key];
+      form.appendChild(input);
+    }
+    form.submit();
+    form.remove();
+  };
+
   var ctrl = function($http, $timeout) {
     var vm = this;
     vm.viewIframeSource = function() {
@@ -30,6 +52,28 @@ angular.module('myapp').directive('allExamples', function() {
       })
     };
     vm.viewInPlunker = function() {
+      var baseUrl = "";
+      var url = window.iframe.location.href;
+      var replMap = {
+        '&lt;script src="script-tags-for-development.js">&lt;/script>' :
+           [
+             '&lt;script src="http://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry">&lt;/script>',
+             '&lt;script src="http://code.angularjs.org/1.3.15/angular.js">&lt;/script>',
+             '&lt;script src="http://rawgit.com/allenhwkim/angularjs-google-maps/angualr2-prepared/build/scripts/ng-map.js">&lt;/script>',
+           ].join("\n"),
+        '&lt;script src="taxi-data.js">&lt;/script>':
+          '&lt;script src="taxi-data.js">&lt;/script>'
+      };
+      $http.get(url).then(function(resp) {
+        vm.iframeSource = resp.data;
+        for(var key in replMap) {
+          var re = new RegExp(key.replace(/&lt;/g, '<'), 'g');
+          vm.iframeSource = vm.iframeSource.replace(re,
+            replMap[key].replace(/&lt;/g, '<'));
+        }
+        submitToPlunker(vm.iframeSource);
+        console.log(vm.iframeSource);
+      })
     };
 
     $http.get('all-examples.json').then(function(resp) {
