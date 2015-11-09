@@ -85,7 +85,7 @@ gulp.task('bump:minor', function() { bumpVersion('minor'); });
 gulp.task('bump:major', function() { bumpVersion('major'); });
 
 gulp.task('build', function(callback) {
-  runSequence('clean', 'build-js', 'test', 'docs', callback);
+  runSequence('clean', 'build-js', 'test', 'docs', 'examples:json', callback);
 });
 
 gulp.task('test', function (done) {
@@ -124,7 +124,7 @@ gulp.task('test:e2e', ['test:server'], function() {
     });
 });
 
-gulp.task('example:json', function() {
+gulp.task('examples:json', function() {
   var allExamples = {};
   gulp.src([__dirname + "/testapp/*.html"])
     .pipe(through.obj(

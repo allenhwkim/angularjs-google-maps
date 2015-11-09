@@ -54,6 +54,7 @@ angular.module('myapp').directive('allExamples', function() {
     vm.viewInPlunker = function() {
       var baseUrl = "";
       var url = window.iframe.location.href;
+      var baseUrl= 'http://rawgit.com/allenhwkim/angularjs-google-maps/angualr2-prepared/testapp';
       var replMap = {
         '&lt;script src="script-tags-for-development.js">&lt;/script>' :
            [
@@ -61,8 +62,12 @@ angular.module('myapp').directive('allExamples', function() {
              '&lt;script src="http://code.angularjs.org/1.3.15/angular.js">&lt;/script>',
              '&lt;script src="http://rawgit.com/allenhwkim/angularjs-google-maps/angualr2-prepared/build/scripts/ng-map.js">&lt;/script>',
            ].join("\n"),
-        '&lt;script src="taxi-data.js">&lt;/script>':
-          '&lt;script src="taxi-data.js">&lt;/script>'
+        '&ltscript src="taxi-data.js">&lt/script>':
+          '&ltscript src="'+baseUrl+'/taxi-data.js">&lt/script>',
+        '&ltscript src="scripts/markerclusterer.js">&lt/script>':
+          '&ltscript src="'+baseUrl+'/scripts/markerclusterer.js">&lt/script>',
+        '&ltscript src="USGSOverlay.js">&lt/script>':
+          '&ltscript src="'+baseUrl+'/USGSOverlay.js">&lt/script>'
       };
       $http.get(url).then(function(resp) {
         vm.iframeSource = resp.data;
