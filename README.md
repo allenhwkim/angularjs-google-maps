@@ -10,6 +10,8 @@ IMPORTANT NOTICE
     instead to get a map instance.
  - `$scope.$on('mapInitialized', function(event, map) {..}` is deprecated.
     Use `NgMap.getMap().then(function(map) {...})` instead to get a map instance.
+ - `$scope.showInfoWindow(id)` is deprecated. `map.showInfoWindow(id)` instead.
+    You need to get map instance usng `NgMap.getMap().then()` in advance.
  - `map` tag is deprecated. Use `ng-map` tag instead
 
 [Demo](http://ngmap.github.io)  
