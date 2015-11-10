@@ -13,14 +13,14 @@ describe('GeoCoder', function () {
 
     it('Should return a promise', function () {
       var GoodResponse = function (params, callback) { callback('GOOD', 'OK'); };
-      google.maps.Geocoder.prototype.geocode = jasmine.createSpy().andCallFake(GoodResponse);
+      google.maps.Geocoder.prototype.geocode = jasmine.createSpy().and.callFake(GoodResponse);
       var promise = geoCoder.geocode('Canada');
       expect(typeof promise.then).toBe('function');
     });
 
     it('Should call geocoder.geocode to retrieve good results', function () {
       var GoodResponse = function (params, callback) { callback('GOOD', 'OK'); };
-      google.maps.Geocoder.prototype.geocode = jasmine.createSpy().andCallFake(GoodResponse);
+      google.maps.Geocoder.prototype.geocode = jasmine.createSpy().and.callFake(GoodResponse);
       var okMock = jasmine.createSpy();
       geoCoder.geocode('Canada').then(okMock);
       scope.$apply();
@@ -29,7 +29,7 @@ describe('GeoCoder', function () {
 
     it('Should call geocoder.geocode to retrieve  bad results', function () {
       var BadResponse = function (params, callback) { callback('BAD', 'ERROR'); };
-      google.maps.Geocoder.prototype.geocode = jasmine.createSpy().andCallFake(BadResponse);
+      google.maps.Geocoder.prototype.geocode = jasmine.createSpy().and.callFake(BadResponse);
       var okMock = jasmine.createSpy();
       var errorMock = jasmine.createSpy();
       geoCoder.geocode('Canada').then(okMock, errorMock);

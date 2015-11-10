@@ -1,23 +1,30 @@
 /* global google */
 describe('Attr2MapOptions', function() {
   'use strict';
-  var scope, parser;
+   var scope, $parse, $timeout, $log,
+     NavigatorGeolocation, GeoCoder, cameCaseFilter,
+     jsonnizeFilter, parser, google;
 
-  // load the tabs code
-  beforeEach(function() {
-    module('ngMap');
-    inject(function($rootScope, $injector) {
-      scope = $rootScope;
-      scope.google = { maps: {
-          Marker: function() {},
-          MapTypeId: {HYBRID:'hybrid'}
-        }
-      };
+   beforeEach(module('ngMap', function($provide) {
+     // Do some other stuff before each test run if you want...
+   }));
 
-      scope.$apply();
-      parser = $injector.get('Attr2MapOptions');
-    });
-  });
+   beforeEach(inject(function (
+     $rootScope,
+     _$parse_, _$timeout_, _$log_,
+     _NavigatorGeolocation_, _GeoCoder_, _camelCaseFilter_,
+     _jsonizeFilter_, _Attr2MapOptions_
+   ) {
+     scope = $rootScope;
+     $parse = _$parse_;
+     $timeout    = _$timeout_;
+     $log = _$log_;
+     NavigatorGeolocation = _NavigatorGeolocation_;
+     GeoCoder = _GeoCoder_;
+     cameCaseFilter = _camelCaseFilter_;
+     jsonnizeFilter = _jsonizeFilter_;
+     parser = _Attr2MapOptions_;
+   }));
 
   describe("#filter", function() {
     it('should filter all angularjs methods', function() {
@@ -57,9 +64,9 @@ describe('Attr2MapOptions', function() {
     });
     it('should convert constant to google constant', function() {
       var attrs = {a:'MapTypeId.HYBRID'};
-      expect(parser.getOptions(attrs, scope).a).toEqual(google.maps.MapTypeId.HYBRID);
+      expect(parser.getOptions(attrs, scope).a).toEqual('hybrid');
       attrs = {MapTypeId:'HYBRID'};
-      expect(parser.getOptions(attrs, scope).MapTypeId).toEqual(google.maps.MapTypeId.HYBRID);
+      expect(parser.getOptions(attrs, scope).MapTypeId).toEqual('hybrid');
     });
     it('should convert ISO date strings to Date objects', function() {
       var attrs = {a:'2015-08-13T04:11:23.005Z'};

@@ -30,8 +30,6 @@
   'use strict';
   var NgMap, $timeout, NavigatorGeolocation;
 
-  var directionsService = new google.maps.DirectionsService();
-
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
       options.panel = document.getElementById(options.panel) ||
@@ -45,6 +43,8 @@
   };
 
   var updateRoute = function(renderer, options) {
+    var directionsService = new google.maps.DirectionsService();
+
     /* filter out valid keys only for DirectionsRequest object*/
     var request = options;
     request.travelMode = request.travelMode || 'DRIVING';

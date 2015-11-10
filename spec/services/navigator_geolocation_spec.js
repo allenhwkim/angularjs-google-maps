@@ -14,7 +14,7 @@ describe('NavigatorGeolocation', function () {
 
     beforeEach(function() {
       var GoodResponse = function (successCallback, errorCallback) { successCallback('GOOD'); };
-      navigator.geolocation.getCurrentPosition = jasmine.createSpy().andCallFake(GoodResponse);
+      navigator.geolocation.getCurrentPosition = jasmine.createSpy().and.callFake(GoodResponse);
     });
 
     it('Should return a promise', function () {
@@ -38,7 +38,7 @@ describe('NavigatorGeolocation', function () {
 
     beforeEach(function() {
       var BadResponse = function (successCallback, errorCallback) { errorCallback('BAD'); };
-      navigator.geolocation.getCurrentPosition = jasmine.createSpy().andCallFake(BadResponse);
+      navigator.geolocation.getCurrentPosition = jasmine.createSpy().and.callFake(BadResponse);
     });
 
     it('Should call getCurrentPosition to retrieve bad results', function () {
