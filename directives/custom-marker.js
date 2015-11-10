@@ -149,6 +149,8 @@
       element.bind('$destroy', function() {
         //Is it required to remove event listeners when DOM is removed?
         mapController.deleteObject('customMarkers', customMarker);
+        console.log('mapController.map.customMarkers', 
+          mapController.map.customMarkers);
       });
 
     }; // linkFunc
@@ -168,6 +170,7 @@
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       compile: function(element) {
+        element[0].style.display ='none';
         var orgHtml = element.html();
         var matches = orgHtml.match(/{{([^}]+)}}/g);
         var varsToWatch = [];

@@ -51,6 +51,10 @@
     "path": "testapp/custom-marker-custom-style.html",
     "title": null
   },
+  "custom-marker-ng-repeat.html": {
+    "path": "testapp/custom-marker-ng-repeat.html",
+    "title": null
+  },
   "custom-marker-two-way-binding.html": {
     "path": "testapp/custom-marker-two-way-binding.html",
     "title": null

@@ -42,7 +42,7 @@
         if (obj.centered && obj.position) {
           vm.map.setCenter(obj.position);
         }
-        vm.objectChanged('markers');
+        (groupName == 'markers') && vm.objectChanged('markers');
       }
     };
 
@@ -64,7 +64,7 @@
         /* delete from map */
         obj.map && obj.setMap && obj.setMap(null);
 
-        vm.objectChanged('markers');
+        (groupName == 'markers') && vm.objectChanged('markers');
       }
     };
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+  angular.module('ngMap').controller('MyCtrl', function(NgMap) {
+    var vm = this;
+    vm.positions1 =[ [40.11, -75.21], [40.22, -75.10], [40.33, -74.99],
+      [40.44, -74.88], [40.55, -74.77], [40.66, -74.66], [40.77, -74.55]];
+      
+    vm.positions2 =[ [40.71, -73.21], [40.72, -73.20], [40.73, -73.19],
+      [40.74, -73.18], [40.75, -73.17], [40.76, -73.16], [40.77, -73.15]];
+
+    vm.setPositions = function(pos) {
+      vm.positions = angular.copy(pos);
+    };
+    NgMap.getMap().then(function(map) {
+      vm.map = map;
+    });
+    vm.setPositions(vm.positions1);
+    vm.currentIndex = 0;
+    vm.selectNextCustomMarker = function() {
+      vm.map.customMarkers[vm.currentIndex].removeClass('selected');
+      vm.currentIndex = (vm.currentIndex+1) % vm.positions.length;
+      vm.map.customMarkers[vm.currentIndex].addClass('selected');
+      vm.currentPosition = vm.positions[vm.currentIndex];
+    }
+  });
+</script>
+<link href="custom-marker.css"  rel="stylesheet" />
+<style>
+  .selected {background: yellow;}
+</style>
+</head>
+
+<body>
+<div ng-controller="MyCtrl as vm">
+  <map zoom="8" center="[40.74, -74.18]">
+    <custom-marker ng-repeat="pos in vm.positions track by $index"
+      position="{{pos[0]}}, {{pos[1]}}">
+      <div>
+        position: {{pos[0]}}, {{pos[1]}}
+      </div>
+    </custom-marker>
+  </map>
+  <button ng-click="vm.setPositions(vm.positions1)">show positions 1</button>
+  <button ng-click="vm.setPositions(vm.positions2)">show positions 2</button>
+  <button ng-click="vm.selectNextCustomMarker()">select next marker</button>
+  current position: {{vm.currentPosition}}<br/>
+  vm.positions : {{vm.positions}}
+</div>
+</body>
+
+</html>
+

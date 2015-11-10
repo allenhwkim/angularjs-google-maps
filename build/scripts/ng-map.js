@@ -44,7 +44,7 @@ angular.module('ngMap', []);
         if (obj.centered && obj.position) {
           vm.map.setCenter(obj.position);
         }
-        vm.objectChanged('markers');
+        (groupName == 'markers') && vm.objectChanged('markers');
       }
     };
 
@@ -66,7 +66,7 @@ angular.module('ngMap', []);
         /* delete from map */
         obj.map && obj.setMap && obj.setMap(null);
 
-        vm.objectChanged('markers');
+        (groupName == 'markers') && vm.objectChanged('markers');
       }
     };
 
@@ -487,6 +487,7 @@ angular.module('ngMap', []);
       element.bind('$destroy', function() {
         //Is it required to remove event listeners when DOM is removed?
         mapController.deleteObject('customMarkers', customMarker);
+        void 0;
       });
 
     }; // linkFunc
@@ -506,6 +507,7 @@ angular.module('ngMap', []);
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       compile: function(element) {
+        element[0].style.display ='none';
         var orgHtml = element.html();
         var matches = orgHtml.match(/{{([^}]+)}}/g);
         var varsToWatch = [];
@@ -561,8 +563,6 @@ angular.module('ngMap', []);
   'use strict';
   var NgMap, $timeout, NavigatorGeolocation;
 
-  var directionsService = new google.maps.DirectionsService();
-
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
       options.panel = document.getElementById(options.panel) ||
@@ -576,6 +576,8 @@ angular.module('ngMap', []);
   };
 
   var updateRoute = function(renderer, options) {
+    var directionsService = new google.maps.DirectionsService();
+
     /* filter out valid keys only for DirectionsRequest object*/
     var request = options;
     request.travelMode = request.travelMode || 'DRIVING';
