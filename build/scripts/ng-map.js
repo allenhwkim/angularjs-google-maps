@@ -45,6 +45,8 @@ angular.module('ngMap', []);
           vm.map.setCenter(obj.position);
         }
         (groupName == 'markers') && vm.objectChanged('markers');
+        (groupName == 'customMarkers')
+          && vm.objectChanged('customMarkers');
       }
     };
 
@@ -67,6 +69,8 @@ angular.module('ngMap', []);
         obj.map && obj.setMap && obj.setMap(null);
 
         (groupName == 'markers') && vm.objectChanged('markers');
+        (groupName == 'customMarkers')
+          && vm.objectChanged('customMarkers');
       }
     };
 
@@ -111,7 +115,10 @@ angular.module('ngMap', []);
      * @param {String} group name of group e.g., markers
      */
     vm.objectChanged = function(group) {
-      if (group == 'markers' && vm.map.zoomToIncludeMarkers == 'auto') {
+      if (
+        (group == 'markers' || group == 'customMarkers') &&
+        vm.map.zoomToIncludeMarkers == 'auto'
+      ) {
         vm.zoomToIncludeMarkers();
       }
     };
@@ -134,7 +141,9 @@ angular.module('ngMap', []);
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
-      if (!mapOptions.center) {
+      if (!mapOptions.center ||
+        ((typeof center === 'string') && center.match(/\{\{.*\}\}/))
+      ) {
         mapOptions.center = new google.maps.LatLng(0, 0);
       } else if (!(center instanceof google.maps.LatLng)) {
         var geoCenter = mapOptions.center;
@@ -145,7 +154,9 @@ angular.module('ngMap', []);
             var geoCallback = mapOptions.geoCallback;
             geoCallback && $parse(geoCallback)($scope);
           }, function () {
-            vm.map.setCenter(mapOptions.geoFallbackCenter);
+            if (mapOptions.geoFallbackCenter) {
+              vm.map.setCenter(mapOptions.geoFallbackCenter);
+            }
           });
       }
       vm.map.setOptions(mapOptions);
@@ -388,6 +399,10 @@ angular.module('ngMap', []);
       if (scope) {
         $compile(angular.element(this.el).contents())(scope);
       }
+    };
+
+    CustomMarker.prototype.getPosition = function() {
+      return this.position;
     };
 
     CustomMarker.prototype.setPosition = function(position) {
