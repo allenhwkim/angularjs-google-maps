@@ -37,10 +37,16 @@ describe('testapp directory', function() {
     using(urls[key], function(url){
       it('testapp/'+url, function() {
         browser.get('testapp/'+url);
+
         browser.wait( function() {
-          return browser.driver.isElementPresent(
-            by.css("ng-map div div.gm-style")
-          );
+          return browser.executeScript( function() {
+            var el = document.querySelector("ng-map");  
+            var injector = angular.element(el).injector();
+            var NgMap = injector.get('NgMap');
+            return NgMap.getMap();
+          }).then(function(map) {
+            return map;
+          });
         }, 5000);
       });
     });

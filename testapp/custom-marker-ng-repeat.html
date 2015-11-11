@@ -37,14 +37,14 @@
 
 <body>
 <div ng-controller="MyCtrl as vm">
-  <map zoom="8" center="[40.74, -74.18]">
+  <ng-map zoom="8" center="[40.74, -74.18]">
     <custom-marker ng-repeat="pos in vm.positions track by $index"
       position="{{pos[0]}}, {{pos[1]}}">
       <div>
         position: {{pos[0]}}, {{pos[1]}}
       </div>
     </custom-marker>
-  </map>
+  </ng-map>
   <button ng-click="vm.setPositions(vm.positions1)">show positions 1</button>
   <button ng-click="vm.setPositions(vm.positions2)">show positions 2</button>
   <button ng-click="vm.selectNextCustomMarker()">select next marker</button>
