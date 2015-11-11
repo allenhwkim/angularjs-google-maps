@@ -82,6 +82,11 @@ describe('Attr2MapOptions', function() {
       expect(parser.getOptions(attrs, scope).circleOptions.center.lat()).toEqual(80);
       expect(parser.getOptions(attrs, scope).circleOptions.center.lng()).toEqual(-49);
     });
+    it('should not ignore 0', function() {
+      var attrs = {pov: '{heading: 90, pitch: 0}'};
+      expect(parser.getOptions(attrs, scope).pov.heading).toEqual(90);
+      expect(parser.getOptions(attrs, scope).pov.pitch).toEqual(0);
+    });
   });
 
   describe("#getControlOptions", function() {
