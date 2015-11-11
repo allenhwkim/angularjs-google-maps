@@ -2390,7 +2390,7 @@ angular.module('ngMap', []);
     var getOptions = function(attrs, params) {
       var options = {};
       for(var key in attrs) {
-        if (attrs[key]) {
+        if (attrs[key] || attrs[key] === 0) {
           if (key.match(/^on[A-Z]/)) { //skip events, i.e. on-click
             continue;
           } else if (key.match(/ControlOptions$/)) { // skip controlOptions
