@@ -43,6 +43,8 @@
           vm.map.setCenter(obj.position);
         }
         (groupName == 'markers') && vm.objectChanged('markers');
+        (groupName == 'customMarkers')
+          && vm.objectChanged('customMarkers');
       }
     };
 
@@ -65,6 +67,8 @@
         obj.map && obj.setMap && obj.setMap(null);
 
         (groupName == 'markers') && vm.objectChanged('markers');
+        (groupName == 'customMarkers')
+          && vm.objectChanged('customMarkers');
       }
     };
 
@@ -109,7 +113,10 @@
      * @param {String} group name of group e.g., markers
      */
     vm.objectChanged = function(group) {
-      if (group == 'markers' && vm.map.zoomToIncludeMarkers == 'auto') {
+      if (
+        (group == 'markers' || group == 'customMarkers') &&
+        vm.map.zoomToIncludeMarkers == 'auto'
+      ) {
         vm.zoomToIncludeMarkers();
       }
     };

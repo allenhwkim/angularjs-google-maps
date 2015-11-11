@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="script-tags-for-development.js"></script>
+<link href="custom-marker.css" rel="stylesheet" />
 <script>
 angular.module('ngMap').controller('MyCtrl', function() {
   var vm = this;
@@ -18,21 +19,23 @@ angular.module('ngMap').controller('MyCtrl', function() {
   vm.addMarker = function(event) {
     var ll = event.latLng;
     vm.positions.push({pos:[ll.lat(), ll.lng()]});
-    vm.$apply();
   }
 });
 </script>
 </head>
 
 <body ng-controller="MyCtrl as vm">
+
   <h3>Without zoom-to-include-markers</h3>
-  <ng-map zoom="11" center="[40.74, -74.18]">
+  <ng-map zoom="11" center="[40.74, -74.18]" scrollwheel="false">
     <marker ng-repeat="p in vm.positions"
       position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
   </ng-map>
 
   <h3>With zoom-to-include-markers='true'</h3>
-  <ng-map zoom="11" center="[40.74, -74.18]" zoom-to-include-markers="true">
+  <ng-map zoom="11" center="[40.74, -74.18]"
+    scrollwheel="false"
+    zoom-to-include-markers="true">
     <marker ng-repeat="p in vm.positions"
       position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
   </ng-map>
@@ -40,9 +43,26 @@ angular.module('ngMap').controller('MyCtrl', function() {
   <h3>With zoom-to-include-markers='auto'</h3>
   Please click on map to add more markers
   <ng-map zoom="11" center="[40.74, -74.18]"
-    zoom-to-include-markers="auto" on-click="vm.addMarker()">
+    scrollwheel="false"
+    zoom-to-include-markers="auto"
+    on-click="vm.addMarker()">
     <marker ng-repeat="p in vm.positions"
       position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
   </ng-map>
+
+  <h3>custom-marker zoom-to-include-markers='auto'</h3>
+  Please click on map to add more markers
+  <ng-map zoom="11"
+    on-click="vm.addMarker()"
+    zoom-to-include-markers='auto'
+    center="[40.74, -74.18]">
+    <custom-marker ng-repeat="p in vm.positions"
+      position="{{p.pos[0]}}, {{p.pos[1]}}">
+      <div>
+        position: {{p.pos[0]}}, {{p.pos[1]}}
+      </div>
+    </custom-marker>
+  </ng-map>
+
 </body>
 </html>

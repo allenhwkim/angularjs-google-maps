@@ -52,6 +52,10 @@
       }
     };
 
+    CustomMarker.prototype.getPosition = function() {
+      return this.position;
+    };
+
     CustomMarker.prototype.setPosition = function(position) {
       position && (this.position = position); /* jshint ignore:line */
       if (this.getProjection() && typeof this.position.lng == 'function') {
