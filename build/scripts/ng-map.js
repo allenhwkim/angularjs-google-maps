@@ -1095,6 +1095,10 @@ angular.module('ngMap', []);
             infoWindow.close();
           };
 
+        //TODO DEPRECATED
+        scope.showInfoWindow = map.showInfoWindow;
+        scope.hideInfoWindow = map.hideInfoWindow;
+
       });
 
     }; //link

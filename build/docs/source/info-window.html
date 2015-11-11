@@ -298,6 +298,9 @@
             var infoWindow = mapController.map.infoWindows[id];
             infoWindow.close();
           };
+        //TODO DEPRECATED
+        scope.showInfoWindow = map.showInfoWindow;
+        scope.hideInfoWindow = map.hideInfoWindow;
       });
     }; //link
     return {
