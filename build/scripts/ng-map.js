@@ -401,6 +401,14 @@ angular.module('ngMap', []);
       }
     };
 
+    CustomMarker.prototype.getDraggable = function() {
+      return this.draggable;
+    };
+
+    CustomMarker.prototype.setDraggable = function(draggable) {
+      this.draggable = draggable;
+    };
+
     CustomMarker.prototype.getPosition = function() {
       return this.position;
     };
@@ -451,7 +459,7 @@ angular.module('ngMap', []);
 
     CustomMarker.prototype.onRemove = function() {
       this.el.parentNode.removeChild(this.el);
-      this.el = null;
+      //this.el = null;
     };
   };
 

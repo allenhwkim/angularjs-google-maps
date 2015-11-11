@@ -47,6 +47,10 @@
     "path": "testapp/custom-marker-2.html",
     "title": null
   },
+  "custom-marker-clusterer.html": {
+    "path": "testapp/custom-marker-clusterer.html",
+    "title": "Dynamic ngMap demo"
+  },
   "custom-marker-custom-style.html": {
     "path": "testapp/custom-marker-custom-style.html",
     "title": null
