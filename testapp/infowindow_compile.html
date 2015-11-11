@@ -25,7 +25,7 @@ app.controller('MyCtrl', function($compile, NgMap) {
 </script>
 </head>
 <body ng-controller="MyCtrl as vm">
-  <ng-map center="41,-87" zoom="3">
+  <ng-map default-style="true" center="41,-87" zoom="3">
 
     <info-window id="foo" on-mouseover="vm.mouseover()">
       <div ng-non-bindable="">

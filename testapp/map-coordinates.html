@@ -76,7 +76,7 @@ app.controller('BasicCtrl1', function(NgMap) {
 <body ng-controller="BasicCtrl1 as vm">
   Showing static coordinates of Chicago
   <br/>
-  <ng-map center="41.850033,-87.6500523" zoom="3">
+  <ng-map default-style="true" center="41.850033,-87.6500523" zoom="3">
     <info-window id="1" position="41.850033,-87.6500523" visible="true">
       <div ng-non-bindable>
         Chicago, IL<br/>

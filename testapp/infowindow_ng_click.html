@@ -18,7 +18,7 @@ app.controller('MyCtrl', function(NgMap) {
 </head>
 <body>
   <div ng-controller="MyCtrl as vm">
-    <ng-map center="41,-87" zoom="3">
+    <ng-map default-style="true" center="41,-87" zoom="3">
       <marker position="41,-87" on-click="vm.map.showInfoWindow('foo')">
       </marker>
       <info-window id="foo">

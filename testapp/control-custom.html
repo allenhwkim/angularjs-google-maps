@@ -22,7 +22,7 @@ app.controller('CustomControlCtrl', function(NgMap) {
   Custom Control<br/>
   This custom control simply returns the user to Chicago when clicked
   <br/>
-  <ng-map center="41.850033, -87.6500523" zoom="6">
+  <ng-map center="41.850033, -87.6500523" zoom="6" default-style="true">
     <custom-control id="home" position="TOP_RIGHT" index="1" on-click="vm.click()">
       <div style="background-color: black; color:#fff;cursor:pointer">Home1</div>
     </custom-control>

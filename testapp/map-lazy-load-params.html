@@ -47,7 +47,7 @@ app.controller('MyCtrl', function($timeout, NgMap) {
 
     <div map-lazy-load="https://maps.google.com/maps/api/js"
       map-lazy-load-params="{{vm.googleMapsUrl}}" >
-      <ng-map center="41,-87" zoom="3">
+      <ng-map default-style="true" center="41,-87" zoom="3">
 
         <info-window id="foo">
           <div ng-non-bindable="">

@@ -17,7 +17,7 @@ app.controller('MyCtrl', function() {
 </head>
 
 <body ng-app="myApp" ng-controller="MyCtrl as vm">
-  <ng-map center="41.850033, -87.6500523" zoom="6">
+  <ng-map center="41.850033, -87.6500523" zoom="6" default-style="true">
     <custom-control id="home" position="TOP_RIGHT" index="1" on-click="vm.click()">
       <div>
         <ul>

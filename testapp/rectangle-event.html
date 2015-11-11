@@ -27,7 +27,7 @@ app.controller("RectangleEventCtrl", function($compile, NgMap) {
   When the user changes the bounds of the rectangle,
   an info window pops up displaying the new bounds.
   <div ng-controller="RectangleEventCtrl as vm">
-    <ng-map zoom="9" center="44.5452, -78.5389">
+    <ng-map default-style="true" zoom="9" center="44.5452, -78.5389">
       <shape name="rectangle"
         editable="true"
         draggable="true"
