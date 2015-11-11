@@ -227,6 +227,12 @@
     "path": "testapp/map-geolocation.html",
     "title": null
   },
+  "map-initialized.html": {
+    "path": "testapp/map-initialized.html",
+    "title": "Simle Map",
+    "description": "Simple Map",
+    "keywords": "ng-map,AngularJS,center"
+  },
   "map-lazy-load-params.html": {
     "path": "testapp/map-lazy-load-params.html",
     "title": null

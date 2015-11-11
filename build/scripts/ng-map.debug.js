@@ -461,6 +461,7 @@ angular.module('ngMap', []);
 
     return function(scope, element, attrs, mapController) {
       mapController = mapController[0]||mapController[1];
+      var orgAttrs = parser.orgAttributes(element);
 
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, scope);
@@ -500,11 +501,12 @@ angular.module('ngMap', []);
       }
       mapController.addObject('customMarkers', customMarker);
 
+      //set observers
+      mapController.observeAttrSetObj(orgAttrs, attrs, customMarker);
+
       element.bind('$destroy', function() {
         //Is it required to remove event listeners when DOM is removed?
         mapController.deleteObject('customMarkers', customMarker);
-        console.log('mapController.map.customMarkers', 
-          mapController.map.customMarkers);
       });
 
     }; // linkFunc
@@ -2343,6 +2345,7 @@ angular.module('ngMap', []);
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
+console.log('attrValue', attrValue);
           if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
             console.log('setting attribute to observe',
               attrName, camelCaseFilter(attrName), attrValue);
