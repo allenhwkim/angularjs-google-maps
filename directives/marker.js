@@ -48,6 +48,16 @@
   var getMarker = function(options, events) {
     var marker;
 
+    if (NgMap.defaultOptions.marker) {
+      for (var key in NgMap.defaultOptions.marker) {
+        if (typeof options[key] == 'undefined') {
+          console.log('setting default marker options', 
+            key, NgMap.defaultOptions.marker);
+          options[key] = NgMap.defaultOptions.marker[key];
+        }
+      }
+    }
+
     if (!(options.position instanceof google.maps.LatLng)) {
       options.position = new google.maps.LatLng(0,0);
     }
