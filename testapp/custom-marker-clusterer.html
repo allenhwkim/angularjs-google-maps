@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+<title>Dynamic ngMap demo</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script src="scripts/markerclusterer.js"></script>
+<link href="custom-marker.css"  rel="stylesheet" />
+<script>
+var app = angular.module('myApp', ['ngMap']);
+
+app.controller('mapController', function($http, $interval, NgMap) {
+  var vm = this;
+  vm.positions = [
+    [54.779951, 9.334164], [47.209613, 15.991539],
+    [51.975343, 7.596731], [51.97539, 7.596962], 
+    [47.414847, 8.23485], [47.658028, 9.159596],
+    [47.525927, 7.68761], [50.85558, 9.704403],
+    [54.320664, 10.285977], [49.214374, 6.97506],
+    [52.975556, 7.596811], [52.975556, 7.596811],
+    [52.975556, 7.596811], [52.975556, 7.596811], 
+    [52.975556, 7.596811], [52.975556, 7.596811],
+    [52.975556, 7.596811], [52.975556, 7.596811],
+    [52.975556, 7.596811], [52.975556, 7.596811]];
+    
+    vm.dynMarkers = []
+    NgMap.getMap().then(function(map) {
+      var bounds = new google.maps.LatLngBounds();
+      for (var k in map.customMarkers) {
+        var cm = map.customMarkers[k];
+        vm.dynMarkers.push(cm);
+        bounds.extend(cm.getPosition());
+      };
+      
+      vm.markerClusterer = new MarkerClusterer(map, vm.dynMarkers, {});
+      map.setCenter(bounds.getCenter());
+      map.fitBounds(bounds);  
+   });
+});
+</script>
+</head>
+
+<body ng-controller="mapController as vm">
+  <h1>Marker Cluster</h1>
+  <hr />
+  <ng-map zoom="8" center="[40.74, -74.18]">
+    <custom-marker position="[{{p[0]}}, {{p[1]}}]" ng-repeat="p in vm.positions">
+      <div class="cm">
+        position:<br>
+        {{p[0]}}<br>
+        {{p[1]}}
+      </div>
+    </custom-marker>
+  </ng-map>
+</body>
+</html>
