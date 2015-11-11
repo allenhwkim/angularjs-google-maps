@@ -159,6 +159,7 @@
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
+console.log('attrValue', attrValue);
           if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
             console.log('setting attribute to observe',
               attrName, camelCaseFilter(attrName), attrValue);

@@ -7,11 +7,15 @@
 <script>
   angular.module('ngMap').controller('MyCtrl', function(NgMap) {
     var vm = this;
-    vm.positions1 =[ [40.11, -75.21], [40.22, -75.10], [40.33, -74.99],
-      [40.44, -74.88], [40.55, -74.77], [40.66, -74.66], [40.77, -74.55]];
+    vm.positions1 =[
+      {pos:[40.11, -75.21],name:1}, {pos:[40.22, -75.10],name:2},
+      {pos:[40.33, -74.99],name:3}, {pos:[40.44, -74.88],name:4}, 
+      {pos:[40.55, -74.77],name:5}, {pos:[40.66, -74.66],name:6}];
       
-    vm.positions2 =[ [40.71, -73.21], [40.72, -73.20], [40.73, -73.19],
-      [40.74, -73.18], [40.75, -73.17], [40.76, -73.16], [40.77, -73.15]];
+    vm.positions2 =[
+      {pos:[40.71, -73.21],name:1}, {pos:[40.72, -73.20],name:2},
+      {pos:[40.73, -73.19],name:3}, {pos:[40.74, -73.18],name:4},
+      {pos:[40.75, -73.17],name:5}, {pos:[40.76, -73.16],name:6}];
 
     vm.setPositions = function(pos) {
       vm.positions = angular.copy(pos);
@@ -38,10 +42,10 @@
 <body>
 <div ng-controller="MyCtrl as vm">
   <ng-map zoom="8" center="[40.74, -74.18]">
-    <custom-marker ng-repeat="pos in vm.positions track by $index"
-      position="{{pos[0]}}, {{pos[1]}}">
+    <custom-marker ng-repeat="p in vm.positions track by $index"
+      position="{{p.pos}}">
       <div>
-        position: {{pos[0]}}, {{pos[1]}}
+        position {{p.name}}: {{p.pos[0]}}, {{p.pos[1]}}
       </div>
     </custom-marker>
   </ng-map>
