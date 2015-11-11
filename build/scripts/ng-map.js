@@ -2742,13 +2742,16 @@ angular.module('ngMap', []);
     el.style.height = "100%";
 
     //if style is not given to the map element, set display and height
-    if (defaultStyle !== 'false') {
+    if (defaultStyle == "true") {
+        ngMapEl.style.display = 'block';
+        ngMapEl.style.height = '300px';
+    } else {
       if (getStyle(ngMapEl, 'display') != "block") {
         ngMapEl.style.display = 'block';
       }
-      //if (getStyle(ngMapEl, 'height').match(/^(0|auto)/)) {
+      if (getStyle(ngMapEl, 'height').match(/^(0|auto)/)) {
         ngMapEl.style.height = '300px';
-      //}
+      }
     }
 
     // disable drag event
