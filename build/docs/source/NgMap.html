@@ -37,8 +37,6 @@
               </li><li>
                 <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
               </li><li>
-                <a href="NgMap.html">NgMap</a>
-              </li><li>
                 <a href="StreetView.html">StreetView</a>
               </li>
             </ul>
@@ -90,6 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
+              </a>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
+            </h3>
+            <ul ng-hide="undefinedprovider">
+              <li>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -150,7 +160,7 @@
         <!-- source code html -->
         <article>
           <pre class="prettyprint source linenums"><code>/**
- * @ngdoc service
+ * @ngdoc provider
  * @name NgMap
  * @description
  *  common utility service for ng-map
@@ -316,32 +326,55 @@
       }
     };
   };
-  var NgMap = function(
-      _$window_, _$document_, _$q_,
-      _NavigatorGeolocation_, _Attr2MapOptions_, _GeoCoder_, _camelCaseFilter_
-    ) {
-    $window = _$window_;
-    $document = _$document_[0];
-    $q = _$q_;
-    NavigatorGeolocation = _NavigatorGeolocation_;
-    Attr2MapOptions = _Attr2MapOptions_;
-    GeoCoder = _GeoCoder_;
-    camelCaseFilter = _camelCaseFilter_;
-    return {
-      addMap: addMap,
-      getMap: getMap,
-      initMap: initMap,
-      getStyle: getStyle,
-      getNgMapDiv: getNgMapDiv,
-      getGeoLocation: getGeoLocation,
-      observeAndSet: observeAndSet
+  angular.module('ngMap').provider('NgMap', function() {
+    var defaultOptions = {};
+    var useTinfoilShielding = false;
+    /**
+     * @memberof NgMap
+     * @function setDefaultOptions
+     * @param {Hash} options
+     * @example
+     *  app.config(function(NgMapProvider) {
+     *    NgMapProvider.setDefaultOptions({
+     *      marker: {
+     *        optimized: false
+     *      }
+     *    });
+     *  });
+     */
+    this.setDefaultOptions = function(options) {
+      defaultOptions = options;
     };
-  };
-  NgMap.$inject = [
-    '$window', '$document', '$q',
-    'NavigatorGeolocation', 'Attr2MapOptions', 'GeoCoder', 'camelCaseFilter'
-  ];
-  angular.module('ngMap').service('NgMap', NgMap);
+    var NgMap = function(
+        _$window_, _$document_, _$q_,
+        _NavigatorGeolocation_, _Attr2MapOptions_,
+        _GeoCoder_, _camelCaseFilter_
+      ) {
+      $window = _$window_;
+      $document = _$document_[0];
+      $q = _$q_;
+      NavigatorGeolocation = _NavigatorGeolocation_;
+      Attr2MapOptions = _Attr2MapOptions_;
+      GeoCoder = _GeoCoder_;
+      camelCaseFilter = _camelCaseFilter_;
+      return {
+        defaultOptions: defaultOptions,
+        addMap: addMap,
+        getMap: getMap,
+        initMap: initMap,
+        getStyle: getStyle,
+        getNgMapDiv: getNgMapDiv,
+        getGeoLocation: getGeoLocation,
+        observeAndSet: observeAndSet
+      };
+    };
+    NgMap.$inject = [
+      '$window', '$document', '$q',
+      'NavigatorGeolocation', 'Attr2MapOptions',
+      'GeoCoder', 'camelCaseFilter'
+    ];
+    this.$get = NgMap;
+  });
 })();
 </code></pre>
         </article>

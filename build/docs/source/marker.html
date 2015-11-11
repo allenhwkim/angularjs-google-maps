@@ -37,8 +37,6 @@
               </li><li>
                 <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
               </li><li>
-                <a href="NgMap.html">NgMap</a>
-              </li><li>
                 <a href="StreetView.html">StreetView</a>
               </li>
             </ul>
@@ -90,6 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
+              </a>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
+            </h3>
+            <ul ng-hide="undefinedprovider">
+              <li>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -197,6 +207,15 @@
   var parser, $parse, NgMap;
   var getMarker = function(options, events) {
     var marker;
+    if (NgMap.defaultOptions.marker) {
+      for (var key in NgMap.defaultOptions.marker) {
+        if (typeof options[key] == 'undefined') {
+          console.log('setting default marker options', 
+            key, NgMap.defaultOptions.marker);
+          options[key] = NgMap.defaultOptions.marker[key];
+        }
+      }
+    }
     if (!(options.position instanceof google.maps.LatLng)) {
       options.position = new google.maps.LatLng(0,0);
     }

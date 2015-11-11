@@ -1552,6 +1552,16 @@ angular.module('ngMap', []);
   var getMarker = function(options, events) {
     var marker;
 
+    if (NgMap.defaultOptions.marker) {
+      for (var key in NgMap.defaultOptions.marker) {
+        if (typeof options[key] == 'undefined') {
+          console.log('setting default marker options', 
+            key, NgMap.defaultOptions.marker);
+          options[key] = NgMap.defaultOptions.marker[key];
+        }
+      }
+    }
+
     if (!(options.position instanceof google.maps.LatLng)) {
       options.position = new google.maps.LatLng(0,0);
     }
@@ -2653,7 +2663,7 @@ angular.module('ngMap', []);
 })();
 
 /**
- * @ngdoc service
+ * @ngdoc provider
  * @name NgMap
  * @description
  *  common utility service for ng-map
@@ -2834,34 +2844,59 @@ angular.module('ngMap', []);
     };
   };
 
-  var NgMap = function(
-      _$window_, _$document_, _$q_,
-      _NavigatorGeolocation_, _Attr2MapOptions_, _GeoCoder_, _camelCaseFilter_
-    ) {
-    $window = _$window_;
-    $document = _$document_[0];
-    $q = _$q_;
-    NavigatorGeolocation = _NavigatorGeolocation_;
-    Attr2MapOptions = _Attr2MapOptions_;
-    GeoCoder = _GeoCoder_;
-    camelCaseFilter = _camelCaseFilter_;
+  angular.module('ngMap').provider('NgMap', function() {
+    var defaultOptions = {};
+    var useTinfoilShielding = false;
 
-    return {
-      addMap: addMap,
-      getMap: getMap,
-      initMap: initMap,
-      getStyle: getStyle,
-      getNgMapDiv: getNgMapDiv,
-      getGeoLocation: getGeoLocation,
-      observeAndSet: observeAndSet
+    /**
+     * @memberof NgMap
+     * @function setDefaultOptions
+     * @param {Hash} options
+     * @example
+     *  app.config(function(NgMapProvider) {
+     *    NgMapProvider.setDefaultOptions({
+     *      marker: {
+     *        optimized: false
+     *      }
+     *    });
+     *  });
+     */
+    this.setDefaultOptions = function(options) {
+      defaultOptions = options;
     };
-  };
-  NgMap.$inject = [
-    '$window', '$document', '$q',
-    'NavigatorGeolocation', 'Attr2MapOptions', 'GeoCoder', 'camelCaseFilter'
-  ];
 
-  angular.module('ngMap').service('NgMap', NgMap);
+    var NgMap = function(
+        _$window_, _$document_, _$q_,
+        _NavigatorGeolocation_, _Attr2MapOptions_,
+        _GeoCoder_, _camelCaseFilter_
+      ) {
+      $window = _$window_;
+      $document = _$document_[0];
+      $q = _$q_;
+      NavigatorGeolocation = _NavigatorGeolocation_;
+      Attr2MapOptions = _Attr2MapOptions_;
+      GeoCoder = _GeoCoder_;
+      camelCaseFilter = _camelCaseFilter_;
+
+      return {
+        defaultOptions: defaultOptions,
+        addMap: addMap,
+        getMap: getMap,
+        initMap: initMap,
+        getStyle: getStyle,
+        getNgMapDiv: getNgMapDiv,
+        getGeoLocation: getGeoLocation,
+        observeAndSet: observeAndSet
+      };
+    };
+    NgMap.$inject = [
+      '$window', '$document', '$q',
+      'NavigatorGeolocation', 'Attr2MapOptions',
+      'GeoCoder', 'camelCaseFilter'
+    ];
+
+    this.$get = NgMap;
+  });
 })();
 
 /**

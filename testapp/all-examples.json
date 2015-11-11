@@ -353,6 +353,10 @@
     "path": "testapp/marker-symbol-predefined.html",
     "title": null
   },
+  "marker-with-default-options.html": {
+    "path": "testapp/marker-with-default-options.html",
+    "title": null
+  },
   "marker.html": {
     "path": "testapp/marker.html",
     "title": null
