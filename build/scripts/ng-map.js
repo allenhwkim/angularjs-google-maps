@@ -209,6 +209,9 @@ angular.module('ngMap', []);
       vm.initializeMap();
     }
 
+    $element.bind('$destroy', function() {
+      NgMap.deleteMap(vm);
+    });
   }; // __MapController
 
   __MapController.$inject = [
@@ -2729,7 +2732,17 @@ void 0;
    */
   var addMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length;
-    mapControllers[mapCtrl.id || len] = mapCtrl;
+    mapControllers[mapCtrl.map.id || len] = mapCtrl;
+  };
+
+  /**
+   * @memberof NgMap
+   * @function deleteMap
+   * @param mapController {__MapContoller} a map controller
+   */
+  var deleteMap = function(mapCtrl) {
+    var len = Object.keys(mapControllers).length;
+    delete mapControllers[mapCtrl.map.id || len];
   };
 
   /**
@@ -2888,6 +2901,7 @@ void 0;
       return {
         defaultOptions: defaultOptions,
         addMap: addMap,
+        deleteMap: deleteMap,
         getMap: getMap,
         initMap: initMap,
         getStyle: getStyle,
