@@ -12,14 +12,17 @@
     $urlRouterProvider.otherwise("/foo")
     $stateProvider
       .state('foo', { url: "/foo", templateUrl: "foo.html", controller: 'fooCtrl' })
-      .state('bar', { url: "/bar", templateUrl: "bar.html" })
+      .state('bar', { url: "/bar", templateUrl: "bar.html", controller: 'barCtrl' })
+      .state('baz', { url: "/baz", templateUrl: "baz.html" })
   });
-  myapp.controller('fooCtrl', function($scope, NgMap){
-    NgMap.getMap({id:'mymap'}).then(function(map) {
-      console.log('xxx');
+  myapp.controller('fooCtrl', function(NgMap){
+    NgMap.getMap({id:'foomap'}).then(function(map) {
       map.setZoom(4);
-      console.log('map.getDiv()', map.getDiv());
-      window.map = map;
+    });
+  });
+  myapp.controller('barCtrl', function(NgMap){
+    NgMap.getMap({id:'barmap'}).then(function(map) {
+      map.setZoom(11);
     });
   });
 </script>
@@ -27,17 +30,22 @@
 
 <body ng-app="myapp" class="container">
   <script type="text/ng-template" id="foo.html">
-    <h1>Map</h1>
-    <ng-map id="mymap" center="[40.74, -74.18]"></ng-map>
+    <h1>Map 1</h1>
+    <ng-map id="foomap" center="[40.74, -74.18]"></ng-map>
   </script>
   <script type="text/ng-template" id="bar.html">
+    <h1>Map 2</h1>
+    <ng-map id="barmap" center="[41.74, -75.18]"></ng-map>
+  </script>
+  <script type="text/ng-template" id="baz.html">
     <h1>No Map</h1>
   </script>
   <div class="navbar">
     <div class="navbar-inner">
       <ul class="nav">
-        <li><a ui-sref="foo">Route 1</a></li>
-        <li><a ui-sref="bar">Route 2</a></li>
+        <li><a ui-sref="foo">Map 1</a></li>
+        <li><a ui-sref="bar">Map 2</a></li>
+        <li><a ui-sref="baz">No Map</a></li>
       </ul>
     </div>
   </div>
