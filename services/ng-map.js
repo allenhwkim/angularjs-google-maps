@@ -58,7 +58,17 @@
    */
   var addMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length;
-    mapControllers[mapCtrl.id || len] = mapCtrl;
+    mapControllers[mapCtrl.map.id || len] = mapCtrl;
+  };
+
+  /**
+   * @memberof NgMap
+   * @function deleteMap
+   * @param mapController {__MapContoller} a map controller
+   */
+  var deleteMap = function(mapCtrl) {
+    var len = Object.keys(mapControllers).length;
+    delete mapControllers[mapCtrl.map.id || len];
   };
 
   /**
@@ -217,6 +227,7 @@
       return {
         defaultOptions: defaultOptions,
         addMap: addMap,
+        deleteMap: deleteMap,
         getMap: getMap,
         initMap: initMap,
         getStyle: getStyle,

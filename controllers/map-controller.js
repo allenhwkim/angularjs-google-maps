@@ -208,6 +208,9 @@
       vm.initializeMap();
     }
 
+    $element.bind('$destroy', function() {
+      NgMap.deleteMap(vm);
+    });
   }; // __MapController
 
   __MapController.$inject = [
