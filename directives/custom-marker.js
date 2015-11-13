@@ -178,12 +178,12 @@
     $timeout = _$timeout_;
     $compile = _$compile_;
     NgMap = _NgMap_;
-    setCustomMarker();
 
     return {
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       compile: function(element) {
+        setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
         var matches = orgHtml.match(/{{([^}]+)}}/g);
