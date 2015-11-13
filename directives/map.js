@@ -9,6 +9,9 @@
  * Initialize a Google map within a `<div>` tag
  *   with given options and register events
  *
+ * @attr {Expression} map-initialized 
+ *   callback function when map is initialized
+ *   e.g., map-initialized="mycallback(map)"
  * @attr {Expression} geo-callback if center is an address or current location,
  *   the expression is will be executed when geo-lookup is successful.
  *   e.g., geo-callback="showMyStoreInfo()"
@@ -25,10 +28,6 @@
  * @attr {Boolean} default-style
  *  When false, the default styling,
  *  `display:block;height:300px`, will be ignored.
- * @attr {String} init-event The name of event to initialize this map.
- *  If given, the map won't be initialized until the event is received.
- *  To invoke the event, use $scope.$emit or $scope.$broacast.
- *  e.g., <map init-event="init-map" ng-click="$emit('init-map')"></map>
  * @attr {String} &lt;MapOption> Any Google map options,
  *  https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,

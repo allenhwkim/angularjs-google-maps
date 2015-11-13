@@ -24,12 +24,6 @@
      * @param obj  an object to add into a collection, i.e. marker, shape
      */
     vm.addObject = function(groupName, obj) {
-      /**
-       * objects, i.e. markers and shapes, are initialized before
-       * map is initialized so, we collect those objects, then,
-       * we will add to map when map is initialized
-       * However the case as in ng-repeat, we can directly add to map
-       */
       if (vm.map) {
         vm.map[groupName] = vm.map[groupName] || {};
         var len = Object.keys(vm.map[groupName]).length;
@@ -168,10 +162,6 @@
       vm.observeAttrSetObj(orgAttrs, $attrs, vm.map);
       vm.singleInfoWindow = mapOptions.singleInfoWindow;
 
-      /**
-       * set map for scope and controller and broadcast map event
-       * however an `mapInitialized` event will be emitted every time.
-       */
       google.maps.event.addListenerOnce(vm.map, "idle", function () {
         NgMap.addMap(vm);
         if (mapOptions.zoomToIncludeMarkers) {
@@ -180,6 +170,11 @@
         //TODO: it's for backward compatibiliy. will be removed
         $scope.map = vm.map;
         $scope.$emit('mapInitialized', vm.map);
+
+        //callback
+        if ($attrs.mapInitialized) {
+          $parse($attrs.mapInitialized)($scope, {map: vm.map});
+        }
       });
     };
 
