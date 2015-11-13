@@ -205,7 +205,10 @@ angular.module('ngMap', []);
     vm.ngMapDiv = NgMap.getNgMapDiv($element[0]);
     $element.append(vm.ngMapDiv);
 
-    if (!options.lazyInit) { // allows controlled initialization
+    if (options.lazyInit) { // allows controlled initialization
+      vm.map = {id: $attrs.id}; //set empty, not real, map
+      NgMap.addMap(vm);
+    } else {
       vm.initializeMap();
     }
 
@@ -2691,6 +2694,7 @@ void 0;
    * @param id optional, id of the map. default 0
    */
   var initMap = function(id) {
+    void 0;
     var ctrl = mapControllers[id || 0];
     ctrl.initializeMap();
   };
