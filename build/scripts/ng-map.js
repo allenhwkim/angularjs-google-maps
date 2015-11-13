@@ -530,12 +530,12 @@ angular.module('ngMap', []);
     $timeout = _$timeout_;
     $compile = _$compile_;
     NgMap = _NgMap_;
-    setCustomMarker();
 
     return {
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       compile: function(element) {
+        setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
         var matches = orgHtml.match(/{{([^}]+)}}/g);
@@ -2741,7 +2741,7 @@ void 0;
    * @param mapController {__MapContoller} a map controller
    */
   var deleteMap = function(mapCtrl) {
-    var len = Object.keys(mapControllers).length;
+    var len = Object.keys(mapControllers).length - 1;
     delete mapControllers[mapCtrl.map.id || len];
   };
 

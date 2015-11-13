@@ -220,7 +220,7 @@
    * @param mapController {__MapContoller} a map controller
    */
   var deleteMap = function(mapCtrl) {
-    var len = Object.keys(mapControllers).length;
+    var len = Object.keys(mapControllers).length - 1;
     delete mapControllers[mapCtrl.map.id || len];
   };
   /**
