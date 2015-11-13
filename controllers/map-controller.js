@@ -204,7 +204,10 @@
     vm.ngMapDiv = NgMap.getNgMapDiv($element[0]);
     $element.append(vm.ngMapDiv);
 
-    if (!options.lazyInit) { // allows controlled initialization
+    if (options.lazyInit) { // allows controlled initialization
+      vm.map = {id: $attrs.id}; //set empty, not real, map
+      NgMap.addMap(vm);
+    } else {
       vm.initializeMap();
     }
 
