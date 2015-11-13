@@ -198,6 +198,14 @@ Initialize a Google map within a <code>&lt;div&gt;</code> tag
             </thead>
             <tbody>
               <tr>
+                <td class="name" nowrap="">map-initialized</td>
+                <td class="type"><span class="param-type">
+                  Expression
+                </span></td>
+                <td class="description last"><p>callback function when map is initialized
+  e.g., map-initialized=&quot;mycallback(map)&quot;</p>
+</td>
+              </tr><tr>
                 <td class="name" nowrap="">geo-callback</td>
                 <td class="type"><span class="param-type">
                   Expression
@@ -238,16 +246,6 @@ Initialize a Google map within a <code>&lt;div&gt;</code> tag
                 </span></td>
                 <td class="description last"><p>When false, the default styling,
  <code>display:block;height:300px</code>, will be ignored.</p>
-</td>
-              </tr><tr>
-                <td class="name" nowrap="">init-event</td>
-                <td class="type"><span class="param-type">
-                  String
-                </span></td>
-                <td class="description last"><p>The name of event to initialize this map.
- If given, the map won&#39;t be initialized until the event is received.
- To invoke the event, use $scope.$emit or $scope.$broacast.
- e.g., <map init-event="init-map" ng-click="$emit('init-map')"></map></p>
 </td>
               </tr><tr>
                 <td class="name" nowrap="">&lt;MapOption></td>

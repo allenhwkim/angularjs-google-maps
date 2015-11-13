@@ -26,12 +26,6 @@ angular.module('ngMap', []);
      * @param obj  an object to add into a collection, i.e. marker, shape
      */
     vm.addObject = function(groupName, obj) {
-      /**
-       * objects, i.e. markers and shapes, are initialized before
-       * map is initialized so, we collect those objects, then,
-       * we will add to map when map is initialized
-       * However the case as in ng-repeat, we can directly add to map
-       */
       if (vm.map) {
         vm.map[groupName] = vm.map[groupName] || {};
         var len = Object.keys(vm.map[groupName]).length;
@@ -170,10 +164,6 @@ angular.module('ngMap', []);
       vm.observeAttrSetObj(orgAttrs, $attrs, vm.map);
       vm.singleInfoWindow = mapOptions.singleInfoWindow;
 
-      /**
-       * set map for scope and controller and broadcast map event
-       * however an `mapInitialized` event will be emitted every time.
-       */
       google.maps.event.addListenerOnce(vm.map, "idle", function () {
         NgMap.addMap(vm);
         if (mapOptions.zoomToIncludeMarkers) {
@@ -182,6 +172,11 @@ angular.module('ngMap', []);
         //TODO: it's for backward compatibiliy. will be removed
         $scope.map = vm.map;
         $scope.$emit('mapInitialized', vm.map);
+
+        //callback
+        if ($attrs.mapInitialized) {
+          $parse($attrs.mapInitialized)($scope, {map: vm.map});
+        }
       });
     };
 
@@ -1413,6 +1408,9 @@ angular.module('ngMap', []);
  * Initialize a Google map within a `<div>` tag
  *   with given options and register events
  *
+ * @attr {Expression} map-initialized 
+ *   callback function when map is initialized
+ *   e.g., map-initialized="mycallback(map)"
  * @attr {Expression} geo-callback if center is an address or current location,
  *   the expression is will be executed when geo-lookup is successful.
  *   e.g., geo-callback="showMyStoreInfo()"
@@ -1429,10 +1427,6 @@ angular.module('ngMap', []);
  * @attr {Boolean} default-style
  *  When false, the default styling,
  *  `display:block;height:300px`, will be ignored.
- * @attr {String} init-event The name of event to initialize this map.
- *  If given, the map won't be initialized until the event is received.
- *  To invoke the event, use $scope.$emit or $scope.$broacast.
- *  e.g., <map init-event="init-map" ng-click="$emit('init-map')"></map>
  * @attr {String} &lt;MapOption> Any Google map options,
  *  https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,
@@ -2698,7 +2692,6 @@ console.log('attrValue', attrValue);
    * @param id optional, id of the map. default 0
    */
   var initMap = function(id) {
-    console.log('mapControllers', mapControllers);
     var ctrl = mapControllers[id || 0];
     ctrl.initializeMap();
   };
