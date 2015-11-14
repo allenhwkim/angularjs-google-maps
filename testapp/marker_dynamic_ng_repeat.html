@@ -19,9 +19,10 @@
         var lng = -79.4103000 + (Math.random() / 100);
         vm.positions.push({lat:lat, lng:lng});
       }
+      console.log("vm.positions", vm.positions);
     };
 
-    $interval(vm.generateMarkers, 2000);
+    $interval(generateMarkers, 2000);
   });
 </script>
 </head>
