@@ -2,39 +2,28 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 </head>
 
 <body>
-    <map zoom="5" 
-      center="24.886436490787712, -70.2685546875" 
-      map-type-id="TERRAIN">
-     <shape name="polygon" 
-       paths="[
-         [25.774252, -80.190262],
-         [18.466465, -66.118292],
-         [32.321384, -64.75737],
-         [25.774252, -80.190262]
-       ]"
-       stroke-color="#FF0000"
-       stroke-opacity="0.8"
-       stroke-weight="2"
-       fill-color="#FF0000"
-       fill-opacity="0.35">
-     </shape>
-   </map>
+
+  <ng-map zoom="5" 
+    center="24.886436490787712, -70.2685546875" 
+    map-type-id="TERRAIN">
+   <shape name="polygon" 
+     paths="[
+       [25.774252, -80.190262],
+       [18.466465, -66.118292],
+       [32.321384, -64.75737],
+       [25.774252, -80.190262]
+     ]"
+     stroke-color="#FF0000"
+     stroke-opacity="0.8"
+     stroke-weight="2"
+     fill-color="#FF0000"
+     fill-opacity="0.35">
+   </shape>
+ </ng-map>
 
 </body>
 </html>

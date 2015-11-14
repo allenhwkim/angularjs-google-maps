@@ -19,16 +19,16 @@ module.exports = function(config) {
       'http://maps.google.com/maps/api/js',
       'spec/lib/angular.js',
       'spec/lib/angular-mocks.js',
-      'spec/lib/markerclusterer.js',
 
       // our app
       'app.js',
+      'controllers/*.js',
       'directives/*.js',
+      'filters/*.js',
       'services/*.js',
 
       // tests
-      'spec/directives/*_spec.js',
-      'spec/services/*_spec.js'
+      'spec/services/*.js'
     ],
 
 

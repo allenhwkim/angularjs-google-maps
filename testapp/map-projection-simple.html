@@ -2,20 +2,7 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/map-type.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
 // Note: this value is exact as the map projects a full 360 degrees of longitude
 var GALL_PETERS_RANGE_X = 800;
@@ -115,25 +102,24 @@ gallPetersMapType.projection = new GallPetersProjection();
 </script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
-  app.controller('MapProjectionSimpleCtrl', function($scope, $window) {
-    $scope.alertLocation = function(event) {
+  app.controller('MapProjectionSimpleCtrl', function($window) {
+    this.mapTypeObject = gallPetersMapType;
+    this.alertLocation = function(event) {
       $window.alert('Point.X.Y: ' + event.latLng);
     };
   });
 </script>
 </head>
-<body>
-    <div ng-controller="MapProjectionSimpleCtrl">
-      <map zoom="0" center="0,0"
-        on-click="alertLocation()"
-        street-view-control="false"
-        map-type-id="gallPetersMap"
-        map-type-control-options="{
-          mapTypeIds: ['ROADMAP', 'gallPetersMap']
-        }">
-        <map-type name="gallPetersMap" object="gallPetersMapType">
-        </map-type>
-      </map>
-    </div>
+<body ng-controller="MapProjectionSimpleCtrl as vm">
+  <ng-map zoom="0" center="0,0"
+    on-click="alertLocation()"
+    street-view-control="false"
+    map-type-id="gallPetersMap"
+    map-type-control-options="{
+      mapTypeIds: ['ROADMAP', 'gallPetersMap']
+    }">
+    <map-type name="gallPetersMap" object="vm.mapTypeObject">
+    </map-type>
+  </ng-map>
 </body>
 </html>

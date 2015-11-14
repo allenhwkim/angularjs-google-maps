@@ -30,7 +30,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -49,8 +49,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,20 +87,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -148,7 +144,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -173,10 +169,12 @@
       <dd>
         <div class="description">
           <p>Defines infoWindow and provides compile method</p>
-<p>  Requires:  map directive</p>
-<p>  Restrict To:  Element</p>
-<p>  NOTE: this directive should <strong>NOT</strong> be used with <code>ng-repeat</code> because InfoWindow itself is a template,
-  and must be reused by each marker, thus, should not be redefined by <code>ng-repeat</code>.</p>
+<p> Requires:  map directive</p>
+<p> Restrict To:  Element</p>
+<p> NOTE: this directive should <strong>NOT</strong> be used with <code>ng-repeat</code>
+ because InfoWindow itself is a template, and a template must be
+ reused by each marker, thus, should not be redefined repeatedly
+ by <code>ng-repeat</code>.</p>
         </div>
         <div class="details"></div>
         <div>
@@ -187,7 +185,7 @@
             </thead>
             <tbody>
               <tr>
-                <td class="name" nowrap="">Attr2Options</td>
+                <td class="name" nowrap="">Attr2MapOptions</td>
                 <td class="type"><span class="param-type">
                   service
                 </span></td>
@@ -228,7 +226,8 @@
                 <td class="type"><span class="param-type">
                   Expression
                 </span></td>
-                <td class="description last"><p>if position is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback=&quot;showDetail()&quot;</p>
+                <td class="description last"><p>if position is an address, the expression is will be performed
+  when geo-lookup is successful. e.g., geo-callback=&quot;showDetail()&quot;</p>
 </td>
               </tr><tr>
                 <td class="name" nowrap="">&lt;InfoWindowOption></td>
@@ -236,14 +235,15 @@
                   String
                 </span></td>
                 <td class="description last"><p>Any InfoWindow options,
-      <a href="https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions">https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</a></p>
+  <a href="https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions">https://developers.google.com/maps/documentation/javascript/reference?csw=1#InfoWindowOptions</a></p>
 </td>
               </tr><tr>
                 <td class="name" nowrap="">&lt;InfoWindowEvent></td>
                 <td class="type"><span class="param-type">
                   String
                 </span></td>
-                <td class="description last"><p>Any InfoWindow events, <a href="https://developers.google.com/maps/documentation/javascript/reference">https://developers.google.com/maps/documentation/javascript/reference</a></p>
+                <td class="description last"><p>Any InfoWindow events,
+  <a href="https://developers.google.com/maps/documentation/javascript/reference">https://developers.google.com/maps/documentation/javascript/reference</a></p>
 </td>
               </tr>
             </tbody>

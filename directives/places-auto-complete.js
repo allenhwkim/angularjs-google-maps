@@ -1,16 +1,17 @@
 /**
  * @ngdoc directive
  * @name places-auto-complete
- * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @description 
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @description
  *   Provides address auto complete feature to an input element
  *   Requires: input tag
  *   Restrict To: Attribute
  *
- * @attr {AutoCompleteOptions} [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
+ * @attr {AutoCompleteOptions}
+ *   [Any AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#AutocompleteOptions)
  *
  * @example
- * Example: 
+ * Example:
  *   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
  *   <input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" />
  */
@@ -18,8 +19,8 @@
 (function() {
   'use strict';
 
-  var placesAutoComplete = function(Attr2Options, $timeout) {
-    var parser = Attr2Options;
+  var placesAutoComplete = function(Attr2MapOptions, $timeout) {
+    var parser = Attr2MapOptions;
 
     var linkFunc = function(scope, element, attrs, ngModelCtrl) {
       if (attrs.placesAutoComplete ==='false') {
@@ -38,7 +39,7 @@
         $timeout(function(){
           ngModelCtrl && ngModelCtrl.$setViewValue(element.val());
         },100);
-      }
+      };
       google.maps.event.addListener(autocomplete, 'place_changed', updateModel);
       element[0].addEventListener('change', updateModel);
 
@@ -59,7 +60,7 @@
     };
   };
 
-  placesAutoComplete.$inject = ['Attr2Options', '$timeout'];
-  angular.module('ngMap').directive('placesAutoComplete', placesAutoComplete); 
+  placesAutoComplete.$inject = ['Attr2MapOptions', '$timeout'];
+  angular.module('ngMap').directive('placesAutoComplete', placesAutoComplete);
 
 })();

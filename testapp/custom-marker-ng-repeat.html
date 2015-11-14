@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+  angular.module('ngMap').controller('MyCtrl', function(NgMap) {
+    var vm = this;
+    vm.positions1 =[
+      {pos:[40.11, -75.21],name:1}, {pos:[40.22, -75.10],name:2},
+      {pos:[40.33, -74.99],name:3}, {pos:[40.44, -74.88],name:4}, 
+      {pos:[40.55, -74.77],name:5}, {pos:[40.66, -74.66],name:6}];
+      
+    vm.positions2 =[
+      {pos:[40.71, -73.21],name:1}, {pos:[40.72, -73.20],name:2},
+      {pos:[40.73, -73.19],name:3}, {pos:[40.74, -73.18],name:4},
+      {pos:[40.75, -73.17],name:5}, {pos:[40.76, -73.16],name:6}];
+
+    vm.setPositions = function(pos) {
+      vm.positions = angular.copy(pos);
+    };
+    NgMap.getMap().then(function(map) {
+      vm.map = map;
+    });
+    vm.setPositions(vm.positions1);
+    vm.currentIndex = 0;
+    vm.selectNextCustomMarker = function() {
+      vm.map.customMarkers[vm.currentIndex].removeClass('selected');
+      vm.currentIndex = (vm.currentIndex+1) % vm.positions.length;
+      vm.map.customMarkers[vm.currentIndex].addClass('selected');
+      vm.currentPosition = vm.positions[vm.currentIndex];
+    }
+  });
+</script>
+<link href="custom-marker.css"  rel="stylesheet" />
+<style>
+  .selected {background: yellow;}
+</style>
+</head>
+
+<body>
+<div ng-controller="MyCtrl as vm">
+  <ng-map zoom="8" center="[40.74, -74.18]">
+    <custom-marker ng-repeat="p in vm.positions track by $index"
+      position="{{p.pos}}">
+      <div>
+        position {{p.name}}: {{p.pos[0]}}, {{p.pos[1]}}
+      </div>
+    </custom-marker>
+  </ng-map>
+  <button ng-click="vm.setPositions(vm.positions1)">show positions 1</button>
+  <button ng-click="vm.setPositions(vm.positions2)">show positions 2</button>
+  <button ng-click="vm.selectNextCustomMarker()">select next marker</button>
+  current position: {{vm.currentPosition}}<br/>
+  vm.positions : {{vm.positions}}
+</div>
+</body>
+
+</html>
+

@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: source : street_view.js</title>
+    <title>JSDoc: source : street-view.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -31,7 +31,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -50,8 +50,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -90,20 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -149,7 +145,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -158,7 +154,7 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        source : street_view.js
+        source : street-view.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
@@ -167,30 +163,31 @@
  * @ngdoc service
  * @name StreetView
  * @description
- *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service 
- *  for [Google StreetViewService](https://developers.google.com/maps/documentation/javascript/streetview)
+ *  Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q)
+ *  service for [Google StreetViewService]
+ *  (https://developers.google.com/maps/documentation/javascript/streetview)
  */
-/* global google */
 (function() {
   'use strict';
-  var StreetView = function($q) {
-    /**
-     * Retrieves panorama id from the given map (and or position)
-     * @memberof StreetView
-     * @param {map} map Google map instance
-     * @param {LatLng} latlng Google LatLng instance  
-     *   default: the center of the map
-     * @example
-     *   StreetView.getPanorama(map).then(function(panoId) {
-     *     $scope.panoId = panoId;
-     *   });
-     * @returns {HttpPromise} Future object
-     */
-    var getPanorama = function(map, latlng) {
-      latlng = latlng || map.getCenter();
-      var deferred = $q.defer();
-      var svs = new google.maps.StreetViewService();
-      svs.getPanoramaByLocation( (latlng||map.getCenter), 100, function (data, status) {
+  var $q;
+  /**
+   * Retrieves panorama id from the given map (and or position)
+   * @memberof StreetView
+   * @param {map} map Google map instance
+   * @param {LatLng} latlng Google LatLng instance
+   *   default: the center of the map
+   * @example
+   *   StreetView.getPanorama(map).then(function(panoId) {
+   *     $scope.panoId = panoId;
+   *   });
+   * @returns {HttpPromise} Future object
+   */
+  var getPanorama = function(map, latlng) {
+    latlng = latlng || map.getCenter();
+    var deferred = $q.defer();
+    var svs = new google.maps.StreetViewService();
+    svs.getPanoramaByLocation( (latlng||map.getCenter), 100,
+      function (data, status) {
         // if streetView available
         if (status === google.maps.StreetViewStatus.OK) {
           deferred.resolve(data.location.pano);
@@ -199,25 +196,30 @@
           deferred.resolve(false);
           //deferred.reject('Geocoder failed due to: '+ status);
         }
-      });
-      return deferred.promise;
-    };
-    /**
-     * Set panorama view on the given map with the panorama id
-     * @memberof StreetView
-     * @param {map} map Google map instance
-     * @param {String} panoId Panorama id fro getPanorama method
-     * @example
-     *   StreetView.setPanorama(map, panoId);
-     */
-    var setPanorama = function(map, panoId) {
-      var svp = new google.maps.StreetViewPanorama(map.getDiv(), {enableCloseButton: true});
-      svp.setPano(panoId);
-    };
+      }
+    );
+    return deferred.promise;
+  };
+  /**
+   * Set panorama view on the given map with the panorama id
+   * @memberof StreetView
+   * @param {map} map Google map instance
+   * @param {String} panoId Panorama id fro getPanorama method
+   * @example
+   *   StreetView.setPanorama(map, panoId);
+   */
+  var setPanorama = function(map, panoId) {
+    var svp = new google.maps.StreetViewPanorama(
+      map.getDiv(), {enableCloseButton: true}
+    );
+    svp.setPano(panoId);
+  };
+  var StreetView = function(_$q_) {
+    $q = _$q_;
     return {
       getPanorama: getPanorama,
       setPanorama: setPanorama
-    }; // return
+    };
   };
   StreetView.$inject = ['$q'];
   angular.module('ngMap').service('StreetView', StreetView);

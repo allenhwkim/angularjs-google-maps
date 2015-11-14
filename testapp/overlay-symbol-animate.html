@@ -2,25 +2,14 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
-  app.controller('OverlaySymbolAnimateCtrl', function($scope, $interval) {
-    $scope.$on('mapInitialized', function(evt, map) {
+  app.controller('OverlaySymbolAnimateCtrl', function(NgMap, $interval) {
+    var vm = this;
+    NgMap.getMap().then(function(map) {
       var count = 0;
-      var line = $scope.map.shapes.foo;
+      var line = map.shapes.foo;
       $interval(function() {
         count = (count + 1) % 200;
         var icons = line.get('icons');
@@ -33,8 +22,8 @@
 </head>
 
 <body>
-  <div ng-controller="OverlaySymbolAnimateCtrl">
-   <map zoom="5" center="20.291, 153.027" map-type-id="TERRAIN">
+  <div ng-controller="OverlaySymbolAnimateCtrl as vm">
+   <ng-map zoom="5" center="20.291, 153.027" map-type-id="TERRAIN">
      <shape name="polyline" id="foo"
        icons="[{
          icon: {
@@ -46,7 +35,7 @@
        }]"
        path="[[22.291, 153.027], [18.291, 153.027]]">
      </shape>
-   </map>
+   </ng-map>
   </div>
 
 </body>

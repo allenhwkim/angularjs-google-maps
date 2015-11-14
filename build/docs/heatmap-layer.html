@@ -30,7 +30,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -49,8 +49,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,20 +87,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -148,7 +144,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -195,10 +191,9 @@
         </div>
         <div>
           <h5>Example</h5>
-          <pre class="prettyprint"><code><span class="str">Example: 
-  &lt;map zoom="11" center="[41.875696,-87.624207]">
-    &lt;heatmap-layer data="taxiData">&lt;/heatmap-layer>
-  &lt;/map></span></code></pre>
+          <pre class="prettyprint"><code><span class="str">&lt;map zoom="11" center="[41.875696,-87.624207]">
+  &lt;heatmap-layer data="taxiData">&lt;/heatmap-layer>
+&lt;/map></span></code></pre>
         </div>
       </dd>
     </div>

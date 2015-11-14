@@ -2,24 +2,18 @@
 <html ng-app="myapp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
 var app = angular.module('myapp', ['ngMap']);
-app.controller('PolygonArraysCtrl', function($scope) {
+app.controller('PolygonArraysCtrl', function(NgMap) {
+  var vm = this;
   var infoWindow = new google.maps.InfoWindow();
-  $scope.showArrays = function(event) {
+
+  NgMap.getMap().then(function(map) {
+    vm.map = map;
+  });
+
+  vm.showArrays = function(event) {
 
     // Since this polygon has only one path, we can call getPath()
     // to return the MVCArray of LatLngs.
@@ -40,19 +34,19 @@ app.controller('PolygonArraysCtrl', function($scope) {
     infoWindow.setContent(contentString);
     infoWindow.setPosition(event.latLng);
 
-    infoWindow.open($scope.map);
+    infoWindow.open(vm.map);
   }
 });
 </script>
 </head>
 
 <body>
-  <div ng-controller="PolygonArraysCtrl">
-    <map zoom="5" 
-      center="24.886436490787712, -70.2685546875" 
+  <div ng-controller="PolygonArraysCtrl as vm">
+    <ng-map zoom="5"
+      center="24.886436490787712, -70.2685546875"
       map-type-id="TERRAIN">
-     <shape name="polygon" 
-       on-click="showArrays()"
+     <shape name="polygon"
+       on-click="vm.showArrays()"
        paths="[
          [25.774252, -80.190262],
          [18.466465, -66.118292],
@@ -64,7 +58,7 @@ app.controller('PolygonArraysCtrl', function($scope) {
        fill-color="#FF0000"
        fill-opacity="0.35">
      </shape>
-   </map>
+   </ng-map>
   </div>
 
 </body>

@@ -2,30 +2,17 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 </head>
 
 <body>
-    Control options
-    <map center="-33, 151" zoom="4" 
-      pan-control="true"
-      map-type-control="true"
-      map-type-control-options="{style:'DROPDOWN_MENU'}"
-      zoom-control="true"
-      zoom-control-options="{style:'SMALL'}">
-    </map>
-  </div>
+  Control options
+  <ng-map center="-33, 151" zoom="4"
+    pan-control="true"
+    map-type-control="true"
+    map-type-control-options="{style:'DROPDOWN_MENU'}"
+    zoom-control="true"
+    zoom-control-options="{style:'SMALL'}">
+  </ng-map>
 </body>
 </html>

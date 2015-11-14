@@ -1,21 +1,8 @@
 <!DOCTYPE html>
-<html ng-app="myApp">
+<html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script> 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/map-type.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
 // Normalizes the coords that tiles repeat across the x axis (horizontally)
 // like the standard Google map tiles.
@@ -61,28 +48,20 @@ var moonTypeOptions = {
 };
 
 var moonMapType = new google.maps.ImageMapType(moonTypeOptions);
-</script>
-<script>
-  var app = angular.module('myApp', ['ngMap']);
-  app.controller('MapTypeImageCtrl', function($scope) {
-    $scope.mapTypeChanged = function() {
-      var showStreetViewControl = this.getMapTypeId() != 'coordinate';
-      this.setOptions({'streetViewControl': showStreetViewControl});
-    };
+  angular.module('ngMap').run(function($rootScope) {
+    $rootScope.moonMapType = moonMapType;
   });
 </script>
 </head>
 <body>
-    <div ng-controller="MapTypeImageCtrl">
-      <map zoom="1" center="0,0"
-        street-view-control="false"
-        map-type-id="moon"
-        map-type-control-options="{
-          mapTypeIds: ['moon']
-        }">
-        <map-type name="moon" object="moonMapType">
-        </map-type>
-      </map>
-    </div>
+  <ng-map zoom="1" center="0,0"
+    street-view-control="false"
+    map-type-id="moon"
+    map-type-control-options="{
+      mapTypeIds: ['moon']
+    }">
+    <map-type name="moon" object="moonMapType">
+    </map-type>
+  </ng-map>
 </body>
 </html>

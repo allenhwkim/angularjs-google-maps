@@ -2,41 +2,30 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/custom-control.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
-    var app = angular.module('myApp', ['ngMap']);
-    app.controller('CustomControlCtrl', function($scope) {
-      var chicago = new google.maps.LatLng(41.850033, -87.6500523);
-      $scope.click = function() {
-        $scope.map.setCenter(chicago);
-      }
-    });
+var app = angular.module('myApp', ['ngMap']);
+app.controller('CustomControlCtrl', function(NgMap) {
+  var vm = this;
+  var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+  NgMap.getMap().then(function(map) {
+    vm.map = map;
+  });
+  vm.click = function() {
+    vm.map.setCenter(chicago);
+  };
+});
 </script>
 </head>
 
-<body>
-    <div ng-controller="CustomControlCtrl">
-      Custom Control<br/>
-      This custom control simply returns the user to Chicago when clicked
-      <br/>
-      <map center="41.850033, -87.6500523" zoom="6">
-        <custom-control id="home" position="TOP_RIGHT" index="1" on-click="click()">
-          <div style="background-color: black; color:#fff;cursor:pointer">Home1</div>
-        </custom-control>
-      </map>
-    </div>
+<body ng-controller="CustomControlCtrl as vm">
+  Custom Control<br/>
+  This custom control simply returns the user to Chicago when clicked
+  <br/>
+  <ng-map center="41.850033, -87.6500523" zoom="6" default-style="true">
+    <custom-control id="home" position="TOP_RIGHT" index="1" on-click="vm.click()">
+      <div style="background-color: black; color:#fff;cursor:pointer">Home1</div>
+    </custom-control>
+  </ng-map>
 </body>
 </html>

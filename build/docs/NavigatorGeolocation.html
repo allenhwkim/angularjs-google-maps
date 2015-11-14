@@ -30,7 +30,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -49,8 +49,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,20 +87,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -148,7 +144,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -172,7 +168,8 @@
       <dt></dt>
       <dd>
         <div class="description">
-          <p>Provides <a href="https://docs.angularjs.org/api/ng/service/$q">defered/promise API</a> service for navigator.geolocation methods</p>
+          <p>Provides <a href="https://docs.angularjs.org/api/ng/service/$q">defered/promise API</a>
+ service for navigator.geolocation methods</p>
         </div>
         <div class="details"></div>
       </dd>
@@ -182,7 +179,7 @@
         <h3 class="subsection-title">Methods</h3>
         <dl>
           <dt>
-            <a href="source/NavigatorGeolocation.html#line28" class="name-link">
+            <a href="source/NavigatorGeolocation.html#line31" class="name-link">
               <h4 class="name">
                 getCurrentPosition
                 <span class="signature">(geoLocationOptions, success, failure)</span>
@@ -217,7 +214,10 @@
                     <td class="type"><span class="param-type">
                       Object
                     </span></td>
-                    <td class="description last"><p>the navigator geolocations options. i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }. If none specified, { timeout: 5000 }. If timeout not specified, timeout: 5000 added</p></td>
+                    <td class="description last"><p>the navigator geolocations options.
+ i.e. { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }.
+ If none specified, { timeout: 5000 }. 
+ If timeout not specified, timeout: 5000 added</p></td>
                   </tr><tr>
                     <td class="name">success</td>
                     <td class="type"><span class="param-type">

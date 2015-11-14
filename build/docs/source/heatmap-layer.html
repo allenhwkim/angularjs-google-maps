@@ -31,7 +31,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -50,8 +50,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -90,20 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -149,7 +145,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -167,28 +163,29 @@
  * @ngdoc directive
  * @name heatmap-layer
  * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @description 
+ * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
  * @example
- * Example: 
  *
- *   &lt;map zoom="11" center="[41.875696,-87.624207]">
- *     &lt;heatmap-layer data="taxiData">&lt;/heatmap-layer>
- *   &lt;/map>
+ * &lt;map zoom="11" center="[41.875696,-87.624207]">
+ *   &lt;heatmap-layer data="taxiData">&lt;/heatmap-layer>
+ * &lt;/map>
  */
 (function() {
   'use strict';
-  angular.module('ngMap').directive('heatmapLayer', ['Attr2Options', '$window', function(Attr2Options, $window) {
-    var parser = Attr2Options;
+  angular.module('ngMap').directive('heatmapLayer', [
+    'Attr2MapOptions', '$window', function(Attr2MapOptions, $window) {
+    var parser = Attr2MapOptions;
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: function(scope, element, attrs, mapController) {
+        mapController = mapController[0]||mapController[1];
         var filtered = parser.filter(attrs);
         /**
-         * set options 
+         * set options
          */
         var options = parser.getOptions(filtered);
         options.data = $window[attrs.data] || scope[attrs.data];
@@ -199,7 +196,7 @@
         }
         var layer = new google.maps.visualization.HeatmapLayer(options);
         /**
-         * set events 
+         * set events
          */
         var events = parser.getEvents(scope, filtered);
         console.log('heatmap-layer options', layer, 'events', events);

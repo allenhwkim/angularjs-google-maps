@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: source : geo_coder.js</title>
+    <title>JSDoc: source : geo-coder.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -31,7 +31,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -50,8 +50,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -90,20 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -149,7 +145,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -158,7 +154,7 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        source : geo_coder.js
+        source : geo-coder.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
@@ -167,37 +163,41 @@
  * @ngdoc service
  * @name GeoCoder
  * @description
- *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q) service for Google Geocoder service
+ *   Provides [defered/promise API](https://docs.angularjs.org/api/ng/service/$q)
+ *   service for Google Geocoder service
  */
-/* global google */
 (function() {
   'use strict';
-  var GeoCoder = function($q) {
-    return {
-      /**
-       * @memberof GeoCoder
-       * @param {Hash} options https://developers.google.com/maps/documentation/geocoding/#geocoding
-       * @example
-       * ```
-       *   GeoCoder.geocode({address: 'the cn tower'}).then(function(result) {
-       *     //... do something with result
-       *   });
-       * ```
-       * @returns {HttpPromise} Future object
-       */
-      geocode : function(options) {
-        var deferred = $q.defer();
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode(options, function (results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            deferred.resolve(results);
-          } else {
-            deferred.reject('Geocoder failed due to: '+ status);
-          }
-        });
-        return deferred.promise;
+  var $q;
+  /**
+   * @memberof GeoCoder
+   * @param {Hash} options
+   *   https://developers.google.com/maps/documentation/geocoding/#geocoding
+   * @example
+   * ```
+   *   GeoCoder.geocode({address: 'the cn tower'}).then(function(result) {
+   *     //... do something with result
+   *   });
+   * ```
+   * @returns {HttpPromise} Future object
+   */
+  var geocodeFunc = function(options) {
+    var deferred = $q.defer();
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode(options, function (results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        deferred.resolve(results);
+      } else {
+        deferred.reject(status);
       }
-    }
+    });
+    return deferred.promise;
+  };
+  var GeoCoder = function(_$q_) {
+    $q = _$q_;
+    return {
+      geocode : geocodeFunc
+    };
   };
   GeoCoder.$inject = ['$q'];
   angular.module('ngMap').service('GeoCoder', GeoCoder);

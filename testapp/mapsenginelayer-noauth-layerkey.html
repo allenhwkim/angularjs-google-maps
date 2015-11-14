@@ -2,34 +2,21 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/maps-engine-layer.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 </head>
 
 <body>
-      <map center="42, -99" zoom="5">
-        <maps-engine-layer
-          map-id="10446176163891957399-13516001307527776624-4"
-          layer-key="layer_00001"
-          clickable="true"
-          suppress-info-windows="false">
-        </maps-engine-layer>
-        <maps-engine-layer
-          map-id="10446176163891957399-13516001307527776624-4"
-          layer-key="layer_00002">
-        </maps-engine-layer>
-      </map>
+  <ng-map center="42, -99" zoom="5">
+    <maps-engine-layer
+      map-id="10446176163891957399-13516001307527776624-4"
+      layer-key="layer_00001"
+      clickable="true"
+      suppress-info-windows="false">
+    </maps-engine-layer>
+    <maps-engine-layer
+      map-id="10446176163891957399-13516001307527776624-4"
+      layer-key="layer_00002">
+    </maps-engine-layer>
+      </ng-map>
 </body>
 </html>

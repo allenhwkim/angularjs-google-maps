@@ -2,24 +2,12 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script src="USGSOverlay.js"></script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
-  app.controller('GroundoverlayCustomCtrl', function($scope) {
-    $scope.$on('mapInitialized', function(evt, map) {
+  app.controller('GroundoverlayCustomCtrl', function(NgMap) {
+    NgMap.getMap().then(function(map) {
       var swBound = new google.maps.LatLng(62.281819, -150.287132);
       var neBound = new google.maps.LatLng(62.400471, -150.005608);
       var bounds = new google.maps.LatLngBounds(swBound, neBound);
@@ -31,11 +19,8 @@
 </script>
 </head>
 
-<body>
-  <div ng-controller="GroundoverlayCustomCtrl">
-    <map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
-   </map>
-  </div>
-
+<body ng-controller="GroundoverlayCustomCtrl as vm">
+  <ng-map zoom="11" center="62.323907, -150.109291" map-type-id="SATELLITE">
+  </ng-map>
 </body>
 </html>

@@ -4,26 +4,13 @@
 <head>
   <title>Markers with parent controller(scope)</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-  <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-  <script src="../app.js"></script>
-  <script src="../directives/map_controller.js"></script>
-  <script src="../directives/map.js"></script>
-  <script src="../directives/marker.js"></script>
-  <script src="../directives/shape.js"></script>
-  <script src="../services/geo_coder.js"></script>
-  <script src="../services/navigator_geolocation.js"></script>
-  <script src="../services/attr2_options.js"></script>
+  <script src="script-tags-for-development.js"></script>
   <script>
     var app = angular.module('myApp', ['ngMap']);
     app.controller('childController', function() {});
     app.controller('parentController', function() {});
-    app.controller('parentParentController', function($scope, $http) {
-      $scope.$on('mapInitialized', function(event, evtMap) {
-        var map = evtMap;
+    app.controller('parentParentController', function($http, NgMap) {
+      NgMap.getMap().then(function(map) {
         var markers = [];
         for (var i = 0; i < 8; i++) {
           markers[i] = new google.maps.Marker({ title: "Marker: " + i });
@@ -43,13 +30,14 @@
 
 <body>
   <h1>Markers with parent controller(scope)</h1>
-  
-    <div ng-controller="parentParentController">
-      <div ng-controller="parentController">
-        <div ng-controller="childController">
-          <map zoom="14" center="[43.6650000, -79.4103000]"></map>
-        </div>
+
+  <div ng-controller="parentParentController as vm">
+    <div ng-controller="parentController">
+      <div ng-controller="childController">
+        <ng-map zoom="14" center="[43.6650000, -79.4103000]"></ng-map>
       </div>
     </div>
+  </div>
+
 </body>
 </html>

@@ -31,7 +31,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -50,8 +50,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -90,20 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -149,7 +145,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -166,34 +162,38 @@
           <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name directions
- * @description 
- *   Enable directions on map. e.g., origin, destination, draggable, waypoints, etc
- *   
+ * @description
+ *   Enable directions on map.
+ *   e.g., origin, destination, draggable, waypoints, etc
+ *
  *   Requires:  map directive
  *
- *   Restrict To:  Element 
+ *   Restrict To:  Element
  *
- * @attr {String} DirectionsRendererOptions [Any DirectionsRendererOptions](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions)
- * @attr {String} DirectionsRequestOptions [Any DirectionsRequest options](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest)
+ * @attr {String} DirectionsRendererOptions
+ *   [Any DirectionsRendererOptions](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRendererOptions)
+ * @attr {String} DirectionsRequestOptions
+ *   [Any DirectionsRequest options](https://developers.google.com/maps/documentation/javascript/reference#DirectionsRequest)
  * @example
- * Example: 
- *   &lt;map zoom="14" center="37.7699298, -122.4469157">
- *     &lt;directions 
- *       draggable="true"
- *       panel="directions-panel"
- *       travel-mode="{{travelMode}}"
- *       waypoints="[{location:'kingston', stopover:true}]"
- *       origin="{{origin}}"
- *       destination="{{destination}}">
- *     &lt;/directions>
- *   &lt;/map> 
+ *  &lt;map zoom="14" center="37.7699298, -122.4469157">
+ *    &lt;directions
+ *      draggable="true"
+ *      panel="directions-panel"
+ *      travel-mode="{{travelMode}}"
+ *      waypoints="[{location:'kingston', stopover:true}]"
+ *      origin="{{origin}}"
+ *      destination="{{destination}}">
+ *    &lt;/directions>
+ *  &lt;/map>
  */
-/* global google */
+/* global document */
 (function() {
   'use strict';
+  var NgMap, $timeout, NavigatorGeolocation;
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
-      options.panel = document.getElementById(options.panel) || document.querySelector(options.panel);
+      options.panel = document.getElementById(options.panel) ||
+        document.querySelector(options.panel);
     }
     var renderer = new google.maps.DirectionsRenderer(options);
     for (var eventName in events) {
@@ -201,52 +201,58 @@
     }
     return renderer;
   };
-  var directions = function(Attr2Options, $timeout, NavigatorGeolocation) {
-    var parser = Attr2Options;
+  var updateRoute = function(renderer, options) {
     var directionsService = new google.maps.DirectionsService();
-    var updateRoute = function(renderer, options) {
-      /* filter out valid keys only for DirectionsRequest object*/
-      var request = options;
-      request.travelMode = request.travelMode || 'DRIVING';
-      var validKeys = [
-        'origin', 'destination', 'travelMode', 'transitOptions', 'unitSystem',
-        'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
-        'provideRouteAlternatives', 'avoidHighways', 'avoidTolls', 'region'
-      ];
-      for(var key in request){
-        (validKeys.indexOf(key) === -1) && (delete request[key]);
+    /* filter out valid keys only for DirectionsRequest object*/
+    var request = options;
+    request.travelMode = request.travelMode || 'DRIVING';
+    var validKeys = [
+      'origin', 'destination', 'travelMode', 'transitOptions', 'unitSystem',
+      'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
+      'provideRouteAlternatives', 'avoidHighways', 'avoidTolls', 'region'
+    ];
+    for(var key in request){
+      (validKeys.indexOf(key) === -1) && (delete request[key]);
+    }
+    if(request.waypoints) {
+      // Check fo valid values
+      if(request.waypoints == "[]" || request.waypoints === "") {
+        delete request.waypoints;
       }
-      if(request.waypoints) {
-        // Check fo valid values
-        if(request.waypoints == "[]" || request.waypoints == "")  delete request.waypoints;
-      }
-      var showDirections = function(request) {
-        console.log('request', request);
-        directionsService.route(request, function(response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            $timeout(function() {
-              renderer.setDirections(response);
-            });
-          }
-        });
-      };
-      if (request.origin && request.destination) {
-        if (request.origin == 'current-location') {
-          NavigatorGeolocation.getCurrentPosition().then(function(ll) {
-            request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
-            showDirections(request);
+    }
+    var showDirections = function(request) {
+      directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          $timeout(function() {
+            renderer.setDirections(response);
           });
-        } else if (request.destination == 'current-location') {
-          NavigatorGeolocation.getCurrentPosition().then(function(ll) {
-            request.destination = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
-            showDirections(request);
-          });
-        } else {
-          showDirections(request);
         }
-      } 
+      });
     };
+    if (request.origin && request.destination) {
+      if (request.origin == 'current-location') {
+        NavigatorGeolocation.getCurrentPosition().then(function(ll) {
+          request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
+          showDirections(request);
+        });
+      } else if (request.destination == 'current-location') {
+        NavigatorGeolocation.getCurrentPosition().then(function(ll) {
+          request.destination = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
+          showDirections(request);
+        });
+      } else {
+        showDirections(request);
+      }
+    }
+  };
+  var directions = function(
+      Attr2MapOptions, _$timeout_, _NavigatorGeolocation_, _NgMap_) {
+    var parser = Attr2MapOptions;
+    NgMap = _NgMap_;
+    $timeout = _$timeout_;
+    NavigatorGeolocation = _NavigatorGeolocation_;
     var linkFunc = function(scope, element, attrs, mapController) {
+      mapController = mapController[0]||mapController[1];
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
@@ -259,7 +265,8 @@
           attrs.$observe(attrName, function(val) {
             if (attrName == 'panel') {
               $timeout(function(){
-                var panel = document.getElementById(val) || document.querySelector(val);
+                var panel =
+                  document.getElementById(val) || document.querySelector(val);
                 console.log('setting ', attrName, 'with value', panel);
                 panel && renderer.setPanel(panel);
               });
@@ -272,20 +279,21 @@
           });
         })(attrName);
       });
-      scope.$on('mapInitialized', function(event, map) {
+      NgMap.getMap().then(function() {
         updateRoute(renderer, options);
       });
-      scope.$on('$destroy', function(event, map) {
+      element.bind('$destroy', function() {
         mapController.deleteObject('directionsRenderers', renderer);
       });
     };
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: linkFunc
-    }
+    };
   }; // var directions
-  directions.$inject = ['Attr2Options', '$timeout', 'NavigatorGeolocation'];
+  directions.$inject =
+    ['Attr2MapOptions', '$timeout', 'NavigatorGeolocation', 'NgMap'];
   angular.module('ngMap').directive('directions', directions);
 })();
 </code></pre>

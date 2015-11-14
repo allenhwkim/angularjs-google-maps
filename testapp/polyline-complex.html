@@ -2,48 +2,27 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
-  app.controller("PolylineComplexCtrl", function($scope) {
-    var poly = poly = new google.maps.Polyline({
-      strokeColor: '#000000',
-      strokeOpacity: 1.0,
-      strokeWeight: 3
-    });
-    $scope.$on('mapInitialized', function(evt, map) {
-      poly.setMap(map);
-    });
-    $scope.addMarkerAndPath = function(event) {
-      var path = poly.getPath();
-      var marker = new google.maps.Marker({
-        position: event.latLng, 
-        title: "#"+ path.getLength(), 
-        map: $scope.map
-      });
-      path.push(event.latLng);
-    }
+  app.controller("PolylineComplexCtrl", function(NgMap) {
+    var vm = this;
+    vm.path = [[41.879535, -87.624333]];
+    vm.addMarkerAndPath = function(event) {
+      vm.path.push([event.latLng.lat(), event.latLng.lng()]);
+    };
   });
 </script>
 </head>
 
-<body>
-    <div ng-controller="PolylineComplexCtrl">
-      <map zoom="7" center="41.879535, -87.624333"
-        on-click="addMarkerAndPath()">
-      </map>
-    </div>
+<body ng-controller="PolylineComplexCtrl as vm">
+  <ng-map zoom="7" center="41.879535, -87.624333" on-click="vm.addMarkerAndPath()">
+    <shape name="polyline" id="foo"
+      path="{{vm.path}}"
+      stroke-color="#FF0000"
+      stroke-opacity="1.0"
+      stroke-weight="3">
+    </shape>
+  </ng-map>
 </body>
 </html>

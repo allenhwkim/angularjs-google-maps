@@ -31,7 +31,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -50,8 +50,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -90,20 +88,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -149,7 +145,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -166,32 +162,35 @@
           <pre class="prettyprint source linenums"><code>/**
  * @ngdoc directive
  * @name kml-layer
- * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @description 
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @description
  *   renders Kml layer on a map
  *   Requires:  map directive
  *   Restrict To:  Element
  *
  * @attr {Url} url url of the kml layer
  * @attr {KmlLayerOptions} KmlLayerOptions
- *   (https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions)  
- * @attr {String} &lt;KmlLayerEvent> Any KmlLayer events, https://developers.google.com/maps/documentation/javascript/reference
+ *   (https://developers.google.com/maps/documentation/javascript/reference#KmlLayerOptions) 
+ * @attr {String} &lt;KmlLayerEvent> Any KmlLayer events,
+ *   https://developers.google.com/maps/documentation/javascript/reference
  * @example
- * Usage: 
+ * Usage:
  *   &lt;map MAP_ATTRIBUTES>
  *    &lt;kml-layer ANY_KML_LAYER ANY_KML_LAYER_EVENTS">&lt;/kml-layer>
  *   &lt;/map>
  *
- * Example: 
+ * Example:
  *
- *   &lt;map zoom="11" center="[41.875696,-87.624207]">
- *     &lt;kml-layer url="https://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" >&lt;/kml-layer>
- *    &lt;/map>
+ * &lt;map zoom="11" center="[41.875696,-87.624207]">
+ *   &lt;kml-layer url="https://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml" >
+ *   &lt;/kml-layer>
+ * &lt;/map>
  */
 (function() {
   'use strict';
-  angular.module('ngMap').directive('kmlLayer', ['Attr2Options', function(Attr2Options) {
-    var parser = Attr2Options;
+  angular.module('ngMap').directive('kmlLayer', [
+    'Attr2MapOptions', function(Attr2MapOptions) {
+    var parser = Attr2MapOptions;
     var getKmlLayer = function(options, events) {
       var kmlLayer = new google.maps.KmlLayer(options);
       for (var eventName in events) {
@@ -201,13 +200,14 @@
     };
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: function(scope, element, attrs, mapController) {
+        mapController = mapController[0]||mapController[1];
         var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered);
         var events = parser.getEvents(scope, filtered);
-        console.log('kml-layer options', kmlLayer, 'events', events);
+        console.log('kml-layer options', options, 'events', events);
         var kmlLayer = getKmlLayer(options, events);
         mapController.addObject('kmlLayers', kmlLayer);
         mapController.observeAttrSetObj(orgAttrs, attrs, kmlLayer);  //observers

@@ -1,35 +1,23 @@
 <!DOCTYPE html>
 <html ng-app="myapp">
 <head>
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
-<script src="https://maps.google.com/maps/api/js?libraries=visualization"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/heatmap-layer.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
 <script src="taxi-data.js"></script>
 <script>
   var app = angular.module('myapp', ['ngMap']);
-  app.controller('LayerHeatmapCtrl', function($scope) {
-    var heatmap;
-    $scope.$on('mapInitialized', function(event, map) {
-      heatmap = map.heatmapLayers.foo;
+  app.controller('LayerHeatmapCtrl', function(NgMap) {
+    var heatmap, vm = this;
+    NgMap.getMap().then(function(map) {
+      vm.map = map;
+      heatmap = vm.map.heatmapLayers.foo;
     });
 
-    $scope.toggleHeatmap= function(event) {
-      heatmap.setMap(heatmap.getMap() ? null : $scope.map);
+    vm.toggleHeatmap= function(event) {
+      heatmap.setMap(heatmap.getMap() ? null : vm.map);
     };
 
-    $scope.changeGradient = function() {
+    vm.changeGradient = function() {
       var gradient = [
         'rgba(0, 255, 255, 0)',
         'rgba(0, 255, 255, 1)',
@@ -49,11 +37,11 @@
       heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
     }
 
-    $scope.changeRadius = function() {
+    vm.changeRadius = function() {
       heatmap.set('radius', heatmap.get('radius') ? null : 20);
     }
 
-    $scope.changeOpacity = function() {
+    vm.changeOpacity = function() {
       heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
     }
   });
@@ -75,16 +63,16 @@
       border: 1px solid #999;
     }
   </style>
-  <div ng-controller="LayerHeatmapCtrl">
+  <div ng-controller="LayerHeatmapCtrl as vm">
     <div id="panel">
-      <button ng-click="toggleHeatmap()">Toggle Heatmap</button>
-      <button ng-click="changeGradient()">Change gradient</button>
-      <button ng-click="changeRadius()">Change radius</button>
-      <button ng-click="changeOpacity()">Change opacity</button>
+      <button ng-click="vm.toggleHeatmap()">Toggle Heatmap</button>
+      <button ng-click="vm.changeGradient()">Change gradient</button>
+      <button ng-click="vm.changeRadius()">Change radius</button>
+      <button ng-click="vm.changeOpacity()">Change opacity</button>
     </div>
-    <map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
+    <ng-map zoom="13" center="37.774546, -122.433523" map-type-id="SATELLITE">
       <heatmap-layer id="foo" data="taxiData"></heatmap>
-    </map>
+    </ng-map>
   </div>
 </body>
 </html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<title>Map Initialized Callback</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+angular.module('ngMap').controller('MyCtrl', function($scope) {
+  $scope.mycallback = function(map) {
+    $scope.mymap = map;
+    $scope.$apply();
+  };
+});
+</script>
+</head>
+
+<body ng-controller="MyCtrl">
+  <ng-map center="[40.74, -74.18]" map-initialized="mycallback(map)"></ng-map>
+  $scope.mymap.center: {{mymap.getCenter().lat()}}
+</body>
+</html>

@@ -30,7 +30,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -49,8 +49,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,20 +87,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -148,7 +144,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -172,7 +168,8 @@
       <dt></dt>
       <dd>
         <div class="description">
-          <p>Initialize a Google map shape in map with given options and register events<br>  The shapes are:
+          <p>Initialize a Google map shape in map with given options and register events
+  The shapes are:
     . circle
     . polygon
     . polyline
@@ -190,7 +187,7 @@
             </thead>
             <tbody>
               <tr>
-                <td class="name" nowrap="">Attr2Options</td>
+                <td class="name" nowrap="">Attr2MapOptions</td>
                 <td class="type"><span class="param-type">
                   service
                 </span></td>
@@ -218,14 +215,20 @@
                 <td class="type"><span class="param-type">
                   Expression
                 </span></td>
-                <td class="description last"><p>if shape is a circle and the center is an address, the expression is will be performed when geo-lookup is successful. e.g., geo-callback=&quot;showDetail()&quot;</p>
+                <td class="description last"><p>if shape is a circle and the center is
+  an address, the expression is will be performed when geo-lookup
+  is successful. e.g., geo-callback=&quot;showDetail()&quot;</p>
 </td>
               </tr><tr>
                 <td class="name" nowrap="">&lt;OPTIONS></td>
                 <td class="type"><span class="param-type">
                   String
                 </span></td>
-                <td class="description last"><p>For circle, <a href="https://developers.google.com/maps/documentation/javascript/reference#CircleOptions">any circle options</a><br>  For polygon, <a href="https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions">any polygon options</a><br>  For polyline, <a href="https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions">any polyline options</a><br>  For rectangle, <a href="https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions">any rectangle options</a><br>  For image, <a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions">any groundOverlay options</a></p>
+                <td class="description last"><p>For circle, <a href="https://developers.google.com/maps/documentation/javascript/reference#CircleOptions">any circle options</a>
+  For polygon, <a href="https://developers.google.com/maps/documentation/javascript/reference#PolygonOptions">any polygon options</a>
+  For polyline, <a href="https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions">any polyline options</a>
+  For rectangle, <a href="https://developers.google.com/maps/documentation/javascript/reference#RectangleOptions">any rectangle options</a>
+  For image, <a href="https://developers.google.com/maps/documentation/javascript/reference#GroundOverlayOptions">any groundOverlay options</a></p>
 </td>
               </tr><tr>
                 <td class="name" nowrap="">&lt;MapEvent></td>
@@ -240,32 +243,43 @@
         </div>
         <div>
           <h5>Example</h5>
-          <pre class="prettyprint"><code><span class="str">Usage: 
+          <pre class="prettyprint"><code><span class="str">Usage:
   &lt;map MAP_ATTRIBUTES>
    &lt;shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS">&lt;/MARKER>
   &lt;/map>
-Example: 
+Example:
   &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="polyline" name="polyline" geodesic="true" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
-     path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" >&lt;/shape>
-   &lt;/map>
-  &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="polygon" name="polygon" stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
-     paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" >&lt;/shape>
+    &lt;shape id="polyline" name="polyline" geodesic="true"
+      stroke-color="#FF0000" stroke-opacity="1.0" stroke-weight="2"
+      path="[[40.74,-74.18],[40.64,-74.10],[40.54,-74.05],[40.44,-74]]" >
+    &lt;/shape>
   &lt;/map>
   &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="rectangle" name="rectangle" stroke-color='#FF0000' stroke-opacity="0.8" stroke-weight="2"
-     bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" >&lt;/shape>
+    &lt;shape id="polygon" name="polygon" stroke-color="#FF0000"
+      stroke-opacity="1.0" stroke-weight="2"
+      paths="[[40.74,-74.18],[40.64,-74.18],[40.84,-74.08],[40.74,-74.18]]" >
+    &lt;/shape>
   &lt;/map>
   &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="circle" name="circle" stroke-color='#FF0000' stroke-opacity="0.8"stroke-weight="2" 
-     center="[40.70,-74.14]" radius="4000" editable="true" >&lt;/shape>
+    &lt;shape id="rectangle" name="rectangle" stroke-color='#FF0000'
+      stroke-opacity="0.8" stroke-weight="2"
+      bounds="[[40.74,-74.18], [40.78,-74.14]]" editable="true" >
+    &lt;/shape>
   &lt;/map>
   &lt;map zoom="11" center="[40.74, -74.18]">
-    &lt;shape id="image" name="image" url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
-     bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7" clickable="true" >&lt;/shape>
+    &lt;shape id="circle" name="circle" stroke-color='#FF0000'
+      stroke-opacity="0.8"stroke-weight="2"
+      center="[40.70,-74.14]" radius="4000" editable="true" >
+    &lt;/shape>
   &lt;/map>
- For full-working example, please visit 
+  &lt;map zoom="11" center="[40.74, -74.18]">
+    &lt;shape id="image" name="image"
+      url="https://www.lib.utexas.edu/maps/historical/newark_nj_1922.jpg"
+      bounds="[[40.71,-74.22],[40.77,-74.12]]" opacity="0.7"
+      clickable="true">
+    &lt;/shape>
+  &lt;/map>
+ For full-working example, please visit
    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)</span></code></pre>
         </div>
       </dd>

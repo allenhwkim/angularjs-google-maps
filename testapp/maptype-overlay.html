@@ -1,21 +1,8 @@
 <!DOCTYPE html>
-<html ng-app="myApp">
+<html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/overlay-map-type.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
   /** @constructor */
   function CoordMapType() {
@@ -33,19 +20,14 @@
     div.style.borderColor = '#AAAAAA';
     return div;
   };
-</script>
-<script>
-  var app = angular.module('myApp', ['ngMap']);
-  app.controller('MapTypeOverlayCtrl', function($scope) {
+  angular.module('ngMap').run(function($rootScope) {
+    $rootScope.coordMapType = CoordMapType;
   });
 </script>
 </head>
 <body>
-    <div ng-controller="MapTypeOverlayCtrl">
-      <map zoom="10" center="41.850033,-87.6500523">
-        <overlay-map-type object="CoordMapType" index="0">
-        </overlay-map-type>
-      </map>
-    </div>
+  <ng-map zoom="10" center="41.850033,-87.6500523">
+    <overlay-map-type object="coordMapType" index="0"> </overlay-map-type>
+  </ng-map>
 </body>
 </html>

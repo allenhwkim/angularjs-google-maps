@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+var app = angular.module('myApp', ['ngMap']);
+app.config(function(NgMapProvider) {
+  NgMapProvider.setDefaultOptions({
+    marker: {
+      optimized: false
+    }
+  });
+});
+</script>
+</head>
+
+<body>
+  <h1>Marker With Default Options Configured</h1>
+  The following marker has default option, optimized="false"
+  <ng-map scrollwheel="false"
+    center="37.7699298, -122.4469157" zoom="12">
+    <marker position="37.7699298, -122.4469157">
+    </marker>
+  </ng-map>
+
+  The following marker overides default option because 
+  user provided optimized="true"
+  <ng-map scrollwheel="false"
+    center="37.7699298, -122.4469157" zoom="12">
+    <marker position="37.7699298, -122.4469157" optimized="true">
+    </marker>
+  </ng-map>
+</body>
+</html>

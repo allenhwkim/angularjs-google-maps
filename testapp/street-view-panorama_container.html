@@ -2,31 +2,19 @@
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/street-view-panorama.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <style>
   map, #streetview {display:inline-block !important;width:45%;height: 400px}
 </style>
 </head>
 
 <body ng-app="ngMap">
-  <map zoom="18" center="[40.688738,-74.043871]"
+  <ng-map zoom="18" center="[40.688738,-74.043871]"
+    default-style="false"
     map-type-id="MapTypeId.SATELLITE" tilt="45">
    <street-view-panorama container="streetview">
    </street-view-panorama>
- </map>
+ </ng-map>
  <div id="streetview"></div> 
 </body>
 </html>

@@ -2,31 +2,20 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 </head>
 
 <body>
-    <map zoom="11" center="[40.74, -74.18]">
-      <marker position="[40.71, -74.21]" title="hello"></marker>
-      <marker position="[40.72, -74.20]" title="marker" animation="Animation.DROP"></marker>
-      <marker position="[40.73, -74.19]" title="drag me" draggable="true"></marker>
-      <marker position="[40.74, -74.18]" title="how" animation="Animation.BOUNCE"></marker>
-      <marker position="[40.75, -74.17]" title="are"></marker>
-      <marker position="[40.76, -74.16]" title="you" icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"></marker>
-      <marker position="[40.77, -74.15]" title="from"></marker>
-      <marker position="[40.78, -74.14]" title="allen"></marker>
-    </map>
+  <ng-map zoom="11" center="[40.74, -74.18]">
+    <marker position="[40.71, -74.21]" title="hello"></marker>
+    <marker position="[40.72, -74.20]" title="marker" animation="Animation.DROP"></marker>
+    <marker position="[40.73, -74.19]" title="drag me" draggable="true"></marker>
+    <marker position="[40.74, -74.18]" title="how" animation="Animation.BOUNCE"></marker>
+    <marker position="[40.75, -74.17]" title="are"></marker>
+    <marker position="[40.76, -74.16]" title="you"
+      icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"></marker>
+    <marker position="[40.77, -74.15]" title="from"></marker>
+    <marker position="[40.78, -74.14]" title="allen"></marker>
+  </ng-map>
 </body>
 </html>

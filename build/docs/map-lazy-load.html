@@ -30,7 +30,7 @@
             </h3>
             <ul ng-hide="undefinedservice">
               <li>
-                <a href="Attr2Options.html">Attr2Options</a>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
               </li><li>
                 <a href="GeoCoder.html">GeoCoder</a>
               </li><li>
@@ -49,8 +49,6 @@
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
-              </li><li>
-                <a href="cloud-layer.html">cloud-layer</a>
               </li><li>
                 <a href="custom-control.html">custom-control</a>
               </li><li>
@@ -89,20 +87,18 @@
                 <a href="traffic-layer.html">traffic-layer</a>
               </li><li>
                 <a href="transit-layer.html">transit-layer</a>
-              </li><li>
-                <a href="weather-layer.html">weather-layer</a>
               </li>
             </ul>
           </ul><ul class="group">
             <h3>
-              <a href="" ng-click="undefinedcontroller = !undefinedcontroller">
-                controller
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
               </a>
-              <i ng-cloak="" ng-show="undefinedcontroller">+</i>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
             </h3>
-            <ul ng-hide="undefinedcontroller">
+            <ul ng-hide="undefinedprovider">
               <li>
-                <a href="MapController.html">MapController</a>
+                <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul>
@@ -148,7 +144,7 @@
             </h3>
             <ul ng-hide="ng_apdirective">
               <li>
-                <a href="ngMap.map.html">map</a>
+                <a href="ngMap.ng-map.html">ng-map</a>
               </li>
             </ul>
           </ul>
@@ -172,8 +168,9 @@
       <dt></dt>
       <dd>
         <div class="description">
-          <p>Requires: Delay the initialization of map directive until the map is ready to be rendered
-  Restrict To: Attribute</p>
+          <p>Requires: Delay the initialization of map directive
+   until the map is ready to be rendered
+ Restrict To: Attribute</p>
         </div>
         <div class="details"></div>
         <div>
@@ -206,7 +203,8 @@
                   String
                 </span></td>
                 <td class="description last"><p>Maps api script source file location.
-   Example:<br>     &#39;<a href="https://maps.google.com/maps/api/js">https://maps.google.com/maps/api/js</a>&#39;</p>
+   Example:
+     &#39;<a href="https://maps.google.com/maps/api/js">https://maps.google.com/maps/api/js</a>&#39;</p>
 </td>
               </tr><tr>
                 <td class="name" nowrap="">map-lazy-load-params</td>
@@ -214,9 +212,9 @@
                   String
                 </span></td>
                 <td class="description last"><p>Maps api script source file location via angular scope variable.
-     Also requires the map-lazy-load attribute to be present in the directive.
-     Example: In your controller, set 
-       $scope.googleMapsURL = &#39;<a href="https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX">https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX</a>&#39;</p>
+  Also requires the map-lazy-load attribute to be present in the directive.
+  Example: In your controller, set
+    $scope.googleMapsURL = &#39;<a href="https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX">https://maps.google.com/maps/api/js?v=3.20&amp;client=XXXXXenter-api-key-hereXXXX</a>&#39;</p>
 </td>
               </tr>
             </tbody>
@@ -224,13 +222,13 @@
         </div>
         <div>
           <h5>Example</h5>
-          <pre class="prettyprint"><code><span class="str">Example: 
+          <pre class="prettyprint"><code><span class="str">Example:
   &lt;div map-lazy-load="http://maps.google.com/maps/api/js">
     &lt;map center="Brampton" zoom="10">
       &lt;marker position="Brampton">&lt;/marker>
     &lt;/map>
   &lt;/div>
-  &lt;div map-lazy-load="http://maps.google.com/maps/api/js" 
+  &lt;div map-lazy-load="http://maps.google.com/maps/api/js"
        map-lazy-load-params="{{googleMapsUrl}}">
     &lt;map center="Brampton" zoom="10">
       &lt;marker position="Brampton">&lt;/marker>

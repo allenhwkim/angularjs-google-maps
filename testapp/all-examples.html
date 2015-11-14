@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<link href="lib/prettify-tomorrow-night.css" type="text/css" rel="stylesheet" />
+<script src="lib/prettify.js"></script>
+<script src="lib/angular.js"></script>
+<style>
+  * { box-sizing: border-box }
+  html, body {width:100%; height: 100%}
+  .left  {width: 33%; height:100%; overflow:auto; float:left}
+  .right {width: 66%; height:100%; float:left}
+  .right .buttons {}
+  .right iframe {width:100%; height:90%}
+  .right .source {overflow:auto; width:100%; height: 90%}
+</style>
+<script>
+angular.module('myapp',[]);
+var hash2arr = function(hash) {
+  var arr = [];
+  for (var key in hash) {
+    hash[key].key = key;
+    arr.push(hash[key]);
+  }
+  return arr;
+};
+angular.module('myapp').directive('allExamples', function() {
+  var submitToPlunker = function(html) {
+    var form = document.createElement('form');
+    form.style.display = 'none';
+    form.method = 'post';
+    form.action = 'http://plnkr.co/edit/?p=preview';
+    var postData = {
+      description: "AngularJS Google Maps Directive",
+      'private': true,
+      'tags[]': 'auglarjs',
+      'files[index.html]': html
+    };
+    for(var key in postData) {
+      var input = document.createElement('input');
+      input.type = "hidden";
+      input.name = key;
+      input.value = postData[key];
+      form.appendChild(input);
+    }
+    form.submit();
+    form.remove();
+  };
+
+  var ctrl = function($http, $timeout, $location) {
+    var vm = this;
+    vm.viewIframe = function(url) {
+      vm.viewSource = false;
+      window.iframe.location.href = url;
+    };
+    vm.viewIframeSource = function() {
+      var url = window.iframe.location.href;
+      $http.get(url).then(function(resp) {
+        vm.iframeSource = resp.data;
+        vm.viewSource = true;
+        $timeout(function() {
+          prettyPrint();
+        });
+      })
+    };
+    vm.viewInPlunker = function() {
+      var baseUrl = "";
+      var url = window.iframe.location.href;
+      var baseUrl= 'http://rawgit.com/allenhwkim/angularjs-google-maps/angualr2-prepared/testapp';
+      var replMap = {
+        '&lt;script src="script-tags-for-development.js">&lt;/script>' :
+           [
+             '&lt;script src="http://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places">&lt;/script>',
+             '&lt;script src="http://code.angularjs.org/1.3.15/angular.js">&lt;/script>',
+             '&lt;script src="http://rawgit.com/allenhwkim/angularjs-google-maps/angualr2-prepared/build/scripts/ng-map.js">&lt;/script>',
+           ].join("\n"),
+        '&lt;script src="taxi-data.js">&lt;/script>':
+          '&lt;script src="'+baseUrl+'/taxi-data.js">&lt;/script>',
+        '&lt;script src="scripts/markerclusterer.js">&lt;/script>':
+          '&lt;script src="'+baseUrl+'/scripts/markerclusterer.js">&lt;/script>',
+        '&lt;script src="USGSOverlay.js">&lt;/script>':
+          '&lt;script src="'+baseUrl+'/USGSOverlay.js">&lt;/script>'
+      };
+      $http.get(url).then(function(resp) {
+        vm.iframeSource = resp.data;
+        for(var key in replMap) {
+          var re = new RegExp(key.replace(/&lt;/g, '<'), 'g');
+          vm.iframeSource = vm.iframeSource.replace(re,
+            replMap[key].replace(/&lt;/g, '<'));
+        }
+        submitToPlunker(vm.iframeSource);
+        console.log(vm.iframeSource);
+      })
+    };
+
+    $http.get('all-examples.json').then(function(resp) {
+      console.log('data', resp.data);
+      vm.allExamples = hash2arr(resp.data);
+      console.log('xxxxx', vm.allExamples);
+    });
+
+    //initial iframe setting
+    if ($location.url()) {
+      $timeout(function() {
+        window.iframe.location.href = $location.url().slice(1);
+      });
+    }
+  };
+  return {
+    restrict: 'E',
+    scope: {},
+    controller: ctrl,
+    controllerAs: 'vm',
+    transclude: true,
+    link: function(scope, element, a, c, transclude) {
+      transclude(scope, function(clone) {
+        element.append(clone);
+      });
+    }
+  }
+});
+</script>
+</head>
+
+<body>
+  <all-examples>
+    <div class="left">
+      Search: <input ng-model="search" />
+      <ul>
+        <li ng-repeat="example in vm.allExamples | filter:search | filter:'!all-examples' ">
+          <a href="#{{example.key}}" ng-click="vm.viewIframe(example.key)">
+            {{example.key}}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="right">
+      <div class="buttons">
+        <button ng-click="vm.viewSource=false">Run</button>
+        <button ng-click="vm.viewIframeSource()">Source</button>
+        <button ng-click="vm.viewInPlunker()">Plunker</button>
+      </div>
+      <iframe ng-hide="vm.viewSource"
+        src="map-simple.html" name="iframe" frameborder="0">
+      </iframe>
+      <pre ng-show="vm.viewSource"
+        class="source prettyprint lang-html" >{{vm.iframeSource}}</pre>
+    </div>
+  </all-examples>
+</body>
+</html>

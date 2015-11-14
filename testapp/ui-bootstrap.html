@@ -1,47 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AngularJS: UI-Router Quick Start</title>
-  <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>
-  <script src="//angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
-  <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-  <script src="../app.js"></script>
-  <script src="../directives/map_controller.js"></script>
-  <script src="../directives/map.js"></script>
-  <script src="../directives/map-lazy-load.js"></script>
-  <script src="../services/geo_coder.js"></script>
-  <script src="../services/navigator_geolocation.js"></script>
-  <script src="../services/attr2_options.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.js"></script>
-  <script>
-    var myapp = angular.module('myapp', ['ngMap',"ui.router", 'ui.bootstrap'])
-    myapp.controller('barCtrl', function($scope, $modal) {
-      $scope.modal = function() {
-        $modal.open({ templateUrl: 'foo.html' });
-      }
-    });
-    myapp.config(function($stateProvider, $urlRouterProvider){
-      $urlRouterProvider.otherwise("/foo")
-      $stateProvider
-        .state('foo', { url: "/foo", templateUrl: "foo.html" })
-        .state('bar', { url: "/bar", templateUrl: "bar.html", controller: 'barCtrl' })
-    })
-  </script>
+<title>AngularJS: UI-Router Quick Start</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="//angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
+<script>
+  var myapp = angular.module('myapp', ['ngMap',"ui.router", 'ui.bootstrap'])
+  myapp.controller('barCtrl', function($modal) {
+    var vm = this;
+    vm.modal = function() {
+      $modal.open({ templateUrl: 'foo.html' });
+    }
+  });
+  myapp.config(function($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise("/foo")
+    $stateProvider
+      .state('foo', { url: "/foo", templateUrl: "foo.html" })
+      .state('bar', { url: "/bar", templateUrl: "bar.html", controller: 'barCtrl', controllerAs: 'vm' })
+  })
+</script>
 </head>
 
 <body ng-app="myapp" class="container">
   <script type="text/ng-template" id="foo.html">
     <h1>Map</h1>
-    <map center="[40.74, -74.18]"></map>
+    <ng-map center="[40.74, -74.18]"></ng-map>
   </script>
   <script type="text/ng-template" id="bar.html">
     <h1>No Map</h1>
-    <button ng-click="modal()">Show Map</button>
+    <button ng-click="vm.modal()">Show Map</button>
   </script>
   <div class="navbar">
     <div class="navbar-inner">
@@ -54,9 +45,9 @@
 
   <div class="row">
     <div class="span12">
-      <div class="well" ui-view></div>        
+      <div class="well" ui-view></div>
     </div>
-  </div>         
+  </div>
 </body>
 
 </html>

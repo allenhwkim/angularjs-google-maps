@@ -1,0 +1,408 @@
+<!doctype html>
+<html>
+  <head>
+    <base href="../">
+    <title>JSDoc: source : ng-map.js</title>
+    <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
+    <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
+    <link href="css/custom.css" type="text/css" rel="stylesheet">
+    <script src="js/prettify.js"></script>
+    <script src="js/angular.min.js"></script>
+  </head>
+  <body ng-app="">
+    <nav>
+      <h2><a href="index.html">Index</a></h2>
+      <ul class="module">
+        <!-- undefined -->
+        <h3>
+          <a href="" ng-click="moduleundefined = !moduleundefined">
+            module: undefined
+          </a>
+          <i ng-cloak="" ng-show="moduleundefined">+</i>
+        </h3>
+        <li id="undefined" ng-hide="moduleundefined">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedservice = !undefinedservice">
+                service
+              </a>
+              <i ng-cloak="" ng-show="undefinedservice">+</i>
+            </h3>
+            <ul ng-hide="undefinedservice">
+              <li>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
+              </li><li>
+                <a href="GeoCoder.html">GeoCoder</a>
+              </li><li>
+                <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
+              </li><li>
+                <a href="StreetView.html">StreetView</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefineddirective = !undefineddirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="undefineddirective">+</i>
+            </h3>
+            <ul ng-hide="undefineddirective">
+              <li>
+                <a href="bicycling-layer.html">bicycling-layer</a>
+              </li><li>
+                <a href="custom-control.html">custom-control</a>
+              </li><li>
+                <a href="directions.html">directions</a>
+              </li><li>
+                <a href="drawing-manager.html">drawing-manager</a>
+              </li><li>
+                <a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a>
+              </li><li>
+                <a href="fusion-tables-layer.html">fusion-tables-layer</a>
+              </li><li>
+                <a href="heatmap-layer.html">heatmap-layer</a>
+              </li><li>
+                <a href="info-window.html">info-window</a>
+              </li><li>
+                <a href="kml-layer.html">kml-layer</a>
+              </li><li>
+                <a href="map-data.html">map-data</a>
+              </li><li>
+                <a href="map-lazy-load.html">map-lazy-load</a>
+              </li><li>
+                <a href="map-type.html">map-type</a>
+              </li><li>
+                <a href="maps-engine-layer.html">maps-engine-layer</a>
+              </li><li>
+                <a href="marker.html">marker</a>
+              </li><li>
+                <a href="overlay-map-type.html">overlay-map-type</a>
+              </li><li>
+                <a href="places-auto-complete.html">places-auto-complete</a>
+              </li><li>
+                <a href="shape.html">shape</a>
+              </li><li>
+                <a href="streetview-panorama.html">streetview-panorama</a>
+              </li><li>
+                <a href="traffic-layer.html">traffic-layer</a>
+              </li><li>
+                <a href="transit-layer.html">transit-layer</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
+              </a>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
+            </h3>
+            <ul ng-hide="undefinedprovider">
+              <li>
+                <a href="NgMap.html">NgMap</a>
+              </li>
+            </ul>
+          </ul>
+        </li>
+      </ul><ul class="module">
+        <!-- ngmap -->
+        <h3>
+          <a href="" ng-click="modulengmap = !modulengmap">
+            module: ngmap
+          </a>
+          <i ng-cloak="" ng-show="modulengmap">+</i>
+        </h3>
+        <li id="ngmap" ng-hide="modulengmap">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="ngmapdirective = !ngmapdirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="ngmapdirective">+</i>
+            </h3>
+            <ul ng-hide="ngmapdirective">
+              <li>
+                <a href="ngmap.custom-marker.html">custom-marker</a>
+              </li>
+            </ul>
+          </ul>
+        </li>
+      </ul><ul class="module">
+        <!-- ng_ap -->
+        <h3>
+          <a href="" ng-click="moduleng_ap = !moduleng_ap">
+            module: ngMap
+          </a>
+          <i ng-cloak="" ng-show="moduleng_ap">+</i>
+        </h3>
+        <li id="ngMap" ng-hide="moduleng_ap">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="ng_apdirective = !ng_apdirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="ng_apdirective">+</i>
+            </h3>
+            <ul ng-hide="ng_apdirective">
+              <li>
+                <a href="ngMap.ng-map.html">ng-map</a>
+              </li>
+            </ul>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div id="content" class="page-wrap">
+      <h1 class="title">
+        source : ng-map.js
+      </h1>
+      <div id="main" class="big-container">
+        <!-- source code html -->
+        <article>
+          <pre class="prettyprint source linenums"><code>/**
+ * @ngdoc provider
+ * @name NgMap
+ * @description
+ *  common utility service for ng-map
+ */
+(function() {
+  'use strict';
+  var $window, $document, $q;
+  var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter;
+  var mapControllers = {};
+  /**
+   * @memberof NgMap
+   * @function initMap
+   * @param id optional, id of the map. default 0
+   */
+  var initMap = function(id) {
+    var ctrl = mapControllers[id || 0];
+    ctrl.initializeMap();
+  };
+  /**
+   * @memberof NgMap
+   * @function getMap
+   * @param {Hash} options optional, e.g., {id: 'foo, timeout: 5000}
+   * @returns promise
+   */
+  var getMap = function(options) {
+    options = options || {};
+    var deferred = $q.defer();
+    var id = options.id || 0;
+    var timeout = options.timeout || 2000;
+    function waitForMap(timeElapsed){
+      if(mapControllers[id]){
+        deferred.resolve(mapControllers[id].map);
+      } else if (timeElapsed > timeout) {
+        deferred.reject('could not find map');
+      } else {
+        $window.setTimeout( function(){
+          waitForMap(timeElapsed+100);
+        }, 100);
+      }
+    }
+    waitForMap(0);
+    return deferred.promise;
+  };
+  /**
+   * @memberof NgMap
+   * @function addMap
+   * @param mapController {__MapContoller} a map controller
+   * @returns promise
+   */
+  var addMap = function(mapCtrl) {
+    var len = Object.keys(mapControllers).length;
+    mapControllers[mapCtrl.map.id || len] = mapCtrl;
+  };
+  /**
+   * @memberof NgMap
+   * @function deleteMap
+   * @param mapController {__MapContoller} a map controller
+   */
+  var deleteMap = function(mapCtrl) {
+    var len = Object.keys(mapControllers).length - 1;
+    delete mapControllers[mapCtrl.map.id || len];
+  };
+  /**
+   * @memberof NgMap
+   * @function getStyle
+   * @param {HTMLElemnet} el html element
+   * @param {String} styleProp style property name e.g. 'display'
+   * @returns value of property
+   */
+  var getStyle = function(el, styleProp) {
+    var y;
+    if (el.currentStyle) {
+      y = el.currentStyle[styleProp];
+    } else if ($window.getComputedStyle) {
+      y = $document.defaultView.
+        getComputedStyle(el, null).
+        getPropertyValue(styleProp);
+    }
+    return y;
+  };
+  /**
+   * @memberof NgMap
+   * @function getNgMapDiv
+   * @param {HTMLElemnet} el html element
+   * @returns map DIV elemnt
+   * @desc
+   * create a new `div` inside map tag, so that it does not touch map element
+   * and disable drag event for the elmement
+   */
+  var getNgMapDiv = function(ngMapEl) {
+    var el = $document.createElement("div");
+    var defaultStyle = ngMapEl.getAttribute('default-style');
+    el.style.width = "100%";
+    el.style.height = "100%";
+    //if style is not given to the map element, set display and height
+    if (defaultStyle == "true") {
+        ngMapEl.style.display = 'block';
+        ngMapEl.style.height = '300px';
+    } else {
+      if (getStyle(ngMapEl, 'display') != "block") {
+        ngMapEl.style.display = 'block';
+      }
+      if (getStyle(ngMapEl, 'height').match(/^(0|auto)/)) {
+        ngMapEl.style.height = '300px';
+      }
+    }
+    // disable drag event
+    el.addEventListener('dragstart', function (event) {
+      event.preventDefault();
+      return false;
+    });
+    return el;
+  };
+  /**
+   * @memberof NgMap
+   * @function getGeoLocation
+   * @param {String} address
+   * @param {Hash} options geo options
+   * @returns promise
+   */
+  var getGeoLocation = function(string, options) {
+    var deferred = $q.defer();
+    if (!string || string.match(/^current/i)) { // current location
+      NavigatorGeolocation.getCurrentPosition(options).then(
+        function(position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+          var latLng = new google.maps.LatLng(lat,lng);
+          deferred.resolve(latLng);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+    } else {
+      GeoCoder.geocode({address: string}).then(
+        function(results) {
+          deferred.resolve(results[0].geometry.location);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+    }
+    return deferred.promise;
+  };
+  /**
+   * @memberof NgMap
+   * @function observeAndSet
+   * @param {String} attrName attribute name
+   * @param {Object} object A Google maps object to be changed
+   * @returns attribue observe function
+   */
+  var observeAndSet = function(attrName, object) {
+    return function(val) {
+      if (val) {
+        console.log('observing ', object, attrName, val);
+        var setMethod = camelCaseFilter('set-'+attrName);
+        var optionValue = Attr2MapOptions.toOptionValue(val, {key: attrName});
+        console.log('setting ', object, attrName, 'with value', optionValue);
+        if (object[setMethod]) { //if set method does exist
+          /* if an location is being observed */
+          if (attrName.match(/center|position/) &&
+            typeof optionValue == 'string') {
+            getGeoLocation(optionValue).then(function(latlng) {
+              object[setMethod](latlng);
+            });
+          } else {
+            object[setMethod](optionValue);
+          }
+        }
+      }
+    };
+  };
+  angular.module('ngMap').provider('NgMap', function() {
+    var defaultOptions = {};
+    var useTinfoilShielding = false;
+    /**
+     * @memberof NgMap
+     * @function setDefaultOptions
+     * @param {Hash} options
+     * @example
+     *  app.config(function(NgMapProvider) {
+     *    NgMapProvider.setDefaultOptions({
+     *      marker: {
+     *        optimized: false
+     *      }
+     *    });
+     *  });
+     */
+    this.setDefaultOptions = function(options) {
+      defaultOptions = options;
+    };
+    var NgMap = function(
+        _$window_, _$document_, _$q_,
+        _NavigatorGeolocation_, _Attr2MapOptions_,
+        _GeoCoder_, _camelCaseFilter_
+      ) {
+      $window = _$window_;
+      $document = _$document_[0];
+      $q = _$q_;
+      NavigatorGeolocation = _NavigatorGeolocation_;
+      Attr2MapOptions = _Attr2MapOptions_;
+      GeoCoder = _GeoCoder_;
+      camelCaseFilter = _camelCaseFilter_;
+      return {
+        defaultOptions: defaultOptions,
+        addMap: addMap,
+        deleteMap: deleteMap,
+        getMap: getMap,
+        initMap: initMap,
+        getStyle: getStyle,
+        getNgMapDiv: getNgMapDiv,
+        getGeoLocation: getGeoLocation,
+        observeAndSet: observeAndSet
+      };
+    };
+    NgMap.$inject = [
+      '$window', '$document', '$q',
+      'NavigatorGeolocation', 'Attr2MapOptions',
+      'GeoCoder', 'camelCaseFilter'
+    ];
+    this.$get = NgMap;
+  });
+})();
+</code></pre>
+        </article>
+        <!-- index.html -->
+        <!-- class files -->
+      </div>
+      <footer style="clear:both">
+        Documentation generated by
+        <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+        using
+        <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template</a>
+      </footer>
+    </div>
+    <!--%= prettyJson %-->
+    <script>
+      prettyPrint();
+      var lineNo = window.location.hash.match(/#line([0-9]+)$/);
+      lineNo && document.querySelector("ol li:nth-child("+(lineNo[1])+")").scrollIntoView();
+    </script>
+  </body>
+</html>

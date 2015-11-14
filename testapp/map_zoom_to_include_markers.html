@@ -2,57 +2,67 @@
 <html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
+<link href="custom-marker.css" rel="stylesheet" />
 <script>
-  angular.module('ngMap').controller('MyCtrl', function($scope) {
-    $scope.positions =[ 
-      {pos:[40.71, -74.21]},
-      {pos:[41.72, -73.20]},
-      {pos:[42.73, -72.19]},
-      {pos:[43.74, -71.18]}, 
-      {pos:[44.75, -70.17]}, 
-      {pos:[45.76, -69.16]}, 
-      {pos:[46.77, -68.15]}
-    ];
-    $scope.addMarker = function(event) {
-      var ll = event.latLng;
-      console.log('ccccccccccccc', $scope.$id, $scope.map.markers,  {lat:ll.lat(), lng: ll.lng()});
-      $scope.positions.push({pos:[ll.lat(), ll.lng()]});
-      $scope.$apply();
-    }
-  });
+angular.module('ngMap').controller('MyCtrl', function() {
+  var vm = this;
+  vm.positions =[
+    {pos:[40.71, -74.21]},
+    {pos:[41.72, -73.20]},
+    {pos:[42.73, -72.19]},
+    {pos:[43.74, -71.18]},
+    {pos:[44.75, -70.17]},
+    {pos:[45.76, -69.16]},
+    {pos:[46.77, -68.15]}
+  ];
+  vm.addMarker = function(event) {
+    var ll = event.latLng;
+    vm.positions.push({pos:[ll.lat(), ll.lng()]});
+  }
+});
 </script>
 </head>
 
-<body>
-    <div ng-controller="MyCtrl">
-      <h3>Without zoom-to-include-markers</h3>
-      <map zoom="11" center="[40.74, -74.18]">
-        <marker ng-repeat="p in positions" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-      </map>
+<body ng-controller="MyCtrl as vm">
 
-      <h3>With zoom-to-include-markers='true'</h3>
-      <map zoom="11" center="[40.74, -74.18]" zoom-to-include-markers="true">
-        <marker ng-repeat="p in positions" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-      </map>
+  <h3>Without zoom-to-include-markers</h3>
+  <ng-map zoom="11" center="[40.74, -74.18]" scrollwheel="false">
+    <marker ng-repeat="p in vm.positions"
+      position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
+  </ng-map>
 
-      <h3>With zoom-to-include-markers='auto'</h3>
-      Please click on map to add more markers
-      <map zoom="11" center="[40.74, -74.18]" zoom-to-include-markers="auto" on-click="addMarker()">
-        <marker ng-repeat="p in positions" position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
-      </map>
-    </div>
+  <h3>With zoom-to-include-markers='true'</h3>
+  <ng-map zoom="11" center="[40.74, -74.18]"
+    scrollwheel="false"
+    zoom-to-include-markers="true">
+    <marker ng-repeat="p in vm.positions"
+      position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
+  </ng-map>
+
+  <h3>With zoom-to-include-markers='auto'</h3>
+  Please click on map to add more markers
+  <ng-map zoom="11" center="[40.74, -74.18]"
+    scrollwheel="false"
+    zoom-to-include-markers="auto"
+    on-click="vm.addMarker()">
+    <marker ng-repeat="p in vm.positions"
+      position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
+  </ng-map>
+
+  <h3>custom-marker zoom-to-include-markers='auto'</h3>
+  Please click on map to add more markers
+  <ng-map zoom="11"
+    on-click="vm.addMarker()"
+    zoom-to-include-markers='auto'
+    center="[40.74, -74.18]">
+    <custom-marker ng-repeat="p in vm.positions"
+      position="{{p.pos[0]}}, {{p.pos[1]}}">
+      <div>
+        position: {{p.pos[0]}}, {{p.pos[1]}}
+      </div>
+    </custom-marker>
+  </ng-map>
+
 </body>
 </html>

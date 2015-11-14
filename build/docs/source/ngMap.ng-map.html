@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+  <head>
+    <base href="../">
+    <title>JSDoc: source : map.js</title>
+    <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
+    <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
+    <link href="css/custom.css" type="text/css" rel="stylesheet">
+    <script src="js/prettify.js"></script>
+    <script src="js/angular.min.js"></script>
+  </head>
+  <body ng-app="">
+    <nav>
+      <h2><a href="index.html">Index</a></h2>
+      <ul class="module">
+        <!-- undefined -->
+        <h3>
+          <a href="" ng-click="moduleundefined = !moduleundefined">
+            module: undefined
+          </a>
+          <i ng-cloak="" ng-show="moduleundefined">+</i>
+        </h3>
+        <li id="undefined" ng-hide="moduleundefined">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedservice = !undefinedservice">
+                service
+              </a>
+              <i ng-cloak="" ng-show="undefinedservice">+</i>
+            </h3>
+            <ul ng-hide="undefinedservice">
+              <li>
+                <a href="Attr2MapOptions.html">Attr2MapOptions</a>
+              </li><li>
+                <a href="GeoCoder.html">GeoCoder</a>
+              </li><li>
+                <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>
+              </li><li>
+                <a href="StreetView.html">StreetView</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefineddirective = !undefineddirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="undefineddirective">+</i>
+            </h3>
+            <ul ng-hide="undefineddirective">
+              <li>
+                <a href="bicycling-layer.html">bicycling-layer</a>
+              </li><li>
+                <a href="custom-control.html">custom-control</a>
+              </li><li>
+                <a href="directions.html">directions</a>
+              </li><li>
+                <a href="drawing-manager.html">drawing-manager</a>
+              </li><li>
+                <a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a>
+              </li><li>
+                <a href="fusion-tables-layer.html">fusion-tables-layer</a>
+              </li><li>
+                <a href="heatmap-layer.html">heatmap-layer</a>
+              </li><li>
+                <a href="info-window.html">info-window</a>
+              </li><li>
+                <a href="kml-layer.html">kml-layer</a>
+              </li><li>
+                <a href="map-data.html">map-data</a>
+              </li><li>
+                <a href="map-lazy-load.html">map-lazy-load</a>
+              </li><li>
+                <a href="map-type.html">map-type</a>
+              </li><li>
+                <a href="maps-engine-layer.html">maps-engine-layer</a>
+              </li><li>
+                <a href="marker.html">marker</a>
+              </li><li>
+                <a href="overlay-map-type.html">overlay-map-type</a>
+              </li><li>
+                <a href="places-auto-complete.html">places-auto-complete</a>
+              </li><li>
+                <a href="shape.html">shape</a>
+              </li><li>
+                <a href="streetview-panorama.html">streetview-panorama</a>
+              </li><li>
+                <a href="traffic-layer.html">traffic-layer</a>
+              </li><li>
+                <a href="transit-layer.html">transit-layer</a>
+              </li>
+            </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedprovider = !undefinedprovider">
+                provider
+              </a>
+              <i ng-cloak="" ng-show="undefinedprovider">+</i>
+            </h3>
+            <ul ng-hide="undefinedprovider">
+              <li>
+                <a href="NgMap.html">NgMap</a>
+              </li>
+            </ul>
+          </ul>
+        </li>
+      </ul><ul class="module">
+        <!-- ngmap -->
+        <h3>
+          <a href="" ng-click="modulengmap = !modulengmap">
+            module: ngmap
+          </a>
+          <i ng-cloak="" ng-show="modulengmap">+</i>
+        </h3>
+        <li id="ngmap" ng-hide="modulengmap">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="ngmapdirective = !ngmapdirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="ngmapdirective">+</i>
+            </h3>
+            <ul ng-hide="ngmapdirective">
+              <li>
+                <a href="ngmap.custom-marker.html">custom-marker</a>
+              </li>
+            </ul>
+          </ul>
+        </li>
+      </ul><ul class="module">
+        <!-- ng_ap -->
+        <h3>
+          <a href="" ng-click="moduleng_ap = !moduleng_ap">
+            module: ngMap
+          </a>
+          <i ng-cloak="" ng-show="moduleng_ap">+</i>
+        </h3>
+        <li id="ngMap" ng-hide="moduleng_ap">
+          <ul class="group">
+            <h3>
+              <a href="" ng-click="ng_apdirective = !ng_apdirective">
+                directive
+              </a>
+              <i ng-cloak="" ng-show="ng_apdirective">+</i>
+            </h3>
+            <ul ng-hide="ng_apdirective">
+              <li>
+                <a href="ngMap.ng-map.html">ng-map</a>
+              </li>
+            </ul>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div id="content" class="page-wrap">
+      <h1 class="title">
+        source : map.js
+      </h1>
+      <div id="main" class="big-container">
+        <!-- source code html -->
+        <article>
+          <pre class="prettyprint source linenums"><code>/**
+ * @ngdoc directive
+ * @memberof ngMap
+ * @name ng-map
+ * @param Attr2Options {service}
+ *  convert html attribute to Gogole map api options
+ * @description
+ * Implementation of {@link __MapController}
+ * Initialize a Google map within a `&lt;div>` tag
+ *   with given options and register events
+ *
+ * @attr {Expression} map-initialized 
+ *   callback function when map is initialized
+ *   e.g., map-initialized="mycallback(map)"
+ * @attr {Expression} geo-callback if center is an address or current location,
+ *   the expression is will be executed when geo-lookup is successful.
+ *   e.g., geo-callback="showMyStoreInfo()"
+ * @attr {Array} geo-fallback-center
+ *   The center of map incase geolocation failed. i.e. [0,0]
+ * @attr {Object} geo-location-options
+ *  The navigator geolocation options.
+ *  e.g., { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true }.
+ *  If none specified, { timeout: 5000 }.
+ *  If timeout not specified, timeout: 5000 added
+ * @attr {Boolean} zoom-to-include-markers
+ *  When true, map boundary will be changed automatially
+ *  to include all markers when initialized
+ * @attr {Boolean} default-style
+ *  When false, the default styling,
+ *  `display:block;height:300px`, will be ignored.
+ * @attr {String} &lt;MapOption> Any Google map options,
+ *  https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
+ * @attr {String} &lt;MapEvent> Any Google map events,
+ *  https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ * @attr {Boolean} single-info-window
+ *  When true the map will only display one info window at the time,
+ *  if not set or false,
+ *  everytime an info window is open it will be displayed with the othe one.
+ * @example
+ * Usage:
+ *   &lt;map MAP_OPTIONS_OR_MAP_EVENTS ..>
+ *     ... Any children directives
+ *   &lt;/map>
+ *
+ * Example:
+ *   &lt;map center="[40.74, -74.18]" on-click="doThat()">
+ *   &lt;/map>
+ *
+ *   &lt;map geo-fallback-center="[40.74, -74.18]" zoom-to-inlude-markers="true">
+ *   &lt;/map>
+ */
+(function () {
+  'use strict';
+  var mapDirective = function () {
+    return {
+      restrict: 'AE',
+      controller: '__MapController',
+      conrollerAs: 'ngmap'
+    };
+  };
+  angular.module('ngMap').directive('map', [mapDirective]);
+  angular.module('ngMap').directive('ngMap', [mapDirective]);
+})();
+</code></pre>
+        </article>
+        <!-- index.html -->
+        <!-- class files -->
+      </div>
+      <footer style="clear:both">
+        Documentation generated by
+        <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+        using
+        <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template</a>
+      </footer>
+    </div>
+    <!--%= prettyJson %-->
+    <script>
+      prettyPrint();
+      var lineNo = window.location.hash.match(/#line([0-9]+)$/);
+      lineNo && document.querySelector("ol li:nth-child("+(lineNo[1])+")").scrollIntoView();
+    </script>
+  </body>
+</html>

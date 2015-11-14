@@ -1,30 +1,20 @@
 <!DOCTYPE html>
 <html ng-app="ngMap">
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <script src="https://maps.google.com/maps/api/js?sensor=false"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-    <script src="../app.js"></script>
-    <script src="../directives/map_controller.js"></script>
-    <script src="../directives/map.js"></script>
-    <script src="../services/geo_coder.js"></script>
-    <script src="../services/navigator_geolocation.js"></script>
-    <script src="../services/attr2_options.js"></script>
-    <style>
-      map#custom {display:block; width:200px; height:200px}
-    </style>
-  </head>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<style>
+  map#custom {display:block; width:200px; height:200px}
+</style>
+</head>
 
-  <body>
-    <h3>With Default Style</h3>
-    display:block; height: 300px<br/>
-    <map center="[40.74, -74.18]"></map>
+<body>
+  <h3>With Default Style</h3>
+  display:block; height: 300px<br/>
+  <ng-map center="[40.74, -74.18]"></ng-map>
 
-    <h3>Without Default Style</h3>
-    display:block; height: 300px<br/>
-    <map id="custom" center="[40.74, -74.18]" default-style="false"></map>
-  </body>
+  <h3>Without Default Style</h3>
+  display:block; height: 300px<br/>
+  <ng-map id="custom" center="[40.74, -74.18]" default-style="false"></ng-map>
+</body>
 </html>

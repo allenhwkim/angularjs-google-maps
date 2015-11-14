@@ -1,14 +1,16 @@
 /**
  * @ngdoc directive
  * @name streetview-panorama
- * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
  *
  * @attr container Optional, id or css selector, if given, streetview will be in the given html element
- * @attr {String} &lt;StreetViewPanoramaOption> [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
- * @attr {String} &lt;StreetViewPanoramaEvent> [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
+ * @attr {String} &lt;StreetViewPanoramaOption>
+ *   [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
+ * @attr {String} &lt;StreetViewPanoramaEvent>
+ *   [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
  *
  * @example
  *   <map zoom="11" center="[40.688738,-74.043871]" >
@@ -25,13 +27,13 @@
  *     </street-view-panorama>
  *   </map>
  */
-/* global google */
+/* global google, document */
 (function() {
   'use strict';
-   
-  var streetViewPanorama = function(Attr2Options) {
-    var parser = Attr2Options;
-  
+
+  var streetViewPanorama = function(Attr2MapOptions, NgMap) {
+    var parser = Attr2MapOptions;
+
     var getStreetViewPanorama = function(map, options, events) {
       var svp, container;
       if (options.container) {
@@ -52,18 +54,17 @@
       return svp;
     };
 
-    var linkFunc = function(scope, element, attrs, mapController) {
-      var orgAttrs = parser.orgAttributes(element);
+    var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered);
       var controlOptions = parser.getControlOptions(filtered);
       var svpOptions = angular.extend(options, controlOptions);
 
       var svpEvents = parser.getEvents(scope, filtered);
-      console.log('street-view-panorama', 
+      console.log('street-view-panorama',
         'options', svpOptions, 'events', svpEvents);
- 
-      scope.$on('mapInitialized', function(evt, map) {
+
+      NgMap.getMap().then(function(map) {
         var svp = getStreetViewPanorama(map, svpOptions, svpEvents);
 
         map.setStreetView(svp);
@@ -74,22 +75,23 @@
           }
         });
         //needed for geo-callback
-        var listener = google.maps.event.addListener(map, 'center_changed', function() {
-          svp.setPosition(map.getCenter());
-          google.maps.event.removeListener(listener);
-        });
+        var listener =
+          google.maps.event.addListener(map, 'center_changed', function() {
+            svp.setPosition(map.getCenter());
+            google.maps.event.removeListener(listener);
+          });
       });
 
     }; //link
 
     return {
       restrict: 'E',
-      require: '^map',
+      require: ['?^map','?^ngMap'],
       link: linkFunc
     };
 
   };
-  streetViewPanorama.$inject = ['Attr2Options'];
+  streetViewPanorama.$inject = ['Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('streetViewPanorama', streetViewPanorama);
 })();

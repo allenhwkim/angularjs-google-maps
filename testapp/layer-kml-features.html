@@ -2,36 +2,24 @@
 <html ng-app="myApp">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-<!--
-<script src="../build/scripts/ng-map.min.js"></script>
--->
-<script src="../app.js"></script>
-<script src="../directives/map_controller.js"></script>
-<script src="../directives/map.js"></script>
-<script src="../directives/marker.js"></script>
-<script src="../directives/shape.js"></script>
-<script src="../directives/kml-layer.js"></script>
-<script src="../services/geo_coder.js"></script>
-<script src="../services/navigator_geolocation.js"></script>
-<script src="../services/attr2_options.js"></script>
+<script src="script-tags-for-development.js"></script>
 <script>
   var app = angular.module('myApp', ['ngMap']);
-  app.controller('LayerKmlFeatureCtrl', function($scope) {
-    $scope.showInContextWindow = function(event) {
-      $scope.description = event.featureData.description;
+  app.controller('LayerKmlFeatureCtrl', function() {
+    var vm = this;
+    vm.showInContextWindow = function(event) {
+      vm.description = event.featureData.description;
     };
   });
 </script>
 </head>
 <body>
-    <div ng-controller="LayerKmlFeatureCtrl">
-      <map zoom="12" center="37.06, -95.68">
-        <kml-layer on-click="showInContextWindow()"
-          url="https://kml-samples.googlecode.com/svn/trunk/kml/Placemark/placemark.kml"></kml-layer>
-      </map>
-      {{description}}
-    </div>
+  <div ng-controller="LayerKmlFeatureCtrl as vm">
+    <ng-map zoom="12" center="37.06, -95.68">
+      <kml-layer on-click="vm.showInContextWindow()"
+        url="https://kml-samples.googlecode.com/svn/trunk/kml/Placemark/placemark.kml"></kml-layer>
+    </ng-map>
+    {{description}}
+  </div>
 </body>
 </html>
