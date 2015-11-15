@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+var app = angular.module('myApp', ['ngMap']);
+app.controller('MyCtrl', function(NgMap) {
+  var vm = this;
+  NgMap.getMap().then(function(map) {
+    vm.map = map;
+  });
+
+  vm.onClick= function(event) {
+    vm.geoType =  event.feature.getGeometry().getType();
+    vm.geoArray = event.feature.getGeometry().getArray();
+    console.dir('geoArray', event.feature.getGeometry().getArray());
+  };
+});
+</script>
+</head>
+<body ng-controller="MyCtrl as vm">
+  <ng-map zoom="4" center="39.02, -95.81">
+    <map-data on-click="vm.onClick()"
+      load-geo-json="us-states-20m.json">
+    </map-data>
+  </ng-map>
+  {{vm.geoType}} : {{vm.geoArray}}
+</body>
+</html>
