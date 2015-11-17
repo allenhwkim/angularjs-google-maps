@@ -111,6 +111,10 @@
     "path": "testapp/events.html",
     "title": null
   },
+  "geojson.html": {
+    "path": "testapp/geojson.html",
+    "title": null
+  },
   "groundoverlay-simple.html": {
     "path": "testapp/groundoverlay-simple.html",
     "title": null
