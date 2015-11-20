@@ -34,7 +34,7 @@ document.write([
   '<script src="../directives/transit-layer.js"></script>',
   '<script>',
   'document.addEventListener("DOMContentLoaded", function(event) {',
-  '  window.parent.postMessage({height:document.body.scrollHeight},"*");',
+  '  window.parent.postMessage({height:document.body.getBoundingClientRect().height},"*");',
   '});',
   '</script>'
 ].join('\n'));
