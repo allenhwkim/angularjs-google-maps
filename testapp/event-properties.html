@@ -22,7 +22,9 @@
   Assigning arguments in UI events
   <br/>
   When zoom level changed, the contents of infoWindow also updates.
-  <ng-map zoom="4" center="-25.363882, 131.044922" on-zoom_changed="vm.zoomChanged()">
+  <ng-map zoom="4" center="-25.363882, 131.044922"
+    default-style="true"
+    on-zoom_changed="vm.zoomChanged()">
     <info-window id="1" position="-25.363882, 131.044922" visible="true">
       <div ng-non-bindable>Change the zoom level</div>
     </info-window>
