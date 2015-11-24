@@ -47,22 +47,20 @@ For Bower users,
 
 To get map instance, use `NgMap.getMap()` function
 
-    <pre>
-      app.controller('MyController', function(NgMap) {
-        NgMap.getMap().then(function(map) {
-          console.log(map.getCenter());
-          console.log('markers', map.markers);
-          console.log('shapes', map.shapes);
-        });
+    app.controller('MyController', function(NgMap) {
+      NgMap.getMap().then(function(map) {
+        console.log(map.getCenter());
+        console.log('markers', map.markers);
+        console.log('shapes', map.shapes);
       });
-    </pre>
+    });
 
 Lazy Loading of Google Maps Javascript
 ---------------------------------------
   Simply wrap the map tag with `map-lazy-load="http://maps.google.com/maps/api/js"`.
 
     <div map-lazy-load="http://maps.google.com/maps/api/js">
-      <map center="41,-87" zoom="3"></map>
+      <ng-map center="41,-87" zoom="3"></ng-map>
     </div>
 
   If you need to pass in an API key to the javascript, you can set a scope
@@ -71,7 +69,7 @@ Lazy Loading of Google Maps Javascript
 
     <div map-lazy-load="http://maps.google.com/maps/api/js"
       map-lazy-load-params="{{googleMapsUrl}}">
-      <map center="41,-87" zoom="3"></map>
+      <ng-map center="41,-87" zoom="3"></ng-map>
     </div>
 
 Directives
