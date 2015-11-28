@@ -17,12 +17,22 @@
   });
   myapp.controller('fooCtrl', function(NgMap){
     NgMap.getMap({id:'foomap'}).then(function(map) {
+      console.log('NgMap.getMap in fooCtrl', map);
       map.setZoom(4);
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(40.74, -74.18),
+        map: map
+      });
     });
   });
   myapp.controller('barCtrl', function(NgMap){
     NgMap.getMap({id:'barmap'}).then(function(map) {
+      console.log('NgMap.getMap in barCtrl', map);
       map.setZoom(11);
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(41.74, -75.18),
+        map: map
+      });
     });
   });
 </script>
