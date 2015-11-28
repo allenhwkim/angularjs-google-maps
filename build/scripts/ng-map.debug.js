@@ -31,16 +31,18 @@ angular.module('ngMap', []);
         var len = Object.keys(vm.map[groupName]).length;
         vm.map[groupName][obj.id || len] = obj;
 
-        //infoWindow.setMap works like infoWindow.open
-        if (groupName != "infoWindows" && obj.setMap) {
-          obj.setMap && obj.setMap(vm.map);
+        if (vm.map instanceof google.maps.Map) {
+          //infoWindow.setMap works like infoWindow.open
+          if (groupName != "infoWindows" && obj.setMap) {
+            obj.setMap && obj.setMap(vm.map);
+          }
+          if (obj.centered && obj.position) {
+            vm.map.setCenter(obj.position);
+          }
+          (groupName == 'markers') && vm.objectChanged('markers');
+          (groupName == 'customMarkers')
+            && vm.objectChanged('customMarkers');
         }
-        if (obj.centered && obj.position) {
-          vm.map.setCenter(obj.position);
-        }
-        (groupName == 'markers') && vm.objectChanged('markers');
-        (groupName == 'customMarkers')
-          && vm.objectChanged('customMarkers');
       }
     };
 
@@ -130,8 +132,21 @@ angular.module('ngMap', []);
           mapEvents = vm.mapEvents,
           ngMapDiv = vm.ngMapDiv;
 
+      var lazyInitMap = vm.map; //prepared for lazy init
       vm.map = new google.maps.Map(ngMapDiv, {});
 
+      // set objects for lazyInit
+      if (lazyInitMap) {
+        for (var group in lazyInitMap) {
+          var groupMembers = lazyInitMap[group]; //e.g. markers
+          if (typeof groupMembers == 'object') {
+            for (var id in groupMembers) {
+              vm.addObject(group, groupMembers[id]); 
+            }
+          }
+        }
+      }
+      
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
@@ -2695,7 +2710,11 @@ console.log('attrValue', attrValue);
    */
   var initMap = function(id) {
     var ctrl = mapControllers[id || 0];
-    ctrl.initializeMap();
+    if (!(ctrl.map instanceof google.maps.Map)) {
+      ctrl.initializeMap();
+    } else {
+      console.log('map is already instialized');
+    }
   };
 
   /**

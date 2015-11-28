@@ -251,6 +251,10 @@
     "description": "Simple Map",
     "keywords": "ng-map,AngularJS,center"
   },
+  "map-lazy-inint.html": {
+    "path": "testapp/map-lazy-inint.html",
+    "title": null
+  },
   "map-lazy-load-params.html": {
     "path": "testapp/map-lazy-load-params.html",
     "title": null
@@ -283,10 +287,6 @@
   },
   "map_geo_fallback_center.html": {
     "path": "testapp/map_geo_fallback_center.html",
-    "title": null
-  },
-  "map_lazy_init.html": {
-    "path": "testapp/map_lazy_init.html",
     "title": null
   },
   "map_no_default_style.html": {
