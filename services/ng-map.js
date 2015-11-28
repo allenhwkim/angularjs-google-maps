@@ -18,7 +18,11 @@
    */
   var initMap = function(id) {
     var ctrl = mapControllers[id || 0];
-    ctrl.initializeMap();
+    if (!(ctrl.map instanceof google.maps.Map)) {
+      ctrl.initializeMap();
+    } else {
+      console.log('map is already instialized');
+    }
   };
 
   /**
