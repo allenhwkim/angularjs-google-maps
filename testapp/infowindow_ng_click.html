@@ -1,17 +1,33 @@
 <!doctype html>
-<html ng-app="myapp">
+<html ng-app="ngMap">
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="script-tags-for-development.js"></script>
 <script>
-var app = app || angular.module('myapp', ['ngMap']);
-app.controller('MyCtrl', function(NgMap) {
+angular.module('ngMap').controller('MyCtrl', function(NgMap) {
   var vm = this;
   NgMap.getMap().then(function(map) {
-    vm.map;
+    console.log('map', map);
+    vm.map = map;
   });
+
   vm.clicked = function() {
     alert('Clicked a link inside infoWindow');
+  };
+
+  vm.shops = [
+    {id:'foo', name: 'FOO SHOP', position:[41,-87]},
+    {id:'bar', name: 'BAR SHOP', position:[42,-86]}
+  ];
+  vm.shop = vm.shops[0];
+
+  vm.showDetail = function(e, shop) {
+    vm.shop = shop;
+    vm.map.showInfoWindow('foo-iw', 'foo');
+  };
+
+  vm.hideDetail = function() {
+    vm.map.hideInfoWindow('foo-iw');
   };
 });
 </script>
@@ -19,26 +35,28 @@ app.controller('MyCtrl', function(NgMap) {
 <body>
   <div ng-controller="MyCtrl as vm">
     <ng-map default-style="true" center="41,-87" zoom="3">
-      <marker position="41,-87" on-click="vm.map.showInfoWindow('foo')">
+      <marker id='{{shop.id}}' position="{{shop.position}}"
+        ng-repeat="shop in vm.shops"
+        on-click="vm.showDetail(shop)">
       </marker>
-      <info-window id="foo">
+
+      <info-window id="foo-iw">
         <div ng-non-bindable="">
-          Lat/Lng: {{this.getPosition()}}<br/>
-          <a href="#" ng-click="vm.clicked()">Click Here</a>
-        </div>
-      </info-window>
-      <info-window id="bar">
-        <div ng-non-bindable="">
-          Lat/Lng: {{vm.map.markers[0].getPosition()}}<br/>
+          id: {{vm.shop.id}}<br/>
+          name: {{vm.shop.name}}<br/>
+          Position 1: {{vm.shop.position}}<br/>
+          Position 2: {{anchor.getPosition()}}<br/>
+          Position 3: {{vm.map.markers[vm.shop.id].getPosition()}}<br/>
           <a href="#" ng-click="vm.clicked()">Click Here</a>
         </div>
       </info-window>
     </ng-map>
-    <button ng-click="vm.map.showInfoWindow('bar', map.markers[0])">
-      Show InfoWindow
+
+    <button ng-click="vm.showDetail(e, vm.shop)">
+      show InfoWindow of the shop
     </button>
-    <button ng-click="vm.map.hideInfoWindow('bar')">
-      Hide InfoWindow
+    <button ng-click="vm.hideDetail(e, vm.shop)">
+      Hide InfoWindow of the shop
     </button>
   </div>
 </body>

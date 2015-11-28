@@ -282,35 +282,38 @@
       }
       mapController.addObject('infoWindows', infoWindow);
       mapController.observeAttrSetObj(orgAttrs, attrs, infoWindow);
+      mapController.map.showInfoWindow = mapController.map.showInfoWindow ||
+        function(p1, p2, p3) { //event, id, marker
+          var id = typeof p1 == 'string' ? p1 : p2;
+          var marker = typeof p1 == 'string' ? p2 : p3;
+          if (typeof marker == 'string') {
+            marker = mapController.map.markers[marker];
+          }
+          var infoWindow = mapController.map.infoWindows[id];
+          var anchor = marker ? marker : (this.getPosition ? this : null);
+          infoWindow.__open(mapController.map, scope, anchor);
+          if(mapController.singleInfoWindow) {
+            if(mapController.lastInfoWindow) {
+              scope.hideInfoWindow(mapController.lastInfoWindow);
+            }
+            mapController.lastInfoWindow = id;
+          }
+        };
+      mapController.map.hideInfoWindow = mapController.map.hideInfoWindow ||
+        function(p1, p2) {
+          var id = typeof p1 == 'string' ? p1 : p2;
+          var infoWindow = mapController.map.infoWindows[id];
+          infoWindow.close();
+        };
+      //TODO DEPRECATED
+      scope.showInfoWindow = mapController.map.showInfoWindow;
+      scope.hideInfoWindow = mapController.map.hideInfoWindow;
       NgMap.getMap().then(function(map) {
         infoWindow.visible && infoWindow.__open(map, scope);
         if (infoWindow.visibleOnMarker) {
           var markerId = infoWindow.visibleOnMarker;
           infoWindow.__open(map, scope, map.markers[markerId]);
         }
-        map.showInfoWindow = map.showInfoWindow ||
-          function(p1, p2, p3) { //event, id, marker
-            var id = typeof p1 == 'string' ? p1 : p2;
-            var marker = typeof p1 == 'string' ? p2 : p3;
-            var infoWindow = mapController.map.infoWindows[id];
-            var anchor = marker ? marker : (this.getPosition ? this : null);
-            infoWindow.__open(mapController.map, scope, anchor);
-            if(mapController.singleInfoWindow) {
-              if(mapController.lastInfoWindow) {
-                scope.hideInfoWindow(mapController.lastInfoWindow);
-              }
-              mapController.lastInfoWindow = id;
-            }
-          };
-        map.hideInfoWindow = scope.hideInfoWindow ||
-          function(p1, p2) {
-            var id = typeof p1 == 'string' ? p1 : p2;
-            var infoWindow = mapController.map.infoWindows[id];
-            infoWindow.close();
-          };
-        //TODO DEPRECATED
-        scope.showInfoWindow = map.showInfoWindow;
-        scope.hideInfoWindow = map.hideInfoWindow;
       });
     }; //link
     return {

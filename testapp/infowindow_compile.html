@@ -14,9 +14,9 @@ app.controller('MyCtrl', function($compile, NgMap) {
     foo: { position:[41, -87], items: [1,2,3,4]},
     bar:{ position:[41, -83], items: [5,6,7,8]}
   };
-  vm.showStore = function(evt, id) {
-    vm.store = vm.stores[id];
-    vm.showInfoWindow.apply(this, [evt, 'foo']);
+  vm.showStore = function(evt, storeId) {
+    vm.store = vm.stores[storeId];
+    vm.map.showInfoWindow('foo', this);
   };
   vm.mouseover = function() {
     console.log('mouseover');
@@ -29,7 +29,8 @@ app.controller('MyCtrl', function($compile, NgMap) {
 
     <info-window id="foo" on-mouseover="vm.mouseover()">
       <div ng-non-bindable="">
-        Lat/Lng: {{this.getPosition()}}<br/>
+        Lat: {{anchor.getPosition().lat()}}<br/>
+        Lng: {{anchor.getPosition().lng()}}<br/>
         <ul>
           <li ng-repeat='item in vm.store.items'>{{item}}</li>
         </ul>
@@ -42,8 +43,8 @@ app.controller('MyCtrl', function($compile, NgMap) {
 
     <info-window id="bar" on-mouseover="vm.mouseover()">
       <div ng-non-bindable="">
-        Lat: {{this.getPosition().lat()}}<br/>
-        Lng: {{this.getPosition().lng()}}<br/>
+        Lat: {{anchor.getPosition().lat()}}<br/>
+        Lng: {{anchor.getPosition().lng()}}<br/>
       </div>
     </info-window>
 
