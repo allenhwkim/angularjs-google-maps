@@ -52,10 +52,14 @@
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
       console.log('Prelinking script loaded,' + src);
+
       scriptEl.src = mapsUrl +
         (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
         'callback=lazyLoadCallback';
-      document.body.appendChild(scriptEl);
+
+        if (!document.querySelector('script[src="' + scriptEl.src + '"]')) {
+          document.body.appendChild(scriptEl);
+        }
     } else {
       element.html(savedHtml);
       $compile(element.contents())(scope);
@@ -71,12 +75,7 @@
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector(
-      'script[src="' +
-      src +
-      (src.indexOf('?') > -1 ? '&' : '?') +
-      'callback=lazyLoadCallback"]')
-    ) {
+    if(window.google !== undefined && window.google.maps !== undefined) {
       return false;
     }
 
