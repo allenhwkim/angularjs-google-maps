@@ -53,7 +53,7 @@
       return output;
     };
 
-    var toOptionValue = function(input, options) {
+    var toOptionValue = function(input, options, scope) {
       var output;
       try { // 1. Number?
         output = getNumber(input);
@@ -118,6 +118,11 @@
           }
         } // catch(err2)
       } // catch(err)
+
+      // evaluate dynamically bound values
+      try {
+        output = scope.$eval(input);
+      } catch(err) {}
 
       // convert output more for shape bounds
       if (options.key == 'bounds' && output instanceof Array) {
@@ -204,7 +209,7 @@ console.log('attrValue', attrValue);
      * @param {Hash} options
      * @returns {Hash} options converted attributess
      */
-    var getOptions = function(attrs, params) {
+    var getOptions = function(attrs, params, scope) {
       var options = {};
       for(var key in attrs) {
         if (attrs[key] || attrs[key] === 0) {
@@ -224,7 +229,7 @@ console.log('attrValue', attrValue);
               ) {
                 options[key] = attrs[key];
               } else {
-                options[key] = toOptionValue(attrs[key], {key: key});
+                options[key] = toOptionValue(attrs[key], {key: key}, scope);
               }
             }
           }
@@ -294,7 +299,7 @@ console.log('attrValue', attrValue);
 
       for (var attr in filtered) {
         if (filtered[attr]) {
-          if (!attr.match(/(.*)ControlOptions$/)) { 
+          if (!attr.match(/(.*)ControlOptions$/)) {
             continue; // if not controlOptions, skip it
           }
 
