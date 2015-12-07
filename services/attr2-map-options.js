@@ -53,7 +53,7 @@
       return output;
     };
 
-    var toOptionValue = function(input, options, scope) {
+    var toOptionValue = function(input, options) {
       var output;
       try { // 1. Number?
         output = getNumber(input);
@@ -113,16 +113,18 @@
             } catch(e) {
               output = input;
             }
+          // 7. evaluate dynamically bound values
+          } else if (options.scope) {
+            try {
+              output = options.scope.$eval(input);
+            } catch (err) {
+              output = input;
+            }
           } else {
             output = input;
           }
         } // catch(err2)
       } // catch(err)
-
-      // evaluate dynamically bound values
-      try {
-        output = scope.$eval(input);
-      } catch(err) {}
 
       // convert output more for shape bounds
       if (options.key == 'bounds' && output instanceof Array) {
@@ -164,7 +166,7 @@
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
-console.log('attrValue', attrValue);
+          console.log('attrValue', attrValue);
           if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
             console.log('setting attribute to observe',
               attrName, camelCaseFilter(attrName), attrValue);
@@ -209,7 +211,8 @@ console.log('attrValue', attrValue);
      * @param {Hash} options
      * @returns {Hash} options converted attributess
      */
-    var getOptions = function(attrs, params, scope) {
+    var getOptions = function(attrs, params) {
+      params = params || {};
       var options = {};
       for(var key in attrs) {
         if (attrs[key] || attrs[key] === 0) {
@@ -223,13 +226,12 @@ console.log('attrValue', attrValue);
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              if (params &&
-                params.doNotConverStringToNumber &&
+              if (params.doNotConverStringToNumber &&
                 attrs[key].match(/^[0-9]+$/)
               ) {
                 options[key] = attrs[key];
               } else {
-                options[key] = toOptionValue(attrs[key], {key: key}, scope);
+                options[key] = toOptionValue(attrs[key], {key: key, scope: params.scope});
               }
             }
           }
