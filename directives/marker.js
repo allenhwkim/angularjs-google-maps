@@ -83,7 +83,7 @@
 
     var orgAttrs = parser.orgAttributes(element);
     var filtered = parser.filter(attrs);
-    var markerOptions = parser.getOptions(filtered, scope);
+    var markerOptions = parser.getOptions(filtered, scope, {scope: scope});
     var markerEvents = parser.getEvents(scope, filtered);
     console.log('marker options', markerOptions, 'events', markerEvents);
 

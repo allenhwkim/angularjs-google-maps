@@ -27,7 +27,7 @@
         return false;
       }
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
+      var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
       console.log('autocomplete options', options, 'events', events);
       var autocomplete = new google.maps.places.Autocomplete(element[0], options);

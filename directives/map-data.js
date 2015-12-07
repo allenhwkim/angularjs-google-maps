@@ -28,7 +28,7 @@
 
       link: function(scope, element, attrs) {
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
 
         console.log('map-data options', options);
