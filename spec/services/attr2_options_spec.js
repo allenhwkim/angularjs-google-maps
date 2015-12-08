@@ -36,57 +36,75 @@ describe('Attr2MapOptions', function() {
   });
 
   describe("#getOptions", function() {
+
     it('should filter out ControlOptions', function() {
       var attrs ={a:1, aControlOptions:1};
       expect(parser.getOptions(attrs).aControlOptions).toEqual(undefined);
     });
+
     it('should filter out events', function() {
       var attrs ={a:1, onClick:'func'};
       expect(parser.getOptions(attrs).onClick).toEqual(undefined);
     });
+    
     it('should convert string to number', function() {
       var attrs ={a:'100.99'};
       expect(parser.getOptions(attrs).a).toEqual(100.99);
     });
+    
     it('should convert JSON to an object', function() {
       var attrs = {a:'{"foo":123}'};
       expect(parser.getOptions(attrs).a.foo).toEqual(123);
     });
+
     it('should convert object-like JSON string to an object', function() {
       var attrs = {a:"{ hello: 'world',foo:1,  bar  : '2', foo1: 1, _bar : 2, $2: 3,"+
         " 'xxx': 5, \"fuz\": 4, places: ['Africa', 'America', 'Asia', 'Australia'] }"
       };
       expect(parser.getOptions(attrs).a.hello).toEqual("world");
     });
+
     it('should convert Class name to google object', function() {
       var attrs = {a:'Marker()'};
       expect(typeof parser.getOptions(attrs, scope).a).toEqual('object');
     });
+
     it('should convert constant to google constant', function() {
       var attrs = {a:'MapTypeId.HYBRID'};
       expect(parser.getOptions(attrs, scope).a).toEqual('hybrid');
       attrs = {MapTypeId:'HYBRID'};
       expect(parser.getOptions(attrs, scope).MapTypeId).toEqual('hybrid');
     });
+
     it('should convert ISO date strings to Date objects', function() {
       var attrs = {a:'2015-08-13T04:11:23.005Z'};
       expect(parser.getOptions(attrs, scope).a instanceof Date).toBe(true);
     });
+
     it('should convert nested date to Date object', function() {
       var attrs = {a: '{"departureTime":"2015-08-13T18:00:21.846Z"}'};
       expect(typeof parser.getOptions(attrs, scope).a).toEqual('object');
       expect(parser.getOptions(attrs, scope).a.departureTime instanceof Date).toEqual(true);
     });
+
     it('should convert nested value to google object', function() {
       var attrs = {circleOptions: '{"center": "LatLng(80,-49)"}'};
       expect(parser.getOptions(attrs, scope).circleOptions.center.lat()).toEqual(80);
       expect(parser.getOptions(attrs, scope).circleOptions.center.lng()).toEqual(-49);
     });
+
     it('should not ignore 0', function() {
       var attrs = {pov: '{heading: 90, pitch: 0}'};
       expect(parser.getOptions(attrs, scope).pov.heading).toEqual(90);
       expect(parser.getOptions(attrs, scope).pov.pitch).toEqual(0);
     });
+
+    it('should parse {{foo}}', function() {
+      var attrs = {'dynamic': '{{foo}}'};
+      scope.foo = 1234;
+      expect(parser.getOptions(attrs, {scope:scope}).dynamic).toEqual(1234);
+    });
+
   });
 
   describe("#getControlOptions", function() {

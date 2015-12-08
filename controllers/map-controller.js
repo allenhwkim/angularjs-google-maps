@@ -143,6 +143,8 @@
             }
           }
         }
+        vm.map.showInfoWindow = vm.showInfoWindow;
+        vm.map.hideInfoWindow = vm.hideInfoWindow;
       }
       
       // set options
@@ -204,8 +206,6 @@
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
-    console.log("filtered", filtered,
-      "mapOptions", mapOptions, 'mapEvents', mapEvents);
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;

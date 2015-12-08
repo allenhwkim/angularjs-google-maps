@@ -67,9 +67,6 @@
       /**
        * set events
        */
-      if (Object.keys(events).length > 0) {
-        console.log("infoWindow events", events);
-      }
       for (var eventName in events) {
         if (eventName) {
           google.maps.event.addListener(infoWindow, eventName, events[eventName]);
@@ -115,7 +112,6 @@
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
-      console.log('infoWindow', 'options', options, 'events', events);
 
       var address;
       if (options.position && !(options.position instanceof google.maps.LatLng)) {
@@ -134,7 +130,8 @@
       mapController.addObject('infoWindows', infoWindow);
       mapController.observeAttrSetObj(orgAttrs, attrs, infoWindow);
 
-      mapController.map.showInfoWindow = mapController.map.showInfoWindow ||
+      mapController.showInfoWindow = 
+      mapController.map.showInfoWindow = mapController.showInfoWindow ||
         function(p1, p2, p3) { //event, id, marker
           var id = typeof p1 == 'string' ? p1 : p2;
           var marker = typeof p1 == 'string' ? p2 : p3;
@@ -153,7 +150,8 @@
           }
         };
 
-      mapController.map.hideInfoWindow = mapController.map.hideInfoWindow ||
+      mapController.hideInfoWindow =
+      mapController.map.hideInfoWindow = mapController.hideInfoWindow ||
         function(p1, p2) {
           var id = typeof p1 == 'string' ? p1 : p2;
           var infoWindow = mapController.map.infoWindows[id];

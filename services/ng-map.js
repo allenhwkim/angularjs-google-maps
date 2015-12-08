@@ -20,8 +20,9 @@
     var ctrl = mapControllers[id || 0];
     if (!(ctrl.map instanceof google.maps.Map)) {
       ctrl.initializeMap();
+      return ctrl.map;
     } else {
-      console.log('map is already instialized');
+      console.error('map is already instialized');
     }
   };
 
@@ -175,10 +176,8 @@
   var observeAndSet = function(attrName, object) {
     return function(val) {
       if (val) {
-        console.log('observing ', object, attrName, val);
         var setMethod = camelCaseFilter('set-'+attrName);
         var optionValue = Attr2MapOptions.toOptionValue(val, {key: attrName});
-        console.log('setting ', object, attrName, 'with value', optionValue);
         if (object[setMethod]) { //if set method does exist
           /* if an location is being observed */
           if (attrName.match(/center|position/) &&

@@ -29,7 +29,6 @@
       var filtered = parser.filter(attrs);
       var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
-      console.log('autocomplete options', options, 'events', events);
       var autocomplete = new google.maps.places.Autocomplete(element[0], options);
       for (var eventName in events) {
         google.maps.event.addListener(autocomplete, eventName, events[eventName]);
@@ -45,9 +44,7 @@
 
       attrs.$observe('types', function(val) {
         if (val) {
-          console.log('observing types', val);
           var optionValue = parser.toOptionValue(val, {key: 'types'});
-          console.log('setting types with value', optionValue);
           autocomplete.setTypes(optionValue);
         }
       });

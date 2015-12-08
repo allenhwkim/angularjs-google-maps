@@ -114,9 +114,10 @@
               output = input;
             }
           // 7. evaluate dynamically bound values
-          } else if (options.scope) {
+          } else if (input.match(/^{/) && options.scope) {
             try {
-              output = options.scope.$eval(input);
+              var expr = input.replace(/{{/,'').replace(/}}/g,'');
+              output = options.scope.$eval(expr);
             } catch (err) {
               output = input;
             }
@@ -166,10 +167,7 @@
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
-          console.log('attrValue', attrValue);
           if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            console.log('setting attribute to observe',
-              attrName, camelCaseFilter(attrName), attrValue);
             attrsToObserve.push(camelCaseFilter(attrName));
           }
         }

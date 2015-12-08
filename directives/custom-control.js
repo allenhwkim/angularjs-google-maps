@@ -34,7 +34,6 @@
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
-    console.log("custom-control options", options, "events", events);
 
     /**
      * build a custom control element

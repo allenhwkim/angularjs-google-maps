@@ -42,8 +42,6 @@
         var controlOptions = parser.getControlOptions(filtered);
         var events = parser.getEvents(scope, filtered);
 
-        console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
-
         /**
          * set options
          */
