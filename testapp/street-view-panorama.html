@@ -3,9 +3,16 @@
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="script-tags-for-development.js"></script>
+  <script>
+    angular.module('map', ['ngMap'])
+        .controller('Map', function($scope, NgMap) {
+          $scope.heading = 90;
+          $scope.pitch = 0;
+        });
+  </script>
 </head>
 
-<body ng-app="ngMap">
+<body ng-app="map" ng-controller="Map">
   <ng-map zoom="20" center="40.740, -74.18" >
     <marker position="40.740, -74.18"></marker>
     <street-view-panorama
@@ -13,7 +20,7 @@
       disable-default-u-i="false"
       disable-double-click-zoom="false"
       position="40.740, -74.18"
-      pov="{heading:90, pitch: 0}"
+      pov="{heading: heading, pitch: pitch}"
       scrollwheel="false"
       enable-close-button="true"
       visible="true">

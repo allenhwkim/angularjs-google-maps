@@ -130,7 +130,7 @@
 
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
-      var shapeOptions = parser.getOptions(filtered);
+      var shapeOptions = parser.getOptions(filtered, {scope: scope});
       var shapeEvents = parser.getEvents(scope, filtered);
 
       var address, shapeType;

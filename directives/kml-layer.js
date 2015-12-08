@@ -49,7 +49,7 @@
 
         var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
         console.log('kml-layer options', options, 'events', events);
 

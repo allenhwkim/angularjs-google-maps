@@ -113,6 +113,13 @@
             } catch(e) {
               output = input;
             }
+          // 7. evaluate dynamically bound values
+          } else if (options.scope) {
+            try {
+              output = options.scope.$eval(input);
+            } catch (err) {
+              output = input;
+            }
           } else {
             output = input;
           }
@@ -159,7 +166,7 @@
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
-console.log('attrValue', attrValue);
+          console.log('attrValue', attrValue);
           if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
             console.log('setting attribute to observe',
               attrName, camelCaseFilter(attrName), attrValue);
@@ -205,6 +212,7 @@ console.log('attrValue', attrValue);
      * @returns {Hash} options converted attributess
      */
     var getOptions = function(attrs, params) {
+      params = params || {};
       var options = {};
       for(var key in attrs) {
         if (attrs[key] || attrs[key] === 0) {
@@ -218,13 +226,12 @@ console.log('attrValue', attrValue);
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              if (params &&
-                params.doNotConverStringToNumber &&
+              if (params.doNotConverStringToNumber &&
                 attrs[key].match(/^[0-9]+$/)
               ) {
                 options[key] = attrs[key];
               } else {
-                options[key] = toOptionValue(attrs[key], {key: key});
+                options[key] = toOptionValue(attrs[key], {key: key, scope: params.scope});
               }
             }
           }
@@ -294,7 +301,7 @@ console.log('attrValue', attrValue);
 
       for (var attr in filtered) {
         if (filtered[attr]) {
-          if (!attr.match(/(.*)ControlOptions$/)) { 
+          if (!attr.match(/(.*)ControlOptions$/)) {
             continue; // if not controlOptions, skip it
           }
 

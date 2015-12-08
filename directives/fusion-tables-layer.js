@@ -39,7 +39,7 @@
         mapController = mapController[0]||mapController[1];
 
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
         console.log('fusion-tables-layer options', options, 'events', events);
 
