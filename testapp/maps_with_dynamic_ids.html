@@ -41,7 +41,7 @@
 </head>
 <body ng-controller="MyCtrl as vm">
   <div ng-repeat="obj in vm.objects">
-    <ng-map id="map-{{ obj.id }}" center="obj._mapData.center">
+    <ng-map id="map-{{ obj.id }}">
       <marker ng-repeat="pos in obj.positions" position="{{pos}}"></marker>
     </ng-map>
     <br/>
