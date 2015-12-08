@@ -213,7 +213,7 @@
     };
     var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
+      var options = parser.getOptions(filtered, {scope: scope});
       var controlOptions = parser.getControlOptions(filtered);
       var svpOptions = angular.extend(options, controlOptions);
       var svpEvents = parser.getEvents(scope, filtered);

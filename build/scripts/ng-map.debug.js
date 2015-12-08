@@ -145,6 +145,8 @@ angular.module('ngMap', []);
             }
           }
         }
+        vm.map.showInfoWindow = vm.showInfoWindow;
+        vm.map.hideInfoWindow = vm.hideInfoWindow;
       }
       
       // set options
@@ -202,12 +204,10 @@ angular.module('ngMap', []);
      */
     var orgAttrs = Attr2MapOptions.orgAttributes($element);
     var filtered = Attr2MapOptions.filter($attrs);
-    var options = Attr2MapOptions.getOptions(filtered);
+    var options = Attr2MapOptions.getOptions(filtered, null, $scope);
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
-    console.log("filtered", filtered,
-      "mapOptions", mapOptions, 'mapEvents', mapEvents);
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
@@ -257,7 +257,7 @@ angular.module('ngMap', []);
     mapController = mapController[0]||mapController[1];
     var orgAttrs = parser.orgAttributes(element);
     var filtered = parser.filter(attrs);
-    var options = parser.getOptions(filtered);
+    var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
 
     console.log('bicycling-layer options', options, 'events', events);
@@ -325,9 +325,8 @@ angular.module('ngMap', []);
   var linkFunc = function(scope, element, attrs, mapController) {
     mapController = mapController[0]||mapController[1];
     var filtered = parser.filter(attrs);
-    var options = parser.getOptions(filtered);
+    var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
-    console.log("custom-control options", options, "events", events);
 
     /**
      * build a custom control element
@@ -488,7 +487,7 @@ angular.module('ngMap', []);
       var orgAttrs = parser.orgAttributes(element);
 
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered, scope);
+      var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
 
       /**
@@ -679,7 +678,7 @@ angular.module('ngMap', []);
 
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
+      var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
       var attrsToObserve = parser.getAttrsToObserve(orgAttrs);
 
@@ -767,11 +766,9 @@ angular.module('ngMap', []);
         mapController = mapController[0]||mapController[1];
 
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var controlOptions = parser.getControlOptions(filtered);
         var events = parser.getEvents(scope, filtered);
-
-        console.log("filtered", filtered, "options", options, 'controlOptions', controlOptions, 'events', events);
 
         /**
          * set options
@@ -841,9 +838,8 @@ angular.module('ngMap', []);
         mapController = mapController[0]||mapController[1];
 
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
-        console.log('dynamic-maps-engine-layer options', options, 'events', events);
 
         var layer = getDynamicMapsEngineLayer(options, events);
         mapController.addObject('mapsEngineLayers', layer);
@@ -893,7 +889,7 @@ angular.module('ngMap', []);
         mapController = mapController[0]||mapController[1];
 
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
         console.log('fusion-tables-layer options', options, 'events', events);
 
@@ -936,7 +932,7 @@ angular.module('ngMap', []);
         /**
          * set options
          */
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         options.data = $window[attrs.data] || scope[attrs.data];
         if (options.data instanceof Array) {
           options.data = new google.maps.MVCArray(options.data);
@@ -1026,9 +1022,6 @@ angular.module('ngMap', []);
       /**
        * set events
        */
-      if (Object.keys(events).length > 0) {
-        console.log("infoWindow events", events);
-      }
       for (var eventName in events) {
         if (eventName) {
           google.maps.event.addListener(infoWindow, eventName, events[eventName]);
@@ -1072,9 +1065,8 @@ angular.module('ngMap', []);
 
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
+      var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
-      console.log('infoWindow', 'options', options, 'events', events);
 
       var address;
       if (options.position && !(options.position instanceof google.maps.LatLng)) {
@@ -1093,7 +1085,8 @@ angular.module('ngMap', []);
       mapController.addObject('infoWindows', infoWindow);
       mapController.observeAttrSetObj(orgAttrs, attrs, infoWindow);
 
-      mapController.map.showInfoWindow = mapController.map.showInfoWindow ||
+      mapController.showInfoWindow = 
+      mapController.map.showInfoWindow = mapController.showInfoWindow ||
         function(p1, p2, p3) { //event, id, marker
           var id = typeof p1 == 'string' ? p1 : p2;
           var marker = typeof p1 == 'string' ? p2 : p3;
@@ -1112,7 +1105,8 @@ angular.module('ngMap', []);
           }
         };
 
-      mapController.map.hideInfoWindow = mapController.map.hideInfoWindow ||
+      mapController.hideInfoWindow =
+      mapController.map.hideInfoWindow = mapController.hideInfoWindow ||
         function(p1, p2) {
           var id = typeof p1 == 'string' ? p1 : p2;
           var infoWindow = mapController.map.infoWindows[id];
@@ -1197,7 +1191,7 @@ angular.module('ngMap', []);
 
         var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
         console.log('kml-layer options', options, 'events', events);
 
@@ -1242,7 +1236,7 @@ angular.module('ngMap', []);
 
       link: function(scope, element, attrs) {
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
 
         console.log('map-data options', options);
@@ -1321,10 +1315,14 @@ angular.module('ngMap', []);
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
       console.log('Prelinking script loaded,' + src);
+
       scriptEl.src = mapsUrl +
         (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
         'callback=lazyLoadCallback';
-      document.body.appendChild(scriptEl);
+
+        if (!document.querySelector('script[src="' + scriptEl.src + '"]')) {
+          document.body.appendChild(scriptEl);
+        }
     } else {
       element.html(savedHtml);
       $compile(element.contents())(scope);
@@ -1340,12 +1338,7 @@ angular.module('ngMap', []);
     /**
      * if already loaded, stop processing it
      */
-    if (document.querySelector(
-      'script[src="' +
-      src +
-      (src.indexOf('?') > -1 ? '&' : '?') +
-      'callback=lazyLoadCallback"]')
-    ) {
+    if(window.google !== undefined && window.google.maps !== undefined) {
       return false;
     }
 
@@ -1371,7 +1364,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @name map-type
  * @param Attr2MapOptions {service} 
- *   convert html attribute to Gogole map api options
+ *   convert html attribute to Google map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -1518,7 +1511,7 @@ angular.module('ngMap', []);
         mapController = mapController[0]||mapController[1];
 
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
         console.log('maps-engine-layer options', options, 'events', events);
 
@@ -1614,7 +1607,7 @@ angular.module('ngMap', []);
 
     var orgAttrs = parser.orgAttributes(element);
     var filtered = parser.filter(attrs);
-    var markerOptions = parser.getOptions(filtered, scope);
+    var markerOptions = parser.getOptions(filtered, scope, {scope: scope});
     var markerEvents = parser.getEvents(scope, filtered);
     console.log('marker options', markerOptions, 'events', markerEvents);
 
@@ -1733,9 +1726,8 @@ angular.module('ngMap', []);
         return false;
       }
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
+      var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
-      console.log('autocomplete options', options, 'events', events);
       var autocomplete = new google.maps.places.Autocomplete(element[0], options);
       for (var eventName in events) {
         google.maps.event.addListener(autocomplete, eventName, events[eventName]);
@@ -1751,9 +1743,7 @@ angular.module('ngMap', []);
 
       attrs.$observe('types', function(val) {
         if (val) {
-          console.log('observing types', val);
           var optionValue = parser.toOptionValue(val, {key: 'types'});
-          console.log('setting types with value', optionValue);
           autocomplete.setTypes(optionValue);
         }
       });
@@ -1903,7 +1893,7 @@ angular.module('ngMap', []);
 
       var orgAttrs = parser.orgAttributes(element);
       var filtered = parser.filter(attrs);
-      var shapeOptions = parser.getOptions(filtered);
+      var shapeOptions = parser.getOptions(filtered, {scope: scope});
       var shapeEvents = parser.getEvents(scope, filtered);
 
       var address, shapeType;
@@ -2000,7 +1990,7 @@ angular.module('ngMap', []);
 
     var linkFunc = function(scope, element, attrs) {
       var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered);
+      var options = parser.getOptions(filtered, {scope: scope});
       var controlOptions = parser.getControlOptions(filtered);
       var svpOptions = angular.extend(options, controlOptions);
 
@@ -2079,7 +2069,7 @@ angular.module('ngMap', []);
 
         var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
         console.log('traffic-layer options', options, 'events', events);
 
@@ -2133,7 +2123,7 @@ angular.module('ngMap', []);
 
         var orgAttrs = parser.orgAttributes(element);
         var filtered = parser.filter(attrs);
-        var options = parser.getOptions(filtered);
+        var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
         console.log('transit-layer options', options, 'events', events);
 
@@ -2324,6 +2314,14 @@ angular.module('ngMap', []);
             } catch(e) {
               output = input;
             }
+          // 7. evaluate dynamically bound values
+          } else if (input.match(/^{/) && options.scope) {
+            try {
+              var expr = input.replace(/{{/,'').replace(/}}/g,'');
+              output = options.scope.$eval(expr);
+            } catch (err) {
+              output = input;
+            }
           } else {
             output = input;
           }
@@ -2370,10 +2368,7 @@ angular.module('ngMap', []);
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
-console.log('attrValue', attrValue);
           if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            console.log('setting attribute to observe',
-              attrName, camelCaseFilter(attrName), attrValue);
             attrsToObserve.push(camelCaseFilter(attrName));
           }
         }
@@ -2416,6 +2411,7 @@ console.log('attrValue', attrValue);
      * @returns {Hash} options converted attributess
      */
     var getOptions = function(attrs, params) {
+      params = params || {};
       var options = {};
       for(var key in attrs) {
         if (attrs[key] || attrs[key] === 0) {
@@ -2429,13 +2425,12 @@ console.log('attrValue', attrValue);
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              if (params &&
-                params.doNotConverStringToNumber &&
+              if (params.doNotConverStringToNumber &&
                 attrs[key].match(/^[0-9]+$/)
               ) {
                 options[key] = attrs[key];
               } else {
-                options[key] = toOptionValue(attrs[key], {key: key});
+                options[key] = toOptionValue(attrs[key], {key: key, scope: params.scope});
               }
             }
           }
@@ -2505,7 +2500,7 @@ console.log('attrValue', attrValue);
 
       for (var attr in filtered) {
         if (filtered[attr]) {
-          if (!attr.match(/(.*)ControlOptions$/)) { 
+          if (!attr.match(/(.*)ControlOptions$/)) {
             continue; // if not controlOptions, skip it
           }
 
@@ -2712,8 +2707,9 @@ console.log('attrValue', attrValue);
     var ctrl = mapControllers[id || 0];
     if (!(ctrl.map instanceof google.maps.Map)) {
       ctrl.initializeMap();
+      return ctrl.map;
     } else {
-      console.log('map is already instialized');
+      console.error('map is already instialized');
     }
   };
 
@@ -2867,10 +2863,8 @@ console.log('attrValue', attrValue);
   var observeAndSet = function(attrName, object) {
     return function(val) {
       if (val) {
-        console.log('observing ', object, attrName, val);
         var setMethod = camelCaseFilter('set-'+attrName);
         var optionValue = Attr2MapOptions.toOptionValue(val, {key: attrName});
-        console.log('setting ', object, attrName, 'with value', optionValue);
         if (object[setMethod]) { //if set method does exist
           /* if an location is being observed */
           if (attrName.match(/center|position/) &&
