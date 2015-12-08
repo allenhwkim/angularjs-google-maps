@@ -1,0 +1,50 @@
+<!doctype html>
+<html ng-app="myapp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+  var app = angular.module('myapp', ['ngMap']);
+  app.controller('MyCtrl', function(NgMap) {
+    function getBounds(positions) {
+      var bounds = new google.maps.LatLngBounds();
+      for (var i=0; i < positions.length; i++) {
+        var latlng = new google.maps.LatLng(positions[i][0], positions[i][1]);
+        bounds.extend(latlng);
+      }
+      return bounds;
+    }
+
+    function fitMap(mapId, bounds) {
+      NgMap.getMap({id: mapId}).then(function(map) {
+        map.setCenter(bounds.getCenter());
+        map.fitBounds(bounds);
+      });
+    }
+
+    var vm = this;
+    vm.objects = [
+      {'id': 0, 'positions': [ [-14,132], [-15,131], [-16,130] ]},
+      {'id': 1, 'positions': [ [-24,132], [-25,131], [-26,130] ]},
+      {'id': 2, 'positions': [ [-29,132], [-30,131], [-31,130] ]}
+    ];
+
+    for (var i=0; i < vm.objects.length; i++) {
+      obj = vm.objects[i];
+      mapId = "map-" + obj.id;
+      fitMap(mapId, getBounds(obj.positions));
+    }
+
+
+  });
+</script>
+</head>
+<body ng-controller="MyCtrl as vm">
+  <div ng-repeat="obj in vm.objects">
+    <ng-map id="map-{{ obj.id }}" center="obj._mapData.center">
+      <marker ng-repeat="pos in obj.positions" position="{{pos}}"></marker>
+    </ng-map>
+    <br/>
+  </div>
+</html>
+

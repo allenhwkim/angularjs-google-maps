@@ -139,14 +139,14 @@
           var groupMembers = lazyInitMap[group]; //e.g. markers
           if (typeof groupMembers == 'object') {
             for (var id in groupMembers) {
-              vm.addObject(group, groupMembers[id]); 
+              vm.addObject(group, groupMembers[id]);
             }
           }
         }
         vm.map.showInfoWindow = vm.showInfoWindow;
         vm.map.hideInfoWindow = vm.hideInfoWindow;
       }
-      
+
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
@@ -180,6 +180,7 @@
       vm.singleInfoWindow = mapOptions.singleInfoWindow;
 
       google.maps.event.addListenerOnce(vm.map, "idle", function () {
+        vm.map.id = $attrs.id;
         NgMap.addMap(vm);
         if (mapOptions.zoomToIncludeMarkers) {
           vm.zoomToIncludeMarkers();
