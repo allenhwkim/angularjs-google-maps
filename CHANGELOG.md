@@ -1,5 +1,10 @@
 Release Notes
 ===============
+
+# 1.15.0
+
+  * All attributes can have `{{}}` expression evaluated.
+  
 # 1.14.0
 
   * Prepared for Angular2 transition by removing all scopes
