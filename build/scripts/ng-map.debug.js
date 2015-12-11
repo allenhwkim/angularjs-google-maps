@@ -204,7 +204,7 @@ angular.module('ngMap', []);
      */
     var orgAttrs = Attr2MapOptions.orgAttributes($element);
     var filtered = Attr2MapOptions.filter($attrs);
-    var options = Attr2MapOptions.getOptions(filtered, null, $scope);
+    var options = Attr2MapOptions.getOptions(filtered, {scope: $scope});
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);

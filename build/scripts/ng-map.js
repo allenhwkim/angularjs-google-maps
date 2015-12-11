@@ -204,7 +204,7 @@ angular.module('ngMap', []);
      */
     var orgAttrs = Attr2MapOptions.orgAttributes($element);
     var filtered = Attr2MapOptions.filter($attrs);
-    var options = Attr2MapOptions.getOptions(filtered, null, $scope);
+    var options = Attr2MapOptions.getOptions(filtered, {scope: $scope});
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
@@ -238,7 +238,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @name bicycling-layer
  * @param Attr2Options {service}
- *   convert html attribute to Google map api options
+ *   convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -294,7 +294,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name custom-control
- * @param Attr2Options {service} convert html attribute to Google map api options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @param $compile {service} AngularJS $compile service
  * @description
  *   Build custom control and set to the map with position
@@ -367,7 +367,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @memberof ngmap
  * @name custom-marker
- * @param Attr2Options {service} convert html attribute to Google map api options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @param $timeout {service} AngularJS $timeout
  * @description
  *   Marker with html
@@ -729,7 +729,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name drawing-manager
- * @param Attr2Options {service} convert html attribute to Google map api options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -903,7 +903,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name heatmap-layer
- * @param Attr2Options {service} convert html attribute to Google map api options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -957,7 +957,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @name info-window
  * @param Attr2MapOptions {service}
- *   convert html attribute to Google map api options
+ *   convert html attribute to Gogole map api options
  * @param $compile {service} $compile service
  * @description
  *  Defines infoWindow and provides compile method
@@ -1143,7 +1143,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name kml-layer
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   renders Kml layer on a map
  *   Requires:  map directive
@@ -1210,7 +1210,7 @@ angular.module('ngMap', []);
  * @ngdoc directive
  * @name map-data
  * @param Attr2MapOptions {service}
- *   convert html attribute to Google map api options
+ *   convert html attribute to Gogole map api options
  * @description
  *   set map data
  *   Requires:  map directive
@@ -1264,7 +1264,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name map-lazy-load
- * @param Attr2Options {service} convert html attribute to Google map api options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @description
  *  Requires: Delay the initialization of map directive
  *    until the map is ready to be rendered
@@ -1412,7 +1412,7 @@ angular.module('ngMap', []);
  * @memberof ngMap
  * @name ng-map
  * @param Attr2Options {service}
- *  convert html attribute to Google map api options
+ *  convert html attribute to Gogole map api options
  * @description
  * Implementation of {@link __MapController}
  * Initialize a Google map within a `<div>` tag
@@ -1525,7 +1525,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name marker
- * @param Attr2Options {service} convert html attribute to Google map api options
+ * @param Attr2Options {service} convert html attribute to Gogole map api options
  * @param NavigatorGeolocation It is used to find the current location
  * @description
  *  Draw a Google map marker on a map with given options and register events
@@ -1653,7 +1653,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name overlay-map-type
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @param $window {service}
  * @description
  *   Requires:  map directive
@@ -1699,7 +1699,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name places-auto-complete
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Provides address auto complete feature to an input element
  *   Requires: input tag
@@ -1763,7 +1763,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name shape
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Initialize a Google map shape in map with given options and register events
  *   The shapes are:
@@ -1934,7 +1934,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name streetview-panorama
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -2031,7 +2031,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name traffic-layer
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
@@ -2085,7 +2085,7 @@ angular.module('ngMap', []);
 /**
  * @ngdoc directive
  * @name transit-layer
- * @param Attr2MapOptions {service} convert html attribute to Google map api options
+ * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element
