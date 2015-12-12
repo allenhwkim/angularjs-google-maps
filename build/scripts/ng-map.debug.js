@@ -40,8 +40,7 @@ angular.module('ngMap', []);
             vm.map.setCenter(obj.position);
           }
           (groupName == 'markers') && vm.objectChanged('markers');
-          (groupName == 'customMarkers')
-            && vm.objectChanged('customMarkers');
+          (groupName == 'customMarkers') && vm.objectChanged('customMarkers');
         }
       }
     };
@@ -65,8 +64,7 @@ angular.module('ngMap', []);
         obj.map && obj.setMap && obj.setMap(null);
 
         (groupName == 'markers') && vm.objectChanged('markers');
-        (groupName == 'customMarkers')
-          && vm.objectChanged('customMarkers');
+        (groupName == 'customMarkers') && vm.objectChanged('customMarkers');
       }
     };
 
@@ -148,7 +146,7 @@ angular.module('ngMap', []);
         vm.map.showInfoWindow = vm.showInfoWindow;
         vm.map.hideInfoWindow = vm.hideInfoWindow;
       }
-      
+
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
@@ -208,6 +206,8 @@ angular.module('ngMap', []);
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
+    console.log('ng-map Options', mapOptions);
+    Object.keys(mapEvents).length && console.log('ng-map Events', mapEvents);
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;

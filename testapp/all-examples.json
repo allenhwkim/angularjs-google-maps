@@ -269,6 +269,12 @@
     "description": "Simple Map",
     "keywords": "ng-map,AngularJS,center"
   },
+  "map-with-dynamic-id.html": {
+    "path": "testapp/map-with-dynamic-id.html",
+    "title": "Simle Map",
+    "description": "Simple Map",
+    "keywords": "ng-map,AngularJS,center"
+  },
   "map_app.html": {
     "path": "testapp/map_app.html",
     "title": "GoogleMap-Based App"
