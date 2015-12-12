@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html ng-app="ngMap">
+<head>
+<title>Simle Map</title>
+<meta name="description" content="Simple Map">
+<meta name="keywords" content="ng-map,AngularJS,center">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+</head>
+
+<body ng-init="center='40.74, -74.18'; mapId = 'foo';">
+  <ng-map id="{{mapId}}" center="{{center}}"></ng-map>
+</body>
+</html>

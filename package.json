@@ -43,6 +43,7 @@
     "selenium-webdriver": "^2.45.1",
     "through2": "^2.0.0",
     "vinyl": "^1.1.0",
+    "yargs": "^3.31.0",
     "zeparser": "0.0.7"
   }
 }

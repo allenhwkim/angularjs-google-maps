@@ -18,6 +18,7 @@ var File = require('vinyl');
 var through = require('through2');
 var path = require('path');
 var cheerio = require('cheerio');
+var argv = require('yargs').argv;
 
 var bumpVersion = function(type) {
   type = type || 'patch';
@@ -107,7 +108,8 @@ gulp.task('test:e2e', ['test:server'], function() {
     .pipe(gulpProtractor({
       configFile: __dirname + "/config/protractor.conf.js",
       args: [
-        '--baseUrl', 'http://localhost:8888'
+        '--baseUrl', 'http://localhost:8888',
+        '--files', argv.files
       ]
     }))
     .on('error', function(e) {

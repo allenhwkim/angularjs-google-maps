@@ -1,4 +1,7 @@
-/*global jasmine*/
+'use strict';
+var argv = require('yargs').argv; 
+
+/*global document, afterEach*/
 var excludes = [ // these examples has no ng-map
   "all-examples.html",
   "map_events.html",
@@ -8,30 +11,23 @@ var excludes = [ // these examples has no ng-map
   "places-auto-complete.html"
 ];
 
-function using(values, func){
-  'use strict';
-  for (var i = 0, count = values.length; i < count; i++) {
-    (!Array.isArray(values[i])) && (values[i] = [values[i]]);
-    func.apply(this, values[i]); //jshint ignore:line
-    jasmine.currentEnv_.currentSpec.description +=
-      ' (with using ' + values[i].join(', ') + ')';
-  }
+var filesRE = argv.files == 'undefined' ? null : new RegExp(argv.files);
+console.log('filesRE', filesRE);
+
+function using(filename, func){
+  func.apply(this, [filename]); //jshint ignore:line
 }
 
 describe('testapp directory', function() {
-  'use strict';
-  var files = require('fs').readdirSync(__dirname + "/../../testapp");
-  files = files.filter(function(filename) {
-    return filename.match(/\.html$/) && excludes.indexOf(filename) === -1;
-  }).splice(0,2);
-
-  var urls = {};
-  for (var i=0;i<files.length; i++) {
-    var groupId = Math.floor(i/10);
-    urls[groupId] = urls[groupId] || [];
-    urls[groupId].push(files[i]);
-  }
-  console.log('urls', urls);
+  var allFiles = require('fs').readdirSync(__dirname + "/../../testapp");
+  allFiles = allFiles.filter(function(filename) {
+    return (
+      filename.match(/\.html$/) &&
+      excludes.indexOf(filename) === -1 &&
+      (filesRE ? filename.match(filesRE) : true)
+    );
+  });
+  console.log('files to run', allFiles);
 
   afterEach(function() {
     browser.manage().logs().get('browser').then(function(browserLog) {
@@ -40,8 +36,8 @@ describe('testapp directory', function() {
     });
   });
 
-  for (var key in urls) {
-    using(urls[key], function(url){
+  allFiles.forEach(function(filename) {
+    using(filename, function(url){
       it('testapp/'+url, function() {
         browser.get('testapp/'+url);
 
@@ -57,6 +53,6 @@ describe('testapp directory', function() {
         }, 5000);
       });
     });
-  }
+  });
 
 });
