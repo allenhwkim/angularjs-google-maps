@@ -23,7 +23,7 @@ describe('testapp directory', function() {
   var files = require('fs').readdirSync(__dirname + "/../../testapp");
   files = files.filter(function(filename) {
     return filename.match(/\.html$/) && excludes.indexOf(filename) === -1;
-  });
+  }).splice(0,2);
 
   var urls = {};
   for (var i=0;i<files.length; i++) {
@@ -33,6 +33,13 @@ describe('testapp directory', function() {
   }
   console.log('urls', urls);
 
+  afterEach(function() {
+    browser.manage().logs().get('browser').then(function(browserLog) {
+      expect(browserLog.length).toEqual(0);
+      browserLog.length && console.log(JSON.stringify(browserLog));
+    });
+  });
+
   for (var key in urls) {
     using(urls[key], function(url){
       it('testapp/'+url, function() {
@@ -40,7 +47,7 @@ describe('testapp directory', function() {
 
         browser.wait( function() {
           return browser.executeScript( function() {
-            var el = document.querySelector("ng-map");  
+            var el = document.querySelector("ng-map");
             var injector = angular.element(el).injector();
             var NgMap = injector.get('NgMap');
             return NgMap.getMap();
