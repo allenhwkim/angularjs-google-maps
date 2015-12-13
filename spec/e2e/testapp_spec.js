@@ -29,13 +29,7 @@ describe('testapp directory', function() {
   });
   console.log('files to run', allFiles);
 
-  afterEach(function() {
-    browser.manage().logs().get('browser').then(function(browserLog) {
-      expect(browserLog.length).toEqual(0);
-      browserLog.length && console.log(JSON.stringify(browserLog));
-    });
-  });
-
+  //TODO: apply retry when it has console error. e.g. google image 404 error
   allFiles.forEach(function(filename) {
     using(filename, function(url){
       it('testapp/'+url, function() {
@@ -50,7 +44,13 @@ describe('testapp directory', function() {
           }).then(function(map) {
             return map;
           });
-        }, 5000);
+        }, 2000);
+
+        browser.manage().logs().get('browser').then(function(browserLog) {
+          expect(browserLog.length).toEqual(0);
+          browserLog.length && console.log(JSON.stringify(browserLog));
+        });
+
       });
     });
   });

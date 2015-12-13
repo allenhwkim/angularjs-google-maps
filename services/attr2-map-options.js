@@ -127,6 +127,14 @@
         } // catch(err2)
       } // catch(err)
 
+      // convert output more for center and position
+      if (
+        (options.key == 'center' || options.key == 'center') &&
+        output instanceof Array
+      ) {
+        output = new google.maps.LatLng(output[0], output[1]);
+      }
+
       // convert output more for shape bounds
       if (options.key == 'bounds' && output instanceof Array) {
         output = new google.maps.LatLngBounds(output[0], output[1]);

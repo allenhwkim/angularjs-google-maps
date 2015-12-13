@@ -204,7 +204,6 @@
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
-    console.log('ng-map Options', mapOptions);
     Object.keys(mapEvents).length && console.log('ng-map Events', mapEvents);
 
     vm.mapOptions = mapOptions;
