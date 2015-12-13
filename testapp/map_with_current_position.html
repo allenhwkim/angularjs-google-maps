@@ -4,9 +4,12 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="script-tags-for-development.js"></script>
 <script>
-  angular.module('myApp',['ngMap']).controller('MyCtrl', function() {
+  angular.module('myApp',['ngMap']).controller('MyCtrl', function(NgMap) {
     var vm = this;
     vm.message = 'You can not hide. :)';
+    NgMap.getMap().then(function(map) {
+      vm.map = map;
+    });
     vm.callbackFunc = function(param) {
       console.log('I know where '+ param +' are. ' + vm.message);
       console.log('You are at' + vm.map.getCenter());
