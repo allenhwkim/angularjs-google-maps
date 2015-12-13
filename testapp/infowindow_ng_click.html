@@ -23,7 +23,7 @@ angular.module('ngMap').controller('MyCtrl', function(NgMap) {
 
   vm.showDetail = function(e, shop) {
     vm.shop = shop;
-    vm.map.showInfoWindow('foo-iw', 'foo');
+    vm.map.showInfoWindow('foo-iw', shop.id);
   };
 
   vm.hideDetail = function() {
