@@ -206,7 +206,6 @@ angular.module('ngMap', []);
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
-    void 0;
     Object.keys(mapEvents).length && void 0;
 
     vm.mapOptions = mapOptions;
@@ -2325,6 +2324,14 @@ angular.module('ngMap', []);
           }
         } // catch(err2)
       } // catch(err)
+
+      // convert output more for center and position
+      if (
+        (options.key == 'center' || options.key == 'center') &&
+        output instanceof Array
+      ) {
+        output = new google.maps.LatLng(output[0], output[1]);
+      }
 
       // convert output more for shape bounds
       if (options.key == 'bounds' && output instanceof Array) {
