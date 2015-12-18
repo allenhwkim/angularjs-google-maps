@@ -73,7 +73,12 @@
    */
   var deleteMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length - 1;
-    delete mapControllers[mapCtrl.map.id || len];
+    var mapController = mapControllers[mapCtrl.map.id || len];
+    var map = mapController.map;
+    var mapId = mapCtrl.map.id || len;
+
+    mapCtrl.map.inUse = false;
+    delete mapControllers[mapId];
   };
 
   /**
@@ -95,41 +100,6 @@
     return y;
   };
 
-  /**
-   * @memberof NgMap
-   * @function getNgMapDiv
-   * @param {HTMLElemnet} el html element
-   * @returns map DIV elemnt
-   * @desc
-   * create a new `div` inside map tag, so that it does not touch map element
-   * and disable drag event for the elmement
-   */
-  var getNgMapDiv = function(ngMapEl) {
-    var el = $document.createElement("div");
-    var defaultStyle = ngMapEl.getAttribute('default-style');
-    el.style.width = "100%";
-    el.style.height = "100%";
-
-    //if style is not given to the map element, set display and height
-    if (defaultStyle == "true") {
-        ngMapEl.style.display = 'block';
-        ngMapEl.style.height = '300px';
-    } else {
-      if (getStyle(ngMapEl, 'display') != "block") {
-        ngMapEl.style.display = 'block';
-      }
-      if (getStyle(ngMapEl, 'height').match(/^(0|auto)/)) {
-        ngMapEl.style.height = '300px';
-      }
-    }
-
-    // disable drag event
-    el.addEventListener('dragstart', function (event) {
-      event.preventDefault();
-      return false;
-    });
-    return el;
-  };
 
   /**
    * @memberof NgMap

@@ -4,8 +4,8 @@
 <title>AngularJS: UI-Router Quick Start</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script src="script-tags-for-development.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
+<link href="lib/bootstrap.min.css" rel="stylesheet">
+<script src="lib/angular-ui-router.js"></script>
 <script>
   var myapp = angular.module('myapp', ['ngMap',"ui.router"])
   myapp.config(function($stateProvider, $urlRouterProvider){
@@ -19,20 +19,12 @@
     NgMap.getMap({id:'foomap'}).then(function(map) {
       console.log('NgMap.getMap in fooCtrl', map);
       map.setZoom(4);
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(40.74, -74.18),
-        map: map
-      });
     });
   });
   myapp.controller('barCtrl', function(NgMap){
     NgMap.getMap({id:'barmap'}).then(function(map) {
       console.log('NgMap.getMap in barCtrl', map);
       map.setZoom(11);
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(41.74, -75.18),
-        map: map
-      });
     });
   });
 </script>
@@ -41,11 +33,15 @@
 <body ng-app="myapp" class="container">
   <script type="text/ng-template" id="foo.html">
     <h1>Map 1</h1>
-    <ng-map id="foomap" center="[40.74, -74.18]"></ng-map>
+    <ng-map id="foomap" center="[40.74, -74.18]">
+      <marker position="40.74, -74.18"></marker>
+    </ng-map>
   </script>
   <script type="text/ng-template" id="bar.html">
     <h1>Map 2</h1>
-    <ng-map id="barmap" center="[41.74, -75.18]"></ng-map>
+    <ng-map id="barmap" center="[41.74, -75.18]">
+      <marker position="41.74, -75.18"></marker>
+    </ng-map>
   </script>
   <script type="text/ng-template" id="baz.html">
     <h1>No Map</h1>

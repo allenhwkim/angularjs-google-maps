@@ -55,7 +55,10 @@
       if (obj.map) {
         var objs = obj.map[groupName];
         for (var name in objs) {
-          objs[name] === obj && (delete objs[name]);
+          if (objs[name] === obj) {
+            google.maps.event.clearInstanceListeners(obj);
+            delete objs[name];
+          }
         }
 
         /* delete from map */
@@ -107,7 +110,7 @@
      * @param {String} group name of group e.g., markers
      */
     vm.objectChanged = function(group) {
-      if (
+      if ( vm.map &&
         (group == 'markers' || group == 'customMarkers') &&
         vm.map.zoomToIncludeMarkers == 'auto'
       ) {
