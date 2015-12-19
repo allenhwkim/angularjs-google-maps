@@ -7,14 +7,13 @@
   var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap
+      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
     ) {
     Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
-    vm.ngMapDiv;   /** @memberof __MapController */
 
     /**
      * Add an object to the collection of group
@@ -128,11 +127,11 @@
      */
     vm.initializeMap = function() {
       var mapOptions = vm.mapOptions,
-          mapEvents = vm.mapEvents,
-          ngMapDiv = vm.ngMapDiv;
+          mapEvents = vm.mapEvents;
 
       var lazyInitMap = vm.map; //prepared for lazy init
-      vm.map = new google.maps.Map(ngMapDiv, {});
+      vm.map = NgMapPool.getMapInstance($element[0]);
+      NgMap.setStyle($element[0]);
 
       // set objects for lazyInit
       if (lazyInitMap) {
@@ -212,10 +211,6 @@
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
 
-    // create html <div> for map
-    vm.ngMapDiv = NgMap.getNgMapDiv($element[0]);
-    $element.append(vm.ngMapDiv);
-
     if (options.lazyInit) { // allows controlled initialization
       vm.map = {id: $attrs.id}; //set empty, not real, map
       NgMap.addMap(vm);
@@ -224,12 +219,13 @@
     }
 
     $element.bind('$destroy', function() {
+      NgMapPool.returnMapInstance(vm.map);
       NgMap.deleteMap(vm);
     });
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap'
+    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();

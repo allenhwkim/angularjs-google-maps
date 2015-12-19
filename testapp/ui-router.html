@@ -18,29 +18,43 @@
   myapp.controller('fooCtrl', function(NgMap){
     NgMap.getMap({id:'foomap'}).then(function(map) {
       console.log('NgMap.getMap in fooCtrl', map);
-      map.setZoom(4);
     });
   });
   myapp.controller('barCtrl', function(NgMap){
     NgMap.getMap({id:'barmap'}).then(function(map) {
       console.log('NgMap.getMap in barCtrl', map);
-      map.setZoom(11);
     });
   });
 </script>
+<style>ng-map {width: 30%; height: 300px; display:inline-block !important; padding: 10px}</style>
 </head>
 
 <body ng-app="myapp" class="container">
   <script type="text/ng-template" id="foo.html">
-    <h1>Map 1</h1>
-    <ng-map id="foomap" center="[40.74, -74.18]">
+
+    <ng-map id="foomap" center="[40.74, -74.18]" zoom="4">
       <marker position="40.74, -74.18"></marker>
+    </ng-map>
+
+    <ng-map id="one" center="[41.74, -75.18]" zoom="8">
+      <marker position="41.74, -75.18"></marker>
+    </ng-map>
+
+    <ng-map id="two" center="[42.74, -76.18]" zoom="12">
+      <marker position="42.74, -76.18"></marker>
     </ng-map>
   </script>
   <script type="text/ng-template" id="bar.html">
-    <h1>Map 2</h1>
-    <ng-map id="barmap" center="[41.74, -75.18]">
+    <ng-map id="barmap" center="[40.74, -74.18]" zoom="12">
+      <marker position="40.74, -74.18"></marker>
+    </ng-map>
+
+    <ng-map id="one" center="[41.74, -75.18]" zoom="4">
       <marker position="41.74, -75.18"></marker>
+    </ng-map>
+
+    <ng-map id="two" center="[42.74, -76.18]" zoom="8">
+      <marker position="42.74, -76.18"></marker>
     </ng-map>
   </script>
   <script type="text/ng-template" id="baz.html">
@@ -49,8 +63,8 @@
   <div class="navbar">
     <div class="navbar-inner">
       <ul class="nav">
-        <li><a ui-sref="foo">Map 1</a></li>
-        <li><a ui-sref="bar">Map 2</a></li>
+        <li><a ui-sref="foo">Page 1</a></li>
+        <li><a ui-sref="bar">Page 2</a></li>
         <li><a ui-sref="baz">No Map</a></li>
       </ul>
     </div>

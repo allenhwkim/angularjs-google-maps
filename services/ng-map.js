@@ -11,6 +11,18 @@
 
   var mapControllers = {};
 
+  var getStyle = function(el, styleProp) {
+    var y;
+    if (el.currentStyle) {
+      y = el.currentStyle[styleProp];
+    } else if ($window.getComputedStyle) {
+      y = $document.defaultView.
+        getComputedStyle(el, null).
+        getPropertyValue(styleProp);
+    }
+    return y;
+  };
+
   /**
    * @memberof NgMap
    * @function initMap
@@ -62,8 +74,10 @@
    * @returns promise
    */
   var addMap = function(mapCtrl) {
-    var len = Object.keys(mapControllers).length;
-    mapControllers[mapCtrl.map.id || len] = mapCtrl;
+    if (mapCtrl.map) {
+      var len = Object.keys(mapControllers).length;
+      mapControllers[mapCtrl.map.id || len] = mapCtrl;
+    }
   };
 
   /**
@@ -73,33 +87,10 @@
    */
   var deleteMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length - 1;
-    var mapController = mapControllers[mapCtrl.map.id || len];
-    var map = mapController.map;
     var mapId = mapCtrl.map.id || len;
-
-    mapCtrl.map.inUse = false;
+    delete mapCtrl.map;
     delete mapControllers[mapId];
   };
-
-  /**
-   * @memberof NgMap
-   * @function getStyle
-   * @param {HTMLElemnet} el html element
-   * @param {String} styleProp style property name e.g. 'display'
-   * @returns value of property
-   */
-  var getStyle = function(el, styleProp) {
-    var y;
-    if (el.currentStyle) {
-      y = el.currentStyle[styleProp];
-    } else if ($window.getComputedStyle) {
-      y = $document.defaultView.
-        getComputedStyle(el, null).
-        getPropertyValue(styleProp);
-    }
-    return y;
-  };
-
 
   /**
    * @memberof NgMap
@@ -163,9 +154,30 @@
     };
   };
 
+  /**
+   * @memberof NgMap
+   * @function getMap
+   * @param {Hash} options optional, e.g., {id: 'foo, timeout: 5000}
+   * @returns promise
+   */
+  var setStyle = function(el) {
+    //if style is not given to the map element, set display and height
+    var defaultStyle = el.getAttribute('default-style');
+    if (defaultStyle == "true") {
+      el.style.display = 'block';
+      el.style.height = '300px';
+    } else {
+      if (getStyle(el, 'display') != "block") {
+        el.style.display = 'block';
+      }
+      if (getStyle(el, 'height').match(/^(0|auto)/)) {
+        el.style.height = '300px';
+      }
+    }
+  };
+
   angular.module('ngMap').provider('NgMap', function() {
     var defaultOptions = {};
-    var useTinfoilShielding = false;
 
     /**
      * @memberof NgMap
@@ -203,8 +215,7 @@
         deleteMap: deleteMap,
         getMap: getMap,
         initMap: initMap,
-        getStyle: getStyle,
-        getNgMapDiv: getNgMapDiv,
+        setStyle: setStyle,
         getGeoLocation: getGeoLocation,
         observeAndSet: observeAndSet
       };

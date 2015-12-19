@@ -4,6 +4,7 @@ document.write([
   '<script src="../app.js"></script>',
   '<script src="../controllers/map-controller.js"></script>',
   '<script src="../services/ng-map.js"></script>',
+  '<script src="../services/ng-map-pool.js"></script>',
   '<script src="../services/geo-coder.js"></script>',
   '<script src="../services/navigator-geolocation.js"></script>',
   '<script src="../services/attr2-map-options.js"></script>',
