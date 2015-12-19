@@ -2,7 +2,7 @@
 <html>
   <head>
     <base href="../">
-    <title>JSDoc: source : street-view-panorama.js</title>
+    <title>JSDoc: source : ng-map-pool.js</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -166,96 +166,81 @@
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
-        source : street-view-panorama.js
+        source : ng-map-pool.js
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
         <article>
           <pre class="prettyprint source linenums"><code>/**
- * @ngdoc directive
- * @name streetview-panorama
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @ngdoc factory
+ * @name NgMapPool
  * @description
- *   Requires:  map directive
- *   Restrict To:  Element
- *
- * @attr container Optional, id or css selector, if given, streetview will be in the given html element
- * @attr {String} &lt;StreetViewPanoramaOption>
- *   [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
- * @attr {String} &lt;StreetViewPanoramaEvent>
- *   [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
- *
- * @example
- *   &lt;map zoom="11" center="[40.688738,-74.043871]" >
- *     &lt;street-view-panorama
- *       click-to-go="true"
- *       disable-default-ui="true"
- *       disable-double-click-zoom="true"
- *       enable-close-button="true"
- *       pano="my-pano"
- *       position="40.688738,-74.043871"
- *       pov="{heading:0, pitch: 90}"
- *       scrollwheel="false"
- *       visible="true">
- *     &lt;/street-view-panorama>
- *   &lt;/map>
+ *   Provide map instance to avoid memory leak
  */
-/* global google, document */
 (function() {
   'use strict';
-  var streetViewPanorama = function(Attr2MapOptions, NgMap) {
-    var parser = Attr2MapOptions;
-    var getStreetViewPanorama = function(map, options, events) {
-      var svp, container;
-      if (options.container) {
-        container = document.getElementById(options.container);
-        container = container || document.querySelector(options.container);
+  /**
+   * @memberof NgMapPool
+   * @desc map instance pool
+   */
+  var mapInstances = [];
+  var $window, $document;
+  var add = function(el) {
+    var mapDiv = $document.createElement("div");
+    mapDiv.style.width = "100%";
+    mapDiv.style.height = "100%";
+    el.appendChild(mapDiv);
+    var map = new $window.google.maps.Map(mapDiv, {});
+    mapInstances.push(map);
+    return map;
+  };
+  var find = function(el) { //jshint ignore:line
+    var notInUseMap;
+    for (var i=0; i&lt;mapInstances.length; i++) {
+      var map = mapInstances[i];
+      if (!map.inUse) {
+        var mapDiv = map.getDiv();
+        el.appendChild(mapDiv);
+        notInUseMap = map;
+        break;
       }
-      if (container) {
-        svp = new google.maps.StreetViewPanorama(container, options);
-      } else {
-        svp = map.getStreetView();
-        svp.setOptions(options);
-      }
-      for (var eventName in events) {
-        eventName &&
-          google.maps.event.addListener(svp, eventName, events[eventName]);
-      }
-      return svp;
-    };
-    var linkFunc = function(scope, element, attrs) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered, {scope: scope});
-      var controlOptions = parser.getControlOptions(filtered);
-      var svpOptions = angular.extend(options, controlOptions);
-      var svpEvents = parser.getEvents(scope, filtered);
-      console.log('street-view-panorama',
-        'options', svpOptions, 'events', svpEvents);
-      NgMap.getMap().then(function(map) {
-        var svp = getStreetViewPanorama(map, svpOptions, svpEvents);
-        map.setStreetView(svp);
-        (!svp.getPosition()) && svp.setPosition(map.getCenter());
-        google.maps.event.addListener(svp, 'position_changed', function() {
-          if (svp.getPosition() !== map.getCenter()) {
-            map.setCenter(svp.getPosition());
-          }
-        });
-        //needed for geo-callback
-        var listener =
-          google.maps.event.addListener(map, 'center_changed', function() {
-            svp.setPosition(map.getCenter());
-            google.maps.event.removeListener(listener);
-          });
-      });
-    }; //link
+    }
+    return notInUseMap;
+  };
+  /**
+   * @memberof NgMapPool
+   * @function getMapInstance
+   * @param {HtmlElement} el map container element
+   * @return map instance for the given element
+   */
+  var getMapInstance = function(el) {
+    var map = find(el);
+    if (!map) {
+      map = add(el);
+    }
+    map.inUse = true;
+    return map;
+  };
+  /**
+   * @memberof NgMapPool
+   * @function returnMapInstance
+   * @param {Map} an instance of google.maps.Map
+   * @desc sets the flag inUse of the given map instance to false, so that it 
+   * can be reused later
+   */
+  var returnMapInstance = function(map) {
+    map.inUse = false;
+  };
+  var NgMapPool = function(_$document_, _$window_) {
+    $document = _$document_[0], $window = _$window_;
     return {
-      restrict: 'E',
-      require: ['?^map','?^ngMap'],
-      link: linkFunc
+      mapInstances: mapInstances,
+      getMapInstance: getMapInstance,
+      returnMapInstance: returnMapInstance
     };
   };
-  streetViewPanorama.$inject = ['Attr2MapOptions', 'NgMap'];
-  angular.module('ngMap').directive('streetViewPanorama', streetViewPanorama);
+  NgMapPool.$inject = [ '$document', '$window' ];
+  angular.module('ngMap').factory('NgMapPool', NgMapPool);
 })();
 </code></pre>
         </article>

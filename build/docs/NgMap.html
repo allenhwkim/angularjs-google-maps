@@ -101,6 +101,18 @@
                 <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
+          </ul><ul class="group">
+            <h3>
+              <a href="" ng-click="undefinedfactory = !undefinedfactory">
+                factory
+              </a>
+              <i ng-cloak="" ng-show="undefinedfactory">+</i>
+            </h3>
+            <ul ng-hide="undefinedfactory">
+              <li>
+                <a href="NgMapPool.html">NgMapPool</a>
+              </li>
+            </ul>
           </ul>
         </li>
       </ul><ul class="module">
@@ -178,7 +190,7 @@
         <h3 class="subsection-title">Methods</h3>
         <dl>
           <dt>
-            <a href="source/NgMap.html#line58" class="name-link">
+            <a href="source/NgMap.html#line70" class="name-link">
               <h4 class="name">
                 addMap
                 <span class="signature">(mapController)</span>
@@ -223,7 +235,7 @@
           </dd>
         </dl><dl>
           <dt>
-            <a href="source/NgMap.html#line69" class="name-link">
+            <a href="source/NgMap.html#line83" class="name-link">
               <h4 class="name">
                 deleteMap
                 <span class="signature">(mapController)</span>
@@ -253,7 +265,7 @@
           </dd>
         </dl><dl>
           <dt>
-            <a href="source/NgMap.html#line134" class="name-link">
+            <a href="source/NgMap.html#line95" class="name-link">
               <h4 class="name">
                 getGeoLocation
                 <span class="signature">(address, options)</span>
@@ -304,7 +316,7 @@
           </dd>
         </dl><dl>
           <dt>
-            <a href="source/NgMap.html#line29" class="name-link">
+            <a href="source/NgMap.html#line41" class="name-link">
               <h4 class="name">
                 getMap
                 <span class="signature">(options)</span>
@@ -349,105 +361,7 @@
           </dd>
         </dl><dl>
           <dt>
-            <a href="source/NgMap.html#line98" class="name-link">
-              <h4 class="name">
-                getNgMapDiv
-                <span class="signature">(el)</span>
-              </h4>
-            </a>
-          </dt>
-          <dd>
-            <div class="description">
-              <p>create a new <code>div</code> inside map tag, so that it does not touch map element
-and disable drag event for the elmement</p>
-            </div>
-            <div>
-              <h5>Parameters:</h5>
-              <table class="params">
-                <thead>
-                  <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="name">el</td>
-                    <td class="type"><span class="param-type">
-                      HTMLElemnet
-                    </span></td>
-                    <td class="description last"><p>html element</p></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <h5>Returns:</h5>
-              <table class="params">
-                <thead>
-                  <tr><th>Type</th><th class="last">Description</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="type"><span class="param-type">
-                    </span></td>
-                    <td class="description last"><p>map DIV elemnt</p></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </dd>
-        </dl><dl>
-          <dt>
-            <a href="source/NgMap.html#line79" class="name-link">
-              <h4 class="name">
-                getStyle
-                <span class="signature">(el, styleProp)</span>
-              </h4>
-            </a>
-          </dt>
-          <dd>
-            <div class="description">
-            </div>
-            <div>
-              <h5>Parameters:</h5>
-              <table class="params">
-                <thead>
-                  <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="name">el</td>
-                    <td class="type"><span class="param-type">
-                      HTMLElemnet
-                    </span></td>
-                    <td class="description last"><p>html element</p></td>
-                  </tr><tr>
-                    <td class="name">styleProp</td>
-                    <td class="type"><span class="param-type">
-                      String
-                    </span></td>
-                    <td class="description last"><p>style property name e.g. 'display'</p></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div>
-              <h5>Returns:</h5>
-              <table class="params">
-                <thead>
-                  <tr><th>Type</th><th class="last">Description</th></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="type"><span class="param-type">
-                    </span></td>
-                    <td class="description last"><p>value of property</p></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </dd>
-        </dl><dl>
-          <dt>
-            <a href="source/NgMap.html#line14" class="name-link">
+            <a href="source/NgMap.html#line26" class="name-link">
               <h4 class="name">
                 initMap
                 <span class="signature">(id)</span>
@@ -476,7 +390,7 @@ and disable drag event for the elmement</p>
           </dd>
         </dl><dl>
           <dt>
-            <a href="source/NgMap.html#line169" class="name-link">
+            <a href="source/NgMap.html#line130" class="name-link">
               <h4 class="name">
                 observeAndSet
                 <span class="signature">(attrName, object)</span>
@@ -527,7 +441,7 @@ and disable drag event for the elmement</p>
           </dd>
         </dl><dl>
           <dt>
-            <a href="source/NgMap.html#line200" class="name-link">
+            <a href="source/NgMap.html#line182" class="name-link">
               <h4 class="name">
                 setDefaultOptions
                 <span class="signature">(options)</span>
@@ -560,6 +474,37 @@ and disable drag event for the elmement</p>
                       Hash
                     </span></td>
                     <td class="description last"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </dd>
+        </dl><dl>
+          <dt>
+            <a href="source/NgMap.html#line157" class="name-link">
+              <h4 class="name">
+                setStyle
+                <span class="signature">(map)</span>
+              </h4>
+            </a>
+          </dt>
+          <dd>
+            <div class="description">
+              <p>set display, width, height of map container element</p>
+            </div>
+            <div>
+              <h5>Parameters:</h5>
+              <table class="params">
+                <thead>
+                  <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="name">map</td>
+                    <td class="type"><span class="param-type">
+                      HtmlElement
+                    </span></td>
+                    <td class="description last"><p>contriner element</p></td>
                   </tr>
                 </tbody>
               </table>

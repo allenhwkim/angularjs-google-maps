@@ -9,14 +9,13 @@ angular.module('ngMap', []);
   var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap
+      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
     ) {
     Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
-    vm.ngMapDiv;   /** @memberof __MapController */
 
     /**
      * Add an object to the collection of group
@@ -57,7 +56,10 @@ angular.module('ngMap', []);
       if (obj.map) {
         var objs = obj.map[groupName];
         for (var name in objs) {
-          objs[name] === obj && (delete objs[name]);
+          if (objs[name] === obj) {
+            google.maps.event.clearInstanceListeners(obj);
+            delete objs[name];
+          }
         }
 
         /* delete from map */
@@ -109,7 +111,7 @@ angular.module('ngMap', []);
      * @param {String} group name of group e.g., markers
      */
     vm.objectChanged = function(group) {
-      if (
+      if ( vm.map &&
         (group == 'markers' || group == 'customMarkers') &&
         vm.map.zoomToIncludeMarkers == 'auto'
       ) {
@@ -127,11 +129,11 @@ angular.module('ngMap', []);
      */
     vm.initializeMap = function() {
       var mapOptions = vm.mapOptions,
-          mapEvents = vm.mapEvents,
-          ngMapDiv = vm.ngMapDiv;
+          mapEvents = vm.mapEvents;
 
       var lazyInitMap = vm.map; //prepared for lazy init
-      vm.map = new google.maps.Map(ngMapDiv, {});
+      vm.map = NgMapPool.getMapInstance($element[0]);
+      NgMap.setStyle($element[0]);
 
       // set objects for lazyInit
       if (lazyInitMap) {
@@ -211,10 +213,6 @@ angular.module('ngMap', []);
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
 
-    // create html <div> for map
-    vm.ngMapDiv = NgMap.getNgMapDiv($element[0]);
-    $element.append(vm.ngMapDiv);
-
     if (options.lazyInit) { // allows controlled initialization
       vm.map = {id: $attrs.id}; //set empty, not real, map
       NgMap.addMap(vm);
@@ -223,12 +221,13 @@ angular.module('ngMap', []);
     }
 
     $element.bind('$destroy', function() {
+      NgMapPool.returnMapInstance(vm.map);
       NgMap.deleteMap(vm);
     });
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap'
+    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();
@@ -2691,6 +2690,86 @@ angular.module('ngMap', []);
 })();
 
 /**
+ * @ngdoc factory
+ * @name NgMapPool
+ * @description
+ *   Provide map instance to avoid memory leak
+ */
+(function() {
+  'use strict';
+  /**
+   * @memberof NgMapPool
+   * @desc map instance pool
+   */
+  var mapInstances = [];
+  var $window, $document;
+
+  var add = function(el) {
+    var mapDiv = $document.createElement("div");
+    mapDiv.style.width = "100%";
+    mapDiv.style.height = "100%";
+    el.appendChild(mapDiv);
+    var map = new $window.google.maps.Map(mapDiv, {});
+    mapInstances.push(map);
+    return map;
+  };
+
+  var find = function(el) { //jshint ignore:line
+    var notInUseMap;
+    for (var i=0; i<mapInstances.length; i++) {
+      var map = mapInstances[i];
+      if (!map.inUse) {
+        var mapDiv = map.getDiv();
+        el.appendChild(mapDiv);
+        notInUseMap = map;
+        break;
+      }
+    }
+    return notInUseMap;
+  };
+
+  /**
+   * @memberof NgMapPool
+   * @function getMapInstance
+   * @param {HtmlElement} el map container element
+   * @return map instance for the given element
+   */
+  var getMapInstance = function(el) {
+    var map = find(el);
+    if (!map) {
+      map = add(el);
+    }
+    map.inUse = true;
+    return map;
+  };
+
+  /**
+   * @memberof NgMapPool
+   * @function returnMapInstance
+   * @param {Map} an instance of google.maps.Map
+   * @desc sets the flag inUse of the given map instance to false, so that it 
+   * can be reused later
+   */
+  var returnMapInstance = function(map) {
+    map.inUse = false;
+  };
+
+  var NgMapPool = function(_$document_, _$window_) {
+    $document = _$document_[0], $window = _$window_;
+
+    return {
+      mapInstances: mapInstances,
+      getMapInstance: getMapInstance,
+      returnMapInstance: returnMapInstance
+    };
+  };
+  NgMapPool.$inject = [ '$document', '$window' ];
+
+  angular.module('ngMap').factory('NgMapPool', NgMapPool);
+
+})();
+
+/**
  * @ngdoc provider
  * @name NgMap
  * @description
@@ -2702,6 +2781,18 @@ angular.module('ngMap', []);
   var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter;
 
   var mapControllers = {};
+
+  var getStyle = function(el, styleProp) {
+    var y;
+    if (el.currentStyle) {
+      y = el.currentStyle[styleProp];
+    } else if ($window.getComputedStyle) {
+      y = $document.defaultView.
+        getComputedStyle(el, null).
+        getPropertyValue(styleProp);
+    }
+    return y;
+  };
 
   /**
    * @memberof NgMap
@@ -2754,8 +2845,10 @@ angular.module('ngMap', []);
    * @returns promise
    */
   var addMap = function(mapCtrl) {
-    var len = Object.keys(mapControllers).length;
-    mapControllers[mapCtrl.map.id || len] = mapCtrl;
+    if (mapCtrl.map) {
+      var len = Object.keys(mapControllers).length;
+      mapControllers[mapCtrl.map.id || len] = mapCtrl;
+    }
   };
 
   /**
@@ -2765,62 +2858,9 @@ angular.module('ngMap', []);
    */
   var deleteMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length - 1;
-    delete mapControllers[mapCtrl.map.id || len];
-  };
-
-  /**
-   * @memberof NgMap
-   * @function getStyle
-   * @param {HTMLElemnet} el html element
-   * @param {String} styleProp style property name e.g. 'display'
-   * @returns value of property
-   */
-  var getStyle = function(el, styleProp) {
-    var y;
-    if (el.currentStyle) {
-      y = el.currentStyle[styleProp];
-    } else if ($window.getComputedStyle) {
-      y = $document.defaultView.
-        getComputedStyle(el, null).
-        getPropertyValue(styleProp);
-    }
-    return y;
-  };
-
-  /**
-   * @memberof NgMap
-   * @function getNgMapDiv
-   * @param {HTMLElemnet} el html element
-   * @returns map DIV elemnt
-   * @desc
-   * create a new `div` inside map tag, so that it does not touch map element
-   * and disable drag event for the elmement
-   */
-  var getNgMapDiv = function(ngMapEl) {
-    var el = $document.createElement("div");
-    var defaultStyle = ngMapEl.getAttribute('default-style');
-    el.style.width = "100%";
-    el.style.height = "100%";
-
-    //if style is not given to the map element, set display and height
-    if (defaultStyle == "true") {
-        ngMapEl.style.display = 'block';
-        ngMapEl.style.height = '300px';
-    } else {
-      if (getStyle(ngMapEl, 'display') != "block") {
-        ngMapEl.style.display = 'block';
-      }
-      if (getStyle(ngMapEl, 'height').match(/^(0|auto)/)) {
-        ngMapEl.style.height = '300px';
-      }
-    }
-
-    // disable drag event
-    el.addEventListener('dragstart', function (event) {
-      event.preventDefault();
-      return false;
-    });
-    return el;
+    var mapId = mapCtrl.map.id || len;
+    delete mapCtrl.map;
+    delete mapControllers[mapId];
   };
 
   /**
@@ -2885,9 +2925,30 @@ angular.module('ngMap', []);
     };
   };
 
+  /**
+   * @memberof NgMap
+   * @function setStyle
+   * @param {HtmlElement} map contriner element
+   * @desc set display, width, height of map container element
+   */
+  var setStyle = function(el) {
+    //if style is not given to the map element, set display and height
+    var defaultStyle = el.getAttribute('default-style');
+    if (defaultStyle == "true") {
+      el.style.display = 'block';
+      el.style.height = '300px';
+    } else {
+      if (getStyle(el, 'display') != "block") {
+        el.style.display = 'block';
+      }
+      if (getStyle(el, 'height').match(/^(0|auto)/)) {
+        el.style.height = '300px';
+      }
+    }
+  };
+
   angular.module('ngMap').provider('NgMap', function() {
     var defaultOptions = {};
-    var useTinfoilShielding = false;
 
     /**
      * @memberof NgMap
@@ -2925,8 +2986,7 @@ angular.module('ngMap', []);
         deleteMap: deleteMap,
         getMap: getMap,
         initMap: initMap,
-        getStyle: getStyle,
-        getNgMapDiv: getNgMapDiv,
+        setStyle: setStyle,
         getGeoLocation: getGeoLocation,
         observeAndSet: observeAndSet
       };

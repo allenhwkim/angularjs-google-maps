@@ -1,8 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <base href="../">
-    <title>JSDoc: source : street-view-panorama.js</title>
+    <title>JSDoc: NgMapPool</title>
     <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
@@ -165,102 +164,124 @@
       </ul>
     </nav>
     <div id="content" class="page-wrap">
+      <h3 style="float:right; color:#ccc">
+        Angular factory
+      </h3>
       <h1 class="title">
-        source : street-view-panorama.js
+        NgMapPool
+        <a class="name-link signature-attributes" href="source/NgMapPool.html#line1">source</a>
       </h1>
       <div id="main" class="big-container">
         <!-- source code html -->
-        <article>
-          <pre class="prettyprint source linenums"><code>/**
- * @ngdoc directive
- * @name streetview-panorama
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
- * @description
- *   Requires:  map directive
- *   Restrict To:  Element
- *
- * @attr container Optional, id or css selector, if given, streetview will be in the given html element
- * @attr {String} &lt;StreetViewPanoramaOption>
- *   [Any Google StreetViewPanorama options](https://developers.google.com/maps/documentation/javascript/reference?csw=1#StreetViewPanoramaOptions)
- * @attr {String} &lt;StreetViewPanoramaEvent>
- *   [Any Google StreetViewPanorama events](https://developers.google.com/maps/documentation/javascript/reference#StreetViewPanorama)
- *
- * @example
- *   &lt;map zoom="11" center="[40.688738,-74.043871]" >
- *     &lt;street-view-panorama
- *       click-to-go="true"
- *       disable-default-ui="true"
- *       disable-double-click-zoom="true"
- *       enable-close-button="true"
- *       pano="my-pano"
- *       position="40.688738,-74.043871"
- *       pov="{heading:0, pitch: 90}"
- *       scrollwheel="false"
- *       visible="true">
- *     &lt;/street-view-panorama>
- *   &lt;/map>
- */
-/* global google, document */
-(function() {
-  'use strict';
-  var streetViewPanorama = function(Attr2MapOptions, NgMap) {
-    var parser = Attr2MapOptions;
-    var getStreetViewPanorama = function(map, options, events) {
-      var svp, container;
-      if (options.container) {
-        container = document.getElementById(options.container);
-        container = container || document.querySelector(options.container);
-      }
-      if (container) {
-        svp = new google.maps.StreetViewPanorama(container, options);
-      } else {
-        svp = map.getStreetView();
-        svp.setOptions(options);
-      }
-      for (var eventName in events) {
-        eventName &&
-          google.maps.event.addListener(svp, eventName, events[eventName]);
-      }
-      return svp;
-    };
-    var linkFunc = function(scope, element, attrs) {
-      var filtered = parser.filter(attrs);
-      var options = parser.getOptions(filtered, {scope: scope});
-      var controlOptions = parser.getControlOptions(filtered);
-      var svpOptions = angular.extend(options, controlOptions);
-      var svpEvents = parser.getEvents(scope, filtered);
-      console.log('street-view-panorama',
-        'options', svpOptions, 'events', svpEvents);
-      NgMap.getMap().then(function(map) {
-        var svp = getStreetViewPanorama(map, svpOptions, svpEvents);
-        map.setStreetView(svp);
-        (!svp.getPosition()) && svp.setPosition(map.getCenter());
-        google.maps.event.addListener(svp, 'position_changed', function() {
-          if (svp.getPosition() !== map.getCenter()) {
-            map.setCenter(svp.getPosition());
-          }
-        });
-        //needed for geo-callback
-        var listener =
-          google.maps.event.addListener(map, 'center_changed', function() {
-            svp.setPosition(map.getCenter());
-            google.maps.event.removeListener(listener);
-          });
-      });
-    }; //link
-    return {
-      restrict: 'E',
-      require: ['?^map','?^ngMap'],
-      link: linkFunc
-    };
-  };
-  streetViewPanorama.$inject = ['Attr2MapOptions', 'NgMap'];
-  angular.module('ngMap').directive('streetViewPanorama', streetViewPanorama);
-})();
-</code></pre>
-        </article>
         <!-- index.html -->
         <!-- class files -->
+        <div>
+          <div><div class="container-overview">
+      <dt></dt>
+      <dd>
+        <div class="description">
+          <p>Provide map instance to avoid memory leak</p>
+        </div>
+        <div class="details"></div>
+      </dd>
+    </div>
+    <section>
+      <div class="members">
+        <h3 class="subsection-title">Members</h3>
+        <dl>
+          <dt>
+            <a href="source/NgMapPool.html#line13" class="name-link">
+              <h4 class="name">mapInstances</h4>
+            </a>
+          </dt>
+          <dd>
+            <div class="description"><p>map instance pool</p></div>
+          </dd>
+        </dl>
+      </div>
+      <div class="functions">
+        <h3 class="subsection-title">Methods</h3>
+        <dl>
+          <dt>
+            <a href="source/NgMapPool.html#line40" class="name-link">
+              <h4 class="name">
+                getMapInstance
+                <span class="signature">(el)</span>
+              </h4>
+            </a>
+          </dt>
+          <dd>
+            <div class="description">
+            </div>
+            <div>
+              <h5>Parameters:</h5>
+              <table class="params">
+                <thead>
+                  <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="name">el</td>
+                    <td class="type"><span class="param-type">
+                      HtmlElement
+                    </span></td>
+                    <td class="description last"><p>map container element</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h5>Returns:</h5>
+              <table class="params">
+                <thead>
+                  <tr><th>Type</th><th class="last">Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="type"><span class="param-type">
+                    </span></td>
+                    <td class="description last"><p>map instance for the given element</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </dd>
+        </dl><dl>
+          <dt>
+            <a href="source/NgMapPool.html#line55" class="name-link">
+              <h4 class="name">
+                returnMapInstance
+                <span class="signature">(an)</span>
+              </h4>
+            </a>
+          </dt>
+          <dd>
+            <div class="description">
+              <p>sets the flag inUse of the given map instance to false, so that it 
+can be reused later</p>
+            </div>
+            <div>
+              <h5>Parameters:</h5>
+              <table class="params">
+                <thead>
+                  <tr><th>Name</th><th>Type</th><th class="last">Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="name">an</td>
+                    <td class="type"><span class="param-type">
+                      Map
+                    </span></td>
+                    <td class="description last"><p>instance of google.maps.Map</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </dd>
+        </dl>
+      </div>
+    </section></div>
+        </div>
       </div>
       <footer style="clear:both">
         Documentation generated by
