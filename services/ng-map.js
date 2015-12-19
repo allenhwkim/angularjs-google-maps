@@ -156,9 +156,9 @@
 
   /**
    * @memberof NgMap
-   * @function getMap
-   * @param {Hash} options optional, e.g., {id: 'foo, timeout: 5000}
-   * @returns promise
+   * @function setStyle
+   * @param {HtmlElement} map contriner element
+   * @desc set display, width, height of map container element
    */
   var setStyle = function(el) {
     //if style is not given to the map element, set display and height
