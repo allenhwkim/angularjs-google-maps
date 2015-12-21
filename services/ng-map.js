@@ -135,11 +135,13 @@
    * @returns attribue observe function
    */
   var observeAndSet = function(attrName, object) {
+    console.log('observing', attrName, 'on object', object);
     return function(val) {
       if (val) {
         var setMethod = camelCaseFilter('set-'+attrName);
         var optionValue = Attr2MapOptions.toOptionValue(val, {key: attrName});
         if (object[setMethod]) { //if set method does exist
+          console.log('observing', attrName, 'and setting', optionValue);
           /* if an location is being observed */
           if (attrName.match(/center|position/) &&
             typeof optionValue == 'string') {

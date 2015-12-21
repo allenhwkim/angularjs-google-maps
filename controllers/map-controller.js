@@ -135,6 +135,17 @@
 
       // set objects for lazyInit
       if (lazyInitMap) {
+
+        /** 
+         * rebuild mapOptions for lazyInit 
+         * becasue attributes values might have been changed
+         */
+        var filtered = Attr2MapOptions.filter($attrs);
+        var options = Attr2MapOptions.getOptions(filtered);
+        var controlOptions = Attr2MapOptions.getControlOptions(filtered);
+        mapOptions = angular.extend(options, controlOptions);
+        console.log('map options', mapOptions);
+
         for (var group in lazyInitMap) {
           var groupMembers = lazyInitMap[group]; //e.g. markers
           if (typeof groupMembers == 'object') {
@@ -206,6 +217,7 @@
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
+    console.log('ng-map Options', mapOptions);
     Object.keys(mapEvents).length && console.log('ng-map Events', mapEvents);
 
     vm.mapOptions = mapOptions;

@@ -29,7 +29,7 @@
 <body ng-controller="MyCtrl as vm">
   <div style="position:relavtive">
     <ng-map id="foo" default-style="true" lazy-init="true"
-      center="41,-87" zoom="3">
+      center="{{vm.stores.foo.position[0]}}, {{vm.stores.foo.position[1]}}" zoom="3">
       
       <marker ng-repeat="(id, store) in vm.stores" id="{{id}}"
         position="{{store.position}}"
