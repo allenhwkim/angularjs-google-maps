@@ -137,6 +137,17 @@ angular.module('ngMap', []);
 
       // set objects for lazyInit
       if (lazyInitMap) {
+
+        /** 
+         * rebuild mapOptions for lazyInit 
+         * becasue attributes values might have been changed
+         */
+        var filtered = Attr2MapOptions.filter($attrs);
+        var options = Attr2MapOptions.getOptions(filtered);
+        var controlOptions = Attr2MapOptions.getControlOptions(filtered);
+        mapOptions = angular.extend(options, controlOptions);
+        void 0;
+
         for (var group in lazyInitMap) {
           var groupMembers = lazyInitMap[group]; //e.g. markers
           if (typeof groupMembers == 'object') {
@@ -208,6 +219,7 @@ angular.module('ngMap', []);
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
+    void 0;
     Object.keys(mapEvents).length && void 0;
 
     vm.mapOptions = mapOptions;
@@ -2906,11 +2918,13 @@ angular.module('ngMap', []);
    * @returns attribue observe function
    */
   var observeAndSet = function(attrName, object) {
+    void 0;
     return function(val) {
       if (val) {
         var setMethod = camelCaseFilter('set-'+attrName);
         var optionValue = Attr2MapOptions.toOptionValue(val, {key: attrName});
         if (object[setMethod]) { //if set method does exist
+          void 0;
           /* if an location is being observed */
           if (attrName.match(/center|position/) &&
             typeof optionValue == 'string') {
