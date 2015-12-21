@@ -136,7 +136,19 @@
           var id = typeof p1 == 'string' ? p1 : p2;
           var marker = typeof p1 == 'string' ? p2 : p3;
           if (typeof marker == 'string') {
-            marker = mapController.map.markers[marker];
+            //Check if markers if defined to avoid odd 'undefined' errors
+            if (typeof mapController.map.markers != "undefined"
+                && typeof mapController.map.markers[marker] != "undefined") {
+              marker = mapController.map.markers[marker];
+            } else if (
+                //additionally check if that marker is a custom marker
+            typeof mapController.map.customMarkers
+            && typeof mapController.map.customMarkers[marker] != "undefined") {
+              marker = mapController.map.customMarkers[marker];
+            } else {
+              //Better error output if marker with that id is not defined
+              throw new Error("Cant open info window for id " + marker + ". Marker or CustomMarker is not defined")
+            }
           }
 
           var infoWindow = mapController.map.infoWindows[id];
