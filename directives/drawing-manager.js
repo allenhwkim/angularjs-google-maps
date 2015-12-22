@@ -65,6 +65,10 @@
         }
 
         mapController.addObject('mapDrawingManager', drawingManager);
+
+        element.bind('$destroy', function() {
+          mapController.deleteObject('mapDrawingManager', drawingManager);
+        });
       }
     }; // return
   }]);

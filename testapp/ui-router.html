@@ -34,6 +34,9 @@
 
     <ng-map id="foomap" center="[40.74, -74.18]" zoom="4">
       <marker position="40.74, -74.18"></marker>
+      <custom-control position="TOP_CENTER">
+        <input placeholder="Search" />
+      </custom-control>
     </ng-map>
 
     <ng-map id="one" center="[41.74, -75.18]" zoom="8">
@@ -47,6 +50,11 @@
   <script type="text/ng-template" id="bar.html">
     <ng-map id="barmap" center="[40.74, -74.18]" zoom="12">
       <marker position="40.74, -74.18"></marker>
+      <drawing-manager
+        drawing-control-options="{position: 'TOP_CENTER',drawingModes:['polygon','marker']}"
+        drawingControl="true"
+        drawingMode="null">
+      </drawing-manager>
     </ng-map>
 
     <ng-map id="one" center="[41.74, -75.18]" zoom="4">

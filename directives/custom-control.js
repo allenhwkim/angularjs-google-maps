@@ -49,10 +49,8 @@
     }
 
     mapController.addObject('customControls', customControlEl);
-    NgMap.getMap().then(function(map) {
-      var position = options.position;
-      map.controls[google.maps.ControlPosition[position]].push(customControlEl);
-    });
+    var position = options.position;
+    mapController.map.controls[google.maps.ControlPosition[position]].push(customControlEl);
 
   };
 
