@@ -218,10 +218,8 @@
       google.maps.event.addDomListener(customControlEl, eventName, events[eventName]);
     }
     mapController.addObject('customControls', customControlEl);
-    NgMap.getMap().then(function(map) {
-      var position = options.position;
-      map.controls[google.maps.ControlPosition[position]].push(customControlEl);
-    });
+    var position = options.position;
+    mapController.map.controls[google.maps.ControlPosition[position]].push(customControlEl);
   };
   var customControl =  function(Attr2MapOptions, _$compile_, _NgMap_)  {
     parser = Attr2MapOptions, $compile = _$compile_, NgMap = _NgMap_;

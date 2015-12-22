@@ -352,10 +352,8 @@ angular.module('ngMap', []);
     }
 
     mapController.addObject('customControls', customControlEl);
-    NgMap.getMap().then(function(map) {
-      var position = options.position;
-      map.controls[google.maps.ControlPosition[position]].push(customControlEl);
-    });
+    var position = options.position;
+    mapController.map.controls[google.maps.ControlPosition[position]].push(customControlEl);
 
   };
 
@@ -803,6 +801,10 @@ angular.module('ngMap', []);
         }
 
         mapController.addObject('mapDrawingManager', drawingManager);
+
+        element.bind('$destroy', function() {
+          mapController.deleteObject('mapDrawingManager', drawingManager);
+        });
       }
     }; // return
   }]);
@@ -2873,7 +2875,10 @@ angular.module('ngMap', []);
   var deleteMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length - 1;
     var mapId = mapCtrl.map.id || len;
-    delete mapCtrl.map;
+    mapCtrl.map.controls.forEach(function(ctrl) {
+      ctrl.clear();
+    });
+    //delete mapCtrl.map;
     delete mapControllers[mapId];
   };
 

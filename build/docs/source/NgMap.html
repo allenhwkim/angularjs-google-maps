@@ -252,7 +252,10 @@
   var deleteMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length - 1;
     var mapId = mapCtrl.map.id || len;
-    delete mapCtrl.map;
+    mapCtrl.map.controls.forEach(function(ctrl) {
+      ctrl.clear();
+    });
+    //delete mapCtrl.map;
     delete mapControllers[mapId];
   };
   /**

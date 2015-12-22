@@ -231,6 +231,9 @@
           google.maps.event.addListener(drawingManager, eventName, events[eventName]);
         }
         mapController.addObject('mapDrawingManager', drawingManager);
+        element.bind('$destroy', function() {
+          mapController.deleteObject('mapDrawingManager', drawingManager);
+        });
       }
     }; // return
   }]);
