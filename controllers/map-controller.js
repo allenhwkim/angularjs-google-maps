@@ -136,8 +136,8 @@
       // set objects for lazyInit
       if (lazyInitMap) {
 
-        /** 
-         * rebuild mapOptions for lazyInit 
+        /**
+         * rebuild mapOptions for lazyInit
          * becasue attributes values might have been changed
          */
         var filtered = Attr2MapOptions.filter($attrs);
@@ -150,7 +150,7 @@
           var groupMembers = lazyInitMap[group]; //e.g. markers
           if (typeof groupMembers == 'object') {
             for (var id in groupMembers) {
-              vm.addObject(group, groupMembers[id]); 
+              vm.addObject(group, groupMembers[id]);
             }
           }
         }
@@ -228,6 +228,11 @@
       NgMap.addMap(vm);
     } else {
       vm.initializeMap();
+    }
+
+    //Trigger Resize
+    if(options.triggerResize) {
+      google.maps.event.trigger(vm.map, 'resize');
     }
 
     $element.bind('$destroy', function() {
