@@ -138,8 +138,8 @@ angular.module('ngMap', []);
       // set objects for lazyInit
       if (lazyInitMap) {
 
-        /** 
-         * rebuild mapOptions for lazyInit 
+        /**
+         * rebuild mapOptions for lazyInit
          * becasue attributes values might have been changed
          */
         var filtered = Attr2MapOptions.filter($attrs);
@@ -152,7 +152,7 @@ angular.module('ngMap', []);
           var groupMembers = lazyInitMap[group]; //e.g. markers
           if (typeof groupMembers == 'object') {
             for (var id in groupMembers) {
-              vm.addObject(group, groupMembers[id]); 
+              vm.addObject(group, groupMembers[id]);
             }
           }
         }
@@ -230,6 +230,11 @@ angular.module('ngMap', []);
       NgMap.addMap(vm);
     } else {
       vm.initializeMap();
+    }
+
+    //Trigger Resize
+    if(options.triggerResize) {
+      google.maps.event.trigger(vm.map, 'resize');
     }
 
     $element.bind('$destroy', function() {
@@ -792,6 +797,13 @@ angular.module('ngMap', []);
           rectangleOptions:options.rectangleoptions
         });
 
+        //Observers
+        attrs.$observe('drawingControlOptions', function (newValue) {
+          drawingManager.drawingControlOptions = parser.getControlOptions({drawingControlOptions: newValue}).drawingControlOptions;
+          drawingManager.setDrawingMode(null);
+          drawingManager.setMap(mapController.map);
+        });
+
 
         /**
          * set events
@@ -1103,7 +1115,19 @@ angular.module('ngMap', []);
           var id = typeof p1 == 'string' ? p1 : p2;
           var marker = typeof p1 == 'string' ? p2 : p3;
           if (typeof marker == 'string') {
-            marker = mapController.map.markers[marker];
+            //Check if markers if defined to avoid odd 'undefined' errors
+            if (typeof mapController.map.markers != "undefined"
+                && typeof mapController.map.markers[marker] != "undefined") {
+              marker = mapController.map.markers[marker];
+            } else if (
+                //additionally check if that marker is a custom marker
+            typeof mapController.map.customMarkers
+            && typeof mapController.map.customMarkers[marker] != "undefined") {
+              marker = mapController.map.customMarkers[marker];
+            } else {
+              //Better error output if marker with that id is not defined
+              throw new Error("Cant open info window for id " + marker + ". Marker or CustomMarker is not defined")
+            }
           }
 
           var infoWindow = mapController.map.infoWindows[id];
@@ -1430,7 +1454,7 @@ angular.module('ngMap', []);
  * Initialize a Google map within a `<div>` tag
  *   with given options and register events
  *
- * @attr {Expression} map-initialized 
+ * @attr {Expression} map-initialized
  *   callback function when map is initialized
  *   e.g., map-initialized="mycallback(map)"
  * @attr {Expression} geo-callback if center is an address or current location,
@@ -1457,6 +1481,8 @@ angular.module('ngMap', []);
  *  When true the map will only display one info window at the time,
  *  if not set or false,
  *  everytime an info window is open it will be displayed with the othe one.
+ * @attr {Boolean} trigger-resize
+ *  Default to false.  Set to true to trigger resize of the map.  Needs to be done anytime you resize the map
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
