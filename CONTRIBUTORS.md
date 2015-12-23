@@ -4,6 +4,8 @@
 <a href='https://github.com/HamzaAzeem' title='HamzaAzeem'><img src='https://avatars.githubusercontent.com/u/5498973?v=3' width='60px' /></a>
 <a href='https://github.com/Fangmingdu' title='Fangmingdu'><img src='https://avatars.githubusercontent.com/u/5725594?v=3' width='60px' /></a>
 <a href='https://github.com/dlukez' title='dlukez'><img src='https://avatars.githubusercontent.com/u/1725353?v=3' width='60px' /></a>
+<a href='https://github.com/Jonfor' title='Jonfor'><img src='https://avatars.githubusercontent.com/u/3246528?v=3' width='60px' /></a>
+<a href='https://github.com/harm-less' title='harm-less'><img src='https://avatars.githubusercontent.com/u/6368074?v=3' width='60px' /></a>
 <a href='https://github.com/AlexandreKilian' title='AlexandreKilian'><img src='https://avatars.githubusercontent.com/u/2519487?v=3' width='60px' /></a>
 <a href='https://github.com/hokennethk' title='hokennethk'><img src='https://avatars.githubusercontent.com/u/9583804?v=3' width='60px' /></a>
 <a href='https://github.com/prem-prakash' title='prem-prakash'><img src='https://avatars.githubusercontent.com/u/775409?v=3' width='60px' /></a>
@@ -11,6 +13,8 @@
 <a href='https://github.com/jpagand' title='jpagand'><img src='https://avatars.githubusercontent.com/u/2401332?v=3' width='60px' /></a>
 <a href='https://github.com/jkornata' title='jkornata'><img src='https://avatars.githubusercontent.com/u/7041200?v=3' width='60px' /></a>
 <a href='https://github.com/sposmen' title='sposmen'><img src='https://avatars.githubusercontent.com/u/1591405?v=3' width='60px' /></a>
+<a href='https://github.com/aitboudad' title='aitboudad'><img src='https://avatars.githubusercontent.com/u/1753742?v=3' width='60px' /></a>
+<a href='https://github.com/joakimkm' title='joakimkm'><img src='https://avatars.githubusercontent.com/u/6367074?v=3' width='60px' /></a>
 <a href='https://github.com/mliu95' title='mliu95'><img src='https://avatars.githubusercontent.com/u/4820950?v=3' width='60px' /></a>
 <a href='https://github.com/pmcochrane' title='pmcochrane'><img src='https://avatars.githubusercontent.com/u/7922620?v=3' width='60px' /></a>
 <a href='https://github.com/pennysmith1' title='pennysmith1'><img src='https://avatars.githubusercontent.com/u/13732116?v=3' width='60px' /></a>
