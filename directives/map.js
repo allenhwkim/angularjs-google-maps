@@ -9,7 +9,7 @@
  * Initialize a Google map within a `<div>` tag
  *   with given options and register events
  *
- * @attr {Expression} map-initialized 
+ * @attr {Expression} map-initialized
  *   callback function when map is initialized
  *   e.g., map-initialized="mycallback(map)"
  * @attr {Expression} geo-callback if center is an address or current location,
@@ -36,6 +36,8 @@
  *  When true the map will only display one info window at the time,
  *  if not set or false,
  *  everytime an info window is open it will be displayed with the othe one.
+ * @attr {Boolean} trigger-resize
+ *  Default to false.  Set to true to trigger resize of the map.  Needs to be done anytime you resize the map
  * @example
  * Usage:
  *   <map MAP_OPTIONS_OR_MAP_EVENTS ..>
