@@ -52,6 +52,9 @@
     var position = options.position;
     mapController.map.controls[google.maps.ControlPosition[position]].push(customControlEl);
 
+    element.bind('$destroy', function() {
+      mapController.deleteObject('customControls', customControlEl);
+    });
   };
 
   var customControl =  function(Attr2MapOptions, _$compile_, _NgMap_)  {
