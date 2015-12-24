@@ -34,6 +34,7 @@
 
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
+    this.el.style.visibility = "hidden";
     this.visible = true;
     for (var key in options) { /* jshint ignore:line */
      this[key] = options[key];
@@ -68,10 +69,15 @@
       position && (this.position = position); /* jshint ignore:line */
       if (this.getProjection() && typeof this.position.lng == 'function') {
         var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
-        var x = Math.round(posPixel.x - (this.el.offsetWidth/2));
-        var y = Math.round(posPixel.y - this.el.offsetHeight - 10); // 10px for anchor
-        this.el.style.left = x + "px";
-        this.el.style.top = y + "px";
+        //delayed left/top calculation. with/height are not set instantly
+        var _this = this;
+        $timeout(function() {
+          var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
+          var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
+          _this.el.style.left = x + "px";
+          _this.el.style.top = y + "px";
+          _this.el.style.visibility = "visible";
+        }, 300);
       }
     };
 
@@ -128,7 +134,7 @@
       /**
        * build a custom marker element
        */
-      var removedEl = element[0].parentElement.removeChild(element[0]);
+      element[0].style.display = 'none';
       console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
@@ -137,11 +143,11 @@
           customMarker.setContent(orgHtml, scope);
         });
 
-        customMarker.setContent(removedEl.innerHTML, scope);
-        var classNames = removedEl.firstElementChild.className;
+        customMarker.setContent(element[0].innerHTML, scope);
+        var classNames = element[0].firstElementChild.className;
         customMarker.addClass('custom-marker');
         customMarker.addClass(classNames);
-        console.log('customMarker', customMarker);
+        console.log('customMarker', customMarker, 'classNames', classNames);
 
         if (!(options.position instanceof google.maps.LatLng)) {
           NgMap.getGeoLocation(options.position).then(

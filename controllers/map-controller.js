@@ -55,7 +55,7 @@
         var objs = obj.map[groupName];
         for (var name in objs) {
           if (objs[name] === obj) {
-            //console.log('Deleting', groupName, obj);
+            console.log('Deleting', groupName, obj);
             google.maps.event.clearInstanceListeners(obj);
             delete objs[name];
           }

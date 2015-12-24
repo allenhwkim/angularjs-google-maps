@@ -6,6 +6,7 @@
 <script src="script-tags-for-development.js"></script>
 <link href="lib/bootstrap.min.css" rel="stylesheet">
 <script src="lib/angular-ui-router.js"></script>
+<link href="custom-marker.css"  rel="stylesheet" />
 <script>
   var myapp = angular.module('myapp', ['ngMap',"ui.router"])
   myapp.config(function($stateProvider, $urlRouterProvider){
@@ -40,7 +41,9 @@
     </ng-map>
 
     <ng-map id="one" center="[41.74, -75.18]" zoom="8">
-      <marker position="41.74, -75.18"></marker>
+      <custom-marker id="can" position="41.74, -75.18">
+        <div class="allen">I am custom marker</div>
+      </custom-marker>
     </ng-map>
 
     <ng-map id="two" center="[42.74, -76.18]" zoom="12">
