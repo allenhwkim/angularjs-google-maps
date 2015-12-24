@@ -220,6 +220,9 @@
     mapController.addObject('customControls', customControlEl);
     var position = options.position;
     mapController.map.controls[google.maps.ControlPosition[position]].push(customControlEl);
+    element.bind('$destroy', function() {
+      mapController.deleteObject('customControls', customControlEl);
+    });
   };
   var customControl =  function(Attr2MapOptions, _$compile_, _NgMap_)  {
     parser = Attr2MapOptions, $compile = _$compile_, NgMap = _NgMap_;

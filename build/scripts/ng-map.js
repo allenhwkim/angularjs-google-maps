@@ -57,6 +57,7 @@ angular.module('ngMap', []);
         var objs = obj.map[groupName];
         for (var name in objs) {
           if (objs[name] === obj) {
+            void 0;
             google.maps.event.clearInstanceListeners(obj);
             delete objs[name];
           }
@@ -360,6 +361,9 @@ angular.module('ngMap', []);
     var position = options.position;
     mapController.map.controls[google.maps.ControlPosition[position]].push(customControlEl);
 
+    element.bind('$destroy', function() {
+      mapController.deleteObject('customControls', customControlEl);
+    });
   };
 
   var customControl =  function(Attr2MapOptions, _$compile_, _NgMap_)  {
@@ -412,6 +416,7 @@ angular.module('ngMap', []);
 
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
+    this.el.style.visibility = "hidden";
     this.visible = true;
     for (var key in options) { /* jshint ignore:line */
      this[key] = options[key];
@@ -446,10 +451,15 @@ angular.module('ngMap', []);
       position && (this.position = position); /* jshint ignore:line */
       if (this.getProjection() && typeof this.position.lng == 'function') {
         var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
-        var x = Math.round(posPixel.x - (this.el.offsetWidth/2));
-        var y = Math.round(posPixel.y - this.el.offsetHeight - 10); // 10px for anchor
-        this.el.style.left = x + "px";
-        this.el.style.top = y + "px";
+        //delayed left/top calculation. with/height are not set instantly
+        var _this = this;
+        $timeout(function() {
+          var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
+          var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
+          _this.el.style.left = x + "px";
+          _this.el.style.top = y + "px";
+          _this.el.style.visibility = "visible";
+        }, 300);
       }
     };
 
@@ -506,7 +516,7 @@ angular.module('ngMap', []);
       /**
        * build a custom marker element
        */
-      var removedEl = element[0].parentElement.removeChild(element[0]);
+      element[0].style.display = 'none';
       void 0;
       var customMarker = new CustomMarker(options);
 
@@ -515,8 +525,8 @@ angular.module('ngMap', []);
           customMarker.setContent(orgHtml, scope);
         });
 
-        customMarker.setContent(removedEl.innerHTML, scope);
-        var classNames = removedEl.firstElementChild.className;
+        customMarker.setContent(element[0].innerHTML, scope);
+        var classNames = element[0].firstElementChild.className;
         customMarker.addClass('custom-marker');
         customMarker.addClass(classNames);
         void 0;
@@ -2899,9 +2909,11 @@ angular.module('ngMap', []);
   var deleteMap = function(mapCtrl) {
     var len = Object.keys(mapControllers).length - 1;
     var mapId = mapCtrl.map.id || len;
-    mapCtrl.map.controls.forEach(function(ctrl) {
-      ctrl.clear();
-    });
+    if (typeof mapCtrl.map.controls != "undefined") {
+        mapCtrl.map.controls.forEach(function(ctrl) {
+          ctrl.clear();
+        });
+    }
     //delete mapCtrl.map;
     delete mapControllers[mapId];
   };
