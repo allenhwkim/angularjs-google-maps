@@ -43,7 +43,7 @@
 /* global google */
 (function() {
   'use strict';
-  var parser, $parse, NgMap;
+  var parser, $parse, $log, NgMap;
 
   var getMarker = function(options, events) {
     var marker;
@@ -51,7 +51,7 @@
     if (NgMap.defaultOptions.marker) {
       for (var key in NgMap.defaultOptions.marker) {
         if (typeof options[key] == 'undefined') {
-          console.log('setting default marker options', 
+          $log.debug('setting default marker options', 
             key, NgMap.defaultOptions.marker);
           options[key] = NgMap.defaultOptions.marker[key];
         }
@@ -67,7 +67,7 @@
      * set events
      */
     if (Object.keys(events).length > 0) {
-      console.log("markerEvents", events);
+      $log.debug("markerEvents", events);
     }
     for (var eventName in events) {
       if (eventName) {
@@ -85,7 +85,7 @@
     var filtered = parser.filter(attrs);
     var markerOptions = parser.getOptions(filtered, scope, {scope: scope});
     var markerEvents = parser.getEvents(scope, filtered);
-    console.log('marker options', markerOptions, 'events', markerEvents);
+    $log.debug('marker options', markerOptions, 'events', markerEvents);
 
     var address;
     if (!(markerOptions.position instanceof google.maps.LatLng)) {
@@ -110,9 +110,10 @@
     });
   };
 
-  var marker = function(Attr2MapOptions, _$parse_, _NgMap_) {
+  var marker = function(Attr2MapOptions, _$parse_, _$log_, _NgMap_) {
     parser = Attr2MapOptions;
     $parse = _$parse_;
+    $log = _$log_;
     NgMap = _NgMap_;
 
     return {
@@ -122,7 +123,7 @@
     };
   };
 
-  marker.$inject = ['Attr2MapOptions', '$parse', 'NgMap'];
+  marker.$inject = ['Attr2MapOptions', '$parse', '$log', 'NgMap'];
   angular.module('ngMap').directive('marker', marker);
 
 })();

@@ -29,7 +29,7 @@
   'use strict';
 
   angular.module('ngMap').directive('kmlLayer', [
-    'Attr2MapOptions', function(Attr2MapOptions) {
+    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getKmlLayer = function(options, events) {
@@ -51,7 +51,7 @@
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
-        console.log('kml-layer options', options, 'events', events);
+        $log.debug('kml-layer options', options, 'events', events);
 
         var kmlLayer = getKmlLayer(options, events);
         mapController.addObject('kmlLayers', kmlLayer);

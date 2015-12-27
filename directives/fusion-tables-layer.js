@@ -18,7 +18,7 @@
   'use strict';
 
   angular.module('ngMap').directive('fusionTablesLayer', [
-    'Attr2MapOptions', function(Attr2MapOptions) {
+    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getLayer = function(options, events) {
@@ -41,7 +41,7 @@
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
-        console.log('fusion-tables-layer options', options, 'events', events);
+        $log.debug('fusion-tables-layer options', options, 'events', events);
 
         var layer = getLayer(options, events);
         mapController.addObject('fusionTablesLayers', layer);

@@ -16,7 +16,7 @@
   'use strict';
 
   angular.module('ngMap').directive('heatmapLayer', [
-    'Attr2MapOptions', '$window', function(Attr2MapOptions, $window) {
+    'Attr2MapOptions', '$window', '$log', function(Attr2MapOptions, $window, $log) {
     var parser = Attr2MapOptions;
     return {
       restrict: 'E',
@@ -43,7 +43,7 @@
          * set events
          */
         var events = parser.getEvents(scope, filtered);
-        console.log('heatmap-layer options', layer, 'events', events);
+        $log.debug('heatmap-layer options', layer, 'events', events);
 
         mapController.addObject('heatmapLayers', layer);
       }

@@ -4,12 +4,10 @@
  */
 (function() {
   'use strict';
-  var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
+      $scope, $element, $attrs, $parse, $log, Attr2MapOptions, NgMap, NgMapPool
     ) {
-    Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
 
     vm.mapOptions; /** @memberof __MapController */
@@ -55,7 +53,7 @@
         var objs = obj.map[groupName];
         for (var name in objs) {
           if (objs[name] === obj) {
-            console.log('Deleting', groupName, obj);
+            $log.debug('Deleting', groupName, obj);
             google.maps.event.clearInstanceListeners(obj);
             delete objs[name];
           }
@@ -145,7 +143,7 @@
         var options = Attr2MapOptions.getOptions(filtered);
         var controlOptions = Attr2MapOptions.getControlOptions(filtered);
         mapOptions = angular.extend(options, controlOptions);
-        console.log('map options', mapOptions);
+        $log.debug('map options', mapOptions);
 
         for (var group in lazyInitMap) {
           var groupMembers = lazyInitMap[group]; //e.g. markers
@@ -218,8 +216,8 @@
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
-    console.log('ng-map Options', mapOptions);
-    Object.keys(mapEvents).length && console.log('ng-map Events', mapEvents);
+    $log.debug('ng-map Options', mapOptions);
+    Object.keys(mapEvents).length && $log.debug('ng-map Events', mapEvents);
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
@@ -243,7 +241,7 @@
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
+    '$scope', '$element', '$attrs', '$parse', '$log', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();

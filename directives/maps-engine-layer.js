@@ -15,7 +15,8 @@
 (function() {
   'use strict';
 
-  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2MapOptions', function(Attr2MapOptions) {
+  angular.module('ngMap').directive('mapsEngineLayer', [
+    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getMapsEngineLayer = function(options, events) {
@@ -38,7 +39,7 @@
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
-        console.log('maps-engine-layer options', options, 'events', events);
+        $log.debug('maps-engine-layer options', options, 'events', events);
 
         var layer = getMapsEngineLayer(options, events);
         mapController.addObject('mapsEngineLayers', layer);

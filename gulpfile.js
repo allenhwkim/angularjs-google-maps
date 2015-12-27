@@ -19,6 +19,7 @@ var through = require('through2');
 var path = require('path');
 var cheerio = require('cheerio');
 var argv = require('yargs').argv;
+var replace = require('gulp-replace');
 
 var bumpVersion = function(type) {
   type = type || 'patch';
@@ -61,6 +62,7 @@ gulp.task('build-js', function() {
     .pipe(concat('ng-map.debug.js'))
     .pipe(gulp.dest('build/scripts'))
     .pipe(stripDebug())
+    .pipe(replace(/\$log.debug\((.*?)\)/mg, "void 0"))
     .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
     .pipe(uglify())

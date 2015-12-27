@@ -28,7 +28,7 @@
 /* global document */
 (function() {
   'use strict';
-  var NgMap, $timeout, NavigatorGeolocation;
+  var NgMap, $timeout, $log, NavigatorGeolocation;
 
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
@@ -92,10 +92,11 @@
   };
 
   var directions = function(
-      Attr2MapOptions, _$timeout_, _NavigatorGeolocation_, _NgMap_) {
+      Attr2MapOptions, _$timeout_, _$log_, _NavigatorGeolocation_, _NgMap_) {
     var parser = Attr2MapOptions;
     NgMap = _NgMap_;
     $timeout = _$timeout_;
+    $log = _$log_;
     NavigatorGeolocation = _NavigatorGeolocation_;
 
     var linkFunc = function(scope, element, attrs, mapController) {
@@ -117,12 +118,12 @@
               $timeout(function(){
                 var panel =
                   document.getElementById(val) || document.querySelector(val);
-                console.log('setting ', attrName, 'with value', panel);
+                $log.debug('setting ', attrName, 'with value', panel);
                 panel && renderer.setPanel(panel);
               });
             } else if (options[attrName] !== val) { //apply only if changed
               var optionValue = parser.toOptionValue(val, {key: attrName});
-              console.log('setting ', attrName, 'with value', optionValue);
+              $log.debug('setting ', attrName, 'with value', optionValue);
               options[attrName] = optionValue;
               updateRoute(renderer, options);
             }
@@ -145,7 +146,7 @@
     };
   }; // var directions
   directions.$inject =
-    ['Attr2MapOptions', '$timeout', 'NavigatorGeolocation', 'NgMap'];
+    ['Attr2MapOptions', '$timeout', '$log', 'NavigatorGeolocation', 'NgMap'];
 
   angular.module('ngMap').directive('directions', directions);
 })();

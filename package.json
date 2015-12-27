@@ -24,7 +24,7 @@
     "gulp-html-replace": "~1.1.0",
     "gulp-protractor": "^1.0.0",
     "gulp-rename": "~1.2.0",
-    "gulp-replace": "~0.3.0",
+    "gulp-replace": "^0.5.4",
     "gulp-rev": "~0.4.0",
     "gulp-shell": "~0.2.7",
     "gulp-strip-debug": "~0.3.0",
