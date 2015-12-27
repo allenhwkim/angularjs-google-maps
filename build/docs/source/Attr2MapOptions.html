@@ -499,7 +499,7 @@
             }
             controlOptions[attr] = options;
           } catch (e) {
-            console.error('invald option for', attr, newValue, e, e.stack);
+            $log.error('invald option for', attr, newValue, e, e.stack);
           }
         }
       } // for

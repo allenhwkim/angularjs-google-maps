@@ -179,7 +179,7 @@
  */
 (function() {
   'use strict';
-  var $window, $document, $q;
+  var $window, $document, $q, $log;
   var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter;
   var mapControllers = {};
   var getStyle = function(el, styleProp) {
@@ -204,7 +204,7 @@
       ctrl.initializeMap();
       return ctrl.map;
     } else {
-      console.error('map is already instialized');
+      $log.error('map is already instialized');
     }
   };
   /**
@@ -363,13 +363,14 @@
       defaultOptions = options;
     };
     var NgMap = function(
-        _$window_, _$document_, _$q_,
+        _$window_, _$document_, _$q_, _$log_,
         _NavigatorGeolocation_, _Attr2MapOptions_,
         _GeoCoder_, _camelCaseFilter_
       ) {
       $window = _$window_;
       $document = _$document_[0];
       $q = _$q_;
+      $log = _$log_;
       NavigatorGeolocation = _NavigatorGeolocation_;
       Attr2MapOptions = _Attr2MapOptions_;
       GeoCoder = _GeoCoder_;
@@ -386,7 +387,7 @@
       };
     };
     NgMap.$inject = [
-      '$window', '$document', '$q',
+      '$window', '$document', '$q', '$log',
       'NavigatorGeolocation', 'Attr2MapOptions',
       'GeoCoder', 'camelCaseFilter'
     ];
