@@ -16,10 +16,13 @@
       .state('bar', { url: "/bar", templateUrl: "bar.html", controller: 'barCtrl' })
       .state('baz', { url: "/baz", templateUrl: "baz.html" })
   });
-  myapp.controller('fooCtrl', function(NgMap){
+  myapp.controller('fooCtrl', function($scope, NgMap){
     NgMap.getMap({id:'foomap'}).then(function(map) {
       console.log('NgMap.getMap in fooCtrl', map);
     });
+    $scope.onClick = function() {
+      alert('map clicked');
+    }
   });
   myapp.controller('barCtrl', function(NgMap){
     NgMap.getMap({id:'barmap'}).then(function(map) {
@@ -33,7 +36,8 @@
 <body ng-app="myapp" class="container">
   <script type="text/ng-template" id="foo.html">
 
-    <ng-map id="foomap" center="[40.74, -74.18]" zoom="4">
+    <ng-map id="foomap"
+      on-click="onClick()" center="[40.74, -74.18]" zoom="4">
       <marker position="40.74, -74.18"></marker>
       <custom-control position="TOP_CENTER">
         <input placeholder="Search" />
@@ -42,7 +46,7 @@
 
     <ng-map id="one" center="[41.74, -75.18]" zoom="8">
       <custom-marker id="can" position="41.74, -75.18">
-        <div class="allen">I am custom marker</div>
+        <div class="allen">I am a custom marker</div>
       </custom-marker>
     </ng-map>
 
