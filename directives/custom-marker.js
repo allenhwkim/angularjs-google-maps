@@ -70,16 +70,20 @@
 
       if (this.getProjection() && typeof this.position.lng == 'function') {
         var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
-        //delayed left/top calculation. with/height are not set instantly
         var _this = this;
-        var delay = _this.el.offsetWidth ? 0 : 300;
-        $timeout(function() {
+        var setPosition = function() {
           var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
           var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
           _this.el.style.left = x + "px";
           _this.el.style.top = y + "px";
           _this.el.style.visibility = "visible";
-        }, delay);
+        };
+        if (_this.el.offsetWidth && _this.el.offsetHeight) { 
+          setPosition();
+        } else {
+          //delayed left/top calculation when width/height are not set instantly
+          $timeout(setPosition, 300);
+        }
       }
     };
 
