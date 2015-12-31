@@ -189,6 +189,8 @@
       vm.observeAttrSetObj(orgAttrs, $attrs, vm.map);
       vm.singleInfoWindow = mapOptions.singleInfoWindow;
 
+      google.maps.event.trigger(vm.map, 'resize');
+
       google.maps.event.addListenerOnce(vm.map, "idle", function () {
         NgMap.addMap(vm);
         if (mapOptions.zoomToIncludeMarkers) {

@@ -89,7 +89,10 @@
     var len = Object.keys(mapControllers).length - 1;
     var mapId = mapCtrl.map.id || len;
     if (mapCtrl.map) {
-      google.maps.event.clearInstanceListeners(mapCtrl.map);
+      for (var eventName in mapCtrl.mapEvents) {
+        $log.debug('clearing map events', eventName);
+        google.maps.event.clearListeners(mapCtrl.map, eventName);
+      }
       if (mapCtrl.map.controls) {
         mapCtrl.map.controls.forEach(function(ctrl) {
           ctrl.clear();

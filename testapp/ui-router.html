@@ -30,32 +30,35 @@
     });
   });
 </script>
-<style>ng-map {width: 30%; height: 300px; display:inline-block !important; padding: 10px}</style>
+
+<style>ng-map {vertical-align:top; height:300px; width:30%; display:inline-block !important; padding: 10px}</style>
 </head>
 
 <body ng-app="myapp" class="container">
+
   <script type="text/ng-template" id="foo.html">
-
-    <ng-map id="foomap"
-      on-click="onClick()" center="[40.74, -74.18]" zoom="4">
-      <marker position="40.74, -74.18"></marker>
-      <custom-control position="TOP_CENTER">
-        <input placeholder="Search" />
-      </custom-control>
-    </ng-map>
-
-    <ng-map id="one" center="[41.74, -75.18]" zoom="8">
-      <custom-marker id="can" position="41.74, -75.18">
-        <div class="allen">I am a custom marker</div>
-      </custom-marker>
-    </ng-map>
-
-    <ng-map id="two" center="[42.74, -76.18]" zoom="12">
-      <marker position="42.74, -76.18"></marker>
-    </ng-map>
+    <div class="row">
+      <ng-map id="foomap" style="height:300px;"
+        on-click="onClick()" center="[40.74, -74.18]" zoom="4">
+        <marker position="40.74, -74.18"></marker>
+        <custom-control position="TOP_CENTER">
+          <input placeholder="Search" />
+        </custom-control>
+      </ng-map>
+      <ng-map id="one" center="[41.74, -75.18]" zoom="8" style="height:400px;" trigger-resize>
+        <custom-marker id="can" position="41.74, -75.18">
+          <div class="allen">I am a custom marker</div>
+        </custom-marker>
+      </ng-map>
+      <ng-map id="two" center="[42.74, -76.18]" zoom="12" style="height:500px;">
+        <marker position="42.74, -76.18"></marker>
+      </ng-map>
+    </div>
   </script>
+
   <script type="text/ng-template" id="bar.html">
-    <ng-map id="barmap" center="[40.74, -74.18]" zoom="12">
+    <ng-map id="barmap" center="[40.74, -74.18]" zoom="12"
+      style="height:400px;">
       <marker position="40.74, -74.18"></marker>
       <drawing-manager
         drawing-control-options="{position: 'TOP_CENTER',drawingModes:['polygon','marker']}"
@@ -64,17 +67,19 @@
       </drawing-manager>
     </ng-map>
 
-    <ng-map id="one" center="[41.74, -75.18]" zoom="4">
+    <ng-map id="one" center="[41.74, -75.18]" zoom="4" style="height:500px">
       <marker position="41.74, -75.18"></marker>
     </ng-map>
 
-    <ng-map id="two" center="[42.74, -76.18]" zoom="8">
+    <ng-map id="two" center="[42.74, -76.18]" zoom="8" style="height:300px">
       <marker position="42.74, -76.18"></marker>
     </ng-map>
   </script>
+
   <script type="text/ng-template" id="baz.html">
     <h1>No Map</h1>
   </script>
+
   <div class="navbar">
     <div class="navbar-inner">
       <ul class="nav">
