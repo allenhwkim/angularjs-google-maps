@@ -200,6 +200,8 @@ angular.module('ngMap').config([
       vm.observeAttrSetObj(orgAttrs, $attrs, vm.map);
       vm.singleInfoWindow = mapOptions.singleInfoWindow;
 
+      google.maps.event.trigger(vm.map, 'resize');
+
       google.maps.event.addListenerOnce(vm.map, "idle", function () {
         NgMap.addMap(vm);
         if (mapOptions.zoomToIncludeMarkers) {
@@ -2931,7 +2933,10 @@ angular.module('ngMap').config([
     var len = Object.keys(mapControllers).length - 1;
     var mapId = mapCtrl.map.id || len;
     if (mapCtrl.map) {
-      google.maps.event.clearInstanceListeners(mapCtrl.map);
+      for (var eventName in mapCtrl.mapEvents) {
+        void 0;
+        google.maps.event.clearListeners(mapCtrl.map, eventName);
+      }
       if (mapCtrl.map.controls) {
         mapCtrl.map.controls.forEach(function(ctrl) {
           ctrl.clear();
