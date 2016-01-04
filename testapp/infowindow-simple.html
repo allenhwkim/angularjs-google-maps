@@ -10,6 +10,21 @@ angular.module('ngMap').run(function($rootScope, NgMap) {
   });
 });
 </script>
+<style>
+  .ng-map-info-window {
+    background-color: navy;
+    color: #fff;
+  }
+  .ng-map-info-window div:first-child > div:nth-child(1) {
+    border-top-color: navy !important;
+  }
+  .ng-map-info-window div:first-child > div:nth-child(3) div {
+    background-color: transparent !important;
+  }
+  .ng-map-info-window div:first-child > div:nth-child(4) {
+    background-color: transparent !important;
+  }
+</style>
 </head>
 <body>
   <div>
