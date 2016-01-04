@@ -1103,6 +1103,8 @@ angular.module('ngMap').config([
           } else {
             infoWindow.open(map);
           }
+          var infoWindowContainerEl = infoWindow.content.parentElement.parentElement.parentElement;
+          infoWindowContainerEl.className = "ng-map-info-window";
         });
       };
 
