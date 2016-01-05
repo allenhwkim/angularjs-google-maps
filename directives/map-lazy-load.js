@@ -36,13 +36,13 @@
 /* global window, document */
 (function() {
   'use strict';
-  var $timeout, $compile, $log, src, savedHtml;
+  var $timeout, $compile, src, savedHtml;
 
   var preLinkFunc = function(scope, element, attrs) {
     var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;
 
     window.lazyLoadCallback = function() {
-      $log.debug('Google maps script loaded:', mapsUrl);
+      console.log('Google maps script loaded:', mapsUrl);
       $timeout(function() { /* give some time to load */
         element.html(savedHtml);
         $compile(element.contents())(scope);
@@ -51,7 +51,7 @@
 
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
-      $log.debug('Prelinking script loaded,' + src);
+      console.log('Prelinking script loaded,' + src);
 
       scriptEl.src = mapsUrl +
         (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
@@ -68,7 +68,7 @@
 
   var compileFunc = function(tElement, tAttrs) {
 
-    (!tAttrs.mapLazyLoad) && $log.error('requires src with map-lazy-load');
+    (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
     savedHtml = tElement.html();
     src = tAttrs.mapLazyLoad;
 
@@ -86,13 +86,13 @@
     };
   };
 
-  var mapLazyLoad = function(_$compile_, _$timeout_, _$log_) {
-    $compile = _$compile_, $timeout = _$timeout_, $log = _$log_;
+  var mapLazyLoad = function(_$compile_, _$timeout_) {
+    $compile = _$compile_, $timeout = _$timeout_;
     return {
       compile: compileFunc
     };
   };
-  mapLazyLoad.$inject = ['$compile','$timeout', '$log'];
+  mapLazyLoad.$inject = ['$compile','$timeout'];
 
   angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
 })();

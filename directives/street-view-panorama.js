@@ -31,7 +31,7 @@
 (function() {
   'use strict';
 
-  var streetViewPanorama = function($log, Attr2MapOptions, NgMap) {
+  var streetViewPanorama = function(Attr2MapOptions, NgMap) {
     var parser = Attr2MapOptions;
 
     var getStreetViewPanorama = function(map, options, events) {
@@ -61,7 +61,7 @@
       var svpOptions = angular.extend(options, controlOptions);
 
       var svpEvents = parser.getEvents(scope, filtered);
-      $log.debug('street-view-panorama',
+      console.log('street-view-panorama',
         'options', svpOptions, 'events', svpEvents);
 
       NgMap.getMap().then(function(map) {
@@ -91,7 +91,7 @@
     };
 
   };
-  streetViewPanorama.$inject = ['$log', 'Attr2MapOptions', 'NgMap'];
+  streetViewPanorama.$inject = ['Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('streetViewPanorama', streetViewPanorama);
 })();

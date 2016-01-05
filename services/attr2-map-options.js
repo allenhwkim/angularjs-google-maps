@@ -351,7 +351,7 @@
             }
             controlOptions[attr] = options;
           } catch (e) {
-            $log.error('invald option for', attr, newValue, e, e.stack);
+            console.error('invald option for', attr, newValue, e, e.stack);
           }
         }
       } // for

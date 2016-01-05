@@ -20,7 +20,7 @@
   'use strict';
 
   angular.module('ngMap').directive('mapData', [
-    '$log', 'Attr2MapOptions', 'NgMap', function($log, Attr2MapOptions, NgMap) {
+    'Attr2MapOptions', 'NgMap', function(Attr2MapOptions, NgMap) {
     var parser = Attr2MapOptions;
     return {
       restrict: 'E',
@@ -31,7 +31,7 @@
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
 
-        $log.debug('map-data options', options);
+        console.log('map-data options', options);
         NgMap.getMap().then(function(map) {
           //options
           for (var key in options) {

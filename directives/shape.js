@@ -76,14 +76,13 @@
 /* global google */
 (function() {
   'use strict';
-  var $log;
 
   var getShape = function(options, events) {
     var shape;
 
     var shapeName = options.name;
     delete options.name;  //remove name bcoz it's not for options
-    $log.debug("shape", shapeName, "options", options, 'events', events);
+    console.log("shape", shapeName, "options", options, 'events', events);
 
     /**
      * set options
@@ -123,9 +122,8 @@
     return shape;
   };
 
-  var shape = function(Attr2MapOptions, $parse, _$log_, NgMap) {
+  var shape = function(Attr2MapOptions, $parse, NgMap) {
     var parser = Attr2MapOptions;
-    $log = _$log_;
 
     var linkFunc = function(scope, element, attrs, mapController) {
       mapController = mapController[0]||mapController[1];
@@ -165,7 +163,7 @@
       link: linkFunc
      }; // return
   };
-  shape.$inject = ['Attr2MapOptions', '$parse', '$log', 'NgMap'];
+  shape.$inject = ['Attr2MapOptions', '$parse', 'NgMap'];
 
   angular.module('ngMap').directive('shape', shape);
 

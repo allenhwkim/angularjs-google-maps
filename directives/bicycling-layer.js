@@ -15,7 +15,7 @@
  */
 (function() {
   'use strict';
-  var $log, parser;
+  var parser;
 
   var linkFunc = function(scope, element, attrs, mapController) {
     mapController = mapController[0]||mapController[1];
@@ -24,7 +24,7 @@
     var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
 
-    $log.debug('bicycling-layer options', options, 'events', events);
+    console.log('bicycling-layer options', options, 'events', events);
 
     var layer = getLayer(options, events);
     mapController.addObject('bicyclingLayers', layer);
@@ -42,15 +42,15 @@
     return layer;
   };
 
-  var bicyclingLayer= function(_$log_, Attr2MapOptions) {
-    $log = _$log_, parser = Attr2MapOptions;
+  var bicyclingLayer= function(Attr2MapOptions) {
+    parser = Attr2MapOptions;
     return {
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       link: linkFunc
      };
   };
-  bicyclingLayer.$inject = ['$log', 'Attr2MapOptions'];
+  bicyclingLayer.$inject = ['Attr2MapOptions'];
 
   angular.module('ngMap').directive('bicyclingLayer', bicyclingLayer);
 })();

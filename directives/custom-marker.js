@@ -27,7 +27,7 @@
 /* global document */
 (function() {
   'use strict';
-  var parser, $timeout, $compile, $log, NgMap;
+  var parser, $timeout, $compile, NgMap;
 
   var CustomMarker = function(options) {
     options = options || {};
@@ -127,7 +127,7 @@
   };
 
   var linkFunc = function(orgHtml, varsToWatch) {
-    $log.debug('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
+    //console.log('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
 
     return function(scope, element, attrs, mapController) {
       mapController = mapController[0]||mapController[1];
@@ -141,7 +141,7 @@
        * build a custom marker element
        */
       element[0].style.display = 'none';
-      $log.debug("custom-marker options", options);
+      console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
       $timeout(function() { //apply contents, class, and location after it is compiled
@@ -153,7 +153,7 @@
         var classNames = element[0].firstElementChild.className;
         customMarker.addClass('custom-marker');
         customMarker.addClass(classNames);
-        $log.debug('customMarker', customMarker, 'classNames', classNames);
+        console.log('customMarker', customMarker, 'classNames', classNames);
 
         if (!(options.position instanceof google.maps.LatLng)) {
           NgMap.getGeoLocation(options.position).then(
@@ -164,7 +164,7 @@
         }
       });
 
-      $log.debug("custom-marker events", "events");
+      console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
         google.maps.event.addDomListener(
           customMarker.el, eventName, events[eventName]);
@@ -184,12 +184,11 @@
 
 
   var customMarkerDirective = function(
-      _$timeout_, _$compile_, _$log_, Attr2MapOptions, _NgMap_
+      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
     )  {
     parser = Attr2MapOptions;
     $timeout = _$timeout_;
     $compile = _$compile_;
-    $log = _$log_;
     NgMap = _NgMap_;
 
     return {
@@ -216,7 +215,7 @@
     }; // return
   };// function
   customMarkerDirective.$inject =
-    ['$timeout', '$compile', '$log', 'Attr2MapOptions', 'NgMap'];
+    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();

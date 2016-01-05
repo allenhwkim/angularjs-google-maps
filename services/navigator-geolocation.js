@@ -8,7 +8,7 @@
 /* global google */
 (function() {
   'use strict';
-  var $q, $log;
+  var $q;
 
   /**
    * @memberof NavigatorGeolocation
@@ -43,7 +43,7 @@
         function(position) {
           deferred.resolve(position);
         }, function(evt) {
-          $log.error(evt);
+          console.error(evt);
           deferred.reject(evt);
         },
         geoLocationOptions
@@ -54,13 +54,13 @@
     return deferred.promise;
   };
 
-  var NavigatorGeolocation = function(_$q_, _$log_) {
-    $q = _$q_; $log = _$log_;
+  var NavigatorGeolocation = function(_$q_) {
+    $q = _$q_;
     return {
       getCurrentPosition: getCurrentPosition
     };
   };
-  NavigatorGeolocation.$inject = ['$q', '$log'];
+  NavigatorGeolocation.$inject = ['$q'];
 
   angular.module('ngMap').
     service('NavigatorGeolocation', NavigatorGeolocation);
