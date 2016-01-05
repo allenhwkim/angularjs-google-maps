@@ -1,13 +1,4 @@
 angular.module('ngMap', []);
-angular.module('ngMap').config([
-  '$compileProvider',
-  '$logProvider', 
-  function ($compileProvider, $logProvider) {
-    var debugMode = !!window.location.search.match(/[\?\&]debug=1/);
-    $logProvider.debugEnabled(debugMode);
-    $compileProvider.debugInfoEnabled(debugMode);
-  }
-]);
 
 /**
  * @ngdoc controller
@@ -15,10 +6,12 @@ angular.module('ngMap').config([
  */
 (function() {
   'use strict';
+  var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, $log, Attr2MapOptions, NgMap, NgMapPool
+      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
     ) {
+    Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
 
     vm.mapOptions; /** @memberof __MapController */
@@ -64,7 +57,7 @@ angular.module('ngMap').config([
         var objs = obj.map[groupName];
         for (var name in objs) {
           if (objs[name] === obj) {
-            $log.debug('Deleting', groupName, obj);
+            console.log('Deleting', groupName, obj);
             google.maps.event.clearInstanceListeners(obj);
             delete objs[name];
           }
@@ -154,7 +147,7 @@ angular.module('ngMap').config([
         var options = Attr2MapOptions.getOptions(filtered);
         var controlOptions = Attr2MapOptions.getControlOptions(filtered);
         mapOptions = angular.extend(options, controlOptions);
-        $log.debug('map options', mapOptions);
+        console.log('map options', mapOptions);
 
         for (var group in lazyInitMap) {
           var groupMembers = lazyInitMap[group]; //e.g. markers
@@ -229,8 +222,8 @@ angular.module('ngMap').config([
     var controlOptions = Attr2MapOptions.getControlOptions(filtered);
     var mapOptions = angular.extend(options, controlOptions);
     var mapEvents = Attr2MapOptions.getEvents($scope, filtered);
-    $log.debug('ng-map Options', mapOptions);
-    Object.keys(mapEvents).length && $log.debug('ng-map Events', mapEvents);
+    console.log('ng-map Options', mapOptions);
+    Object.keys(mapEvents).length && console.log('ng-map Events', mapEvents);
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
@@ -254,7 +247,7 @@ angular.module('ngMap').config([
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', '$log', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
+    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();
@@ -276,7 +269,7 @@ angular.module('ngMap').config([
  */
 (function() {
   'use strict';
-  var $log, parser;
+  var parser;
 
   var linkFunc = function(scope, element, attrs, mapController) {
     mapController = mapController[0]||mapController[1];
@@ -285,7 +278,7 @@ angular.module('ngMap').config([
     var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
 
-    $log.debug('bicycling-layer options', options, 'events', events);
+    console.log('bicycling-layer options', options, 'events', events);
 
     var layer = getLayer(options, events);
     mapController.addObject('bicyclingLayers', layer);
@@ -303,15 +296,15 @@ angular.module('ngMap').config([
     return layer;
   };
 
-  var bicyclingLayer= function(_$log_, Attr2MapOptions) {
-    $log = _$log_, parser = Attr2MapOptions;
+  var bicyclingLayer= function(Attr2MapOptions) {
+    parser = Attr2MapOptions;
     return {
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       link: linkFunc
      };
   };
-  bicyclingLayer.$inject = ['$log', 'Attr2MapOptions'];
+  bicyclingLayer.$inject = ['Attr2MapOptions'];
 
   angular.module('ngMap').directive('bicyclingLayer', bicyclingLayer);
 })();
@@ -418,7 +411,7 @@ angular.module('ngMap').config([
 /* global document */
 (function() {
   'use strict';
-  var parser, $timeout, $compile, $log, NgMap;
+  var parser, $timeout, $compile, NgMap;
 
   var CustomMarker = function(options) {
     options = options || {};
@@ -518,7 +511,7 @@ angular.module('ngMap').config([
   };
 
   var linkFunc = function(orgHtml, varsToWatch) {
-    $log.debug('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
+    //console.log('orgHtml', orgHtml, 'varsToWatch', varsToWatch);
 
     return function(scope, element, attrs, mapController) {
       mapController = mapController[0]||mapController[1];
@@ -532,7 +525,7 @@ angular.module('ngMap').config([
        * build a custom marker element
        */
       element[0].style.display = 'none';
-      $log.debug("custom-marker options", options);
+      console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
       $timeout(function() { //apply contents, class, and location after it is compiled
@@ -544,7 +537,7 @@ angular.module('ngMap').config([
         var classNames = element[0].firstElementChild.className;
         customMarker.addClass('custom-marker');
         customMarker.addClass(classNames);
-        $log.debug('customMarker', customMarker, 'classNames', classNames);
+        console.log('customMarker', customMarker, 'classNames', classNames);
 
         if (!(options.position instanceof google.maps.LatLng)) {
           NgMap.getGeoLocation(options.position).then(
@@ -555,7 +548,7 @@ angular.module('ngMap').config([
         }
       });
 
-      $log.debug("custom-marker events", "events");
+      console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
         google.maps.event.addDomListener(
           customMarker.el, eventName, events[eventName]);
@@ -575,12 +568,11 @@ angular.module('ngMap').config([
 
 
   var customMarkerDirective = function(
-      _$timeout_, _$compile_, _$log_, Attr2MapOptions, _NgMap_
+      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
     )  {
     parser = Attr2MapOptions;
     $timeout = _$timeout_;
     $compile = _$compile_;
-    $log = _$log_;
     NgMap = _NgMap_;
 
     return {
@@ -607,7 +599,7 @@ angular.module('ngMap').config([
     }; // return
   };// function
   customMarkerDirective.$inject =
-    ['$timeout', '$compile', '$log', 'Attr2MapOptions', 'NgMap'];
+    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();
@@ -642,7 +634,7 @@ angular.module('ngMap').config([
 /* global document */
 (function() {
   'use strict';
-  var NgMap, $timeout, $log, NavigatorGeolocation;
+  var NgMap, $timeout, NavigatorGeolocation;
 
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
@@ -706,11 +698,10 @@ angular.module('ngMap').config([
   };
 
   var directions = function(
-      Attr2MapOptions, _$timeout_, _$log_, _NavigatorGeolocation_, _NgMap_) {
+      Attr2MapOptions, _$timeout_, _NavigatorGeolocation_, _NgMap_) {
     var parser = Attr2MapOptions;
     NgMap = _NgMap_;
     $timeout = _$timeout_;
-    $log = _$log_;
     NavigatorGeolocation = _NavigatorGeolocation_;
 
     var linkFunc = function(scope, element, attrs, mapController) {
@@ -732,12 +723,12 @@ angular.module('ngMap').config([
               $timeout(function(){
                 var panel =
                   document.getElementById(val) || document.querySelector(val);
-                $log.debug('setting ', attrName, 'with value', panel);
+                console.log('setting ', attrName, 'with value', panel);
                 panel && renderer.setPanel(panel);
               });
             } else if (options[attrName] !== val) { //apply only if changed
               var optionValue = parser.toOptionValue(val, {key: attrName});
-              $log.debug('setting ', attrName, 'with value', optionValue);
+              console.log('setting ', attrName, 'with value', optionValue);
               options[attrName] = optionValue;
               updateRoute(renderer, options);
             }
@@ -760,7 +751,7 @@ angular.module('ngMap').config([
     };
   }; // var directions
   directions.$inject =
-    ['Attr2MapOptions', '$timeout', '$log', 'NavigatorGeolocation', 'NgMap'];
+    ['Attr2MapOptions', '$timeout', 'NavigatorGeolocation', 'NgMap'];
 
   angular.module('ngMap').directive('directions', directions);
 })();
@@ -919,7 +910,7 @@ angular.module('ngMap').config([
   'use strict';
 
   angular.module('ngMap').directive('fusionTablesLayer', [
-    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
+    'Attr2MapOptions', function(Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getLayer = function(options, events) {
@@ -942,7 +933,7 @@ angular.module('ngMap').config([
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
-        $log.debug('fusion-tables-layer options', options, 'events', events);
+        console.log('fusion-tables-layer options', options, 'events', events);
 
         var layer = getLayer(options, events);
         mapController.addObject('fusionTablesLayers', layer);
@@ -969,7 +960,7 @@ angular.module('ngMap').config([
   'use strict';
 
   angular.module('ngMap').directive('heatmapLayer', [
-    'Attr2MapOptions', '$window', '$log', function(Attr2MapOptions, $window, $log) {
+    'Attr2MapOptions', '$window', function(Attr2MapOptions, $window) {
     var parser = Attr2MapOptions;
     return {
       restrict: 'E',
@@ -996,7 +987,7 @@ angular.module('ngMap').config([
          * set events
          */
         var events = parser.getEvents(scope, filtered);
-        $log.debug('heatmap-layer options', layer, 'events', events);
+        console.log('heatmap-layer options', layer, 'events', events);
 
         mapController.addObject('heatmapLayers', layer);
       }
@@ -1236,7 +1227,7 @@ angular.module('ngMap').config([
   'use strict';
 
   angular.module('ngMap').directive('kmlLayer', [
-    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
+    'Attr2MapOptions', function(Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getKmlLayer = function(options, events) {
@@ -1258,7 +1249,7 @@ angular.module('ngMap').config([
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
-        $log.debug('kml-layer options', options, 'events', events);
+        console.log('kml-layer options', options, 'events', events);
 
         var kmlLayer = getKmlLayer(options, events);
         mapController.addObject('kmlLayers', kmlLayer);
@@ -1293,7 +1284,7 @@ angular.module('ngMap').config([
   'use strict';
 
   angular.module('ngMap').directive('mapData', [
-    '$log', 'Attr2MapOptions', 'NgMap', function($log, Attr2MapOptions, NgMap) {
+    'Attr2MapOptions', 'NgMap', function(Attr2MapOptions, NgMap) {
     var parser = Attr2MapOptions;
     return {
       restrict: 'E',
@@ -1304,7 +1295,7 @@ angular.module('ngMap').config([
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
 
-        $log.debug('map-data options', options);
+        console.log('map-data options', options);
         NgMap.getMap().then(function(map) {
           //options
           for (var key in options) {
@@ -1364,13 +1355,13 @@ angular.module('ngMap').config([
 /* global window, document */
 (function() {
   'use strict';
-  var $timeout, $compile, $log, src, savedHtml;
+  var $timeout, $compile, src, savedHtml;
 
   var preLinkFunc = function(scope, element, attrs) {
     var mapsUrl = attrs.mapLazyLoadParams || attrs.mapLazyLoad;
 
     window.lazyLoadCallback = function() {
-      $log.debug('Google maps script loaded:', mapsUrl);
+      console.log('Google maps script loaded:', mapsUrl);
       $timeout(function() { /* give some time to load */
         element.html(savedHtml);
         $compile(element.contents())(scope);
@@ -1379,7 +1370,7 @@ angular.module('ngMap').config([
 
     if(window.google === undefined || window.google.maps === undefined) {
       var scriptEl = document.createElement('script');
-      $log.debug('Prelinking script loaded,' + src);
+      console.log('Prelinking script loaded,' + src);
 
       scriptEl.src = mapsUrl +
         (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
@@ -1396,7 +1387,7 @@ angular.module('ngMap').config([
 
   var compileFunc = function(tElement, tAttrs) {
 
-    (!tAttrs.mapLazyLoad) && $log.error('requires src with map-lazy-load');
+    (!tAttrs.mapLazyLoad) && console.error('requires src with map-lazy-load');
     savedHtml = tElement.html();
     src = tAttrs.mapLazyLoad;
 
@@ -1414,13 +1405,13 @@ angular.module('ngMap').config([
     };
   };
 
-  var mapLazyLoad = function(_$compile_, _$timeout_, _$log_) {
-    $compile = _$compile_, $timeout = _$timeout_, $log = _$log_;
+  var mapLazyLoad = function(_$compile_, _$timeout_) {
+    $compile = _$compile_, $timeout = _$timeout_;
     return {
       compile: compileFunc
     };
   };
-  mapLazyLoad.$inject = ['$compile','$timeout', '$log'];
+  mapLazyLoad.$inject = ['$compile','$timeout'];
 
   angular.module('ngMap').directive('mapLazyLoad', mapLazyLoad);
 })();
@@ -1557,8 +1548,7 @@ angular.module('ngMap').config([
 (function() {
   'use strict';
 
-  angular.module('ngMap').directive('mapsEngineLayer', [
-    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
+  angular.module('ngMap').directive('mapsEngineLayer', ['Attr2MapOptions', function(Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getMapsEngineLayer = function(options, events) {
@@ -1581,7 +1571,7 @@ angular.module('ngMap').config([
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
-        $log.debug('maps-engine-layer options', options, 'events', events);
+        console.log('maps-engine-layer options', options, 'events', events);
 
         var layer = getMapsEngineLayer(options, events);
         mapController.addObject('mapsEngineLayers', layer);
@@ -1635,7 +1625,7 @@ angular.module('ngMap').config([
 /* global google */
 (function() {
   'use strict';
-  var parser, $parse, $log, NgMap;
+  var parser, $parse, NgMap;
 
   var getMarker = function(options, events) {
     var marker;
@@ -1643,7 +1633,7 @@ angular.module('ngMap').config([
     if (NgMap.defaultOptions.marker) {
       for (var key in NgMap.defaultOptions.marker) {
         if (typeof options[key] == 'undefined') {
-          $log.debug('setting default marker options', 
+          console.log('setting default marker options', 
             key, NgMap.defaultOptions.marker);
           options[key] = NgMap.defaultOptions.marker[key];
         }
@@ -1659,7 +1649,7 @@ angular.module('ngMap').config([
      * set events
      */
     if (Object.keys(events).length > 0) {
-      $log.debug("markerEvents", events);
+      console.log("markerEvents", events);
     }
     for (var eventName in events) {
       if (eventName) {
@@ -1677,7 +1667,7 @@ angular.module('ngMap').config([
     var filtered = parser.filter(attrs);
     var markerOptions = parser.getOptions(filtered, scope, {scope: scope});
     var markerEvents = parser.getEvents(scope, filtered);
-    $log.debug('marker options', markerOptions, 'events', markerEvents);
+    console.log('marker options', markerOptions, 'events', markerEvents);
 
     var address;
     if (!(markerOptions.position instanceof google.maps.LatLng)) {
@@ -1702,10 +1692,9 @@ angular.module('ngMap').config([
     });
   };
 
-  var marker = function(Attr2MapOptions, _$parse_, _$log_, _NgMap_) {
+  var marker = function(Attr2MapOptions, _$parse_, _NgMap_) {
     parser = Attr2MapOptions;
     $parse = _$parse_;
-    $log = _$log_;
     NgMap = _NgMap_;
 
     return {
@@ -1715,7 +1704,7 @@ angular.module('ngMap').config([
     };
   };
 
-  marker.$inject = ['Attr2MapOptions', '$parse', '$log', 'NgMap'];
+  marker.$inject = ['Attr2MapOptions', '$parse', 'NgMap'];
   angular.module('ngMap').directive('marker', marker);
 
 })();
@@ -1908,14 +1897,13 @@ angular.module('ngMap').config([
 /* global google */
 (function() {
   'use strict';
-  var $log;
 
   var getShape = function(options, events) {
     var shape;
 
     var shapeName = options.name;
     delete options.name;  //remove name bcoz it's not for options
-    $log.debug("shape", shapeName, "options", options, 'events', events);
+    console.log("shape", shapeName, "options", options, 'events', events);
 
     /**
      * set options
@@ -1955,9 +1943,8 @@ angular.module('ngMap').config([
     return shape;
   };
 
-  var shape = function(Attr2MapOptions, $parse, _$log_, NgMap) {
+  var shape = function(Attr2MapOptions, $parse, NgMap) {
     var parser = Attr2MapOptions;
-    $log = _$log_;
 
     var linkFunc = function(scope, element, attrs, mapController) {
       mapController = mapController[0]||mapController[1];
@@ -1997,7 +1984,7 @@ angular.module('ngMap').config([
       link: linkFunc
      }; // return
   };
-  shape.$inject = ['Attr2MapOptions', '$parse', '$log', 'NgMap'];
+  shape.$inject = ['Attr2MapOptions', '$parse', 'NgMap'];
 
   angular.module('ngMap').directive('shape', shape);
 
@@ -2036,7 +2023,7 @@ angular.module('ngMap').config([
 (function() {
   'use strict';
 
-  var streetViewPanorama = function($log, Attr2MapOptions, NgMap) {
+  var streetViewPanorama = function(Attr2MapOptions, NgMap) {
     var parser = Attr2MapOptions;
 
     var getStreetViewPanorama = function(map, options, events) {
@@ -2066,7 +2053,7 @@ angular.module('ngMap').config([
       var svpOptions = angular.extend(options, controlOptions);
 
       var svpEvents = parser.getEvents(scope, filtered);
-      $log.debug('street-view-panorama',
+      console.log('street-view-panorama',
         'options', svpOptions, 'events', svpEvents);
 
       NgMap.getMap().then(function(map) {
@@ -2096,7 +2083,7 @@ angular.module('ngMap').config([
     };
 
   };
-  streetViewPanorama.$inject = ['$log', 'Attr2MapOptions', 'NgMap'];
+  streetViewPanorama.$inject = ['Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('streetViewPanorama', streetViewPanorama);
 })();
@@ -2120,7 +2107,7 @@ angular.module('ngMap').config([
   'use strict';
 
   angular.module('ngMap').directive('trafficLayer', [
-    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
+    'Attr2MapOptions', function(Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getLayer = function(options, events) {
@@ -2142,7 +2129,7 @@ angular.module('ngMap').config([
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
-        $log.debug('traffic-layer options', options, 'events', events);
+        console.log('traffic-layer options', options, 'events', events);
 
         var layer = getLayer(options, events);
         mapController.addObject('trafficLayers', layer);
@@ -2174,7 +2161,7 @@ angular.module('ngMap').config([
   'use strict';
 
   angular.module('ngMap').directive('transitLayer', [
-    '$log', 'Attr2MapOptions', function($log, Attr2MapOptions) {
+    'Attr2MapOptions', function(Attr2MapOptions) {
     var parser = Attr2MapOptions;
 
     var getLayer = function(options, events) {
@@ -2196,7 +2183,7 @@ angular.module('ngMap').config([
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered);
-        $log.debug('transit-layer options', options, 'events', events);
+        console.log('transit-layer options', options, 'events', events);
 
         var layer = getLayer(options, events);
         mapController.addObject('transitLayers', layer);
@@ -2623,7 +2610,7 @@ angular.module('ngMap').config([
             }
             controlOptions[attr] = options;
           } catch (e) {
-            $log.error('invald option for', attr, newValue, e, e.stack);
+            console.error('invald option for', attr, newValue, e, e.stack);
           }
         }
       } // for
@@ -2706,7 +2693,7 @@ angular.module('ngMap').config([
 /* global google */
 (function() {
   'use strict';
-  var $q, $log;
+  var $q;
 
   /**
    * @memberof NavigatorGeolocation
@@ -2741,7 +2728,7 @@ angular.module('ngMap').config([
         function(position) {
           deferred.resolve(position);
         }, function(evt) {
-          $log.error(evt);
+          console.error(evt);
           deferred.reject(evt);
         },
         geoLocationOptions
@@ -2752,13 +2739,13 @@ angular.module('ngMap').config([
     return deferred.promise;
   };
 
-  var NavigatorGeolocation = function(_$q_, _$log_) {
-    $q = _$q_; $log = _$log_;
+  var NavigatorGeolocation = function(_$q_) {
+    $q = _$q_;
     return {
       getCurrentPosition: getCurrentPosition
     };
   };
-  NavigatorGeolocation.$inject = ['$q', '$log'];
+  NavigatorGeolocation.$inject = ['$q'];
 
   angular.module('ngMap').
     service('NavigatorGeolocation', NavigatorGeolocation);
@@ -2852,7 +2839,7 @@ angular.module('ngMap').config([
  */
 (function() {
   'use strict';
-  var $window, $document, $q, $log;
+  var $window, $document, $q;
   var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter;
 
   var mapControllers = {};
@@ -2880,7 +2867,7 @@ angular.module('ngMap').config([
       ctrl.initializeMap();
       return ctrl.map;
     } else {
-      $log.error('map is already instialized');
+      console.error('map is already instialized');
     }
   };
 
@@ -3055,14 +3042,13 @@ angular.module('ngMap').config([
     };
 
     var NgMap = function(
-        _$window_, _$document_, _$q_, _$log_,
+        _$window_, _$document_, _$q_,
         _NavigatorGeolocation_, _Attr2MapOptions_,
         _GeoCoder_, _camelCaseFilter_
       ) {
       $window = _$window_;
       $document = _$document_[0];
       $q = _$q_;
-      $log = _$log_;
       NavigatorGeolocation = _NavigatorGeolocation_;
       Attr2MapOptions = _Attr2MapOptions_;
       GeoCoder = _GeoCoder_;
@@ -3080,7 +3066,7 @@ angular.module('ngMap').config([
       };
     };
     NgMap.$inject = [
-      '$window', '$document', '$q', '$log',
+      '$window', '$document', '$q',
       'NavigatorGeolocation', 'Attr2MapOptions',
       'GeoCoder', 'camelCaseFilter'
     ];
