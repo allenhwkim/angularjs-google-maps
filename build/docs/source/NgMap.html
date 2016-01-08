@@ -254,7 +254,7 @@
     var mapId = mapCtrl.map.id || len;
     if (mapCtrl.map) {
       for (var eventName in mapCtrl.mapEvents) {
-        $log.debug('clearing map events', eventName);
+        console.log('clearing map events', eventName);
         google.maps.event.clearListeners(mapCtrl.map, eventName);
       }
       if (mapCtrl.map.controls) {
@@ -262,6 +262,12 @@
           ctrl.clear();
         });
       }
+    }
+    //Remove Heatmap Layers
+    if (mapCtrl.map.heatmapLayers) {
+      Object.keys(mapCtrl.map.heatmapLayers).forEach(function (layer) {
+        mapCtrl.deleteObject('heatmapLayers', mapCtrl.map.heatmapLayers[layer]);
+      });
     }
     delete mapControllers[mapId];
   };

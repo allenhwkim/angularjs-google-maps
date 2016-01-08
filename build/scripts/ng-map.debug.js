@@ -2417,7 +2417,7 @@ angular.module('ngMap', []);
         }
         for (var key in output) { //jshint ignore:line
           var arr = output[key];
-          if (key == "anchor" || key == "origin") {
+          if (key == "anchor" || key == "origin" || key == "labelOrigin") {
             output[key] = new google.maps.Point(arr[0], arr[1]);
           } else if (key == "size" || key == "scaledSize") {
             output[key] = new google.maps.Size(arr[0], arr[1]);
@@ -2923,7 +2923,7 @@ angular.module('ngMap', []);
     var mapId = mapCtrl.map.id || len;
     if (mapCtrl.map) {
       for (var eventName in mapCtrl.mapEvents) {
-        $log.debug('clearing map events', eventName);
+        console.log('clearing map events', eventName);
         google.maps.event.clearListeners(mapCtrl.map, eventName);
       }
       if (mapCtrl.map.controls) {
@@ -2932,6 +2932,14 @@ angular.module('ngMap', []);
         });
       }
     }
+
+    //Remove Heatmap Layers
+    if (mapCtrl.map.heatmapLayers) {
+      Object.keys(mapCtrl.map.heatmapLayers).forEach(function (layer) {
+        mapCtrl.deleteObject('heatmapLayers', mapCtrl.map.heatmapLayers[layer]);
+      });
+    }
+
     delete mapControllers[mapId];
   };
 

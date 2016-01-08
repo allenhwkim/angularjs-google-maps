@@ -199,6 +199,10 @@
     "path": "testapp/layer-georss.html",
     "title": null
   },
+  "layer-heatmap-http.html": {
+    "path": "testapp/layer-heatmap-http.html",
+    "title": null
+  },
   "layer-heatmap.html": {
     "path": "testapp/layer-heatmap.html",
     "title": null
