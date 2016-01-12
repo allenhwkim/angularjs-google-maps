@@ -552,7 +552,7 @@ angular.module('ngMap', []);
       console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
-      $timeout(function() { //apply contents, class, and location after it is compiled
+      //$timeout(function() { //apply contents, class, and location after it is compiled
         scope.$watch('[' + varsToWatch.join(',') + ']', function() {
           customMarker.setContent(orgHtml, scope);
         });
@@ -570,7 +570,7 @@ angular.module('ngMap', []);
             }
           );
         }
-      });
+      //});
 
       console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
