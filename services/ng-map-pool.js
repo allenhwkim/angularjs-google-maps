@@ -11,7 +11,7 @@
    * @desc map instance pool
    */
   var mapInstances = [];
-  var $window, $document;
+  var $window, $document, $timeout;
 
   var add = function(el) {
     var mapDiv = $document.createElement("div");
@@ -47,6 +47,11 @@
     var map = find(el);
     if (!map) {
       map = add(el);
+    } else {
+      /* firing map idle event, which is used by map controller */
+      $timeout(function() {
+        google.maps.event.trigger(map, 'idle');
+      }, 100);
     }
     map.inUse = true;
     return map;
@@ -63,8 +68,8 @@
     map.inUse = false;
   };
 
-  var NgMapPool = function(_$document_, _$window_) {
-    $document = _$document_[0], $window = _$window_;
+  var NgMapPool = function(_$document_, _$window_, _$timeout_) {
+    $document = _$document_[0], $window = _$window_, $timeout = _$timeout_;
 
     return {
       mapInstances: mapInstances,
@@ -72,7 +77,7 @@
       returnMapInstance: returnMapInstance
     };
   };
-  NgMapPool.$inject = [ '$document', '$window' ];
+  NgMapPool.$inject = [ '$document', '$window', '$timeout'];
 
   angular.module('ngMap').factory('NgMapPool', NgMapPool);
 
