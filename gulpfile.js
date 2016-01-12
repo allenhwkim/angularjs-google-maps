@@ -1,4 +1,5 @@
 'use strict';
+var pjson = require('./package.json');
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -19,6 +20,7 @@ var through = require('through2');
 var path = require('path');
 var cheerio = require('cheerio');
 var argv = require('yargs').argv;
+var replace = require('gulp-replace');
 
 var bumpVersion = function(type) {
   type = type || 'patch';
@@ -50,6 +52,8 @@ gulp.task('clean', function() {
     .pipe(clean({force: true}));
 });
 
+var license = require('uglify-save-license');
+
 gulp.task('build-js', function() {
   return gulp.src([
       'app.js',
@@ -59,11 +63,12 @@ gulp.task('build-js', function() {
       'services/*.js'
     ])
     .pipe(concat('ng-map.debug.js'))
+    .pipe(replace(/(AngularJS Google Maps)/, '$1 Ver. ' + pjson.version))
     .pipe(gulp.dest('build/scripts'))
     .pipe(stripDebug())
     .pipe(concat('ng-map.js'))
     .pipe(gulp.dest('build/scripts'))
-    .pipe(uglify())
+    .pipe(uglify({preserveComments: license}))
     .pipe(rename('ng-map.min.js'))
     .pipe(gulp.dest('build/scripts'))
     .on('error', gutil.log);
