@@ -552,25 +552,24 @@ angular.module('ngMap', []);
       void 0;
       var customMarker = new CustomMarker(options);
 
-      //$timeout(function() { //apply contents, class, and location after it is compiled
-        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
-          customMarker.setContent(orgHtml, scope);
-        });
+      
+	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+	    customMarker.setContent(orgHtml, scope);
+	  });
 
-        customMarker.setContent(element[0].innerHTML, scope);
-        var classNames = element[0].firstElementChild.className;
-        customMarker.addClass('custom-marker');
-        customMarker.addClass(classNames);
-        void 0;
+	  customMarker.setContent(element[0].innerHTML, scope);
+	  var classNames = element[0].firstElementChild.className;
+	  customMarker.addClass('custom-marker');
+	  customMarker.addClass(classNames);
+	  void 0;
 
-        if (!(options.position instanceof google.maps.LatLng)) {
-          NgMap.getGeoLocation(options.position).then(
-            function(latlng) {
-              customMarker.setPosition(latlng);
-            }
-          );
-        }
-      //});
+	  if (!(options.position instanceof google.maps.LatLng)) {
+	    NgMap.getGeoLocation(options.position).then(
+		  function(latlng) {
+		    customMarker.setPosition(latlng);
+		  }
+	    );
+	  }
 
       void 0;
       for (var eventName in events) { /* jshint ignore:line */
@@ -2842,12 +2841,25 @@ angular.module('ngMap', []);
   var returnMapInstance = function(map) {
     map.inUse = false;
   };
+  
+  /**
+   * @memberof NgMapPool
+   * @function resetMapInstances
+   * @desc resets mapInstance array
+   */
+  var resetMapInstances = function() {
+    for(var i = 0;i < mapInstances.length;i++) {
+        mapInstances[i] = null;
+    }
+    mapInstances = [];
+  };
 
   var NgMapPool = function(_$document_, _$window_, _$timeout_) {
     $document = _$document_[0], $window = _$window_, $timeout = _$timeout_;
 
     return {
-      mapInstances: mapInstances,
+	  mapInstances: mapInstances,
+      resetMapInstances: resetMapInstances,
       getMapInstance: getMapInstance,
       returnMapInstance: returnMapInstance
     };

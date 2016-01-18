@@ -84,6 +84,7 @@
     $document = _$document_[0], $window = _$window_, $timeout = _$timeout_;
 
     return {
+	  mapInstances: mapInstances,
       resetMapInstances: resetMapInstances,
       getMapInstance: getMapInstance,
       returnMapInstance: returnMapInstance
