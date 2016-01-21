@@ -40,6 +40,7 @@ angular.module('ngMap', []);
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
+    vm.eventListeners;  /** @memberof __MapController */
 
     /**
      * Add an object to the collection of group
@@ -210,7 +211,9 @@ angular.module('ngMap', []);
 
       // set events
       for (var eventName in mapEvents) {
-        google.maps.event.addListener(vm.map, eventName, mapEvents[eventName]);
+        var event = mapEvents[eventName];
+        var listener = google.maps.event.addListener(vm.map, eventName, event);
+        vm.eventListeners[eventName] = listener;
       }
 
       // set observers
@@ -251,6 +254,7 @@ angular.module('ngMap', []);
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
+    vm.eventListeners = {};
 
     if (options.lazyInit) { // allows controlled initialization
       vm.map = {id: $attrs.id}; //set empty, not real, map
@@ -2963,9 +2967,10 @@ angular.module('ngMap', []);
     var len = Object.keys(mapControllers).length - 1;
     var mapId = mapCtrl.map.id || len;
     if (mapCtrl.map) {
-      for (var eventName in mapCtrl.mapEvents) {
+      for (var eventName in mapCtrl.eventListeners) {
         console.log('clearing map events', eventName);
-        google.maps.event.clearListeners(mapCtrl.map, eventName);
+        var listener = mapCtrl.eventListeners[eventName];
+        google.maps.event.removeListener(listener);
       }
       if (mapCtrl.map.controls) {
         mapCtrl.map.controls.forEach(function(ctrl) {
