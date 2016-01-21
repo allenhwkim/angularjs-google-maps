@@ -453,12 +453,9 @@ angular.module('ngMap', []);
 
     CustomMarker.prototype = new google.maps.OverlayView();
 
-    CustomMarker.prototype.setContent = function(html, scope) {
+    CustomMarker.prototype.setContent = function(html) {
       this.el.innerHTML = html;
       this.el.style.position = 'absolute';
-      if (scope) {
-        $compile(angular.element(this.el).contents())(scope);
-      }
     };
 
     CustomMarker.prototype.getDraggable = function() {
@@ -490,7 +487,7 @@ angular.module('ngMap', []);
           setPosition();
         } else {
           //delayed left/top calculation when width/height are not set instantly
-          $timeout(setPosition, 300);
+          $timeout(setPosition, 300, false);
         }
       }
     };
@@ -552,24 +549,27 @@ angular.module('ngMap', []);
       void 0;
       var customMarker = new CustomMarker(options);
 
-      
-	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
-	    customMarker.setContent(orgHtml, scope);
-	  });
+      if(varsToWatch && varsToWatch.length > 0){
+        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+          customMarker.setContent(orgHtml);
+        });
+      }
 
-	  customMarker.setContent(element[0].innerHTML, scope);
-	  var classNames = element[0].firstElementChild.className;
-	  customMarker.addClass('custom-marker');
-	  customMarker.addClass(classNames);
-	  void 0;
+      $timeout(function() {
+        customMarker.setContent(element[0].innerHTML);
+        var classNames = element[0].firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
+        void 0;
 
-	  if (!(options.position instanceof google.maps.LatLng)) {
-	    NgMap.getGeoLocation(options.position).then(
-		  function(latlng) {
-		    customMarker.setPosition(latlng);
-		  }
-	    );
-	  }
+        if (!(options.position instanceof google.maps.LatLng)) {
+          NgMap.getGeoLocation(options.position).then(
+              function(latlng) {
+                customMarker.setPosition(latlng);
+              }
+          );
+        }
+      }, 0, false);
 
       void 0;
       for (var eventName in events) { /* jshint ignore:line */

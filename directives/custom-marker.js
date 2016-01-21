@@ -45,12 +45,9 @@
 
     CustomMarker.prototype = new google.maps.OverlayView();
 
-    CustomMarker.prototype.setContent = function(html, scope) {
+    CustomMarker.prototype.setContent = function(html) {
       this.el.innerHTML = html;
       this.el.style.position = 'absolute';
-      if (scope) {
-        $compile(angular.element(this.el).contents())(scope);
-      }
     };
 
     CustomMarker.prototype.getDraggable = function() {
@@ -82,7 +79,7 @@
           setPosition();
         } else {
           //delayed left/top calculation when width/height are not set instantly
-          $timeout(setPosition, 300);
+          $timeout(setPosition, 300, false);
         }
       }
     };
@@ -144,24 +141,27 @@
       console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
-      
-	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
-	    customMarker.setContent(orgHtml, scope);
-	  });
+      if(varsToWatch && varsToWatch.length > 0){
+        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+          customMarker.setContent(orgHtml);
+        });
+      }
 
-	  customMarker.setContent(element[0].innerHTML, scope);
-	  var classNames = element[0].firstElementChild.className;
-	  customMarker.addClass('custom-marker');
-	  customMarker.addClass(classNames);
-	  console.log('customMarker', customMarker, 'classNames', classNames);
+      $timeout(function() {
+        customMarker.setContent(element[0].innerHTML);
+        var classNames = element[0].firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
+        console.log('customMarker', customMarker, 'classNames', classNames);
 
-	  if (!(options.position instanceof google.maps.LatLng)) {
-	    NgMap.getGeoLocation(options.position).then(
-		  function(latlng) {
-		    customMarker.setPosition(latlng);
-		  }
-	    );
-	  }
+        if (!(options.position instanceof google.maps.LatLng)) {
+          NgMap.getGeoLocation(options.position).then(
+              function(latlng) {
+                customMarker.setPosition(latlng);
+              }
+          );
+        }
+      }, 0, false);
 
       console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
