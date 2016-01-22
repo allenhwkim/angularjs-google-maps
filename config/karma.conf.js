@@ -20,6 +20,9 @@ module.exports = function(config) {
       'spec/lib/angular.js',
       'spec/lib/angular-mocks.js',
 
+      // polyfill
+      './node_modules/phantomjs-polyfill/bind-polyfill.js',
+
       // our app
       'app.js',
       'controllers/*.js',

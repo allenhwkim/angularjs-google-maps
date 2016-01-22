@@ -8,9 +8,14 @@
 (function() {
   'use strict';
 
-  //i.e. "2015-08-12T06:12:40.858Z"
-  var isoDateRE =
-    /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/;
+  var isoDateRE = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/; // 2015-08-12T06:12:40.858Z
+  var latLongRE = /^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/; // lat, long
+  var googleLatLongRE = /^([A-Z][a-zA-Z0-9]+)\(([^()]*)\)$/; // LatLng(12, -40)
+  var googleMapObjectFunctionExpRE = /^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/; // MayTypeId.HYBRID
+  var googleConstantsRE = /^[A-Z]+$/; // HYBRID
+  var googleOptionsRE = /temperatureUnit|windSpeedUnit|labelColor/;
+  var angularExpRE = /^{{[^{]+}}$/; // {{variable}}
+  var jsonRE = /^\s*[{]\s*[^{]+|^\s*[[]\s*[^[]+/;
 
   var Attr2MapOptions = function(
       $parse, $timeout, $log, NavigatorGeolocation, GeoCoder,
@@ -33,14 +38,6 @@
       return orgAttributes;
     };
 
-    var getJSON = function(input) {
-      var re =/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/; //lat,lng
-      if (input.match(re)) {
-        input = "["+input+"]";
-      }
-      return JSON.parse(jsonizeFilter(input));
-    };
-
     var getLatLng = function(input) {
       var output = input;
       if (input[0].constructor == Array) { // [[1,2],[3,4]]
@@ -53,79 +50,79 @@
       return output;
     };
 
-    var toOptionValue = function(input, options) {
-      var output;
-      try { // 1. Number?
-        output = getNumber(input);
-      } catch(err) {
-        try { // 2. JSON?
-          var output = getJSON(input);
-          if (output instanceof Array) {
-            // [{a:1}] : not lat/lng ones
-            if (output[0].constructor == Object) {
-              output = output;
-            } else { // [[1,2],[3,4]] or [1,2]
-              output = getLatLng(output);
-            }
+    var parseOptionValue = function(input, options){
+      var output = input;
+      // 1. Number?
+      output = Number(input);
+      if(!isNaN(output)){
+        return output;
+      }
+      // 1.a lat, long
+      if (latLongRE.test(input)) {
+        input = '['+input+']';
+      }
+      // 2. JSON?
+      if(jsonRE.test(input)){
+        // ignore exception for optimization by the browser
+        // exception should not occur
+        output = JSON.parse(jsonizeFilter(input));
+        var type = typeof output;
+        if (Array.isArray(output)) {
+          // [{a:1}] : not lat/lng ones
+          // [[1,2],[3,4]] or [1,2]
+          if (output[0].constructor !== Object) {
+            output = getLatLng(output);
           }
-          // JSON is an object (not array or null)
-          else if (output === Object(output)) {
-            // check for nested hashes and convert to Google API options
-            var newOptions = options;
-            newOptions.doNotConverStringToNumber = true;
-            output = getOptions(output, newOptions);
-          }
-        } catch(err2) {
-          // 3. Google Map Object function Expression. i.e. LatLng(80,-49)
-          if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) {
-            try {
-              var exp = "new google.maps."+input;
-              output = eval(exp); /* jshint ignore:line */
-            } catch(e) {
-              output = input;
-            }
-          // 4. Google Map Object constant Expression. i.e. MayTypeId.HYBRID
-          } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) {
-            try {
-              var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
-              output = google.maps[matches[1]][matches[2]];
-            } catch(e) {
-              output = input;
-            }
-          // 5. Google Map Object constant Expression. i.e. HYBRID
-          } else if (input.match(/^[A-Z]+$/)) {
-            try {
-              var capitalizedKey = options.key.charAt(0).toUpperCase() +
-                options.key.slice(1);
-              if (options.key.match(/temperatureUnit|windSpeedUnit|labelColor/)) {
-                capitalizedKey = capitalizedKey.replace(/s$/,"");
-                output = google.maps.weather[capitalizedKey][input];
-              } else {
-                output = google.maps[capitalizedKey][input];
-              }
-            } catch(e) {
-              output = input;
-            }
-          // 6. Date Object as ISO String
-          } else if (input.match(isoDateRE)) {
-            try {
-              output = new Date(input);
-            } catch(e) {
-              output = input;
-            }
-          // 7. evaluate dynamically bound values
-          } else if (input.match(/^{/) && options.scope) {
-            try {
-              var expr = input.replace(/{{/,'').replace(/}}/g,'');
-              output = options.scope.$eval(expr);
-            } catch (err) {
-              output = input;
-            }
+        }
+        // JSON is an object (not array or null)
+        else if (!!output && (type == 'object' || type == 'function')) {
+          // check for nested hashes and convert to Google API options
+          var newOptions = options;
+          newOptions.doNotConverStringToNumber = true;
+          output = getOptions(output, newOptions);
+        }
+        // 3. Google Map Object function Expression. i.e. LatLng(80,-49)
+      } else if (googleLatLongRE.test(input)) {
+        var latLongMatches = input.match(googleLatLongRE);
+        if(latLongMatches.length > 2){
+          var args = JSON.parse(jsonizeFilter('[' + latLongMatches[2] + ']'));
+          output = new (google.maps[latLongMatches[1]].bind.apply(google.maps[latLongMatches[1]], [null].concat(args)));
+        }
+        // 4. Google Map Object constant Expression. i.e. MayTypeId.HYBRID
+      } else if (googleMapObjectFunctionExpRE.test(input)) {
+        var matches = input.match(googleMapObjectFunctionExpRE);
+        if(matches.length > 2){
+          output = google.maps[matches[1]][matches[2]];
+        }
+        // 5. Google Map Object constant Expression. i.e. HYBRID
+      } else if (googleConstantsRE.test(input)) {
+        if(options.key){
+          var capitalizedKey = options.key.charAt(0).toUpperCase() +
+              options.key.slice(1);
+          if (googleOptionsRE.test(options.key)) {
+            capitalizedKey = capitalizedKey.replace(/s$/,'');
+            output = google.maps.weather[capitalizedKey][input];
           } else {
-            output = input;
+            output = google.maps[capitalizedKey][input];
           }
-        } // catch(err2)
-      } // catch(err)
+        }
+        // 6. Date Object as ISO String
+      } else if (input.match(isoDateRE)) {
+        output = new Date(input);
+        if(isNaN(output.getTime())){
+          output = input;
+        }
+        // 7. evaluate dynamically bound values
+      } else if (angularExpRE.test(input) && options.scope) {
+        output = options.scope.$eval(input.replace(/{{/,'').replace(/}}/g,''));
+      } else {
+        output = input;
+      }
+      return output;
+    };
+
+    var toOptionValue = function(input, options) {
+     var output = parseOptionValue(input, options);
 
       // convert output more for center and position
       if (
@@ -153,14 +150,14 @@
 
       // convert output more for marker icon
       if (options.key == 'icon' && output instanceof Object) {
-        if ((""+output.path).match(/^[A-Z_]+$/)) {
+        if ((''+output.path).match(/^[A-Z_]+$/)) {
           output.path = google.maps.SymbolPath[output.path];
         }
         for (var key in output) { //jshint ignore:line
           var arr = output[key];
-          if (key == "anchor" || key == "origin" || key == "labelOrigin") {
+          if (key == 'anchor' || key == 'origin' || key == 'labelOrigin') {
             output[key] = new google.maps.Point(arr[0], arr[1]);
-          } else if (key == "size" || key == "scaledSize") {
+          } else if (key == 'size' || key == 'scaledSize') {
             output[key] = new google.maps.Size(arr[0], arr[1]);
           }
         }
@@ -247,7 +244,7 @@
     };
 
     /**
-     * converts attributes hash to scope-specific event function 
+     * converts attributes hash to scope-specific event function
      * @memberof Attr2MapOptions
      * @param {scope} scope angularjs scope
      * @param {Hash} attrs tag attributes
@@ -256,14 +253,14 @@
     var getEvents = function(scope, attrs) {
       var events = {};
       var toLowercaseFunc = function($1){
-        return "_"+$1.toLowerCase();
+        return '_'+$1.toLowerCase();
       };
       var EventFunc = function(attrValue) {
         // funcName(argsStr)
         var matches = attrValue.match(/([^\(]+)\(([^\)]*)\)/);
         var funcName = matches[1];
         var argsStr = matches[2].replace(/event[ ,]*/,'');  //remove string 'event'
-        var argsExpr = $parse("["+argsStr+"]"); //for perf when triggering event
+        var argsExpr = $parse('['+argsStr+']'); //for perf when triggering event
         return function(event) {
           var args = argsExpr(scope); //get args here to pass updated model values
           function index(obj,i) {return obj[i];}
@@ -328,7 +325,7 @@
                 var value = options[key];
                 if (typeof value === 'string') {
                   value = value.toUpperCase();
-                } else if (key === "mapTypeIds") {
+                } else if (key === 'mapTypeIds') {
                   value = value.map( function(str) {
                     if (str.match(/^[A-Z]+$/)) { // if constant
                       return google.maps.MapTypeId[str.toUpperCase()];
@@ -338,11 +335,11 @@
                   });
                 }
 
-                if (key === "style") {
+                if (key === 'style') {
                   var str = attr.charAt(0).toUpperCase() + attr.slice(1);
-                  var objName = str.replace(/Options$/,'')+"Style";
+                  var objName = str.replace(/Options$/,'')+'Style';
                   options[key] = google.maps[objName][value];
-                } else if (key === "position") {
+                } else if (key === 'position') {
                   options[key] = google.maps.ControlPosition[value];
                 } else {
                   options[key] = value;
