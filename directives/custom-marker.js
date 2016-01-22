@@ -3,7 +3,6 @@
  * @memberof ngmap
  * @name custom-marker
  * @param Attr2Options {service} convert html attribute to Gogole map api options
- * @param $timeout {service} AngularJS $timeout
  * @description
  *   Marker with html
  *   Requires:  map directive
@@ -27,7 +26,7 @@
 /* global document */
 (function() {
   'use strict';
-  var parser, $timeout, $compile, NgMap;
+  var parser, NgMap;
 
   var CustomMarker = function(options) {
     options = options || {};
@@ -79,7 +78,7 @@
           setPosition();
         } else {
           //delayed left/top calculation when width/height are not set instantly
-          $timeout(setPosition, 300, false);
+          setTimeout(setPosition, 300);
         }
       }
     };
@@ -147,7 +146,7 @@
         });
       }
 
-      $timeout(function() {
+      setTimeout(function() {
         customMarker.setContent(element[0].innerHTML);
         var classNames = element[0].firstElementChild.className;
         customMarker.addClass('custom-marker');
@@ -161,7 +160,7 @@
               }
           );
         }
-      }, 0, false);
+      }, 0);
 
       console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
@@ -183,11 +182,9 @@
 
 
   var customMarkerDirective = function(
-      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
+      Attr2MapOptions, _NgMap_
     )  {
     parser = Attr2MapOptions;
-    $timeout = _$timeout_;
-    $compile = _$compile_;
     NgMap = _NgMap_;
 
     return {
@@ -214,7 +211,7 @@
     }; // return
   };// function
   customMarkerDirective.$inject =
-    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
+    ['Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();

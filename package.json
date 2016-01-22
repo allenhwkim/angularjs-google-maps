@@ -39,6 +39,7 @@
     "karma-ng-html2js-preprocessor": "0.2.0",
     "karma-phantomjs-launcher": "0.2.1",
     "phantomjs": "1.9.18",
+    "phantomjs-polyfill": "0.0.1",
     "run-sequence": "~0.3.6",
     "selenium-webdriver": "^2.45.1",
     "through2": "^2.0.0",
