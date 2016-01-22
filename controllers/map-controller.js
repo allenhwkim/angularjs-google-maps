@@ -14,6 +14,7 @@
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
+    vm.eventListeners;  /** @memberof __MapController */
 
     /**
      * Add an object to the collection of group
@@ -184,7 +185,9 @@
 
       // set events
       for (var eventName in mapEvents) {
-        google.maps.event.addListener(vm.map, eventName, mapEvents[eventName]);
+        var event = mapEvents[eventName];
+        var listener = google.maps.event.addListener(vm.map, eventName, event);
+        vm.eventListeners[eventName] = listener;
       }
 
       // set observers
@@ -225,6 +228,7 @@
 
     vm.mapOptions = mapOptions;
     vm.mapEvents = mapEvents;
+    vm.eventListeners = {};
 
     if (options.lazyInit) { // allows controlled initialization
       vm.map = {id: $attrs.id}; //set empty, not real, map

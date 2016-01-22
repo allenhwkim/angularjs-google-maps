@@ -236,10 +236,22 @@
   var returnMapInstance = function(map) {
     map.inUse = false;
   };
+  /**
+   * @memberof NgMapPool
+   * @function resetMapInstances
+   * @desc resets mapInstance array
+   */
+  var resetMapInstances = function() {
+    for(var i = 0;i &lt; mapInstances.length;i++) {
+        mapInstances[i] = null;
+    }
+    mapInstances = [];
+  };
   var NgMapPool = function(_$document_, _$window_, _$timeout_) {
     $document = _$document_[0], $window = _$window_, $timeout = _$timeout_;
     return {
-      mapInstances: mapInstances,
+	  mapInstances: mapInstances,
+      resetMapInstances: resetMapInstances,
       getMapInstance: getMapInstance,
       returnMapInstance: returnMapInstance
     };
