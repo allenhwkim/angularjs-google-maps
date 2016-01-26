@@ -92,6 +92,10 @@
       this.el.style.zIndex = this.zIndex;
     };
 
+    CustomMarker.prototype.getVisible = function() {
+      return this.visible;
+    };
+
     CustomMarker.prototype.setVisible = function(visible) {
       this.el.style.display = visible ? 'inline-block' : 'none';
       this.visible = visible;
