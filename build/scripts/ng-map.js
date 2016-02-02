@@ -1,4 +1,13 @@
-/**
+(function(root, factory) {
+	if (typeof exports === "object") {
+		module.exports = factory(require('angular'));
+	} else if (typeof define === "function" && define.amd) {
+		define(['angular'], factory);
+	} else{
+		factory(root.angular);
+	}
+}(this, function(angular) {
+	/**
  * AngularJS Google Maps Ver. 1.16.8
  *
  * The MIT License (MIT)
@@ -3201,3 +3210,7 @@ angular.module('ngMap', []);
 
   angular.module('ngMap').service('StreetView', StreetView);
 })();
+
+
+	return 'ngMap';
+}));
