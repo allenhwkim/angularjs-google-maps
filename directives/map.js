@@ -58,7 +58,7 @@
     return {
       restrict: 'AE',
       controller: '__MapController',
-      conrollerAs: 'ngmap'
+      controllerAs: 'ngmap'
     };
   };
 
