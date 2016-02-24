@@ -231,7 +231,14 @@
     vm.eventListeners = {};
 
     if (options.lazyInit) { // allows controlled initialization
-      vm.map = {id: $attrs.id}; //set empty, not real, map
+      // parse angular expression for dynamic ids
+      if (!!$attrs.id && $attrs.id.startsWith('{{') && $attrs.id.endsWith('}}')) {
+        var idExpression = $attrs.id.slice(2,-2);
+        var mapId = $parse(idExpression)($scope);
+      } else {
+        var mapId = $attrs.id;
+      }
+      vm.map = {id: mapId}; //set empty, not real, map
       NgMap.addMap(vm);
     } else {
       vm.initializeMap();
