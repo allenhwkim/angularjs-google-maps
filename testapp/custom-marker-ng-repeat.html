@@ -41,19 +41,32 @@
 
 <body>
 <div ng-controller="MyCtrl as vm">
-  <ng-map zoom="8" center="[40.74, -74.18]">
+  <ng-map zoom="8" center="[40.74, -74.18]" default-style="true">
+
     <custom-marker ng-repeat="p in vm.positions track by $index"
+      id="custom-marker-{{$index}}"
+      on-click="vm.map.showInfoWindow('foo', 'custom-marker-'+$index)"
       position="{{p.pos}}">
       <div>
         position {{p.name}}: {{p.pos[0]}}, {{p.pos[1]}}
       </div>
     </custom-marker>
+
+    <info-window id="foo" on-mouseover="vm.mouseover()">
+      <div ng-non-bindable="">
+        Lat: {{anchor.getPosition().lat()}}<br/>
+        Lng: {{anchor.getPosition().lng()}}<br/>
+      </div>
+    </info-window>
+
   </ng-map>
+
   <button ng-click="vm.setPositions(vm.positions1)">show positions 1</button>
   <button ng-click="vm.setPositions(vm.positions2)">show positions 2</button>
   <button ng-click="vm.selectNextCustomMarker()">select next marker</button>
   current position: {{vm.currentPosition}}<br/>
   vm.positions : {{vm.positions}}
+
 </div>
 </body>
 
