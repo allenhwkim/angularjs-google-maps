@@ -102,6 +102,9 @@
       for (var k2 in vm.map.customMarkers) {
         bounds.extend(vm.map.customMarkers[k2].getPosition());
       }
+	  if (vm.mapOptions.maximumZoom) {
+		  vm.enableMaximumZoomCheck = true; //enable zoom check after resizing for markers
+	  }
       vm.map.fitBounds(bounds);
     };
 
@@ -210,6 +213,18 @@
           $parse($attrs.mapInitialized)($scope, {map: vm.map});
         }
       });
+	  
+	  //add maximum zoom listeners if zoom-to-include-markers and and maximum-zoom are valid attributes
+	  if (mapOptions.zoomToIncludeMarkers && mapOptions.maximumZoom) {
+	    google.maps.event.addListener(vm.map, 'zoom_changed', function() {
+          if (vm.enableMaximumZoomCheck == true) {
+			vm.enableMaximumZoomCheck = false;
+	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() { 
+		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom())); 
+		    });
+	  	  }
+	    });
+	  }
     };
 
     $scope.google = google; //used by $scope.eval to avoid eval()
