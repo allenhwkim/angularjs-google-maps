@@ -151,7 +151,7 @@
       
 	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
 	    customMarker.setContent(orgHtml, scope);
-	  });
+	  }, true);
 
 	  customMarker.setContent(element[0].innerHTML, scope);
 	  var classNames = element[0].firstElementChild.className;
