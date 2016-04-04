@@ -23,10 +23,27 @@
     return map;
   };
 
-  var find = function(el) { //jshint ignore:line
+  var findById = function(el, id) {
     var notInUseMap;
     for (var i=0; i<mapInstances.length; i++) {
       var map = mapInstances[i];
+      if (map.id == id && !map.inUse) {
+        var mapDiv = map.getDiv();
+        el.appendChild(mapDiv);
+        notInUseMap = map;
+        break;
+      }
+    }
+    return notInUseMap;
+  };
+
+  var findUnused = function(el) { //jshint ignore:line
+    var notInUseMap;
+    for (var i=0; i<mapInstances.length; i++) {
+      var map = mapInstances[i];
+      if (map.id) {
+        continue;
+      }
       if (!map.inUse) {
         var mapDiv = map.getDiv();
         el.appendChild(mapDiv);
@@ -44,7 +61,7 @@
    * @return map instance for the given element
    */
   var getMapInstance = function(el) {
-    var map = find(el);
+    var map = findById(el, el.id) || findUnused(el);
     if (!map) {
       map = add(el);
     } else {

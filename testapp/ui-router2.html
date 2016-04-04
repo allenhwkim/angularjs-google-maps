@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AngularJS: UI-Router Quick Start</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<link href="lib/bootstrap.min.css" rel="stylesheet">
+<script src="lib/angular-ui-router.js"></script>
+<link href="custom-marker.css"  rel="stylesheet" />
+<script>
+  var myapp = angular.module('myapp', ['ngMap',"ui.router"])
+  myapp.controller('fooCtrl', function(NgMap) {
+    NgMap.getMap('map1').then(function(map) {
+      var latLng = new google.maps.LatLng(40.74, -74.18);
+      var marker = new google.maps.Marker({
+        position:latLng, draggable: true
+      });
+      marker.setMap(map);
+    })
+  });
+  myapp.config(function($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise("/foo")
+    $stateProvider
+      .state('foo', { url: "/foo", templateUrl: "foo.html", controller: 'fooCtrl', controllerAs: 'vm'  })
+      .state('bar', { url: "/bar", templateUrl: "bar.html"})
+  })
+</script>
+</head>
+
+<body ng-app="myapp">
+  This is to test not to share map instance if `id` is given
+  <script type="text/ng-template" id="foo.html">
+    <h1>Map 1</h1>
+    <ng-map id="map1" center="[40.74, -74.18]"></ng-map>
+  </script>
+  
+  <script type="text/ng-template" id="bar.html">
+    <h1>Map 2 - Should not have any markers </h1>
+    <ng-map center="[40.74, -74.18]"></ng-map>
+  </script>
+  
+  <div class="navbar">
+    <div class="navbar-inner">
+      <ul class="nav">
+        <li><a ui-sref="foo">Route 1</a></li>
+        <li><a ui-sref="bar">Route 2</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="well" ui-view></div>
+</body>
+
+</html>

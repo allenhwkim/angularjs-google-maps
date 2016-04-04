@@ -17,7 +17,7 @@
       .state('baz', { url: "/baz", templateUrl: "baz.html" })
   });
   myapp.controller('fooCtrl', function($scope, NgMap){
-    NgMap.getMap({id:'foomap'}).then(function(map) {
+    NgMap.getMap('foomap').then(function(map) {
       console.log('NgMap.getMap in fooCtrl', map);
     });
     $scope.onClick = function() {
@@ -25,7 +25,7 @@
     }
   });
   myapp.controller('barCtrl', function(NgMap){
-    NgMap.getMap({id:'barmap'}).then(function(map) {
+    NgMap.getMap('barmap').then(function(map) {
       console.log('NgMap.getMap in barCtrl', map);
     });
   });
