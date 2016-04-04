@@ -199,10 +199,6 @@
     "path": "testapp/layer-georss.html",
     "title": null
   },
-  "layer-heatmap-http.html": {
-    "path": "testapp/layer-heatmap-http.html",
-    "title": null
-  },
   "layer-heatmap.html": {
     "path": "testapp/layer-heatmap.html",
     "title": null
@@ -553,6 +549,10 @@
   },
   "ui-router.html": {
     "path": "testapp/ui-router.html",
+    "title": "AngularJS: UI-Router Quick Start"
+  },
+  "ui-router2.html": {
+    "path": "testapp/ui-router2.html",
     "title": "AngularJS: UI-Router Quick Start"
   },
   "user-editable-shapes.html": {

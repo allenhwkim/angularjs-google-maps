@@ -253,6 +253,9 @@
       zIndex && (this.zIndex = zIndex); /* jshint ignore:line */
       this.el.style.zIndex = this.zIndex;
     };
+    CustomMarker.prototype.getVisible = function() {
+      return this.visible;
+    };
     CustomMarker.prototype.setVisible = function(visible) {
       this.el.style.display = visible ? 'inline-block' : 'none';
       this.visible = visible;
@@ -297,7 +300,7 @@
       var customMarker = new CustomMarker(options);
 	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
 	    customMarker.setContent(orgHtml, scope);
-	  });
+	  }, true);
 	  customMarker.setContent(element[0].innerHTML, scope);
 	  var classNames = element[0].firstElementChild.className;
 	  customMarker.addClass('custom-marker');

@@ -210,14 +210,13 @@
   /**
    * @memberof NgMap
    * @function getMap
-   * @param {Hash} options optional, e.g., {id: 'foo, timeout: 5000}
+   * @param {String} optional, id e.g., 'foo'
    * @returns promise
    */
-  var getMap = function(options) {
-    options = options || {};
+  var getMap = function(id) {
+    id = typeof id === 'object' ? id.id : id;
     var deferred = $q.defer();
-    var id = options.id || 0;
-    var timeout = options.timeout || 2000;
+    var timeout = 2000;
     function waitForMap(timeElapsed){
       if(mapControllers[id]){
         deferred.resolve(mapControllers[id].map);

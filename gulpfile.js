@@ -104,16 +104,17 @@ gulp.task('build-js', function() {
     .on('error', gutil.log);
 });
 
-gulp.task('docs', function() {  
-    shell.task([
-        path.join('node_module', 'jsdoc', 'jsdoc.js')+
-          ' -c ' + path.join('node_modules','angular-jsdoc', 'common', 'conf.json ') +   // config file
-          ' -t ' + path.join('node_modules', 'angular-jsdoc', 'angular-template') +   // template file
-          ' -d ' + path.join('build', 'docs') +                           // output directory
-          ' ' + path.join('./README.md') +                            // to include README.md as index contents
-          ' -r directives services'                    // source code directory
-    ]);
+gulp.task('docs', function() {
+ gulp.task('docs', shell.task([
+   'node_modules/jsdoc/jsdoc.js '+
+     '-c node_modules/angular-jsdoc/common/conf.json '+   // config file
+     '-t node_modules/angular-jsdoc/angular-template '+   // template file
+     '-d build/docs '+                           // output directory
+     './README.md ' +                            // to include README.md as index contents
+     '-r directives services'                    // source code directory
+ ]));
 });
+
 
 gulp.task('bump', function() { bumpVersion('patch'); });
 gulp.task('bump:patch', function() { bumpVersion('patch'); });
