@@ -148,24 +148,27 @@
       console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
-      
-	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
-	    customMarker.setContent(orgHtml, scope);
-	  }, true);
+      $timeout(function() { //apply contents, class, and location after it is compiled
 
-	  customMarker.setContent(element[0].innerHTML, scope);
-	  var classNames = element[0].firstElementChild.className;
-	  customMarker.addClass('custom-marker');
-	  customMarker.addClass(classNames);
-	  console.log('customMarker', customMarker, 'classNames', classNames);
+        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+          customMarker.setContent(orgHtml, scope);
+        }, true);
 
-	  if (!(options.position instanceof google.maps.LatLng)) {
-	    NgMap.getGeoLocation(options.position).then(
-		  function(latlng) {
-		    customMarker.setPosition(latlng);
-		  }
-	    );
-	  }
+        customMarker.setContent(element[0].innerHTML, scope);
+        var classNames = element[0].firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
+        console.log('customMarker', customMarker, 'classNames', classNames);
+
+        if (!(options.position instanceof google.maps.LatLng)) {
+          NgMap.getGeoLocation(options.position).then(
+                function(latlng) {
+                  customMarker.setPosition(latlng);
+                }
+          );
+        }
+
+      });
 
       console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
