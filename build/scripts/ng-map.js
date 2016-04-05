@@ -8,7 +8,7 @@ factory(root.angular);
 }
 }(this, function(angular) {
 /**
- * AngularJS Google Maps Ver. 1.17.0
+ * AngularJS Google Maps Ver. 1.17.1
  *
  * The MIT License (MIT)
  * 
@@ -591,24 +591,27 @@ angular.module('ngMap', []);
       void 0;
       var customMarker = new CustomMarker(options);
 
-      
-	  scope.$watch('[' + varsToWatch.join(',') + ']', function() {
-	    customMarker.setContent(orgHtml, scope);
-	  }, true);
+      $timeout(function() { //apply contents, class, and location after it is compiled
 
-	  customMarker.setContent(element[0].innerHTML, scope);
-	  var classNames = element[0].firstElementChild.className;
-	  customMarker.addClass('custom-marker');
-	  customMarker.addClass(classNames);
-	  void 0;
+        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+          customMarker.setContent(orgHtml, scope);
+        }, true);
 
-	  if (!(options.position instanceof google.maps.LatLng)) {
-	    NgMap.getGeoLocation(options.position).then(
-		  function(latlng) {
-		    customMarker.setPosition(latlng);
-		  }
-	    );
-	  }
+        customMarker.setContent(element[0].innerHTML, scope);
+        var classNames = element[0].firstElementChild.className;
+        customMarker.addClass('custom-marker');
+        customMarker.addClass(classNames);
+        void 0;
+
+        if (!(options.position instanceof google.maps.LatLng)) {
+          NgMap.getGeoLocation(options.position).then(
+                function(latlng) {
+                  customMarker.setPosition(latlng);
+                }
+          );
+        }
+
+      });
 
       void 0;
       for (var eventName in events) { /* jshint ignore:line */
