@@ -1,6 +1,6 @@
 {
   "name": "ngmap",
-  "version": "1.17.1",
+  "version": "1.17.2",
   "main": "build/scripts/ng-map.js",
   "description": "The Simplest AngularJS Google Maps V3 Directive",
   "repository": {
