@@ -46,6 +46,7 @@
    */
   var getMap = function(id) {
     id = typeof id === 'object' ? id.id : id;
+    id = id || 0;
 
     var deferred = $q.defer();
     var timeout = 2000;

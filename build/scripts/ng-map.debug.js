@@ -1,5 +1,5 @@
 /**
- * AngularJS Google Maps Ver. 1.17.1
+ * AngularJS Google Maps Ver. 1.17.2
  *
  * The MIT License (MIT)
  * 
@@ -2970,6 +2970,7 @@ angular.module('ngMap', []);
    */
   var getMap = function(id) {
     id = typeof id === 'object' ? id.id : id;
+    id = id || 0;
 
     var deferred = $q.defer();
     var timeout = 2000;
