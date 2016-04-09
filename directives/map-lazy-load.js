@@ -48,7 +48,11 @@
         savedHtml: savedHtml[elements.length],
       });
 
-      window.lazyLoadCallback = function() {
+      var scriptEl = document.createElement('script');
+      console.log('Prelinking script loaded,' + src);
+
+      scriptEl.src = mapsUrl;
+      scriptEl.onload = function() {
         console.log('Google maps script loaded:', mapsUrl);
         $timeout(function() { /* give some time to load */
           elements.forEach(function(elm) {
@@ -58,16 +62,9 @@
         }, 100);
       };
 
-      var scriptEl = document.createElement('script');
-      console.log('Prelinking script loaded,' + src);
-
-      scriptEl.src = mapsUrl +
-        (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
-        'callback=lazyLoadCallback';
-
-        if (!document.querySelector('script[src="' + scriptEl.src + '"]')) {
-          document.body.appendChild(scriptEl);
-        }
+      if (!document.querySelector('script[src="' + scriptEl.src + '"]')) {
+        document.body.appendChild(scriptEl);
+      }
     } else {
       element.html(savedHtml);
       $compile(element.contents())(scope);
