@@ -29,13 +29,20 @@
   'use strict';
   var parser, $timeout, $compile, NgMap;
 
-  var CustomMarker = function(options) {
+  var CustomMarker = function(options, map, anchor) {
     options = options || {};
-
+    anchor = anchor || [0,10];
+    
     this.el = document.createElement('div');
     this.el.style.display = 'inline-block';
     this.el.style.visibility = "hidden";
+    this.el.style.cursor="default";
     this.visible = true;
+    this.anchorAttr = anchor;
+    this.anchorPosition = null;
+    this.isDragging = false;
+    this.hasClickEvent = false;
+    this._map = map;
     for (var key in options) { /* jshint ignore:line */
      this[key] = options[key];
     }
@@ -62,7 +69,7 @@
     };
 
     CustomMarker.prototype.getPosition = function() {
-      return this.position;
+      return this.anchorPosition; //this.position;
     };
 
     CustomMarker.prototype.setPosition = function(position) {
@@ -72,11 +79,15 @@
         var posPixel = this.getProjection().fromLatLngToDivPixel(this.position);
         var _this = this;
         var setPosition = function() {
-          var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
-          var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
-          _this.el.style.left = x + "px";
-          _this.el.style.top = y + "px";
-          _this.el.style.visibility = "visible";
+            var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
+            //var anchor = _this.anchor != null ? 0 : 10;
+            var y = Math.round(posPixel.y - _this.el.offsetHeight - _this.anchorAttr[1]); // 10px for anchor
+            _this.el.style.left = x + "px";
+            _this.el.style.top = y + "px";
+            _this.el.style.visibility = "visible";
+            _this.anchorPosition = _this.getProjection().fromDivPixelToLatLng(
+                new google.maps.Point(x+_this.anchorAttr[0],y+_this.anchorAttr[1])
+            );
         };
         if (_this.el.offsetWidth && _this.el.offsetHeight) { 
           setPosition();
@@ -115,6 +126,7 @@
     };
 
     CustomMarker.prototype.onAdd = function() {
+      this.draggableRegister();
       this.getPanes().overlayMouseTarget.appendChild(this.el);
     };
 
@@ -128,6 +140,39 @@
       this.el.parentNode.removeChild(this.el);
       //this.el = null;
     };
+    
+    CustomMarker.prototype.draggableRegister = function() {
+      var _this=this;
+      if(!this.draggable) return;
+      google.maps.event.addDomListener(_this.el, 'mouseleave', function(){
+          google.maps.event.trigger(_this.el,'mouseup');
+      });
+      google.maps.event.addDomListener(_this.el, 'mousedown', function(e) {
+          _this._map.set('draggable', false);
+          _this.set('origin', e);
+          google.maps.event.trigger(_this.el, 'dragstart',{latLng: _this.position});
+          _this.moveHandler = google.maps.event.addDomListener(_this.el, 'mousemove', function(e) {
+              _this.isDragging = true;
+              this.style.cursor='move';
+              var origin  = _this.get('origin'),
+                  left    = origin.clientX- e.clientX,
+                  top     = origin.clientY- e.clientY,
+                  pos     = _this.getProjection().fromLatLngToDivPixel(_this.position),
+                  latLng  = _this.getProjection().fromDivPixelToLatLng(new google.maps.Point(pos.x-left,pos.y-top));
+              _this.set('origin', e);
+              _this.set('position', latLng);
+              _this.draw();
+          });
+      });
+      google.maps.event.addDomListener(_this.el, 'mouseup', function(e) {
+           _this._map.set('draggable', true);
+          this.style.cursor='default';
+          google.maps.event.removeListener(_this.moveHandler);
+          if(!_this.hasClickEvent) _this.isDragging = false;
+          google.maps.event.trigger(_this.el, 'dragend',{latLng: _this.position});
+      });
+  };    
+    
   };
 
   var linkFunc = function(orgHtml, varsToWatch) {
@@ -146,7 +191,7 @@
        */
       element[0].style.display = 'none';
       console.log("custom-marker options", options);
-      var customMarker = new CustomMarker(options);
+      var customMarker = new CustomMarker(options, mapController.map, scope.$eval(attrs.anchor));
 
       $timeout(function() { //apply contents, class, and location after it is compiled
 
@@ -172,8 +217,20 @@
 
       console.log("custom-marker events", "events");
       for (var eventName in events) { /* jshint ignore:line */
-        google.maps.event.addDomListener(
-          customMarker.el, eventName, events[eventName]);
+        if(eventName == 'click') {
+            customMarker.hasClickEvent = true;
+            google.maps.event.addDomListener(
+                customMarker.el, eventName, function(e){
+                    if(customMarker.isDragging) {
+                        customMarker.isDragging = false;
+                        return false;
+                      }
+                      events[eventName].apply(this, [e]);
+                });
+        } else {
+            google.maps.event.addDomListener(
+              customMarker.el, eventName, events[eventName]);
+        }
       }
       mapController.addObject('customMarkers', customMarker);
 
