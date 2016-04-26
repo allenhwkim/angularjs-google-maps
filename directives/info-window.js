@@ -74,26 +74,28 @@
       }
 
       /**
-       * set template ane template-relate functions
+       * set template and template-related functions
        * it must have a container element with ng-non-bindable
        */
-      var templatePromise = $q.defer();
-
-      if (angular.isString(options.template)) {
-        $templateRequest(options.template).then(function () {
-          setup(angular.element(element).wrap('<div>').parent());
-        });
-      }
-      else {
-        setup(element);
-      }
-
-
-      var template = element.html().trim();
-      if (angular.element(template).length != 1) {
-        throw "info-window working as a template must have a container";
-      }
-      infoWindow.__template = template.replace(/\s?ng-non-bindable[='"]+/,"");
+      var template;
+      $q(function(resolve) {
+        if (angular.isString(element)) {
+          $templateRequest(element).then(function (requestedTemplate) {
+            resolve(angular.element(requestedTemplate).wrap('<div>').parent());
+          }, function(message) {
+            throw "info-window template request failed: " + message;
+          });
+        }
+        else {
+          resolve(element);
+        }
+      }).then(function(resolvedTemplate) {
+        template = resolvedTemplate.html().trim();
+        if (angular.element(template).length != 1) {
+          throw "info-window working as a template must have a container";
+        }
+        infoWindow.__template = template.replace(/\s?ng-non-bindable[='"]+/,"");
+      });
 
       infoWindow.__open = function(map, scope, anchor) {
         $timeout(function() {
