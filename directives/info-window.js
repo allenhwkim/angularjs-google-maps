@@ -50,7 +50,7 @@
 (function() {
   'use strict';
 
-  var infoWindow = function(Attr2MapOptions, $compile, $templateCache, $timeout, $parse, NgMap)  {
+  var infoWindow = function(Attr2MapOptions, $compile, $q, $templateRequest, $timeout, $parse, NgMap)  {
     var parser = Attr2MapOptions;
 
     var getInfoWindow = function(options, events, element) {
@@ -77,6 +77,18 @@
        * set template ane template-relate functions
        * it must have a container element with ng-non-bindable
        */
+      var templatePromise = $q.defer();
+
+      if (angular.isString(options.template)) {
+        $templateRequest(options.template).then(function () {
+          setup(angular.element(element).wrap('<div>').parent());
+        });
+      }
+      else {
+        setup(element);
+      }
+
+
       var template = element.html().trim();
       if (angular.element(template).length != 1) {
         throw "info-window working as a template must have a container";
@@ -115,13 +127,11 @@
       var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
 
-      var customTemplate = options.template ? angular.element($templateCache.get(options.template)).wrap('<div>').parent() : null ;
-
+      var infoWindow = getInfoWindow(options, events, options.template || element);
       var address;
       if (options.position && !(options.position instanceof google.maps.LatLng)) {
         address = options.position;
       }
-      var infoWindow = getInfoWindow(options, events, customTemplate || element);
       if (address) {
         NgMap.getGeoLocation(address).then(function(latlng) {
           infoWindow.setPosition(latlng);
@@ -134,7 +144,7 @@
       mapController.addObject('infoWindows', infoWindow);
       mapController.observeAttrSetObj(orgAttrs, attrs, infoWindow);
 
-      mapController.showInfoWindow = 
+      mapController.showInfoWindow =
       mapController.map.showInfoWindow = mapController.showInfoWindow ||
         function(p1, p2, p3) { //event, id, marker
           var id = typeof p1 == 'string' ? p1 : p2;
@@ -196,7 +206,7 @@
 
   }; // infoWindow
   infoWindow.$inject =
-    ['Attr2MapOptions', '$compile', '$templateCache', '$timeout', '$parse', 'NgMap'];
+    ['Attr2MapOptions', '$compile', '$q', '$templateRequest', '$timeout', '$parse', 'NgMap'];
 
   angular.module('ngMap').directive('infoWindow', infoWindow);
 })();
