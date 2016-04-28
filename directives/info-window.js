@@ -78,7 +78,7 @@
        * it must have a container element with ng-non-bindable
        */
       var template;
-      $q(function(resolve) {
+      var templatePromise = $q(function(resolve) {
         if (angular.isString(element)) {
           $templateRequest(element).then(function (requestedTemplate) {
             resolve(angular.element(requestedTemplate).wrap('<div>').parent());
@@ -98,21 +98,23 @@
       });
 
       infoWindow.__open = function(map, scope, anchor) {
-        $timeout(function() {
-          anchor && (scope.anchor = anchor);
-          var el = $compile(infoWindow.__template)(scope);
-          infoWindow.setContent(el[0]);
-          scope.$apply();
-          if (anchor && anchor.getPosition) {
-            infoWindow.open(map, anchor);
-          } else if (anchor && anchor instanceof google.maps.LatLng) {
-            infoWindow.open(map);
-            infoWindow.setPosition(anchor);
-          } else {
-            infoWindow.open(map);
-          }
-          var infoWindowContainerEl = infoWindow.content.parentElement.parentElement.parentElement;
-          infoWindowContainerEl.className = "ng-map-info-window";
+        templatePromise.then(function() {
+          $timeout(function() {
+            anchor && (scope.anchor = anchor);
+            var el = $compile(infoWindow.__template)(scope);
+            infoWindow.setContent(el[0]);
+            scope.$apply();
+            if (anchor && anchor.getPosition) {
+              infoWindow.open(map, anchor);
+            } else if (anchor && anchor instanceof google.maps.LatLng) {
+              infoWindow.open(map);
+              infoWindow.setPosition(anchor);
+            } else {
+              infoWindow.open(map);
+            }
+            var infoWindowContainerEl = infoWindow.content.parentElement.parentElement.parentElement;
+            infoWindowContainerEl.className = "ng-map-info-window";
+          });
         });
       };
 
