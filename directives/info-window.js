@@ -77,7 +77,6 @@
        * set template and template-related functions
        * it must have a container element with ng-non-bindable
        */
-      var template;
       var templatePromise = $q(function(resolve) {
         if (angular.isString(element)) {
           $templateRequest(element).then(function (requestedTemplate) {
@@ -90,7 +89,7 @@
           resolve(element);
         }
       }).then(function(resolvedTemplate) {
-        template = resolvedTemplate.html().trim();
+        var template = resolvedTemplate.html().trim();
         if (angular.element(template).length != 1) {
           throw "info-window working as a template must have a container";
         }
