@@ -95,17 +95,21 @@
      * @function zoomToIncludeMarkers
      */
     vm.zoomToIncludeMarkers = function() {
-      var bounds = new google.maps.LatLngBounds();
-      for (var k1 in vm.map.markers) {
-        bounds.extend(vm.map.markers[k1].getPosition());
+      // Only fit to bounds if we have any markers
+      // object.keys is supported in all major browsers (IE9+)
+      if ((vm.map.markers != null && Object.keys(vm.map.markers).length > 0) || (vm.map.customMarkers != null && Object.keys(vm.map.customMarkers).length > 0)) {
+        var bounds = new google.maps.LatLngBounds();
+        for (var k1 in vm.map.markers) {
+          bounds.extend(vm.map.markers[k1].getPosition());
+        }
+        for (var k2 in vm.map.customMarkers) {
+          bounds.extend(vm.map.customMarkers[k2].getPosition());
+        }
+    	  if (vm.mapOptions.maximumZoom) {
+    		  vm.enableMaximumZoomCheck = true; //enable zoom check after resizing for markers
+    	  }
+        vm.map.fitBounds(bounds);
       }
-      for (var k2 in vm.map.customMarkers) {
-        bounds.extend(vm.map.customMarkers[k2].getPosition());
-      }
-	  if (vm.mapOptions.maximumZoom) {
-		  vm.enableMaximumZoomCheck = true; //enable zoom check after resizing for markers
-	  }
-      vm.map.fitBounds(bounds);
     };
 
     /**
