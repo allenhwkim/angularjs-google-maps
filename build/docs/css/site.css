@@ -1,50 +1,109 @@
-/**
- * This is enhanced theme by Umut Topuzoglu<https://github.com/ulocl>. Thanks, Umut
- */
-@font-face {
-    font-family: 'Open Sans';
-    font-weight: normal;
-    font-style: normal;
-    src: url('../fonts/OpenSans-Regular-webfont.eot');
-    src:
-        local('Open Sans'),
-        local('OpenSans'),
-        url('../fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-        url('../fonts/OpenSans-Regular-webfont.woff') format('woff'),
-        url('../fonts/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
-}
-
-@font-face {
-    font-family: 'Open Sans Light';
-    font-weight: normal;
-    font-style: normal;
-    src: url('../fonts/OpenSans-Light-webfont.eot');
-    src:
-        local('Open Sans Light'),
-        local('OpenSans Light'),
-        url('../fonts/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
-        url('../fonts/OpenSans-Light-webfont.woff') format('woff'),
-        url('../fonts/OpenSans-Light-webfont.svg#open_sanslight') format('svg');
-}
-
 * { box-sizing: border-box }
 
-html
-{
+html {
     overflow: auto;
     background-color: #fff;
     font-size: 14px;
 }
 
-body
-{
-    font-family: 'Open Sans', sans-serif;
-    line-height: 1.5;
-    color: #4d4e53;
+body {
+    font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: #5c5c5c;
     background-color: white;
+    padding: 10px;
+    position: relative;
 }
 
-a, a:visited, a:active {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+}
+
+.h1 { font-size: 2rem }
+.h2 { font-size: 1.5rem }
+.h3 { font-size: 1.25rem }
+.h4 { font-size: 1rem }
+.h5 { font-size: .875rem }
+.h6 { font-size: .75rem }
+
+nav {
+    margin-top: 28px;
+    padding-bottom: 30px;
+    width: 27%;
+    padding-left: 2%;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+nav ul {
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    font-size: 100%;
+    line-height: 17px;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+nav ul a, nav ul a:visited, nav ul a:active {
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    line-height: 18px;
+    color: #4D4E53;
+}
+
+nav h3 {
+    margin-top: 12px;
+    margin-bottom: 2px;
+}
+
+nav li {
+    margin-top: 6px;
+    margin-left: 2px;
+}
+
+footer {
+    margin: 0rem;
+    padding: 10px;
+    text-align: right;
+    color: gray;
+}
+
+.page-wrap {
+    padding: 1rem 3%;
+    margin-bottom: 0rem;
+    width: 70%;
+    margin-right: 30%;
+}
+
+#main {
+    float: none;
+    width: auto;
+    padding-right: 20px;
+}
+
+.page-wrap #main h1 {
+  color: inherit;
+}
+
+.big-container {
+    padding: 0rem;
+    background-color: #FFFFFF;
+    border-top: solid 1px #828282;
+    min-height: 510px;
+    overflow: hidden;
+    background-repeat: repeat-x;
+    background-position: top;
+    margin-bottom: 1.5rem;
+    padding: 2.0rem 1.5rem 3rem 1.5rem;
+}
+h2.module a, a, a:visited, a:active {
     color: #0095dd;
     text-decoration: none;
 }
@@ -76,12 +135,6 @@ tt, code, kbd, samp {
     margin: 0;
 }
 
-#main {
-    float: left;
-    width: 70%;
-    padding-right: 20px;
-}
-
 article dl {
     margin-bottom: 40px;
 }
@@ -105,99 +158,6 @@ section
     font-style: italic;
     font-weight: lighter;
 }
-
-nav
-{
-    display: block;
-    float: right;
-    margin-top: 28px;
-    width: 30%;
-    box-sizing: border-box;
-    border-left: 1px solid #ccc;
-    padding-left: 16px;
-}
-
-nav ul {
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
-    font-size: 100%;
-    line-height: 17px;
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-}
-
-nav ul a, nav ul a:visited, nav ul a:active {
-    font-family: Consolas, Monaco, 'Andale Mono', monospace;
-    line-height: 18px;
-    color: #4D4E53;
-}
-
-nav h3 {
-    margin-top: 12px;
-}
-
-nav ul {
-    margin-top: 1.5em;
-}
-
-nav li {
-    margin-top: 6px;
-    margin-left: 10px;
-}
-
-footer {
-    display: block;
-    padding: 6px;
-    margin-top: 12px;
-    font-style: italic;
-    font-size: 90%;
-}
-
-h1, h2, h3, h4 {
-    font-weight: 200;
-    margin: 0;
-}
-
-h1
-{
-    font-family: 'Open Sans Light', sans-serif;
-    font-size: 48px;
-    letter-spacing: -2px;
-    margin: 12px 24px 20px;
-}
-
-h2, h3
-{
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 12px;
-}
-
-h4
-{
-    font-size: 18px;
-    letter-spacing: -0.33px;
-    margin-bottom: 12px;
-    color: #4d4e53;
-}
-
-h5, .container-overview .subsection-title
-{
-    font-size: 120%;
-    font-weight: bold;
-    letter-spacing: -0.01em;
-    margin: 8px 0 3px 0;
-}
-
-h6
-{
-    font-size: 100%;
-    letter-spacing: -0.01em;
-    margin: 6px 0 3px 0;
-    font-style: italic;
-}
-
 .ancestors { color: #999; }
 .ancestors a
 {
@@ -362,4 +322,86 @@ h6
 
 .disabled {
     color: #454545;
+}
+
+.chips {
+    float: right;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chips:after {
+    content: '';
+    display: block;
+}
+
+.chip {
+    display: block;
+    float: left;
+    background: #eee;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    margin-right: 4px;
+    font-size: 11px;
+    line-height: 13px;
+    font-weight: bold;
+}
+
+.chip:last-child {
+    margin-right: 0;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.functions {
+    margin-top: 16px;
+}
+
+input,
+select,
+textarea,
+fieldset {
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+input[type=text],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=email],
+input[type=month],
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=time],
+input[type=url],
+input[type=week] {
+  height: 2.25rem;
+  padding: .5rem .5rem;
+  vertical-align: middle;
+  -webkit-appearance: none;
+}
+
+.field {
+    width: 90%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0,0,0,.125);
+    border-radius: 3px;
+}
+
+.hide {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
 }
