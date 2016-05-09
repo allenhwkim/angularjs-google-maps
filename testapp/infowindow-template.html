@@ -1,0 +1,59 @@
+<!doctype html>
+<html ng-app="myapp">
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+<script>
+var app = app || angular.module('myapp', ['ngMap']);
+app.controller('MyCtrl', function($compile, NgMap) {
+  var vm = this;
+  NgMap.getMap().then(function(map) {
+    vm.map = map;
+  });
+  vm.template = {
+    cached: 'custom-cached-info-window-template.html',
+    external: '/testapp/partials/custom-info-window-template.html'
+  };
+  vm.stores = {
+    foo: {
+      position:[41, -87],
+      infoWindow: 'cached',
+      items: [1,2,3,4]
+    },
+    foo2: {
+      position:[41, -80],
+      infoWindow: 'external',
+      items: [5,6,7,8]
+    }
+  };
+  vm.showStore = function(evt, storeId) {
+    vm.store = vm.stores[storeId];
+    vm.map.showInfoWindow(vm.store.infoWindow, this);
+  };
+});
+</script>
+</head>
+<body ng-controller="MyCtrl as vm">
+
+  <script id="custom-cached-info-window-template.html" type="text/ng-template">
+      <div ng-non-bindable="">
+        I'm an cached template<br/>
+        Lat: {{anchor.getPosition().lat()}}<br/>
+        Lng: {{anchor.getPosition().lng()}}<br>
+        <ul>
+          <li ng-repeat='item in vm.store.items'>{{item}}</li>
+        </ul>
+      </div>
+  </script>
+
+  <ng-map default-style="true" center="41,-87" zoom="3">
+
+    <info-window id="cached" template="{{vm.template.cached}}"></info-window>
+    <info-window id="external" template="{{vm.template.external}}"></info-window>
+
+    <marker ng-repeat="(id, store) in vm.stores" id="{{id}}"
+      position="{{store.position}}"
+      on-click="vm.showStore(event, id)"></marker>
+  </ng-map>
+</body>
+</html>
