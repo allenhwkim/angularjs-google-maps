@@ -80,7 +80,7 @@
       var templatePromise = $q(function(resolve) {
         if (angular.isString(element)) {
           $templateRequest(element).then(function (requestedTemplate) {
-            resolve(angular.element(requestedTemplate).wrap('<div>').parent());
+            resolve(angular.element(requestedTemplate).wrap('<div ng-non-bindable>').parent());
           }, function(message) {
             throw "info-window template request failed: " + message;
           });
