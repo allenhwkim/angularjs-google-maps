@@ -169,7 +169,7 @@ angular.module('ngMap', []);
 
         /**
          * rebuild mapOptions for lazyInit
-         * becasue attributes values might have been changed
+         * because attributes values might have been changed
          */
         var filtered = Attr2MapOptions.filter($attrs);
         var options = Attr2MapOptions.getOptions(filtered);
