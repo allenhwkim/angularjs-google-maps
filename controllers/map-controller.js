@@ -251,7 +251,11 @@
 
     if (options.lazyInit) { // allows controlled initialization
       // parse angular expression for dynamic ids
-      if (!!$attrs.id && $attrs.id.startsWith('{{') && $attrs.id.endsWith('}}')) {
+      if (!!$attrs.id && 
+      	  // starts with, at position 0
+	  $attrs.id.indexOf("{{", 0) === 0 &&
+	  // ends with
+	  $attrs.id.indexOf("}}", $attrs.id.length - "}}".length) !== -1) {
         var idExpression = $attrs.id.slice(2,-2);
         var mapId = $parse(idExpression)($scope);
       } else {
