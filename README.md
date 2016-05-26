@@ -15,7 +15,7 @@ IMPORTANT NOTICE
     You need to get map instance usng `NgMap.getMap().then()` in advance.
  - `map` tag is deprecated. Use `ng-map` tag instead
 
-[Demo](http://ngmap.github.io)  
+[Demo](https://ngmap.github.io)  
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)  
 [Road Trip By StreetView](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html)  
 [Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html) |
