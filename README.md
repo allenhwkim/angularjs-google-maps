@@ -4,16 +4,18 @@ GoogleMap AngularJS Directive
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 -->
 
-IMPORTANT NOTICE
------------------
- - Implementation for Angular2 version has been started at [https://github.com/jsvalley/ng2-map](https://github.com/jsvalley/ng2-map)
-
 [Demo](https://ngmap.github.io)  
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)  
 [Road Trip By StreetView](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html)  
 [Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html) |
 [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)  
 
+IMPORTANT NOTICE
+-----------------
+ - Implementation for Angular2 version has been started at [https://github.com/jsvalley/ng2-map](https://github.com/jsvalley/ng2-map)
+
+Background
+-----------------
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach than the existing one, such as;
 
 1. **Everything in tag and attributes.**   
