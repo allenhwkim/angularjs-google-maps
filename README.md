@@ -6,14 +6,7 @@ GoogleMap AngularJS Directive
 
 IMPORTANT NOTICE
 -----------------
-
- - `$scope.map` is deprecated. Use `NgMap.getMap().then(function(map) {...})`
-    instead to get a map instance.
- - `$scope.$on('mapInitialized', function(event, map) {..}` is deprecated.
-    Use `NgMap.getMap().then(function(map) {...})` instead to get a map instance.
- - `$scope.showInfoWindow(id)` is deprecated. `map.showInfoWindow(id)` instead.
-    You need to get map instance usng `NgMap.getMap().then()` in advance.
- - `map` tag is deprecated. Use `ng-map` tag instead
+ - Implementation for Angular2 version has been started at [https://github.com/jsvalley/ng2-map](https://github.com/jsvalley/ng2-map)
 
 [Demo](https://ngmap.github.io)  
 [Documentation](https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html)  
