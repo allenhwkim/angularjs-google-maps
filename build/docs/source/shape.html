@@ -1,34 +1,33 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8">
     <base href="../">
     <title>JSDoc: source : shape.js</title>
-    <link type="text/css" rel="stylesheet" href="css/jsdoc-default.css">
     <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,300,700" rel="stylesheet" type="text/css">
-    <link href="css/custom.css" type="text/css" rel="stylesheet">
-    <script src="js/prettify.js"></script>
-    <script src="js/angular.min.js"></script>
+    <link href="css/site.css" type="text/css" rel="stylesheet">
   </head>
   <body ng-app="">
-    <nav>
+    <nav id="toc">
+      <input placeholder="Filter" id="filter-input" class="col12 block field" type="text">
+      <div class="nav-wrapper">
       <h2><a href="index.html">Index</a></h2>
       <ul class="module">
         <!-- undefined -->
-        <h3>
-          <a href="" ng-click="moduleundefined = !moduleundefined">
+        <h2 class="module">
+          <a chref="" ng-click="moduleundefined = !moduleundefined">
             module: undefined
           </a>
           <i ng-cloak="" ng-show="moduleundefined">+</i>
-        </h3>
+        </h2>
         <li id="undefined" ng-hide="moduleundefined">
           <ul class="group">
-            <h3>
+            <h2>
               <a href="" ng-click="undefinedservice = !undefinedservice">
                 service
               </a>
               <i ng-cloak="" ng-show="undefinedservice">+</i>
-            </h3>
+            </h2>
             <ul ng-hide="undefinedservice">
               <li>
                 <a href="Attr2MapOptions.html">Attr2MapOptions</a>
@@ -41,12 +40,12 @@
               </li>
             </ul>
           </ul><ul class="group">
-            <h3>
+            <h2>
               <a href="" ng-click="undefineddirective = !undefineddirective">
                 directive
               </a>
               <i ng-cloak="" ng-show="undefineddirective">+</i>
-            </h3>
+            </h2>
             <ul ng-hide="undefineddirective">
               <li>
                 <a href="bicycling-layer.html">bicycling-layer</a>
@@ -91,24 +90,24 @@
               </li>
             </ul>
           </ul><ul class="group">
-            <h3>
+            <h2>
               <a href="" ng-click="undefinedprovider = !undefinedprovider">
                 provider
               </a>
               <i ng-cloak="" ng-show="undefinedprovider">+</i>
-            </h3>
+            </h2>
             <ul ng-hide="undefinedprovider">
               <li>
                 <a href="NgMap.html">NgMap</a>
               </li>
             </ul>
           </ul><ul class="group">
-            <h3>
+            <h2>
               <a href="" ng-click="undefinedfactory = !undefinedfactory">
                 factory
               </a>
               <i ng-cloak="" ng-show="undefinedfactory">+</i>
-            </h3>
+            </h2>
             <ul ng-hide="undefinedfactory">
               <li>
                 <a href="NgMapPool.html">NgMapPool</a>
@@ -118,20 +117,20 @@
         </li>
       </ul><ul class="module">
         <!-- ngmap -->
-        <h3>
-          <a href="" ng-click="modulengmap = !modulengmap">
+        <h2 class="module">
+          <a chref="" ng-click="modulengmap = !modulengmap">
             module: ngmap
           </a>
           <i ng-cloak="" ng-show="modulengmap">+</i>
-        </h3>
+        </h2>
         <li id="ngmap" ng-hide="modulengmap">
           <ul class="group">
-            <h3>
+            <h2>
               <a href="" ng-click="ngmapdirective = !ngmapdirective">
                 directive
               </a>
               <i ng-cloak="" ng-show="ngmapdirective">+</i>
-            </h3>
+            </h2>
             <ul ng-hide="ngmapdirective">
               <li>
                 <a href="ngmap.custom-marker.html">custom-marker</a>
@@ -141,20 +140,20 @@
         </li>
       </ul><ul class="module">
         <!-- ng_ap -->
-        <h3>
-          <a href="" ng-click="moduleng_ap = !moduleng_ap">
+        <h2 class="module">
+          <a chref="" ng-click="moduleng_ap = !moduleng_ap">
             module: ngMap
           </a>
           <i ng-cloak="" ng-show="moduleng_ap">+</i>
-        </h3>
+        </h2>
         <li id="ngMap" ng-hide="moduleng_ap">
           <ul class="group">
-            <h3>
+            <h2>
               <a href="" ng-click="ng_apdirective = !ng_apdirective">
                 directive
               </a>
               <i ng-cloak="" ng-show="ng_apdirective">+</i>
-            </h3>
+            </h2>
             <ul ng-hide="ng_apdirective">
               <li>
                 <a href="ngMap.ng-map.html">ng-map</a>
@@ -163,6 +162,7 @@
           </ul>
         </li>
       </ul>
+      </div>
     </nav>
     <div id="content" class="page-wrap">
       <h1 class="title">
@@ -340,6 +340,9 @@
         <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template</a>
       </footer>
     </div>
+    <script src="js/prettify.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/site.js"></script>
     <!--%= prettyJson %-->
     <script>
       prettyPrint();
