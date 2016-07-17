@@ -12,7 +12,7 @@ GoogleMap AngularJS Directive
 
 IMPORTANT NOTICE
 -----------------
- - Implementation for Angular2 version has been started at [https://github.com/jsvalley/ng2-map](https://github.com/ng2-ui/ng2-map)
+ - Implementation for Angular2 version has been started at [https://github.com/ng2-ui/ng2-map](https://github.com/ng2-ui/ng2-map)
 
 Background
 -----------------
