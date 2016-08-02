@@ -13,7 +13,7 @@
  * @example
  * Example:
  *   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
- *   <input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" />
+ *   <input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" component-restrictions="{country:'au'}"/>
  */
 /* global google */
 (function() {
@@ -48,8 +48,14 @@
           autocomplete.setTypes(optionValue);
         }
       });
+	  
+	  attrs.$observe('componentRestrictions', function (val) {
+		 if (val) {
+		   autocomplete.setComponentRestrictions(scope.$eval(val));
+		 }
+	   });
     };
-
+	
     return {
       restrict: 'A',
       require: '?ngModel',
@@ -59,5 +65,4 @@
 
   placesAutoComplete.$inject = ['Attr2MapOptions', '$timeout'];
   angular.module('ngMap').directive('placesAutoComplete', placesAutoComplete);
-
 })();
