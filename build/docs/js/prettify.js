@@ -649,7 +649,7 @@ var prettyPrint;
     * recognized.
     *
     * Shortcut is an optional string of characters, any of which, if the first
-    * character, guarantee that this pattern and only this pattern matches.
+    * character, gurantee that this pattern and only this pattern matches.
     *
     * @param {Array} shortcutStylePatterns patterns that always start with
     *   a known character.  Must have a shortcut string.
@@ -932,7 +932,7 @@ var prettyPrint;
       // preprocessor directives.
 
       // This definition of punctuation does not include # in the list of
-      // follow-on exclusions, so # will not be broken before if preceded
+      // follow-on exclusions, so # will not be broken before if preceeded
       // by a punctuation character.  We could try to exclude # after
       // [|&;<>] but that doesn't seem to cause many major problems.
       // If that does turn out to be a problem, we should change the below

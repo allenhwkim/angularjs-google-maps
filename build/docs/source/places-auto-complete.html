@@ -186,7 +186,7 @@
  * @example
  * Example:
  *   &lt;script src="https://maps.googleapis.com/maps/api/js?libraries=places">&lt;/script>
- *   &lt;input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" />
+ *   &lt;input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" component-restrictions="{country:'au'}"/>
  */
 /* global google */
 (function() {
@@ -217,6 +217,11 @@
           autocomplete.setTypes(optionValue);
         }
       });
+	  attrs.$observe('componentRestrictions', function (val) {
+		 if (val) {
+		   autocomplete.setComponentRestrictions(scope.$eval(val));
+		 }
+	   });
     };
     return {
       restrict: 'A',

@@ -175,18 +175,12 @@
             <h1>GoogleMap AngularJS Directive</h1><!--
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
 -->
-<h2>IMPORTANT NOTICE</h2><ul>
-<li><code>$scope.map</code> is deprecated. Use <code>NgMap.getMap().then(function(map) {...})</code>
- instead to get a map instance.</li>
-<li><code>$scope.$on('mapInitialized', function(event, map) {..}</code> is deprecated.
- Use <code>NgMap.getMap().then(function(map) {...})</code> instead to get a map instance.</li>
-<li><code>$scope.showInfoWindow(id)</code> is deprecated. <code>map.showInfoWindow(id)</code> instead.
- You need to get map instance usng <code>NgMap.getMap().then()</code> in advance.</li>
-<li><code>map</code> tag is deprecated. Use <code>ng-map</code> tag instead</li>
-</ul>
-<p><a href="http://ngmap.github.io">Demo</a><br><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html">Documentation</a><br><a href="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html">Road Trip By StreetView</a><br><a href="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html">Maps Can Talk</a> |
+<p><a href="https://ngmap.github.io">Demo</a><br><a href="https://rawgithub.com/allenhwkim/angularjs-google-maps/master/build/docs/index.html">Documentation</a><br><a href="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/street-view_road_trip.html">Road Trip By StreetView</a><br><a href="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html">Maps Can Talk</a> |
 <a href="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html">Custom Marker</a>  </p>
-<p>There is already <a href="https://github.com/nlaplante/angular-google-maps">one</a> for this. However, I found myself doing totally different approach than the existing one, such as;</p>
+<h2>IMPORTANT NOTICE</h2><ul>
+<li>Implementation for Angular2 version has been started at <a href="https://github.com/ng2-ui/ng2-map">https://github.com/ng2-ui/ng2-map</a></li>
+</ul>
+<h2>Background</h2><p>There is already <a href="https://github.com/nlaplante/angular-google-maps">one</a> for this. However, I found myself doing totally different approach than the existing one, such as;</p>
 <ol>
 <li><p><strong>Everything in tag and attributes.</strong><br>Thus, basic users don't even have to know what Javascript is. </p>
 </li>
