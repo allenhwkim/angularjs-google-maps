@@ -191,7 +191,8 @@
       scope.showInfoWindow = mapController.map.showInfoWindow;
       scope.hideInfoWindow = mapController.map.hideInfoWindow;
 
-      NgMap.getMap().then(function(map) {
+      var map = infoWindow.mapId ? {id:infoWindow.mapId} : 0;
+      NgMap.getMap(map).then(function(map) {
         infoWindow.visible && infoWindow.__open(map, scope);
         if (infoWindow.visibleOnMarker) {
           var markerId = infoWindow.visibleOnMarker;
