@@ -54,6 +54,10 @@ To get the map instance use the `NgMap.getMap()` function
       });
     });
 
+For npm users, 
+
+  `$ npm install ngmap`
+
 For meteor users: https://atmospherejs.com/wormy/angularjs-google-maps
 
 Lazy Loading of Google Maps Javascript
