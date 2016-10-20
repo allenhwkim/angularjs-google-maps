@@ -174,6 +174,8 @@
         ((typeof center === 'string') && center.match(/\{\{.*\}\}/))
       ) {
         mapOptions.center = new google.maps.LatLng(0, 0);
+      } else if( (typeof center === 'string') && center.match(/[0-9.-]*,[0-9.-]*/) ){
+           mapOptions.center = new google.maps.LatLng(center);
       } else if (!(center instanceof google.maps.LatLng)) {
         var geoCenter = mapOptions.center;
         delete mapOptions.center;
