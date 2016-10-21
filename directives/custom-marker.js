@@ -67,7 +67,7 @@
 
     CustomMarker.prototype.setPosition = function(position) {
       position && (this.position = position); /* jshint ignore:line */
-      var _this = this;c
+      var _this = this;
       if (this.getProjection() && typeof this.position.lng == 'function') {
         console.log(_this.getProjection());
         var setPosition = function() {
