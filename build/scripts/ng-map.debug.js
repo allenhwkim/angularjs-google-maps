@@ -1,5 +1,5 @@
 /**
- * AngularJS Google Maps Ver. 1.17.7
+ * AngularJS Google Maps Ver. 1.17.9
  *
  * The MIT License (MIT)
  * 
@@ -511,9 +511,9 @@ angular.module('ngMap', []);
 
     CustomMarker.prototype.setPosition = function(position) {
       position && (this.position = position); /* jshint ignore:line */
-
+      var _this = this;c
       if (this.getProjection() && typeof this.position.lng == 'function') {
-        var _this = this;
+        onsole.log(_this.getProjection());
         var setPosition = function() {
           var posPixel = _this.getProjection().fromLatLngToDivPixel(_this.position);
           var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
