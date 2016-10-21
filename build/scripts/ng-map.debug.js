@@ -1,5 +1,5 @@
 /**
- * AngularJS Google Maps Ver. 1.17.9
+ * AngularJS Google Maps Ver. 1.17.92
  *
  * The MIT License (MIT)
  * 
