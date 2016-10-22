@@ -47,7 +47,6 @@ var bumpVersion = function(type) {
             color.yellow(version) + color.green(", don't forget to push!"));
         }));
     });
-
 };
 
 gulp.task('clean', function() {
@@ -57,7 +56,7 @@ gulp.task('clean', function() {
 
 var license = require('uglify-save-license');
 
-gulp.task('build-js', function() {
+gulp.task('build-js:debug', function() {
   return gulp.src([
       'app.js',
       'controllers/*.js',
@@ -68,6 +67,11 @@ gulp.task('build-js', function() {
     .pipe(concat('ng-map.debug.js'))
     .pipe(replace(/(AngularJS Google Maps)/, '$1 Ver. ' + pjson.version))
     .pipe(gulp.dest('build/scripts'))
+    .on('error', gutil.log);
+});
+
+gulp.task('build-js:angular', function() {
+  return gulp.src(['build/scripts/ng-map.debug.js'])
     .pipe(stripDebug())
     .pipe(concat('ng-map.js'))
     .pipe(umd({
@@ -98,10 +102,48 @@ gulp.task('build-js', function() {
                         '}));'
     }))
     .pipe(gulp.dest('build/scripts'))
+    .on('error', gutil.log);
+});
+
+gulp.task('build-js:angular-min', function() {
+  return gulp.src(['build/scripts/ng-map.js'])
+    .pipe(concat('ng-map.min.js'))
     .pipe(uglify({preserveComments: license}))
-    .pipe(rename('ng-map.min.js'))
     .pipe(gulp.dest('build/scripts'))
     .on('error', gutil.log);
+})
+
+gulp.task('build-js:no-dependency', function() {
+  return gulp.src(['build/scripts/ng-map.debug.js'])
+    .pipe(stripDebug())
+    .pipe(concat('ng-map.no-dependency.js'))
+    .pipe(umd({
+        dependencies: function (file) {
+            return [];
+        },
+        exports: function (file) {
+            return "'ngMap'";
+        },
+        //template: umdTemplates.returnExportsNoNamespace.path,
+        templateSource: '(function(root, factory) {\r\n' +
+                            'if (typeof exports === "object") {\r\n' +
+                                'module.exports = factory();\r\n' +
+                            '} else if (typeof define === "function" && define.amd) {\r\n' +
+                                'define([], factory);\r\n' +
+                            '} else{\r\n' +
+                                'factory();\r\n' +
+                            '}\r\n' +
+                        '}(this, function() {\r\n' +
+                            '<%= contents %>\r\n' +
+                            'return <%= exports %>;\r\n' +
+                        '}));'
+    }))
+    .pipe(gulp.dest('build/scripts'))
+    .on('error', gutil.log);
+});
+
+gulp.task('build-js', function(callback) {
+  return runSequence('build-js:debug', ['build-js:no-dependency', 'build-js:angular'], 'build-js:angular-min', callback);
 });
 
 gulp.task('docs', function() {
