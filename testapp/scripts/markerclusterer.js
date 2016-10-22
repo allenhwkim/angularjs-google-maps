@@ -336,6 +336,7 @@ ClusterIcon.prototype.createCss = function (pos) {
  * @return {google.maps.Point} The position in pixels.
  */
 ClusterIcon.prototype.getPosFromLatLng_ = function (latlng) {
+  console.log(this.getProjection())
   var pos = this.getProjection().fromLatLngToDivPixel(latlng);
   pos.x -= this.anchorIcon_[1];
   pos.y -= this.anchorIcon_[0];
