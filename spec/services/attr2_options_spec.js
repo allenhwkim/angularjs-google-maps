@@ -1,7 +1,7 @@
 /* global google */
 describe('Attr2MapOptions', function() {
   'use strict';
-   var scope, $parse, $timeout, $log,
+   var scope, $parse, $timeout, $log, $interpolate,
      NavigatorGeolocation, GeoCoder, cameCaseFilter,
      jsonnizeFilter, parser, google;
 
@@ -11,7 +11,7 @@ describe('Attr2MapOptions', function() {
 
    beforeEach(inject(function (
      $rootScope,
-     _$parse_, _$timeout_, _$log_,
+     _$parse_, _$timeout_, _$log_, _$interpolate_,
      _NavigatorGeolocation_, _GeoCoder_, _camelCaseFilter_,
      _jsonizeFilter_, _Attr2MapOptions_
    ) {
@@ -19,6 +19,7 @@ describe('Attr2MapOptions', function() {
      $parse = _$parse_;
      $timeout    = _$timeout_;
      $log = _$log_;
+     $interpolate = _$interpolate_;
      NavigatorGeolocation = _NavigatorGeolocation_;
      GeoCoder = _GeoCoder_;
      cameCaseFilter = _camelCaseFilter_;
@@ -46,12 +47,12 @@ describe('Attr2MapOptions', function() {
       var attrs ={a:1, onClick:'func'};
       expect(parser.getOptions(attrs).onClick).toEqual(undefined);
     });
-    
+
     it('should convert string to number', function() {
       var attrs ={a:'100.99'};
       expect(parser.getOptions(attrs).a).toEqual(100.99);
     });
-    
+
     it('should convert JSON to an object', function() {
       var attrs = {a:'{"foo":123}'};
       expect(parser.getOptions(attrs).a.foo).toEqual(123);

@@ -7,10 +7,12 @@
   var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
+      $scope, $element, $attrs, $parse, $interpolate, _Attr2MapOptions_, NgMap, NgMapPool, escapeRegExp
     ) {
     Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
@@ -170,8 +172,10 @@
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
+      var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol));
+
       if (!mapOptions.center ||
-        ((typeof center === 'string') && center.match(/\{\{.*\}\}/))
+        ((typeof center === 'string') && center.match(exprRegExp))
       ) {
         mapOptions.center = new google.maps.LatLng(0, 0);
       } else if( (typeof center === 'string') && center.match(/[0-9.-]*,[0-9.-]*/) ){
@@ -219,14 +223,14 @@
           $parse($attrs.mapInitialized)($scope, {map: vm.map});
         }
       });
-	  
+
 	  //add maximum zoom listeners if zoom-to-include-markers and and maximum-zoom are valid attributes
 	  if (mapOptions.zoomToIncludeMarkers && mapOptions.maximumZoom) {
 	    google.maps.event.addListener(vm.map, 'zoom_changed', function() {
           if (vm.enableMaximumZoomCheck == true) {
 			vm.enableMaximumZoomCheck = false;
-	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() { 
-		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom())); 
+	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() {
+		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom()));
 		    });
 	  	  }
 	    });
@@ -253,11 +257,11 @@
 
     if (options.lazyInit) { // allows controlled initialization
       // parse angular expression for dynamic ids
-      if (!!$attrs.id && 
+      if (!!$attrs.id &&
       	  // starts with, at position 0
-	  $attrs.id.indexOf("{{", 0) === 0 &&
+	  $attrs.id.indexOf(exprStartSymbol, 0) === 0 &&
 	  // ends with
-	  $attrs.id.indexOf("}}", $attrs.id.length - "}}".length) !== -1) {
+	  $attrs.id.indexOf(exprEndSymbol, $attrs.id.length - exprEndSymbol.length) !== -1) {
         var idExpression = $attrs.id.slice(2,-2);
         var mapId = $parse(idExpression)($scope);
       } else {
@@ -281,7 +285,7 @@
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
+    '$scope', '$element', '$attrs', '$parse', '$interpolate', 'Attr2MapOptions', 'NgMap', 'NgMapPool', 'escapeRegexpFilter'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();
