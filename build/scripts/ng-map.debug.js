@@ -3045,6 +3045,15 @@ angular.module('ngMap', []);
 
   /**
    * @memberof NgMap
+   * @function getMapController
+   * @param {Int} index
+   */
+  var getMapController = function(index) {
+    return mapControllers[index];
+  };
+
+  /**
+   * @memberof NgMap
    * @function deleteMap
    * @param mapController {__MapContoller} a map controller
    */
@@ -3204,6 +3213,7 @@ angular.module('ngMap', []);
       return {
         defaultOptions: defaultOptions,
         addMap: addMap,
+        getMapController: getMapController,
         deleteMap: deleteMap,
         getMap: getMap,
         initMap: initMap,
