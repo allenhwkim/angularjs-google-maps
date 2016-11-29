@@ -7,7 +7,7 @@
 (function() {
   'use strict';
   var $window, $document, $q;
-  var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter;
+  var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter, NgMapPool;
 
   var mapControllers = {};
 
@@ -107,6 +107,8 @@
         mapCtrl.deleteObject('heatmapLayers', mapCtrl.map.heatmapLayers[layer]);
       });
     }
+
+    NgMapPool.deleteMapInstance(mapId);
 
     delete mapControllers[mapId];
   };
@@ -228,7 +230,7 @@
     var NgMap = function(
         _$window_, _$document_, _$q_,
         _NavigatorGeolocation_, _Attr2MapOptions_,
-        _GeoCoder_, _camelCaseFilter_
+        _GeoCoder_, _camelCaseFilter_, _NgMapPool_
       ) {
       $window = _$window_;
       $document = _$document_[0];
@@ -237,6 +239,7 @@
       Attr2MapOptions = _Attr2MapOptions_;
       GeoCoder = _GeoCoder_;
       camelCaseFilter = _camelCaseFilter_;
+      NgMapPool = _NgMapPool_;
 
       return {
         defaultOptions: defaultOptions,
@@ -252,7 +255,7 @@
     NgMap.$inject = [
       '$window', '$document', '$q',
       'NavigatorGeolocation', 'Attr2MapOptions',
-      'GeoCoder', 'camelCaseFilter'
+      'GeoCoder', 'camelCaseFilter', 'NgMapPool'
     ];
 
     this.$get = NgMap;

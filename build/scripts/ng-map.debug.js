@@ -2944,6 +2944,20 @@ angular.module('ngMap', []);
     }
     mapInstances = [];
   };
+  
+  /**
+   * @memberof NgMapPool
+   * @function deleteMapInstance
+   * @desc selete a mapInstance
+   */
+  var deleteMapInstance= function(mapId) {
+	  for( var i=0; i<mapInstances.length; i++ ) {
+		  if( (mapInstances[i] !== null) && (mapInstances[i].id == mapId)) {
+			  mapInstances[i]= null;
+			  mapInstances.splice( i, 1 );
+		  }
+	  }
+  };
 
   var NgMapPool = function(_$document_, _$window_, _$timeout_) {
     $document = _$document_[0], $window = _$window_, $timeout = _$timeout_;
@@ -2952,9 +2966,11 @@ angular.module('ngMap', []);
 	  mapInstances: mapInstances,
       resetMapInstances: resetMapInstances,
       getMapInstance: getMapInstance,
-      returnMapInstance: returnMapInstance
+      returnMapInstance: returnMapInstance,
+      deleteMapInstance: deleteMapInstance
     };
   };
+
   NgMapPool.$inject = [ '$document', '$window', '$timeout'];
 
   angular.module('ngMap').factory('NgMapPool', NgMapPool);
@@ -2970,7 +2986,7 @@ angular.module('ngMap', []);
 (function() {
   'use strict';
   var $window, $document, $q;
-  var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter;
+  var NavigatorGeolocation, Attr2MapOptions, GeoCoder, camelCaseFilter, NgMapPool;
 
   var mapControllers = {};
 
@@ -3045,15 +3061,6 @@ angular.module('ngMap', []);
 
   /**
    * @memberof NgMap
-   * @function getMapController
-   * @param {Int} index
-   */
-  var getMapController = function(index) {
-    return mapControllers[index];
-  };
-
-  /**
-   * @memberof NgMap
    * @function deleteMap
    * @param mapController {__MapContoller} a map controller
    */
@@ -3079,6 +3086,8 @@ angular.module('ngMap', []);
         mapCtrl.deleteObject('heatmapLayers', mapCtrl.map.heatmapLayers[layer]);
       });
     }
+
+    NgMapPool.deleteMapInstance(mapId);
 
     delete mapControllers[mapId];
   };
@@ -3200,7 +3209,7 @@ angular.module('ngMap', []);
     var NgMap = function(
         _$window_, _$document_, _$q_,
         _NavigatorGeolocation_, _Attr2MapOptions_,
-        _GeoCoder_, _camelCaseFilter_
+        _GeoCoder_, _camelCaseFilter_, _NgMapPool_
       ) {
       $window = _$window_;
       $document = _$document_[0];
@@ -3209,11 +3218,11 @@ angular.module('ngMap', []);
       Attr2MapOptions = _Attr2MapOptions_;
       GeoCoder = _GeoCoder_;
       camelCaseFilter = _camelCaseFilter_;
+      NgMapPool = _NgMapPool_;
 
       return {
         defaultOptions: defaultOptions,
         addMap: addMap,
-        getMapController: getMapController,
         deleteMap: deleteMap,
         getMap: getMap,
         initMap: initMap,
@@ -3225,7 +3234,7 @@ angular.module('ngMap', []);
     NgMap.$inject = [
       '$window', '$document', '$q',
       'NavigatorGeolocation', 'Attr2MapOptions',
-      'GeoCoder', 'camelCaseFilter'
+      'GeoCoder', 'camelCaseFilter', 'NgMapPool'
     ];
 
     this.$get = NgMap;
