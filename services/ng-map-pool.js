@@ -96,6 +96,20 @@
     }
     mapInstances = [];
   };
+  
+  /**
+   * @memberof NgMapPool
+   * @function deleteMapInstance
+   * @desc delete a mapInstance
+   */
+  var deleteMapInstance= function(mapId) {
+	  for( var i=0; i<mapInstances.length; i++ ) {
+		  if( (mapInstances[i] !== null) && (mapInstances[i].id == mapId)) {
+			  mapInstances[i]= null;
+			  mapInstances.splice( i, 1 );
+		  }
+	  }
+  };
 
   var NgMapPool = function(_$document_, _$window_, _$timeout_) {
     $document = _$document_[0], $window = _$window_, $timeout = _$timeout_;
@@ -104,9 +118,11 @@
 	  mapInstances: mapInstances,
       resetMapInstances: resetMapInstances,
       getMapInstance: getMapInstance,
-      returnMapInstance: returnMapInstance
+      returnMapInstance: returnMapInstance,
+      deleteMapInstance: deleteMapInstance
     };
   };
+
   NgMapPool.$inject = [ '$document', '$window', '$timeout'];
 
   angular.module('ngMap').factory('NgMapPool', NgMapPool);

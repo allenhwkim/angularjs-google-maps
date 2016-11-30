@@ -1,12 +1,12 @@
 (function(root, factory) {
 if (typeof exports === "object") {
-module.exports = factory(require('angular'));
+module.exports = factory();
 } else if (typeof define === "function" && define.amd) {
-define(['angular'], factory);
+define([], factory);
 } else{
-factory(root.angular);
+factory();
 }
-}(this, function(angular) {
+}(this, function() {
 /**
  * AngularJS Google Maps Ver. 1.17.94
  *
