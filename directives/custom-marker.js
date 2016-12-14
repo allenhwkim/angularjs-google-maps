@@ -71,6 +71,7 @@
       if (this.getProjection() && typeof this.position.lng == 'function') {
         console.log(_this.getProjection());
         var setPosition = function() {
+          if (!_this.getProjection()) { return; }
           var posPixel = _this.getProjection().fromLatLngToDivPixel(_this.position);
           var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
           var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
@@ -78,7 +79,7 @@
           _this.el.style.top = y + "px";
           _this.el.style.visibility = "visible";
         };
-        if (_this.el.offsetWidth && _this.el.offsetHeight) { 
+        if (_this.el.offsetWidth && _this.el.offsetHeight) {
           setPosition();
         } else {
           //delayed left/top calculation when width/height are not set instantly
