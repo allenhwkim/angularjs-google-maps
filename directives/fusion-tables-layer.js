@@ -45,6 +45,9 @@
 
         var layer = getLayer(options, events);
         mapController.addObject('fusionTablesLayers', layer);
+        element.bind('$destroy', function() {
+          mapController.deleteObject('fusionTablesLayers', layer);
+        });
       }
      }; // return
   }]);
