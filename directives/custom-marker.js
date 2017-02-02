@@ -191,12 +191,16 @@
 
 
   var customMarkerDirective = function(
-      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
+      _$timeout_, _$compile_, $interpolate, Attr2MapOptions, _NgMap_, escapeRegExp
     )  {
     parser = Attr2MapOptions;
     $timeout = _$timeout_;
     $compile = _$compile_;
     NgMap = _NgMap_;
+
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
+    var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '([^' + exprEndSymbol.substring(0, 1) + ']+)' + escapeRegExp(exprEndSymbol), 'g');
 
     return {
       restrict: 'E',
@@ -205,15 +209,15 @@
         setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
-        var matches = orgHtml.match(/{{([^}]+)}}/g);
+        var matches = orgHtml.match(exprRegExp);
         var varsToWatch = [];
         //filter out that contains '::', 'this.'
         (matches || []).forEach(function(match) {
-          var toWatch = match.replace('{{','').replace('}}','');
+          var toWatch = match.replace(exprStartSymbol,'').replace(exprEndSymbol,'');
           if (match.indexOf('::') == -1 &&
             match.indexOf('this.') == -1 &&
             varsToWatch.indexOf(toWatch) == -1) {
-            varsToWatch.push(match.replace('{{','').replace('}}',''));
+            varsToWatch.push(match.replace(exprStartSymbol,'').replace(exprEndSymbol,''));
           }
         });
 
@@ -222,7 +226,7 @@
     }; // return
   };// function
   customMarkerDirective.$inject =
-    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
+    ['$timeout', '$compile', '$interpolate', 'Attr2MapOptions', 'NgMap', 'escapeRegexpFilter'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();
