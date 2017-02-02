@@ -42,10 +42,12 @@ angular.module('ngMap', []);
   var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
+      $scope, $element, $attrs, $parse, $interpolate, _Attr2MapOptions_, NgMap, NgMapPool, escapeRegExp
     ) {
     Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
@@ -205,8 +207,10 @@ angular.module('ngMap', []);
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
+      var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol));
+
       if (!mapOptions.center ||
-        ((typeof center === 'string') && center.match(/\{\{.*\}\}/))
+        ((typeof center === 'string') && center.match(exprRegExp))
       ) {
         mapOptions.center = new google.maps.LatLng(0, 0);
       } else if( (typeof center === 'string') && center.match(/[0-9.-]*,[0-9.-]*/) ){
@@ -254,14 +258,14 @@ angular.module('ngMap', []);
           $parse($attrs.mapInitialized)($scope, {map: vm.map});
         }
       });
-	  
+
 	  //add maximum zoom listeners if zoom-to-include-markers and and maximum-zoom are valid attributes
 	  if (mapOptions.zoomToIncludeMarkers && mapOptions.maximumZoom) {
 	    google.maps.event.addListener(vm.map, 'zoom_changed', function() {
           if (vm.enableMaximumZoomCheck == true) {
 			vm.enableMaximumZoomCheck = false;
-	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() { 
-		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom())); 
+	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() {
+		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom()));
 		    });
 	  	  }
 	    });
@@ -288,11 +292,11 @@ angular.module('ngMap', []);
 
     if (options.lazyInit) { // allows controlled initialization
       // parse angular expression for dynamic ids
-      if (!!$attrs.id && 
+      if (!!$attrs.id &&
       	  // starts with, at position 0
-	  $attrs.id.indexOf("{{", 0) === 0 &&
+	  $attrs.id.indexOf(exprStartSymbol, 0) === 0 &&
 	  // ends with
-	  $attrs.id.indexOf("}}", $attrs.id.length - "}}".length) !== -1) {
+	  $attrs.id.indexOf(exprEndSymbol, $attrs.id.length - exprEndSymbol.length) !== -1) {
         var idExpression = $attrs.id.slice(2,-2);
         var mapId = $parse(idExpression)($scope);
       } else {
@@ -316,7 +320,7 @@ angular.module('ngMap', []);
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
+    '$scope', '$element', '$attrs', '$parse', '$interpolate', 'Attr2MapOptions', 'NgMap', 'NgMapPool', 'escapeRegexpFilter'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();
@@ -531,7 +535,7 @@ angular.module('ngMap', []);
           _this.el.style.top = y + "px";
           _this.el.style.visibility = "visible";
         };
-        if (_this.el.offsetWidth && _this.el.offsetHeight) { 
+        if (_this.el.offsetWidth && _this.el.offsetHeight) {
           setPosition();
         } else {
           //delayed left/top calculation when width/height are not set instantly
@@ -643,12 +647,16 @@ angular.module('ngMap', []);
 
 
   var customMarkerDirective = function(
-      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
+      _$timeout_, _$compile_, $interpolate, Attr2MapOptions, _NgMap_, escapeRegExp
     )  {
     parser = Attr2MapOptions;
     $timeout = _$timeout_;
     $compile = _$compile_;
     NgMap = _NgMap_;
+
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
+    var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '([^' + exprEndSymbol.substring(0, 1) + ']+)' + escapeRegExp(exprEndSymbol), 'g');
 
     return {
       restrict: 'E',
@@ -657,15 +665,15 @@ angular.module('ngMap', []);
         setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
-        var matches = orgHtml.match(/{{([^}]+)}}/g);
+        var matches = orgHtml.match(exprRegExp);
         var varsToWatch = [];
         //filter out that contains '::', 'this.'
         (matches || []).forEach(function(match) {
-          var toWatch = match.replace('{{','').replace('}}','');
+          var toWatch = match.replace(exprStartSymbol,'').replace(exprEndSymbol,'');
           if (match.indexOf('::') == -1 &&
             match.indexOf('this.') == -1 &&
             varsToWatch.indexOf(toWatch) == -1) {
-            varsToWatch.push(match.replace('{{','').replace('}}',''));
+            varsToWatch.push(match.replace(exprStartSymbol,'').replace(exprEndSymbol,''));
           }
         });
 
@@ -674,7 +682,7 @@ angular.module('ngMap', []);
     }; // return
   };// function
   customMarkerDirective.$inject =
-    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
+    ['$timeout', '$compile', '$interpolate', 'Attr2MapOptions', 'NgMap', 'escapeRegexpFilter'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();
@@ -2326,6 +2334,26 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc filter
+ * @name escape-regex
+ * @description
+ *   Escapes all regex special characters in a string
+ */
+(function() {
+  'use strict';
+
+
+
+  var escapeRegexpFilter = function() {
+    return function(string) {
+			return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+		};
+  };
+
+  angular.module('ngMap').filter('escapeRegexp', escapeRegexpFilter);
+})();
+
+/**
+ * @ngdoc filter
  * @name jsonize
  * @description
  *   Converts json-like string to json string
@@ -2374,9 +2402,12 @@ angular.module('ngMap', []);
     /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/;
 
   var Attr2MapOptions = function(
-      $parse, $timeout, $log, NavigatorGeolocation, GeoCoder,
-      camelCaseFilter, jsonizeFilter
+      $parse, $timeout, $log, $interpolate, NavigatorGeolocation, GeoCoder,
+      camelCaseFilter, jsonizeFilter, escapeRegExp
     ) {
+
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
 
     /**
      * Returns the attributes of an element as hash
@@ -2475,9 +2506,9 @@ angular.module('ngMap', []);
               output = input;
             }
           // 7. evaluate dynamically bound values
-          } else if (input.match(/^{/) && options.scope) {
+        } else if (input.match(new RegExp('^' + escapeRegExp(exprStartSymbol))) && options.scope) {
             try {
-              var expr = input.replace(/{{/,'').replace(/}}/g,'');
+              var expr = input.replace(new RegExp(escapeRegExp(exprStartSymbol)),'').replace(new RegExp(escapeRegExp(exprEndSymbol), 'g'),'');
               output = options.scope.$eval(expr);
             } catch (err) {
               output = input;
@@ -2532,11 +2563,12 @@ angular.module('ngMap', []);
 
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
+      var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol), 'g');
 
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          if (attrValue && attrValue.match(exprRegExp)) { // if attr value is {{..}}
             attrsToObserve.push(camelCaseFilter(attrName));
           }
         }
@@ -2608,7 +2640,7 @@ angular.module('ngMap', []);
     };
 
     /**
-     * converts attributes hash to scope-specific event function 
+     * converts attributes hash to scope-specific event function
      * @memberof Attr2MapOptions
      * @param {scope} scope angularjs scope
      * @param {Hash} attrs tag attributes
@@ -2732,8 +2764,8 @@ angular.module('ngMap', []);
 
   };
   Attr2MapOptions.$inject= [
-    '$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder',
-    'camelCaseFilter', 'jsonizeFilter'
+    '$parse', '$timeout', '$log', '$interpolate', 'NavigatorGeolocation', 'GeoCoder',
+    'camelCaseFilter', 'jsonizeFilter', 'escapeRegexpFilter'
   ];
 
   angular.module('ngMap').service('Attr2MapOptions', Attr2MapOptions);
