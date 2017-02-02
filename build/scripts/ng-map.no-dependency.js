@@ -8,7 +8,7 @@ factory();
 }
 }(this, function() {
 /**
- * AngularJS Google Maps Ver. 1.17.94
+ * AngularJS Google Maps Ver. 1.17.95
  *
  * The MIT License (MIT)
  * 
@@ -42,10 +42,12 @@ angular.module('ngMap', []);
   var Attr2MapOptions;
 
   var __MapController = function(
-      $scope, $element, $attrs, $parse, _Attr2MapOptions_, NgMap, NgMapPool
+      $scope, $element, $attrs, $parse, $interpolate, _Attr2MapOptions_, NgMap, NgMapPool, escapeRegExp
     ) {
     Attr2MapOptions = _Attr2MapOptions_;
     var vm = this;
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
 
     vm.mapOptions; /** @memberof __MapController */
     vm.mapEvents;  /** @memberof __MapController */
@@ -205,8 +207,10 @@ angular.module('ngMap', []);
       // set options
       mapOptions.zoom = mapOptions.zoom || 15;
       var center = mapOptions.center;
+      var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol));
+
       if (!mapOptions.center ||
-        ((typeof center === 'string') && center.match(/\{\{.*\}\}/))
+        ((typeof center === 'string') && center.match(exprRegExp))
       ) {
         mapOptions.center = new google.maps.LatLng(0, 0);
       } else if( (typeof center === 'string') && center.match(/[0-9.-]*,[0-9.-]*/) ){
@@ -254,14 +258,14 @@ angular.module('ngMap', []);
           $parse($attrs.mapInitialized)($scope, {map: vm.map});
         }
       });
-	  
+
 	  //add maximum zoom listeners if zoom-to-include-markers and and maximum-zoom are valid attributes
 	  if (mapOptions.zoomToIncludeMarkers && mapOptions.maximumZoom) {
 	    google.maps.event.addListener(vm.map, 'zoom_changed', function() {
           if (vm.enableMaximumZoomCheck == true) {
 			vm.enableMaximumZoomCheck = false;
-	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() { 
-		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom())); 
+	        google.maps.event.addListenerOnce(vm.map, 'bounds_changed', function() {
+		      vm.map.setZoom(Math.min(mapOptions.maximumZoom, vm.map.getZoom()));
 		    });
 	  	  }
 	    });
@@ -288,11 +292,11 @@ angular.module('ngMap', []);
 
     if (options.lazyInit) { // allows controlled initialization
       // parse angular expression for dynamic ids
-      if (!!$attrs.id && 
+      if (!!$attrs.id &&
       	  // starts with, at position 0
-	  $attrs.id.indexOf("{{", 0) === 0 &&
+	  $attrs.id.indexOf(exprStartSymbol, 0) === 0 &&
 	  // ends with
-	  $attrs.id.indexOf("}}", $attrs.id.length - "}}".length) !== -1) {
+	  $attrs.id.indexOf(exprEndSymbol, $attrs.id.length - exprEndSymbol.length) !== -1) {
         var idExpression = $attrs.id.slice(2,-2);
         var mapId = $parse(idExpression)($scope);
       } else {
@@ -316,7 +320,7 @@ angular.module('ngMap', []);
   }; // __MapController
 
   __MapController.$inject = [
-    '$scope', '$element', '$attrs', '$parse', 'Attr2MapOptions', 'NgMap', 'NgMapPool'
+    '$scope', '$element', '$attrs', '$parse', '$interpolate', 'Attr2MapOptions', 'NgMap', 'NgMapPool', 'escapeRegexpFilter'
   ];
   angular.module('ngMap').controller('__MapController', __MapController);
 })();
@@ -524,6 +528,7 @@ angular.module('ngMap', []);
       if (this.getProjection() && typeof this.position.lng == 'function') {
         void 0;
         var setPosition = function() {
+          if (!_this.getProjection()) { return; }
           var posPixel = _this.getProjection().fromLatLngToDivPixel(_this.position);
           var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
           var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
@@ -531,7 +536,7 @@ angular.module('ngMap', []);
           _this.el.style.top = y + "px";
           _this.el.style.visibility = "visible";
         };
-        if (_this.el.offsetWidth && _this.el.offsetHeight) { 
+        if (_this.el.offsetWidth && _this.el.offsetHeight) {
           setPosition();
         } else {
           //delayed left/top calculation when width/height are not set instantly
@@ -643,12 +648,16 @@ angular.module('ngMap', []);
 
 
   var customMarkerDirective = function(
-      _$timeout_, _$compile_, Attr2MapOptions, _NgMap_
+      _$timeout_, _$compile_, $interpolate, Attr2MapOptions, _NgMap_, escapeRegExp
     )  {
     parser = Attr2MapOptions;
     $timeout = _$timeout_;
     $compile = _$compile_;
     NgMap = _NgMap_;
+
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
+    var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '([^' + exprEndSymbol.substring(0, 1) + ']+)' + escapeRegExp(exprEndSymbol), 'g');
 
     return {
       restrict: 'E',
@@ -657,15 +666,15 @@ angular.module('ngMap', []);
         setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
-        var matches = orgHtml.match(/{{([^}]+)}}/g);
+        var matches = orgHtml.match(exprRegExp);
         var varsToWatch = [];
         //filter out that contains '::', 'this.'
         (matches || []).forEach(function(match) {
-          var toWatch = match.replace('{{','').replace('}}','');
+          var toWatch = match.replace(exprStartSymbol,'').replace(exprEndSymbol,'');
           if (match.indexOf('::') == -1 &&
             match.indexOf('this.') == -1 &&
             varsToWatch.indexOf(toWatch) == -1) {
-            varsToWatch.push(match.replace('{{','').replace('}}',''));
+            varsToWatch.push(match.replace(exprStartSymbol,'').replace(exprEndSymbol,''));
           }
         });
 
@@ -674,7 +683,7 @@ angular.module('ngMap', []);
     }; // return
   };// function
   customMarkerDirective.$inject =
-    ['$timeout', '$compile', 'Attr2MapOptions', 'NgMap'];
+    ['$timeout', '$compile', '$interpolate', 'Attr2MapOptions', 'NgMap', 'escapeRegexpFilter'];
 
   angular.module('ngMap').directive('customMarker', customMarkerDirective);
 })();
@@ -1012,6 +1021,9 @@ angular.module('ngMap', []);
 
         var layer = getLayer(options, events);
         mapController.addObject('fusionTablesLayers', layer);
+        element.bind('$destroy', function() {
+          mapController.deleteObject('fusionTablesLayers', layer);
+        });
       }
      }; // return
   }]);
@@ -2326,6 +2338,26 @@ angular.module('ngMap', []);
 
 /**
  * @ngdoc filter
+ * @name escape-regex
+ * @description
+ *   Escapes all regex special characters in a string
+ */
+(function() {
+  'use strict';
+
+
+
+  var escapeRegexpFilter = function() {
+    return function(string) {
+			return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+		};
+  };
+
+  angular.module('ngMap').filter('escapeRegexp', escapeRegexpFilter);
+})();
+
+/**
+ * @ngdoc filter
  * @name jsonize
  * @description
  *   Converts json-like string to json string
@@ -2374,9 +2406,12 @@ angular.module('ngMap', []);
     /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/;
 
   var Attr2MapOptions = function(
-      $parse, $timeout, $log, NavigatorGeolocation, GeoCoder,
-      camelCaseFilter, jsonizeFilter
+      $parse, $timeout, $log, $interpolate, NavigatorGeolocation, GeoCoder,
+      camelCaseFilter, jsonizeFilter, escapeRegExp
     ) {
+
+    var exprStartSymbol = $interpolate.startSymbol();
+    var exprEndSymbol = $interpolate.endSymbol();
 
     /**
      * Returns the attributes of an element as hash
@@ -2401,14 +2436,26 @@ angular.module('ngMap', []);
       }
       return JSON.parse(jsonizeFilter(input));
     };
-
+    
     var getLatLng = function(input) {
       var output = input;
-      if (input[0].constructor == Array) { // [[1,2],[3,4]]
-        output = input.map(function(el) {
-          return new google.maps.LatLng(el[0], el[1]);
-        });
-      } else if(!isNaN(parseFloat(input[0])) && isFinite(input[0])) {
+      if (input[0].constructor == Array) { 
+        if ((input[0][0].constructor == Array && input[0][0].length == 2) || input[0][0].constructor == Object) {
+            var preoutput;
+            var outputArray = [];
+            for (var i = 0; i < input.length; i++) {
+                preoutput = input[i].map(function(el){
+                    return new google.maps.LatLng(el[0], el[1]);
+                });
+                outputArray.push(preoutput);
+            }
+            output = outputArray;
+        } else {
+            output = input.map(function(el) {
+                return new google.maps.LatLng(el[0], el[1]);
+            });
+        }
+      } else if (!isNaN(parseFloat(input[0])) && isFinite(input[0])) {
         output = new google.maps.LatLng(output[0], output[1]);
       }
       return output;
@@ -2422,11 +2469,16 @@ angular.module('ngMap', []);
         try { // 2. JSON?
           var output = getJSON(input);
           if (output instanceof Array) {
-            // [{a:1}] : not lat/lng ones
             if (output[0].constructor == Object) {
               output = output;
-            } else { // [[1,2],[3,4]] or [1,2]
-              output = getLatLng(output);
+            } else if (output[0] instanceof Array) {
+              if (output[0][0].constructor == Object) {
+                output = output;
+              } else {
+                output = getLatLng(output);
+              }
+            } else {
+                output = getLatLng(output);
             }
           }
           // JSON is an object (not array or null)
@@ -2475,9 +2527,9 @@ angular.module('ngMap', []);
               output = input;
             }
           // 7. evaluate dynamically bound values
-          } else if (input.match(/^{/) && options.scope) {
+        } else if (input.match(new RegExp('^' + escapeRegExp(exprStartSymbol))) && options.scope) {
             try {
-              var expr = input.replace(/{{/,'').replace(/}}/g,'');
+              var expr = input.replace(new RegExp(escapeRegExp(exprStartSymbol)),'').replace(new RegExp(escapeRegExp(exprEndSymbol), 'g'),'');
               output = options.scope.$eval(expr);
             } catch (err) {
               output = input;
@@ -2532,11 +2584,12 @@ angular.module('ngMap', []);
 
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
+      var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol), 'g');
 
       if (!attrs.noWatcher) {
         for (var attrName in attrs) { //jshint ignore:line
           var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          if (attrValue && attrValue.match(exprRegExp)) { // if attr value is {{..}}
             attrsToObserve.push(camelCaseFilter(attrName));
           }
         }
@@ -2608,7 +2661,7 @@ angular.module('ngMap', []);
     };
 
     /**
-     * converts attributes hash to scope-specific event function 
+     * converts attributes hash to scope-specific event function
      * @memberof Attr2MapOptions
      * @param {scope} scope angularjs scope
      * @param {Hash} attrs tag attributes
@@ -2732,8 +2785,8 @@ angular.module('ngMap', []);
 
   };
   Attr2MapOptions.$inject= [
-    '$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder',
-    'camelCaseFilter', 'jsonizeFilter'
+    '$parse', '$timeout', '$log', '$interpolate', 'NavigatorGeolocation', 'GeoCoder',
+    'camelCaseFilter', 'jsonizeFilter', 'escapeRegexpFilter'
   ];
 
   angular.module('ngMap').service('Attr2MapOptions', Attr2MapOptions);
@@ -2955,7 +3008,7 @@ angular.module('ngMap', []);
   /**
    * @memberof NgMapPool
    * @function deleteMapInstance
-   * @desc selete a mapInstance
+   * @desc delete a mapInstance
    */
   var deleteMapInstance= function(mapId) {
 	  for( var i=0; i<mapInstances.length; i++ ) {
