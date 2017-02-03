@@ -1,5 +1,5 @@
 document.write([
-  '<script src="https://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places"></script>',
+  '<script src="https://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM"></script>',
   '<script src="lib/angular.js"></script>',
   '<script src="../app.js"></script>',
   '<script src="../controllers/map-controller.js"></script>',
@@ -11,6 +11,7 @@ document.write([
   '<script src="../services/street-view.js"></script>',
   '<script src="../filters/camel-case.js"></script>',
   '<script src="../filters/jsonize.js"></script>',
+  '<script src="../filters/escape-regexp.js"></script>',
   '<script src="../directives/bicycling-layer.js"></script>',
   '<script src="../directives/custom-control.js"></script>',
   '<script src="../directives/custom-marker.js"></script>',
