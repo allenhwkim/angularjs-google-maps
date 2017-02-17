@@ -27,9 +27,9 @@
  */
 (function() {
   'use strict';
-  var parser, $compile, NgMap;
+  var parser, NgMap;
 
-  var linkFunc = function(scope, element, attrs, mapController) {
+  var linkFunc = function(scope, element, attrs, mapController, $transclude) {
     mapController = mapController[0]||mapController[1];
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered, {scope: scope});
@@ -39,7 +39,8 @@
      * build a custom control element
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
-    $compile(customControlEl.innerHTML.trim())(scope);
+    var content = $transclude();
+    content.appendTo(customControlEl);
 
     /**
      * set events
@@ -57,16 +58,17 @@
     });
   };
 
-  var customControl =  function(Attr2MapOptions, _$compile_, _NgMap_)  {
-    parser = Attr2MapOptions, $compile = _$compile_, NgMap = _NgMap_;
+  var customControl =  function(Attr2MapOptions, _NgMap_)  {
+    parser = Attr2MapOptions, NgMap = _NgMap_;
 
     return {
       restrict: 'E',
       require: ['?^map','?^ngMap'],
-      link: linkFunc
+      link: linkFunc,
+      transclude: true
     }; // return
   };
-  customControl.$inject = ['Attr2MapOptions', '$compile', 'NgMap'];
+  customControl.$inject = ['Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('customControl', customControl);
 })();
