@@ -10,9 +10,9 @@ GoogleMap AngularJS Directive
 [Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html) |
 [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)  
 
-IMPORTANT NOTICE
------------------
- - Implementation for Angular2 version has been started at [https://github.com/ng2-ui/ng2-map](https://github.com/ng2-ui/ng2-map)
+If you like this, you also may like these;
+* [ng2-map](https://github.com/ng2-ui/ng2-maps) Google Maps Wrapper for Angular 2+
+* [react-openlayers](https://github.com/allenhwkim/react-openlayers) React + OpenLayers
 
 Background
 -----------------
