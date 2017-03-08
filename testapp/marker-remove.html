@@ -54,7 +54,15 @@
         <input ng-click="vm.deleteMarkers()" type=button value="Delete Markers">
       </div>
       <ng-map center="37.7699298, -122.4469157" zoom="12" on-click="vm.addMarker()">
-        <marker ng-repeat="pos in vm.positions" position="{{pos.lat}}, {{pos.lng}}"></marker>
+        <marker
+          ng-repeat="pos in vm.positions" position="{{pos.lat}}, {{pos.lng}}"
+          icon="{path:'CIRCLE', scale: 10, strokeColor: 'red', zIndex:10}"></marker>
+        <marker position="37.7899298, -122.4469157"
+          icon="{path:'CIRCLE', scale: 10, strokeColor: 'red', zIndex:12}"></marker>
+        <marker position="37.7799298, -122.4469157"
+          icon="{path:'CIRCLE', scale: 10, strokeColor: 'green', zIndex:11}"></marker>
+        <marker position="37.7699298, -122.4469157"
+          icon="{path:'CIRCLE', scale: 10, strokeColor: 'blue', zIndex:10}"></marker>
       </ng-map>
     </div>
 </body>
