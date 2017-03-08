@@ -1,5 +1,5 @@
 /**
- * AngularJS Google Maps Ver. 1.18.2
+ * AngularJS Google Maps Ver. 1.18.3
  *
  * The MIT License (MIT)
  * 
@@ -2382,7 +2382,8 @@ angular.module('ngMap', []);
             function(_, $1) {
               return '"'+$1+'"';
             }
-          );
+          )
+          .replace(/''/g, '""');
       }
     };
   };
