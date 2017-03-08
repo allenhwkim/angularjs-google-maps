@@ -47,14 +47,17 @@
   var getMap = function(id, options) {
     options = options || {};
     id = typeof id === 'object' ? id.id : id;
-    id = id || 0;
 
     var deferred = $q.defer();
     var timeout = options.timeout || 10000;
 
     function waitForMap(timeElapsed){
-      if(mapControllers[id]){
+      var keys = Object.keys(mapControllers);
+      var theFirstController = mapControllers[keys[0]];
+      if(id && mapControllers[id]){
         deferred.resolve(mapControllers[id].map);
+      } else if (!id && theFirstController && theFirstController.map) {
+        deferred.resolve(theFirstController.map);
       } else if (timeElapsed > timeout) {
         deferred.reject('could not find map');
       } else {
