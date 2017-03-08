@@ -1,0 +1,49 @@
+<!doctype html><html>  <head>    <meta charset="utf-8">    <base href="../">    <title>JSDoc: source : google-maps-api.js</title>    <link href="css/prettify-tomorrow.css" type="text/css" rel="stylesheet">    <link href="css/site.css" type="text/css" rel="stylesheet">  </head>  <body ng-app="">    <nav id="toc">      <input placeholder="Filter" id="filter-input" class="col12 block field" type="text">      <div class="nav-wrapper">      <h2><a href="index.html">Index</a></h2>      <ul class="module">        <!-- undefined -->        <h2 class="module">          <a chref="" ng-click="moduleundefined = !moduleundefined">            module: undefined          </a>          <i ng-cloak="" ng-show="moduleundefined">+</i>        </h2>        <li id="undefined" ng-hide="moduleundefined">          <ul class="group">            <h2>              <a href="" ng-click="undefinedservice = !undefinedservice">                service              </a>              <i ng-cloak="" ng-show="undefinedservice">+</i>            </h2>            <ul ng-hide="undefinedservice">              <li>                <a href="Attr2MapOptions.html">Attr2MapOptions</a>              </li><li>                <a href="GeoCoder.html">GeoCoder</a>              </li><li>                <a href="GoogleMapsApi.html">GoogleMapsApi</a>              </li><li>                <a href="NavigatorGeolocation.html">NavigatorGeolocation</a>              </li><li>                <a href="StreetView.html">StreetView</a>              </li>            </ul>          </ul><ul class="group">            <h2>              <a href="" ng-click="undefineddirective = !undefineddirective">                directive              </a>              <i ng-cloak="" ng-show="undefineddirective">+</i>            </h2>            <ul ng-hide="undefineddirective">              <li>                <a href="bicycling-layer.html">bicycling-layer</a>              </li><li>                <a href="custom-control.html">custom-control</a>              </li><li>                <a href="directions.html">directions</a>              </li><li>                <a href="drawing-manager.html">drawing-manager</a>              </li><li>                <a href="dynamic-maps-engine-layer.html">dynamic-maps-engine-layer</a>              </li><li>                <a href="fusion-tables-layer.html">fusion-tables-layer</a>              </li><li>                <a href="heatmap-layer.html">heatmap-layer</a>              </li><li>                <a href="info-window.html">info-window</a>              </li><li>                <a href="kml-layer.html">kml-layer</a>              </li><li>                <a href="map-data.html">map-data</a>              </li><li>                <a href="map-lazy-load.html">map-lazy-load</a>              </li><li>                <a href="map-type.html">map-type</a>              </li><li>                <a href="maps-engine-layer.html">maps-engine-layer</a>              </li><li>                <a href="marker.html">marker</a>              </li><li>                <a href="overlay-map-type.html">overlay-map-type</a>              </li><li>                <a href="places-auto-complete.html">places-auto-complete</a>              </li><li>                <a href="shape.html">shape</a>              </li><li>                <a href="streetview-panorama.html">streetview-panorama</a>              </li><li>                <a href="traffic-layer.html">traffic-layer</a>              </li><li>                <a href="transit-layer.html">transit-layer</a>              </li>            </ul>          </ul><ul class="group">            <h2>              <a href="" ng-click="undefinedprovider = !undefinedprovider">                provider              </a>              <i ng-cloak="" ng-show="undefinedprovider">+</i>            </h2>            <ul ng-hide="undefinedprovider">              <li>                <a href="NgMap.html">NgMap</a>              </li>            </ul>          </ul><ul class="group">            <h2>              <a href="" ng-click="undefinedfactory = !undefinedfactory">                factory              </a>              <i ng-cloak="" ng-show="undefinedfactory">+</i>            </h2>            <ul ng-hide="undefinedfactory">              <li>                <a href="NgMapPool.html">NgMapPool</a>              </li>            </ul>          </ul>        </li>      </ul><ul class="module">        <!-- ngmap -->        <h2 class="module">          <a chref="" ng-click="modulengmap = !modulengmap">            module: ngmap          </a>          <i ng-cloak="" ng-show="modulengmap">+</i>        </h2>        <li id="ngmap" ng-hide="modulengmap">          <ul class="group">            <h2>              <a href="" ng-click="ngmapdirective = !ngmapdirective">                directive              </a>              <i ng-cloak="" ng-show="ngmapdirective">+</i>            </h2>            <ul ng-hide="ngmapdirective">              <li>                <a href="ngmap.custom-marker.html">custom-marker</a>              </li>            </ul>          </ul>        </li>      </ul><ul class="module">        <!-- ng_ap -->        <h2 class="module">          <a chref="" ng-click="moduleng_ap = !moduleng_ap">            module: ngMap          </a>          <i ng-cloak="" ng-show="moduleng_ap">+</i>        </h2>        <li id="ngMap" ng-hide="moduleng_ap">          <ul class="group">            <h2>              <a href="" ng-click="ng_apdirective = !ng_apdirective">                directive              </a>              <i ng-cloak="" ng-show="ng_apdirective">+</i>            </h2>            <ul ng-hide="ng_apdirective">              <li>                <a href="ngMap.ng-map.html">ng-map</a>              </li>            </ul>          </ul>        </li>      </ul>      </div>    </nav>    <div id="content" class="page-wrap">      <h1 class="title">        source : google-maps-api.js      </h1>      <div id="main" class="big-container">        <!-- source code html -->        <article>          <pre class="prettyprint source linenums"><code>/**
+ * @ngdoc service
+ * @name GoogleMapsApi
+ * @description
+ *   Load Google Maps API Service
+ */
+(function() {
+  'use strict';
+  var $q;
+  var $timeout;
+  var GoogleMapsApi = function(_$q_, _$timeout_) {
+    $q = _$q_;
+    $timeout = _$timeout_;
+    return {
+      /**
+       * Load google maps into document by creating a script tag
+       * @memberof GoogleMapsApi
+       * @param {string} mapsUrl
+       * @example
+       *   GoogleMapsApi.load(myUrl).then(function() {
+       *     console.log('google map has been loaded')
+       *   });
+       */
+      load: function (mapsUrl) {
+        var deferred = $q.defer();
+        if (window.google === undefined || window.google.maps === undefined) {
+          window.lazyLoadCallback = function() {
+            $timeout(function() { /* give some time to load */
+              deferred.resolve(window.google)
+            }, 100);
+          };
+          var scriptEl = document.createElement('script');
+          scriptEl.src = mapsUrl +
+            (mapsUrl.indexOf('?') > -1 ? '&' : '?') +
+            'callback=lazyLoadCallback';
+          if (!document.querySelector('script[src="' + scriptEl.src + '"]')) {
+            document.body.appendChild(scriptEl);
+          }
+        } else {
+          deferred.resolve(window.google)
+        }
+        return deferred.promise;
+      }
+    }
+  }
+  GoogleMapsApi.$inject = ['$q', '$timeout'];
+  angular.module('ngMap').service('GoogleMapsApi', GoogleMapsApi);
+})();
+</code></pre>        </article>        <!-- index.html -->        <!-- class files -->      </div>      <footer style="clear:both">        Documentation generated by        <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>        using        <a href="https://github.com/allenhwkim/angular-jsdoc">Angular-JSDoc template</a>      </footer>    </div>    <script src="js/prettify.js"></script>    <script src="js/angular.min.js"></script>    <script src="js/site.js"></script>    <!--%= prettyJson %-->    <script>      prettyPrint();      var lineNo = window.location.hash.match(/#line([0-9]+)$/);      lineNo && document.querySelector("ol li:nth-child("+(lineNo[1])+")").scrollIntoView();    </script>  </body></html>

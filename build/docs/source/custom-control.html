@@ -38,7 +38,7 @@
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
     var content = $transclude();
-    content.appendTo(customControlEl);
+    angular.element(customControlEl).append(content);
     /**
      * set events
      */
