@@ -158,9 +158,9 @@
                 && typeof mapController.map.markers[marker] != "undefined") {
               marker = mapController.map.markers[marker];
             } else if (
-                //additionally check if that marker is a custom marker
-            typeof mapController.map.customMarkers
-            && typeof mapController.map.customMarkers[marker] != "undefined") {
+              //additionally check if that marker is a custom marker
+              typeof mapController.map.customMarkers !== "undefined"
+              && typeof mapController.map.customMarkers[marker] !== "undefined") {
               marker = mapController.map.customMarkers[marker];
             } else {
               //Better error output if marker with that id is not defined
