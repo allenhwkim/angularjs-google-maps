@@ -76,6 +76,20 @@ Lazy Loading of Google Maps Javascript
       map-lazy-load-params="{{googleMapsUrl}}">
       <ng-map center="41,-87" zoom="3"></ng-map>
     </div>
+    
+FAQ
+----
+## Grey area in Google maps
+
+The usual reason why this is happening is that the size of the map is changed after the map has been initialized. If you for some reason change the size of the div, you need to trigger the "resize" event and possible reCenter the map.
+
+     var center = map.getCenter();
+     google.maps.event.trigger(map, "resize");
+     map.setCenter(center);
+
+Ref.
+  * http://stackoverflow.com/questions/13901520/grey-area-in-google-maps
+  * http://blog.codebusters.pl/en/google-maps-in-hidden-div/
 
 Directives
 ----------
