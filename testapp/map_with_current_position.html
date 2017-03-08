@@ -7,7 +7,7 @@
   angular.module('myApp',['ngMap']).controller('MyCtrl', function(NgMap) {
     var vm = this;
     vm.message = 'You can not hide. :)';
-    NgMap.getMap().then(function(map) {
+    NgMap.getMap("map").then(function(map) {
       vm.map = map;
     });
     vm.callbackFunc = function(param) {
@@ -20,7 +20,7 @@
 
 <body ng-app="myApp" ng-controller="MyCtrl as vm">
   NOTE: open console, then see the message from callback
-  <ng-map center='current-position'
+  <ng-map id="map" center='current-position'
     geo-fallback-center="[40.74, -74.18]"
     geo-callback="vm.callbackFunc('you')"
     ></ng-map>

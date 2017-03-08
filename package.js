@@ -1,7 +1,7 @@
 // package metadata file for Meteor.js
 var packageName = 'tallyb:ngmap';
 var where = 'client'; // where to install: 'client' or 'server'. For both, pass nothing.
-var version = '1.18.0';
+var version = '1.18.1';
 var summary = '"The Simplest AngularJs Google Maps V3 Directive Module"';
 var gitLink = 'https://github.com/allenhwkim/angularjs-google-maps';
 var documentationFile = 'README.md';

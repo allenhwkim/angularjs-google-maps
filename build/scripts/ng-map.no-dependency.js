@@ -413,9 +413,9 @@ angular.module('ngMap', []);
  */
 (function() {
   'use strict';
-  var parser, $compile, NgMap;
+  var parser, NgMap;
 
-  var linkFunc = function(scope, element, attrs, mapController) {
+  var linkFunc = function(scope, element, attrs, mapController, $transclude) {
     mapController = mapController[0]||mapController[1];
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered, {scope: scope});
@@ -425,7 +425,8 @@ angular.module('ngMap', []);
      * build a custom control element
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
-    $compile(customControlEl.innerHTML.trim())(scope);
+    var content = $transclude();
+    content.appendTo(customControlEl);
 
     /**
      * set events
@@ -443,16 +444,17 @@ angular.module('ngMap', []);
     });
   };
 
-  var customControl =  function(Attr2MapOptions, _$compile_, _NgMap_)  {
-    parser = Attr2MapOptions, $compile = _$compile_, NgMap = _NgMap_;
+  var customControl =  function(Attr2MapOptions, _NgMap_)  {
+    parser = Attr2MapOptions, NgMap = _NgMap_;
 
     return {
       restrict: 'E',
       require: ['?^map','?^ngMap'],
-      link: linkFunc
+      link: linkFunc,
+      transclude: true
     }; // return
   };
-  customControl.$inject = ['Attr2MapOptions', '$compile', 'NgMap'];
+  customControl.$inject = ['Attr2MapOptions', 'NgMap'];
 
   angular.module('ngMap').directive('customControl', customControl);
 })();
@@ -1395,13 +1397,14 @@ angular.module('ngMap', []);
       restrict: 'E',
       require: ['?^map','?^ngMap'],
 
-      link: function(scope, element, attrs) {
+      link: function(scope, element, attrs, mapController) {
+        mapController = mapController[0] || mapController[1];
         var filtered = parser.filter(attrs);
         var options = parser.getOptions(filtered, {scope: scope});
         var events = parser.getEvents(scope, filtered, events);
 
         void 0;
-        NgMap.getMap().then(function(map) {
+        NgMap.getMap(mapController.map.id).then(function(map) {
           //options
           for (var key in options) {
             var val = options[key];
@@ -3085,12 +3088,13 @@ angular.module('ngMap', []);
    * @param {String} optional, id e.g., 'foo'
    * @returns promise
    */
-  var getMap = function(id) {
+  var getMap = function(id, options) {
+    options = options || {};
     id = typeof id === 'object' ? id.id : id;
     id = id || 0;
 
     var deferred = $q.defer();
-    var timeout = 2000;
+    var timeout = options.timeout || 10000;
 
     function waitForMap(timeElapsed){
       if(mapControllers[id]){

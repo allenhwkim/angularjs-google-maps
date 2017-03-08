@@ -44,12 +44,13 @@
    * @param {String} optional, id e.g., 'foo'
    * @returns promise
    */
-  var getMap = function(id) {
+  var getMap = function(id, options) {
+    options = options || {};
     id = typeof id === 'object' ? id.id : id;
     id = id || 0;
 
     var deferred = $q.defer();
-    var timeout = 2000;
+    var timeout = options.timeout || 10000;
 
     function waitForMap(timeElapsed){
       if(mapControllers[id]){
