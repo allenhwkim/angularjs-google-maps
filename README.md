@@ -91,6 +91,29 @@ Ref.
   * http://stackoverflow.com/questions/13901520/grey-area-in-google-maps
   * http://blog.codebusters.pl/en/google-maps-in-hidden-div/
 
+## Check if a marker is within Map, Rectangle, or Circle
+
+    map.getBounds().contains(marker.getPosition()
+
+  * http://stackoverflow.com/questions/3648545/how-can-i-check-the-marker-is-or-isnt-in-the-bounds-using-google-maps-v3
+  * https://developers.google.com/maps/documentation/javascript/3.exp/reference#Map
+  * https://developers.google.com/maps/documentation/javascript/3.exp/reference#Rectangle
+  * https://developers.google.com/maps/documentation/javascript/3.exp/reference#Circle
+
+## Calculate distance between two position
+
+You may checkout this, https://developers.google.com/maps/documentation/javascript/distancematrix.
+As you see,  DistanceMatrix does not require map nor directive.
+
+Another way to do is to use directions directive. As you see it here, https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions2.html, you have access to DirectionsRenderer by using `map.directionsRenderers[id]`
+
+https://developers.google.com/maps/documentation/javascript/reference?hl=en#DirectionsRenderer
+
+You use getDirections() or directions, then calculate the distance from there. e.g.,
+
+  Distance:
+  {{map.directionsRenderers[0].directions.routes[0].legs[0].distance}}
+  
 Directives
 ----------
 
