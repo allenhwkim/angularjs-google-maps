@@ -2,7 +2,7 @@
  * @ngdoc directive
  * @name map-data
  * @param Attr2MapOptions {service}
- *   convert html attribute to Gogole map api options
+ *   convert html attribute to Google map api options
  * @description
  *   set map data
  *   Requires:  map directive

@@ -3,7 +3,7 @@
  * @memberof ngMap
  * @name ng-map
  * @param Attr2Options {service}
- *  convert html attribute to Gogole map api options
+ *  convert html attribute to Google map api options
  * @description
  * Implementation of {@link __MapController}
  * Initialize a Google map within a `<div>` tag

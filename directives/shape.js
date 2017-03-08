@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name shape
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Google map api options
  * @description
  *   Initialize a Google map shape in map with given options and register events
  *   The shapes are:

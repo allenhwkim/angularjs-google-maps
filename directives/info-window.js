@@ -2,7 +2,7 @@
  * @ngdoc directive
  * @name info-window
  * @param Attr2MapOptions {service}
- *   convert html attribute to Gogole map api options
+ *   convert html attribute to Google map api options
  * @param $compile {service} $compile service
  * @description
  *  Defines infoWindow and provides compile method

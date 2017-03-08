@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name places-auto-complete
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Google map api options
  * @description
  *   Provides address auto complete feature to an input element
  *   Requires: input tag

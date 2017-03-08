@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name map-lazy-load
- * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param Attr2Options {service} convert html attribute to Google map api options
  * @description
  *  Requires: Delay the initialization of map directive
  *    until the map is ready to be rendered

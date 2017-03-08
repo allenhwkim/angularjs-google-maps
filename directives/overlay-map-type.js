@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name overlay-map-type
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Google map api options
  * @param $window {service}
  * @description
  *   Requires:  map directive

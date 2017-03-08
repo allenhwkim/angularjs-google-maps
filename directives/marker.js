@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name marker
- * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param Attr2Options {service} convert html attribute to Google map api options
  * @param NavigatorGeolocation It is used to find the current location
  * @description
  *  Draw a Google map marker on a map with given options and register events

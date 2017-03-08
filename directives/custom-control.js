@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name custom-control
- * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param Attr2Options {service} convert html attribute to Google map api options
  * @param $compile {service} AngularJS $compile service
  * @description
  *   Build custom control and set to the map with position

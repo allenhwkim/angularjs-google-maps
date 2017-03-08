@@ -2,7 +2,7 @@
  * @ngdoc directive
  * @name bicycling-layer
  * @param Attr2Options {service}
- *   convert html attribute to Gogole map api options
+ *   convert html attribute to Google map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element

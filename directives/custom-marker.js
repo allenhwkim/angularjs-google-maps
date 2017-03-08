@@ -2,7 +2,7 @@
  * @ngdoc directive
  * @memberof ngmap
  * @name custom-marker
- * @param Attr2Options {service} convert html attribute to Gogole map api options
+ * @param Attr2Options {service} convert html attribute to Google map api options
  * @param $timeout {service} AngularJS $timeout
  * @description
  *   Marker with html

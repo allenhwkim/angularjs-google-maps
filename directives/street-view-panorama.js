@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name streetview-panorama
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Google map api options
  * @description
  *   Requires:  map directive
  *   Restrict To:  Element

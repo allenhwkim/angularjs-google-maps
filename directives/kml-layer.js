@@ -1,7 +1,7 @@
 /**
  * @ngdoc directive
  * @name kml-layer
- * @param Attr2MapOptions {service} convert html attribute to Gogole map api options
+ * @param Attr2MapOptions {service} convert html attribute to Google map api options
  * @description
  *   renders Kml layer on a map
  *   Requires:  map directive
