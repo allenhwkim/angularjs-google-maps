@@ -8,7 +8,7 @@ factory(root.angular);
 }
 }(this, function(angular) {
 /**
- * AngularJS Google Maps Ver. 1.18.1
+ * AngularJS Google Maps Ver. 1.18.2
  *
  * The MIT License (MIT)
  * 
@@ -426,7 +426,7 @@ angular.module('ngMap', []);
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
     var content = $transclude();
-    content.appendTo(customControlEl);
+    angular.element(customControlEl).append(content);
 
     /**
      * set events
