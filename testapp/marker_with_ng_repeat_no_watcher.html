@@ -20,7 +20,7 @@
   <ng-map zoom="10" center="[40.74, -74.18]">
     <marker no-watcher="true"
       ng-repeat="p in vm.positions"
-      draggable="true"
+      draggable="{{draggable}}"
       position="{{p.lat}}, {{p.lng}}"
       title="pos: {{p}}"></marker>
   </ng-map>
