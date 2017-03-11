@@ -5,9 +5,11 @@
 <script src="script-tags-for-development.js"></script>
 <script>
     var app = angular.module('myApp', ['ngMap']);
-    app.controller('MarkerRemoveCtrl', function() {
+    app.controller('MarkerRemoveCtrl', function(NgMap) {
       var vm = this;
+      NgMap.getMap().then(map => vm.map = map);
       vm.positions = [{lat:37.7699298,lng:-122.4469157}];
+
       vm.addMarker = function(event) {
         var ll = event.latLng;
         vm.positions.push({lat:ll.lat(), lng: ll.lng()});
