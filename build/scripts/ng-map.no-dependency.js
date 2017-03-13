@@ -8,7 +8,7 @@ factory();
 }
 }(this, function() {
 /**
- * AngularJS Google Maps Ver. 1.18.3
+ * AngularJS Google Maps Ver. 1.18.4
  *
  * The MIT License (MIT)
  * 

@@ -57,6 +57,19 @@ You only need to know Google Maps V3 API.</p>
 <li>http://stackoverflow.com/questions/13901520/grey-area-in-google-maps</li>
 <li>http://blog.codebusters.pl/en/google-maps-in-hidden-div/</li>
 </ul>
+<h2>Check if a marker is within Map, Rectangle, or Circle</h2><pre class="prettyprint source"><code>map.getBounds().contains(marker.getPosition()</code></pre><ul>
+<li>http://stackoverflow.com/questions/3648545/how-can-i-check-the-marker-is-or-isnt-in-the-bounds-using-google-maps-v3</li>
+<li>https://developers.google.com/maps/documentation/javascript/3.exp/reference#Map</li>
+<li>https://developers.google.com/maps/documentation/javascript/3.exp/reference#Rectangle</li>
+<li>https://developers.google.com/maps/documentation/javascript/3.exp/reference#Circle</li>
+</ul>
+<h2>Calculate distance between two position</h2><p>You may checkout this, https://developers.google.com/maps/documentation/javascript/distancematrix.
+As you see,  DistanceMatrix does not require map nor directive.</p>
+<p>Another way to do is to use directions directive. As you see it here, https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions2.html, you have access to DirectionsRenderer by using <code>map.directionsRenderers[id]</code></p>
+<p>https://developers.google.com/maps/documentation/javascript/reference?hl=en#DirectionsRenderer</p>
+<p>You use getDirections() or directions, then calculate the distance from there. e.g.,</p>
+<p>  Distance:
+  {{map.directionsRenderers[0].directions.routes[0].legs[0].distance}}</p>
 <h2>Directives</h2><ul>
 <li>bicycling-layer</li>
 <li>custom-control</li>
