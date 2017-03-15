@@ -6,6 +6,7 @@ var summary = '"The Simplest AngularJs Google Maps V3 Directive Module"';
 var gitLink = 'https://github.com/allenhwkim/angularjs-google-maps';
 var documentationFile = 'README.md';
 
+
 // Meta-data
 Package.describe({
     name: packageName,
