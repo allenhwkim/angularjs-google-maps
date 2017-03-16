@@ -471,6 +471,18 @@
     "path": "testapp/overlay-symbol-dashed.html",
     "title": null
   },
+  "places-auto-complete-strictbounds-circle.html": {
+    "path": "testapp/places-auto-complete-strictbounds-circle.html",
+    "title": "Place Autocomplete Address Form"
+  },
+  "places-auto-complete-strictbounds-rect.html": {
+    "path": "testapp/places-auto-complete-strictbounds-rect.html",
+    "title": "Place Autocomplete Address Form"
+  },
+  "places-auto-complete-strictbounds.html": {
+    "path": "testapp/places-auto-complete-strictbounds.html",
+    "title": "Place Autocomplete Address Form"
+  },
   "places-auto-complete.html": {
     "path": "testapp/places-auto-complete.html",
     "title": "Place Autocomplete Address Form"
