@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Place Autocomplete Address Form With Circle Bound Restriction</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script src="script-tags-for-development.js"></script>
+
+<script>
+
+angular.module('myApp', ['ngMap']).controller('MyCtrl', function($scope, NgMap) {
+  var vm = this;
+  vm.types = "['establishment']";
+  vm.mybounds = {center: {lat: 45, lng: 9}, radius: 5000};
+
+  vm.placeChanged = function() {
+    vm.place = this.getPlace();
+    console.log(vm.place);
+    console.log('location', vm.place.geometry.location);
+    vm.map.setCenter(vm.place.geometry.location);
+  }
+
+  NgMap.getMap().then(function(map) {
+    vm.map = map;
+  });
+
+});
+
+</script>
+
+</head>
+
+<body ng-app="myApp" ng-controller="MyCtrl as vm">
+
+  Auto Complete Type:
+  <select ng-model="vm.types">
+    <option value="['geocode']">Geodode</option>
+    <option value="['establishment']">Establishment</option>
+    <option value="['address']">Address</option>
+  </select><br/>
+
+  Bounds Lat: <input type="number" ng-model="vm.mybounds.center.lat" style="width: 40px;"></input>
+  Lng: <input type="number" ng-model="vm.mybounds.center.lng" style="width: 40px;"></input>
+  Radius: <input type="number" ng-model="vm.mybounds.radius" style="width: 40px;"></input>
+
+  <br/>
+  <br/>
+
+  Enter an address: <br/>
+
+  <input places-auto-complete
+    size=80
+    ng-model="vm.address"
+    strict-bounds="true"
+    circle-bounds="{{vm.mybounds}}"
+    types="{{types}}"
+    on-place-changed="vm.placeChanged()" /> <br/>
+
+  <div ng-show="vm.place">
+    Address = {{vm.place.formatted_address}} <br/>
+    Location: {{vm.place.geometry.location}}<br/>
+  </div>
+
+  address : {{vm.address}}
+
+  <br/>
+
+  <ng-map></ng-map>
+
+</body>
+</html>
