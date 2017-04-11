@@ -14,7 +14,7 @@ var gutil = require('gulp-util');
 var tap = require('gulp-tap');
 var bump = require('gulp-bump');
 var shell = require('gulp-shell');
-var karma = require('karma').server;
+var karma = require('karma').Server;
 var connect = require('gulp-connect');
 var gulpProtractor = require("gulp-protractor").protractor;
 var File = require('vinyl');
@@ -168,10 +168,10 @@ gulp.task('build', function(callback) {
 });
 
 gulp.task('test', function (done) {
-  karma.start({
+  new karma({
     configFile: __dirname + '/config/karma.conf.js',
     singleRun: true
-  }, done);
+  }, done).start();
 });
 
 gulp.task('test:server',  function() {
