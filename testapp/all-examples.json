@@ -473,11 +473,11 @@
   },
   "places-auto-complete-strictbounds-circle.html": {
     "path": "testapp/places-auto-complete-strictbounds-circle.html",
-    "title": "Place Autocomplete Address Form"
+    "title": "Place Autocomplete Address Form With Circle Bound Restriction"
   },
   "places-auto-complete-strictbounds-rect.html": {
     "path": "testapp/places-auto-complete-strictbounds-rect.html",
-    "title": "Place Autocomplete Address Form"
+    "title": "Place Autocomplete Address Form With Rectangual Bound Restriction"
   },
   "places-auto-complete-strictbounds.html": {
     "path": "testapp/places-auto-complete-strictbounds.html",
