@@ -205,7 +205,7 @@ angular.module('ngMap', []);
       }
 
       // set options
-      mapOptions.zoom = mapOptions.zoom || 15;
+      mapOptions.zoom = (mapOptions.zoom && !isNaN(mapOptions.zoom)) ? +mapOptions.zoom : 15;
       var center = mapOptions.center;
       var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol));
 
