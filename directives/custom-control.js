@@ -39,8 +39,9 @@
      * build a custom control element
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
-    var content = $transclude();
-    angular.element(customControlEl).append(content);
+    $transclude(scope, function(clone) {
+      angular.element(customControlEl).append(clone);
+    });
 
     /**
      * set events
