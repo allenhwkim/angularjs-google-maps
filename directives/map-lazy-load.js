@@ -21,16 +21,14 @@
  * Example:
  *
  *   <div map-lazy-load="http://maps.google.com/maps/api/js">
- *     <map center="Brampton" zoom="10">
- *       <marker position="Brampton"></marker>
- *     </map>
+ *     <ng-map center="41,-87" zoom="3"><ng-map>
+ *
  *   </div>
  *
  *   <div map-lazy-load="http://maps.google.com/maps/api/js"
  *        map-lazy-load-params="{{googleMapsUrl}}">
- *     <map center="Brampton" zoom="10">
- *       <marker position="Brampton"></marker>
- *     </map>
+ *     <ng-map center="41,-87" zoom="3"><ng-map>
+ *
  *   </div>
  */
 /* global window, document */

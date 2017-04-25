@@ -1,11 +1,11 @@
 {
-  "name": "ngmap",
+  "name": "maps",
   "version": "1.18.4",
   "main": "build/scripts/ng-map.js",
   "description": "The Simplest AngularJS Google Maps V3 Directive",
   "repository": {
     "type": "git",
-    "url": "https://github.com/allenhwkim/angularjs-google-maps.git"
+    "url": "https://github.com/sravanthisiri/angularjs-google-maps"
   },
   "dependencies": {},
   "engines": {
