@@ -212,6 +212,7 @@
       google.maps.event.trigger(vm.map, 'resize');
 
       google.maps.event.addListenerOnce(vm.map, "idle", function () {
+        vm.map.id = $attrs.id;
         NgMap.addMap(vm);
         if (mapOptions.zoomToIncludeMarkers) {
           vm.zoomToIncludeMarkers();
