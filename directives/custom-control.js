@@ -34,14 +34,20 @@
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
+    var innerScope = scope.$new();
 
     /**
      * build a custom control element
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
-    $transclude(scope, function(clone) {
-      angular.element(customControlEl).append(clone);
+    var content = $transclude( innerScope, function( clone ) {
+      element.empty();
+      element.append( clone );
+      element.on( '$destroy', function() {
+        innerScope.$destroy();
+      });
     });
+    
 
     /**
      * set events
