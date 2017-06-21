@@ -1,7 +1,7 @@
 {
   "name": "ngmap",
   "version": "1.18.4",
-  "main": "build/scripts/ng-map.js",
+  "main": "index.js",
   "description": "The Simplest AngularJS Google Maps V3 Directive",
   "repository": {
     "type": "git",
