@@ -420,13 +420,20 @@ angular.module('ngMap', []);
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
+    var innerScope = scope.$new();
 
     /**
      * build a custom control element
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
-    var content = $transclude();
-    angular.element(customControlEl).append(content);
+    var content = $transclude( innerScope, function( clone ) {
+      element.empty();
+      element.append( clone );
+      element.on( '$destroy', function() {
+        innerScope.$destroy();
+      });
+    });
+    
 
     /**
      * set events
