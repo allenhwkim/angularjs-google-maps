@@ -11,7 +11,7 @@ GoogleMap AngularJS Directive
 [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)  
 
 If you like this, you also may like these;
-* [ng2-map](https://github.com/ng2-ui/ng2-maps) Google Maps Wrapper for Angular 2+
+* [ng2-map](https://github.com/ng2-ui/map) Google Maps Wrapper for Angular 2+
 * [react-openlayers](https://github.com/allenhwkim/react-openlayers) React + OpenLayers
 
 Background
@@ -19,10 +19,10 @@ Background
 There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach than the existing one, such as;
 
 1. **Everything in tag and attributes.**   
-   Thus, basic users don't even have to know what Javascript is. 
+   Thus, basic users don't even have to know what Javascript is.
 
 2. **Expose all original Google Maps V3 api to the user.**   
-   No hiding, no wraping, or whatsoever. 
+   No hiding, no wraping, or whatsoever.
    By doing so, programmers don't need to learn how to use this module.
    You only need to know Google Maps V3 API.
 
@@ -30,7 +30,7 @@ There is a blog that introduces this module. The title of it is '[Google Map As 
 
 To Get Started
 --------------
-For Bower users, 
+For Bower users,
 
   `$ bower install ngmap`
 
@@ -54,7 +54,7 @@ To get the map instance use the `NgMap.getMap()` function
       });
     });
 
-For npm users, 
+For npm users,
 
   `$ npm install ngmap`
 
@@ -76,7 +76,7 @@ Lazy Loading of Google Maps Javascript
       map-lazy-load-params="{{googleMapsUrl}}">
       <ng-map center="41,-87" zoom="3"></ng-map>
     </div>
-    
+
 FAQ
 ----
 ## Grey area in Google maps
@@ -113,7 +113,7 @@ You use getDirections() or directions, then calculate the distance from there. e
 
   Distance:
   {{map.directionsRenderers[0].directions.routes[0].legs[0].distance}}
-  
+
 Directives
 ----------
 
