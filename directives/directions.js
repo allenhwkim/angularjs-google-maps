@@ -107,6 +107,11 @@
       var events = parser.getEvents(scope, filtered);
       var attrsToObserve = parser.getAttrsToObserve(orgAttrs);
 
+      var attrsToObserve = [];
+      if (!filtered.noWatcher) {
+          attrsToObserve = parser.getAttrsToObserve(orgAttrs);
+      }
+
       var renderer = getDirectionsRenderer(options, events);
       mapController.addObject('directionsRenderers', renderer);
 
