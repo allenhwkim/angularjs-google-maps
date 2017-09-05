@@ -31,7 +31,7 @@
          * set options
          */
         var options = parser.getOptions(filtered, {scope: scope});
-        options.data = $window[attrs.data] || scope[attrs.data];
+        options.data = $window[attrs.data] || parseScope(attrs.data, scope);
         if (options.data instanceof Array) {
           options.data = new google.maps.MVCArray(options.data);
         } else {
@@ -46,6 +46,13 @@
         console.log('heatmap-layer options', layer, 'events', events);
 
         mapController.addObject('heatmapLayers', layer);
+        
+        //helper get nexted path
+        function parseScope( path, obj ) {
+            return path.split('.').reduce( function( prev, curr ) {
+                return prev[curr];
+            }, obj || this );
+        }
       }
      }; // return
   }]);
