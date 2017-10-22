@@ -93,7 +93,7 @@ Ref.
 
 ## Check if a marker is within Map, Rectangle, or Circle
 
-    map.getBounds().contains(marker.getPosition()
+    `map.getBounds().contains(marker.getPosition());`
 
   * http://stackoverflow.com/questions/3648545/how-can-i-check-the-marker-is-or-isnt-in-the-bounds-using-google-maps-v3
   * https://developers.google.com/maps/documentation/javascript/3.exp/reference#Map
@@ -112,7 +112,7 @@ https://developers.google.com/maps/documentation/javascript/reference?hl=en#Dire
 You use getDirections() or directions, then calculate the distance from there. e.g.,
 
   Distance:
-  {{map.directionsRenderers[0].directions.routes[0].legs[0].distance}}
+  `{{ map.directionsRenderers[0].directions.routes[0].legs[0].distance }}`
 
 Directives
 ----------
