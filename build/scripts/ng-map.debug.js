@@ -196,7 +196,7 @@ angular.module('ngMap', []);
       }
 
       // set options
-      mapOptions.zoom = mapOptions.zoom || 15;
+      mapOptions.zoom = (mapOptions.zoom && !isNaN(mapOptions.zoom)) ? +mapOptions.zoom : 15;
       var center = mapOptions.center;
       var exprRegExp = new RegExp(escapeRegExp(exprStartSymbol) + '.*' + escapeRegExp(exprEndSymbol));
 
@@ -411,13 +411,20 @@ angular.module('ngMap', []);
     var filtered = parser.filter(attrs);
     var options = parser.getOptions(filtered, {scope: scope});
     var events = parser.getEvents(scope, filtered);
+    var innerScope = scope.$new();
 
     /**
      * build a custom control element
      */
     var customControlEl = element[0].parentElement.removeChild(element[0]);
-    var content = $transclude();
-    angular.element(customControlEl).append(content);
+    var content = $transclude( innerScope, function( clone ) {
+      element.empty();
+      element.append( clone );
+      element.on( '$destroy', function() {
+        innerScope.$destroy();
+      });
+    });
+    
 
     /**
      * set events
@@ -715,12 +722,6 @@ angular.module('ngMap', []);
   'use strict';
   var NgMap, $timeout, NavigatorGeolocation;
 
-  var requestTimeout, routeRequest;
-  // Delay for each route render to accumulate all requests into a single one
-  // This is required for simultaneous origin\waypoints\destination change
-  // 20ms should be enough to merge all request data
-  var routeRenderDelay = 20;
-
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
       options.panel = document.getElementById(options.panel) ||
@@ -756,37 +757,13 @@ angular.module('ngMap', []);
     }
 
     var showDirections = function(request) {
-      if (requestTimeout) {
-        for (var attr in request)
-        {
-          if (request.hasOwnProperty(attr))
-          {
-            routeRequest[attr] = request[attr];
-          }
-        }
-      }
-      else
-      {
-        requestTimeout = $timeout(function()
-        {
-          if (!routeRequest)
-          {
-            routeRequest = request;
-          }
-          requestRoute(routeRequest);
-          requestTimeout = undefined;
-        }, routeRenderDelay);
-      }
-
-      function requestRoute(routeRequest)
-      {
-        directionsService.route(routeRequest, function(response, status) {
-          console.log('route response', response, status);
-          if (status == google.maps.DirectionsStatus.OK) {
+      directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          $timeout(function() {
             renderer.setDirections(response);
-          }
-        });
-      }
+          });
+        }
+      });
     };
 
     if (request.origin && request.destination) {
@@ -1909,6 +1886,7 @@ angular.module('ngMap', []);
  * Example:
  *   <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
  *   <input places-auto-complete types="['geocode']" on-place-changed="myCallback(place)" component-restrictions="{country:'au'}"/>
+ *
  */
 /* global google */
 (function() {
@@ -1925,6 +1903,7 @@ angular.module('ngMap', []);
       var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
       var autocomplete = new google.maps.places.Autocomplete(element[0], options);
+      autocomplete.setOptions({strictBounds: options.strictBounds === true});
       for (var eventName in events) {
         google.maps.event.addListener(autocomplete, eventName, events[eventName]);
       }
@@ -1937,20 +1916,37 @@ angular.module('ngMap', []);
       google.maps.event.addListener(autocomplete, 'place_changed', updateModel);
       element[0].addEventListener('change', updateModel);
 
+      attrs.$observe('rectBounds', function(val) {
+        if (val) {
+          var bounds = parser.toOptionValue(val, {key: 'rectBounds'});
+          autocomplete.setBounds(new google.maps.LatLngBounds(
+            new google.maps.LatLng(bounds.south_west.lat, bounds.south_west.lng),
+            new google.maps.LatLng(bounds.north_east.lat, bounds.north_east.lng)));
+          }
+      });
+
+      attrs.$observe('circleBounds', function(val) {
+        if (val) {
+          var bounds = parser.toOptionValue(val, {key: 'circleBounds'});
+          var circle = new google.maps.Circle(bounds);
+          autocomplete.setBounds(circle.getBounds());
+        }
+      });
+
       attrs.$observe('types', function(val) {
         if (val) {
           var optionValue = parser.toOptionValue(val, {key: 'types'});
           autocomplete.setTypes(optionValue);
         }
       });
-	  
-	  attrs.$observe('componentRestrictions', function (val) {
-		 if (val) {
-		   autocomplete.setComponentRestrictions(scope.$eval(val));
-		 }
-	   });
+
+      attrs.$observe('componentRestrictions', function (val) {
+        if (val) {
+          autocomplete.setComponentRestrictions(scope.$eval(val));
+        }
+      });
     };
-	
+
     return {
       restrict: 'A',
       require: '?ngModel',
