@@ -30,6 +30,12 @@
   'use strict';
   var NgMap, $timeout, NavigatorGeolocation;
 
+  var requestTimeout, routeRequest;
+  // Delay for each route render to accumulate all requests into a single one
+  // This is required for simultaneous origin\waypoints\destination change
+  // 20ms should be enough to merge all request data
+  var routeRenderDelay = 20;
+
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
       options.panel = document.getElementById(options.panel) ||
@@ -65,13 +71,30 @@
     }
 
     var showDirections = function(request) {
-      directionsService.route(request, function(response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          $timeout(function() {
-            renderer.setDirections(response);
-          });
+      if (requestTimeout) {
+        for (var attr in request)
+        {
+          if (request.hasOwnProperty(attr))
+          {
+            routeRequest[attr] = request[attr];
+          }
         }
-      });
+      }
+      else
+      {
+        requestTimeout = $timeout(function() {
+          if (!routeRequest)
+          {
+            routeRequest = request;
+          }
+          directionsService.route(routeRequest, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              renderer.setDirections(response);
+            }
+          });
+          requestTimeout = undefined;
+        }, routeRenderDelay);
+      }
     };
 
     if (request.origin && request.destination) {
