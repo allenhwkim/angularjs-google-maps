@@ -59,8 +59,15 @@
       'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
       'provideRouteAlternatives', 'avoidHighways', 'avoidTolls', 'region'
     ];
-    for(var key in request){
-      (validKeys.indexOf(key) === -1) && (delete request[key]);
+    if (request)
+    {
+        for(var key in request)
+        {
+            if (request.hasOwnProperty(key))
+            {
+                (validKeys.indexOf(key) === -1) && (delete request[key]);
+            }
+        }
     }
 
     if(request.waypoints) {
@@ -71,12 +78,19 @@
     }
 
     var showDirections = function(request) {
-      if (requestTimeout) {
-        for (var attr in request)
+      if (requestTimeout && request) {
+        if (!routeRequest)
         {
-          if (request.hasOwnProperty(attr))
+          routeRequest = request;
+        }
+        else
+        {
+          for (var attr in request)
           {
-            routeRequest[attr] = request[attr];
+            if (request.hasOwnProperty(attr))
+            {
+                routeRequest[attr] = request[attr];
+            }
           }
         }
       }
@@ -97,7 +111,7 @@
       }
     };
 
-    if (request.origin && request.destination) {
+    if (request && request.origin && request.destination) {
       if (request.origin == 'current-location') {
         NavigatorGeolocation.getCurrentPosition().then(function(ll) {
           request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
