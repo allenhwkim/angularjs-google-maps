@@ -30,6 +30,12 @@
   'use strict';
   var NgMap, $timeout, NavigatorGeolocation;
 
+  var requestTimeout, routeRequest;
+  // Delay for each route render to accumulate all requests into a single one
+  // This is required for simultaneous origin\waypoints\destination change
+  // 20ms should be enough to merge all request data
+  var routeRenderDelay = 20;
+
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
       options.panel = document.getElementById(options.panel) ||
@@ -53,28 +59,52 @@
       'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
       'provideRouteAlternatives', 'avoidHighways', 'avoidTolls', 'region'
     ];
-    for(var key in request){
-      (validKeys.indexOf(key) === -1) && (delete request[key]);
+    if (request) {
+      for(var key in request) {
+        if (request.hasOwnProperty(key)) {
+          (validKeys.indexOf(key) === -1) && (delete request[key]);
+        }
+      }
     }
 
     if(request.waypoints) {
-      // Check fo valid values
-      if(request.waypoints == "[]" || request.waypoints === "") {
+      // Check for acceptable values
+      if(!Array.isArray(request.waypoints)) {
         delete request.waypoints;
       }
     }
 
     var showDirections = function(request) {
-      directionsService.route(request, function(response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          $timeout(function() {
-            renderer.setDirections(response);
-          });
+      if (requestTimeout && request) {
+        if (!routeRequest) {
+          routeRequest = request;
+        } else {
+          for (var attr in request) {
+            if (request.hasOwnProperty(attr)) {
+              routeRequest[attr] = request[attr];
+            }
+          }
         }
-      });
+      } else {
+        requestTimeout = $timeout(function() {
+          if (!routeRequest) {
+            routeRequest = request;
+          }
+          directionsService.route(routeRequest, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              renderer.setDirections(response);
+              // Unset request for the next call
+              routeRequest = undefined;
+            }
+          });
+          $timeout.cancel(requestTimeout);
+          // Unset expired timeout for the next call
+          requestTimeout = undefined;
+        }, routeRenderDelay);
+      }
     };
 
-    if (request.origin && request.destination) {
+    if (request && request.origin && request.destination) {
       if (request.origin == 'current-location') {
         NavigatorGeolocation.getCurrentPosition().then(function(ll) {
           request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);

@@ -722,6 +722,12 @@ angular.module('ngMap', []);
   'use strict';
   var NgMap, $timeout, NavigatorGeolocation;
 
+  var requestTimeout, routeRequest;
+  // Delay for each route render to accumulate all requests into a single one
+  // This is required for simultaneous origin\waypoints\destination change
+  // 20ms should be enough to merge all request data
+  var routeRenderDelay = 20;
+
   var getDirectionsRenderer = function(options, events) {
     if (options.panel) {
       options.panel = document.getElementById(options.panel) ||
@@ -745,28 +751,52 @@ angular.module('ngMap', []);
       'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
       'provideRouteAlternatives', 'avoidHighways', 'avoidTolls', 'region'
     ];
-    for(var key in request){
-      (validKeys.indexOf(key) === -1) && (delete request[key]);
+    if (request) {
+      for(var key in request) {
+        if (request.hasOwnProperty(key)) {
+          (validKeys.indexOf(key) === -1) && (delete request[key]);
+        }
+      }
     }
 
     if(request.waypoints) {
-      // Check fo valid values
-      if(request.waypoints == "[]" || request.waypoints === "") {
+      // Check for acceptable values
+      if(!Array.isArray(request.waypoints)) {
         delete request.waypoints;
       }
     }
 
     var showDirections = function(request) {
-      directionsService.route(request, function(response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-          $timeout(function() {
-            renderer.setDirections(response);
-          });
+      if (requestTimeout && request) {
+        if (!routeRequest) {
+          routeRequest = request;
+        } else {
+          for (var attr in request) {
+            if (request.hasOwnProperty(attr)) {
+              routeRequest[attr] = request[attr];
+            }
+          }
         }
-      });
+      } else {
+        requestTimeout = $timeout(function() {
+          if (!routeRequest) {
+            routeRequest = request;
+          }
+          directionsService.route(routeRequest, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              renderer.setDirections(response);
+              // Unset request for the next call
+              routeRequest = undefined;
+            }
+          });
+          $timeout.cancel(requestTimeout);
+          // Unset expired timeout for the next call
+          requestTimeout = undefined;
+        }, routeRenderDelay);
+      }
     };
 
-    if (request.origin && request.destination) {
+    if (request && request.origin && request.destination) {
       if (request.origin == 'current-location') {
         NavigatorGeolocation.getCurrentPosition().then(function(ll) {
           request.origin = new google.maps.LatLng(ll.coords.latitude, ll.coords.longitude);
@@ -798,6 +828,11 @@ angular.module('ngMap', []);
       var options = parser.getOptions(filtered, {scope: scope});
       var events = parser.getEvents(scope, filtered);
       var attrsToObserve = parser.getAttrsToObserve(orgAttrs);
+
+      var attrsToObserve = [];
+      if (!filtered.noWatcher) {
+          attrsToObserve = parser.getAttrsToObserve(orgAttrs);
+      }
 
       var renderer = getDirectionsRenderer(options, events);
       mapController.addObject('directionsRenderers', renderer);
@@ -1064,7 +1099,7 @@ angular.module('ngMap', []);
          * set options
          */
         var options = parser.getOptions(filtered, {scope: scope});
-        options.data = $window[attrs.data] || scope[attrs.data];
+        options.data = $window[attrs.data] || parseScope(attrs.data, scope);
         if (options.data instanceof Array) {
           options.data = new google.maps.MVCArray(options.data);
         } else {
@@ -1079,6 +1114,13 @@ angular.module('ngMap', []);
         console.log('heatmap-layer options', layer, 'events', events);
 
         mapController.addObject('heatmapLayers', layer);
+        
+        //helper get nexted path
+        function parseScope( path, obj ) {
+            return path.split('.').reduce( function( prev, curr ) {
+                return prev[curr];
+            }, obj || this );
+        }
       }
      }; // return
   }]);
@@ -1989,7 +2031,7 @@ angular.module('ngMap', []);
  * @example
  * Usage:
  *   <map MAP_ATTRIBUTES>
- *    <shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></MARKER>
+ *    <shape name="SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></shape>
  *   </map>
  *
  * Example:
