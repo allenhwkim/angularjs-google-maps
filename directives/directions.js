@@ -59,8 +59,7 @@
       'durationInTraffic', 'waypoints', 'optimizeWaypoints', 
       'provideRouteAlternatives', 'avoidHighways', 'avoidTolls', 'region'
     ];
-    if (request)
-    {
+    if (request) {
       for(var key in request) {
         if (request.hasOwnProperty(key)) {
           (validKeys.indexOf(key) === -1) && (delete request[key]);
