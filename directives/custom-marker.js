@@ -57,7 +57,6 @@
     CustomMarker.prototype = new google.maps.OverlayView();
 
     CustomMarker.prototype.setContent = function(html, scope) {
-      console.log('input html', html);
       this.el.innerHTML = html;
       this.el.style.position = 'absolute';
       this.el.style.top = 0;
@@ -107,7 +106,8 @@
     };
 
     CustomMarker.prototype.setZIndex = function(zIndex) {
-      zIndex && (this.zIndex = zIndex); /* jshint ignore:line */
+      if (zIndex === undefined) return;
+      (this.zIndex !== zIndex) && (this.zIndex = zIndex); /* jshint ignore:line */
       (this.el.style.zIndex !== this.zIndex) && (this.el.style.zIndex = this.zIndex);
     };
 
@@ -175,7 +175,7 @@
       // Do we really need a timeout with $scope.$apply() here?
       setTimeout(function() { //apply contents, class, and location after it is compiled
 
-        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+        scope.$watch('[' + varsToWatch.join(',') + ']', function(newVal, oldVal) {
           customMarker.setContent(orgHtml, scope);
         }, true);
 
@@ -197,7 +197,7 @@
 
       });
 
-      console.log("custom-marker events", "events");
+      console.log("custom-marker events", events);
       for (var eventName in events) { /* jshint ignore:line */
         google.maps.event.addDomListener(
           customMarker.el, eventName, events[eventName]);
@@ -232,6 +232,7 @@
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       compile: function(element) {
+        console.log('el', element);
         setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
