@@ -488,11 +488,22 @@ angular.module('ngMap', []);
   'use strict';
   var parser, $timeout, $compile, NgMap;
 
+  var supportedTransform = (function getSupportedTransform() {
+    var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+    var div = document.createElement('div');
+    for(var i = 0; i < prefixes.length; i++) {
+      if(div && div.style[prefixes[i]] !== undefined) {
+        return prefixes[i];
+      }
+    }
+    return false;
+  })();
+
   var CustomMarker = function(options) {
     options = options || {};
 
     this.el = document.createElement('div');
-    this.el.style.display = 'inline-block';
+    this.el.style.display = 'block';
     this.el.style.visibility = "hidden";
     this.visible = true;
     for (var key in options) { /* jshint ignore:line */
@@ -507,6 +518,8 @@ angular.module('ngMap', []);
     CustomMarker.prototype.setContent = function(html, scope) {
       this.el.innerHTML = html;
       this.el.style.position = 'absolute';
+      this.el.style.top = 0;
+      this.el.style.left = 0;
       if (scope) {
         $compile(angular.element(this.el).contents())(scope);
       }
@@ -534,8 +547,12 @@ angular.module('ngMap', []);
           var posPixel = _this.getProjection().fromLatLngToDivPixel(_this.position);
           var x = Math.round(posPixel.x - (_this.el.offsetWidth/2));
           var y = Math.round(posPixel.y - _this.el.offsetHeight - 10); // 10px for anchor
-          _this.el.style.left = x + "px";
-          _this.el.style.top = y + "px";
+          if (supportedTransform) {
+            _this.el.style[supportedTransform] = "translate(" + x + "px, " + y + "px)";
+          } else {
+            _this.el.style.left = x + "px";
+            _this.el.style.top = y + "px";
+          }
           _this.el.style.visibility = "visible";
         };
         if (_this.el.offsetWidth && _this.el.offsetHeight) {
@@ -548,8 +565,9 @@ angular.module('ngMap', []);
     };
 
     CustomMarker.prototype.setZIndex = function(zIndex) {
-      zIndex && (this.zIndex = zIndex); /* jshint ignore:line */
-      this.el.style.zIndex = this.zIndex;
+      if (zIndex === undefined) return;
+      (this.zIndex !== zIndex) && (this.zIndex = zIndex); /* jshint ignore:line */
+      (this.el.style.zIndex !== this.zIndex) && (this.el.style.zIndex = this.zIndex);
     };
 
     CustomMarker.prototype.getVisible = function() {
@@ -557,7 +575,12 @@ angular.module('ngMap', []);
     };
 
     CustomMarker.prototype.setVisible = function(visible) {
-      this.el.style.display = visible ? 'inline-block' : 'none';
+      if (this.el.style.display === 'none' && visible)
+      {
+          this.el.style.display = 'block';
+      } else if (this.el.style.display !== 'none' && !visible) {
+          this.el.style.display = 'none';
+      }
       this.visible = visible;
     };
 
@@ -608,29 +631,32 @@ angular.module('ngMap', []);
       console.log("custom-marker options", options);
       var customMarker = new CustomMarker(options);
 
-      $timeout(function() { //apply contents, class, and location after it is compiled
+      // Do we really need a timeout with $scope.$apply() here?
+      setTimeout(function() { //apply contents, class, and location after it is compiled
 
-        scope.$watch('[' + varsToWatch.join(',') + ']', function() {
+        scope.$watch('[' + varsToWatch.join(',') + ']', function(newVal, oldVal) {
           customMarker.setContent(orgHtml, scope);
         }, true);
 
         customMarker.setContent(element[0].innerHTML, scope);
-        var classNames = element[0].firstElementChild.className;
+        var classNames =
+          (element[0].firstElementChild) && (element[0].firstElementChild.className || '');
+        customMarker.class && (classNames += " " + customMarker.class);
         customMarker.addClass('custom-marker');
-        customMarker.addClass(classNames);
+        classNames && customMarker.addClass(classNames);
         console.log('customMarker', customMarker, 'classNames', classNames);
 
         if (!(options.position instanceof google.maps.LatLng)) {
           NgMap.getGeoLocation(options.position).then(
-                function(latlng) {
-                  customMarker.setPosition(latlng);
-                }
+            function(latlng) {
+              customMarker.setPosition(latlng);
+            }
           );
         }
 
       });
 
-      console.log("custom-marker events", "events");
+      console.log("custom-marker events", events);
       for (var eventName in events) { /* jshint ignore:line */
         google.maps.event.addDomListener(
           customMarker.el, eventName, events[eventName]);
@@ -665,6 +691,7 @@ angular.module('ngMap', []);
       restrict: 'E',
       require: ['?^map','?^ngMap'],
       compile: function(element) {
+        console.log('el', element);
         setCustomMarker();
         element[0].style.display ='none';
         var orgHtml = element.html();
