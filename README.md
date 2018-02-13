@@ -10,25 +10,25 @@ GoogleMap AngularJS Directive
 [Maps Can Talk](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker.html) |
 [Custom Marker](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/custom-marker-2.html)  
 
-If you like this, you also may like these;
+If you like this, you also may like these:
 * [ng2-map](https://github.com/ng2-ui/map) Google Maps Wrapper for Angular 2+
 * [react-openlayers](https://github.com/allenhwkim/react-openlayers) React + OpenLayers
 
 Background
 -----------------
-There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself doing totally different approach than the existing one, such as;
+There is already [one](https://github.com/nlaplante/angular-google-maps) for this. However, I found myself taking a totally different approach than the existing one, such as:
 
 1. **Everything in tag and attributes.**   
-   Thus, basic users don't even have to know what Javascript is.
-
-2. **Expose all original Google Maps V3 api to the user.**   
-   No hiding, no wraping, or whatsoever.
+   Thus, users don't even need knowledge of JavaScript.
+   
+2. **Expose all original Google Maps V3 API to the user.**   
+   No hiding, no wrapping or whatsoever.
    By doing so, programmers don't need to learn how to use this module.
    You only need to know Google Maps V3 API.
 
 There is a blog that introduces this module. The title of it is '[Google Map As The Simplest Way](http://allenhwkim.tumblr.com/post/70986888283/google-map-as-the-simplest-way)'
 
-To Get Started
+To get started
 --------------
 For Bower users,
 
@@ -37,10 +37,10 @@ For Bower users,
 1. Include `ng-map.min.js`:
    `<script src="/bower_components/ngmap/build/scripts/ng-map.min.js"></script>`
 
-2. Include Google maps:  
+2. Include Google Maps:  
     `<script src="http://maps.google.com/maps/api/js"></script>`  
 
-2. Name your angular app ngMap, or add it as a dependency
+2. Name your AngularJS app ngMap, or add it as a dependency
 
    `var myApp = angular.module('myApp', ['ngMap']);`
 
@@ -58,9 +58,9 @@ For npm users,
 
   `$ npm install ngmap`
 
-For meteor users: https://atmospherejs.com/wormy/angularjs-google-maps
+For Meteor users: https://atmospherejs.com/wormy/angularjs-google-maps
 
-Lazy Loading of Google Maps Javascript
+Lazy loading of Google Maps JavaScript
 ---------------------------------------
   Simply wrap the map tag with `map-lazy-load="https://maps.google.com/maps/api/js"`.
 
@@ -79,9 +79,9 @@ Lazy Loading of Google Maps Javascript
 
 FAQ
 ----
-## Grey area in Google maps
+## Grey area in Google Maps
 
-The usual reason why this is happening is that the size of the map is changed after the map has been initialized. If you for some reason change the size of the div, you need to trigger the "resize" event and possible reCenter the map.
+The usual reason why this happens is that the size of the map is changed after the map has been initialized. If you for some reason change the size of the div, you need to trigger the "resize" event and possible recenter the map.
 
      var center = map.getCenter();
      google.maps.event.trigger(map, "resize");
@@ -91,7 +91,7 @@ Ref.
   * http://stackoverflow.com/questions/13901520/grey-area-in-google-maps
   * http://blog.codebusters.pl/en/google-maps-in-hidden-div/
 
-## Check if a marker is within Map, Rectangle, or Circle
+## Check if a marker is within `Map`, `Rectangle`, or `Circle`
 
     `map.getBounds().contains(marker.getPosition());`
 
@@ -102,14 +102,14 @@ Ref.
 
 ## Calculate distance between two position
 
-You may checkout this, https://developers.google.com/maps/documentation/javascript/distancematrix.
+You can check this out: https://developers.google.com/maps/documentation/javascript/distancematrix.
 As you see,  DistanceMatrix does not require map nor directive.
 
-Another way to do is to use directions directive. As you see it here, https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions2.html, you have access to DirectionsRenderer by using `map.directionsRenderers[id]`
+Another way to do this, is to use directions directive. As you see it here: https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/directions2.html, you have access to DirectionsRenderer by using `map.directionsRenderers[id]`
 
 https://developers.google.com/maps/documentation/javascript/reference?hl=en#DirectionsRenderer
 
-You use getDirections() or directions, then calculate the distance from there. e.g.,
+You use `getDirections()` or `directions`, then calculate the distance from there. e.g.,
 
   Distance:
   `{{ map.directionsRenderers[0].directions.routes[0].legs[0].distance }}`
@@ -141,7 +141,7 @@ Directives
  * traffic-layer
  * transit-layer
 
-Advanced Examples
+Advanced examples
 -------------------
 - [Marker Clusterer](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/marker-clusterer.html)
 - [Starbucks World Wide](https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/map_app.html)
@@ -154,16 +154,16 @@ Advanced Examples
 
 Contributing
 ============
-- Clone the repository from github
-- Change to the folder dowloaded
+- Clone the repository from GitHub.
+- Change to the cloned directory.
 - **npm install** to install the build tools
-- **gulp build** to build the javascript & doc files in the /build folder & run the unit tests.
-- **gulp clean** to cleanup the repository by removing files and folders from previous build.
+- **gulp build** to build the JavaScript & doc files in the /build folder & run the unit tests.
+- **gulp clean** to clean up the repository by removing files and folders from previous build.
 - **gulp test** to run the Karma unit test suite.
 - **gulp test:e2e** to run the Protractor test suite. For the first test run, you may need to update the protractor webdriver manager. It will show the command on screen if this is required (node_modules/gulp-protractor/node_modules/protractor/bin/webdriver-manager update).
 - **gulp test:server** will start a web server for the testapp on http://localhost:8888
 
-license
+License
 =======
 
 [MIT License](https://github.com/allenhwkim/angularjs-google-maps/blob/master/LICENSE)
