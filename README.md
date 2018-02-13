@@ -1,4 +1,4 @@
-GoogleMap AngularJS Directive
+Google Maps AngularJS Directive
 =============================
 <!--
 [![Build Status](https://travis-ci.org/allenhwkim/angularjs-google-maps.png?branch=master)](https://travis-ci.org/allenhwkim/angularjs-google-maps)
