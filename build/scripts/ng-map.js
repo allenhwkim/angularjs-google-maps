@@ -1199,8 +1199,10 @@ angular.module('ngMap', []);
             } else {
               infoWindow.open(map);
             }
-            var infoWindowContainerEl = infoWindow.content.parentElement.parentElement.parentElement;
-            infoWindowContainerEl.className = "ng-map-info-window";
+            $timeout(function() { // to avoid racing condition
+              var infoWindowContainerEl = infoWindow.content.parentElement.parentElement.parentElement;
+              infoWindowContainerEl.className = "ng-map-info-window";
+            });
           });
         });
       };
