@@ -29,7 +29,7 @@
  * @example
  * Usage:
  *   <map MAP_ATTRIBUTES>
- *    <shape name=SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></MARKER>
+ *    <shape name="SHAPE_NAME ANY_SHAPE_OPTIONS ANY_SHAPE_EVENTS"></shape>
  *   </map>
  *
  * Example:

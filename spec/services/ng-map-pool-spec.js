@@ -8,13 +8,6 @@ describe('NgMapPool', function() {
    beforeEach(inject(function ($rootScope, _NgMapPool_, _$window_) {
      scope = $rootScope;
      NgMapPool = _NgMapPool_, $window = _$window_;
-     $window.google = {
-       maps: {
-         Map: function() {
-          this.getDiv = function() {};
-         }
-       }
-     };
    }));
 
   describe("#getMapInstance #returnMapInstance", function() {
