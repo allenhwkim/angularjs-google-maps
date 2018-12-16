@@ -1691,7 +1691,7 @@ angular.module('ngMap', []);
  * @attr {String} &lt;MapOption> Any Google map options,
  *  https://developers.google.com/maps/documentation/javascript/reference?csw=1#MapOptions
  * @attr {String} &lt;MapEvent> Any Google map events,
- *  https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
+ *  https://combinatronics.com/allenhwkim/angularjs-google-maps/master/build/map_events.html
  * @attr {Boolean} single-info-window
  *  When true the map will only display one info window at the time,
  *  if not set or false,
@@ -2110,7 +2110,7 @@ angular.module('ngMap', []);
  *   </map>
  *
  *  For full-working example, please visit
- *    [shape example](https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
+ *    [shape example](https://combinatronics.com/allenhwkim/angularjs-google-maps/master/build/shape.html)
  */
 /* global google */
 (function() {
